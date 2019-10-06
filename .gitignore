@@ -33,3 +33,5 @@ src/Properties/PublishProfiles/FolderProfile.pubxml
 /src/obj
 /src/.vs/Yuniql
 /.vs
+/tests/Tests/bin/Debug/netcoreapp3.0
+/tests/Tests/obj

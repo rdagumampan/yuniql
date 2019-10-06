@@ -9,13 +9,6 @@ namespace ArdiLabs.Yuniql
     {
         public void Init(string workingPath)
         {
-            string draftFolderLocation = Path.Combine(workingPath, "_draft");
-            if (!Directory.Exists(draftFolderLocation))
-            {
-                Directory.CreateDirectory(draftFolderLocation);
-                TraceService.Info($"Created script directory {draftFolderLocation}");
-            }
-
             string initFolderLocation = Path.Combine(workingPath, "_init");
             if (!Directory.Exists(initFolderLocation))
             {
@@ -30,18 +23,25 @@ namespace ArdiLabs.Yuniql
                 TraceService.Info($"Created script directory {preFolderLocation}");
             }
 
-            string postFolderLocation = Path.Combine(workingPath, "_post");
-            if (!Directory.Exists(postFolderLocation))
-            {
-                Directory.CreateDirectory(postFolderLocation);
-                TraceService.Info($"Created script directory {postFolderLocation}");
-            }
-
             string defaultVersion = Path.Combine(workingPath, "v0.00");
             if (!Directory.Exists(defaultVersion))
             {
                 Directory.CreateDirectory(defaultVersion);
                 TraceService.Info($"Created script directory {defaultVersion}");
+            }
+
+            string draftFolderLocation = Path.Combine(workingPath, "_draft");
+            if (!Directory.Exists(draftFolderLocation))
+            {
+                Directory.CreateDirectory(draftFolderLocation);
+                TraceService.Info($"Created script directory {draftFolderLocation}");
+            }
+
+            string postFolderLocation = Path.Combine(workingPath, "_post");
+            if (!Directory.Exists(postFolderLocation))
+            {
+                Directory.CreateDirectory(postFolderLocation);
+                TraceService.Info($"Created script directory {postFolderLocation}");
             }
 
             var readMeFile = Path.Combine(workingPath, "README.md");

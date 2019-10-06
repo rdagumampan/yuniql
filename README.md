@@ -65,6 +65,9 @@ docker build -t rdagumampan/yuniqldemo .s
 - integrate with `dotnet tool` such as `dotnet tool install -g yunisql`
 - package as nuget that app can run during startup
 - deploy docker container and run migration
+- yuniql --info
+- support placeholders ${ENV.VariableName}, ${VariableleName}
+- bulk load from csv files
 
 ## License
 MIT
