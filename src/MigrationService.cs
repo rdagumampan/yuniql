@@ -66,7 +66,7 @@ namespace ArdiLabs.Yuniql
             return result;
         }
 
-        public bool IsTargetDatabaseLatest(SqlConnectionStringBuilder sqlConnectionString, string targetVersion)
+        private bool IsTargetDatabaseLatest(SqlConnectionStringBuilder sqlConnectionString, string targetVersion)
         {
             var cv = new LocalVersion(GetCurrentVersion(sqlConnectionString));
             var tv = new LocalVersion(targetVersion);
@@ -75,13 +75,13 @@ namespace ArdiLabs.Yuniql
                 string.Compare(cv.SemVersion, tv.SemVersion) == 0;      //db has the same version as local version
         }
 
-        public void CreateDatabase(SqlConnectionStringBuilder sqlConnectionString, string targetDatabaseName)
+        private void CreateDatabase(SqlConnectionStringBuilder sqlConnectionString, string targetDatabaseName)
         {
             var sqlStatement = $"CREATE DATABASE {targetDatabaseName};";
             DbHelper.ExecuteNonQuery(sqlConnectionString, sqlStatement);
         }
 
-        public bool IsTargetDatabaseConfigured(SqlConnectionStringBuilder sqlConnectionString)
+        private bool IsTargetDatabaseConfigured(SqlConnectionStringBuilder sqlConnectionString)
         {
             var sqlStatement = $"SELECT ISNULL(OBJECT_ID('dbo.__YuniqlDbVersion'),0) AS ObjectID";
             var result = DbHelper.QuerySingleBool(sqlConnectionString, sqlStatement);
@@ -89,7 +89,7 @@ namespace ArdiLabs.Yuniql
             return result;
         }
 
-        public void ConfigureDatabase(SqlConnectionStringBuilder sqlConnectionString)
+        private void ConfigureDatabase(SqlConnectionStringBuilder sqlConnectionString)
         {
             var sqlStatement = $@"
                     USE {sqlConnectionString.InitialCatalog};
@@ -128,7 +128,7 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        public string GetCurrentVersion(SqlConnectionStringBuilder sqlConnectionString)
+        private string GetCurrentVersion(SqlConnectionStringBuilder sqlConnectionString)
         {
             var sqlStatement = $"SELECT TOP 1 Version FROM dbo.__YuniqlDbVersion ORDER BY Id DESC";
             var result = DbHelper.QuerySingleString(sqlConnectionString, sqlStatement);
@@ -136,13 +136,13 @@ namespace ArdiLabs.Yuniql
             return result;
         }
 
-        public void IncrementVersion(SqlConnectionStringBuilder sqlConnectionString, string nextVersion)
+        private void IncrementVersion(SqlConnectionStringBuilder sqlConnectionString, string nextVersion)
         {
             var sqlStatement = $"INSERT INTO dbo.__YuniqlDbVersion (Version) VALUES (N'{nextVersion}')";
             DbHelper.ExecuteScalar(sqlConnectionString, sqlStatement);
         }
 
-        public List<DbVersion> GetAllDbVersions(SqlConnectionStringBuilder sqlConnectionString)
+        private List<DbVersion> GetAllDbVersions(SqlConnectionStringBuilder sqlConnectionString)
         {
             var result = new List<DbVersion>();
 

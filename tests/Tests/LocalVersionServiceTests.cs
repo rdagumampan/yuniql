@@ -1,11 +1,11 @@
 using ArdiLabs.Yuniql;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.IO;
 using Shouldly;
 
-namespace Tests
+namespace Yuniql.Tests
 {
+
     [TestClass]
     public class LocalVersionServiceTests
     {
@@ -131,23 +131,6 @@ namespace Tests
 
             //assert
             localVersionService.GetLatestVersion(workingPath).ShouldBe("v1.02");
-        }
-
-        [TestCleanup]
-        public void CleanUp()
-        {
-            //if (Directory.Exists(workingPath))
-            //{
-            //    Directory.Delete(workingPath, true);
-            //}
-        }
-    }
-
-    public static class TestHelper { 
-    
-        public static string GetWorkingPath()
-        {
-            return @$"c:\temp\yuniqltests\yuniqltests-{Guid.NewGuid().ToString().Substring(0,4)}";
         }
     }
 }

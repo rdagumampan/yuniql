@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <RootNamespace>Yuniql.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
