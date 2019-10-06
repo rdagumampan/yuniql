@@ -1,5 +1,12 @@
 
-# yuniql - straight forward sql database migration
+# yuniql - straight forward sql server database migration
+
+### Motivation
+- ridiculously simple! you just need to know sql
+- true cross-platform, runs on windows and linux
+- zero dependencies, self-contained app, no jvm!
+- devops ready, use your own version control and pipelines framework
+- open source, MIT license
 
 ### Supported commands
 ```console
@@ -53,10 +60,11 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 docker build -t rdagumampan/yuniqldemo .s
 ```
 
-### next steps
+### todo
 - automated tests
 - integrate with `dotnet tool` such as `dotnet tool install -g yunisql`
 - package as nuget that app can run during startup
+- deploy docker container and run migration
 
 ## License
 MIT
