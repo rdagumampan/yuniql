@@ -27,13 +27,13 @@ namespace ArdiLabs.Yuniql
 
         static void Main(string[] args)
         {
-            TraceService.Info("Assembly.GetExecutingAssembly().Location: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            TraceService.Info("AppContext.BaseDirectory: " + AppContext.BaseDirectory);
-            TraceService.Info("AppDomain.CurrentDomain.BaseDirectory: " + AppDomain.CurrentDomain.BaseDirectory);
-            TraceService.Info("Environment.CurrentDirectory: " + Environment.CurrentDirectory);
-            TraceService.Info("Directory.GetCurrentDirectory: " + Directory.GetCurrentDirectory());
-            TraceService.Info("Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath);: " + Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath));
-            TraceService.Info("Path.GetDirectoryName(Assembly.GetEntryAssembly().Location): " + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            TraceService.Debug("Assembly.GetExecutingAssembly().Location: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            TraceService.Debug("AppContext.BaseDirectory: " + AppContext.BaseDirectory);
+            TraceService.Debug("AppDomain.CurrentDomain.BaseDirectory: " + AppDomain.CurrentDomain.BaseDirectory);
+            TraceService.Debug("Environment.CurrentDirectory: " + Environment.CurrentDirectory);
+            TraceService.Debug("Directory.GetCurrentDirectory: " + Directory.GetCurrentDirectory());
+            TraceService.Debug("Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath);: " + Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath));
+            TraceService.Debug("Path.GetDirectoryName(Assembly.GetEntryAssembly().Location): " + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
             CommandLine.Parser.Default.ParseArguments<InitOption, RunOption, NextVersionOption>(args)
               .MapResult(
@@ -56,18 +56,26 @@ namespace ArdiLabs.Yuniql
 
         private static object RunInitOption(InitOption opts)
         {
-            var versionService = new LocalVersionService();
+            try
+            {
+                var versionService = new LocalVersionService();
 
-            if (string.IsNullOrEmpty(opts.Path))
-            {
-                var workingPath = Environment.CurrentDirectory;
-                versionService.Init(workingPath);
-                TraceService.Info($"Initialized {opts.Path}.");
+                if (string.IsNullOrEmpty(opts.Path))
+                {
+                    var workingPath = Environment.CurrentDirectory;
+                    versionService.Init(workingPath);
+                    TraceService.Info($"Initialized {opts.Path}.");
+                }
+                else
+                {
+                    versionService.Init(opts.Path);
+                    TraceService.Info($"Initialized {opts.Path}.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                versionService.Init(opts.Path);
-                TraceService.Info($"Initialized {opts.Path}.");
+                TraceService.Error($"Failed to execute init function. {Environment.NewLine}{ex.ToString()}");
+                throw;
             }
 
             return 0;
@@ -75,22 +83,30 @@ namespace ArdiLabs.Yuniql
 
         private static object IncrementVersion(NextVersionOption opts)
         {
-            if (string.IsNullOrEmpty(opts.Path))
+            try
             {
-                var workingPath = Environment.CurrentDirectory;
-                opts.Path = workingPath;
-            }
+                if (string.IsNullOrEmpty(opts.Path))
+                {
+                    var workingPath = Environment.CurrentDirectory;
+                    opts.Path = workingPath;
+                }
 
-            var versionService = new LocalVersionService();
-            if (opts.IncrementMajorVersion)
-            {
-                var nextVersion = versionService.IncrementMajorVersion(opts.Path, opts.File);
-                TraceService.Info($"New major version created {nextVersion} on {opts.Path}.");
+                var versionService = new LocalVersionService();
+                if (opts.IncrementMajorVersion)
+                {
+                    var nextVersion = versionService.IncrementMajorVersion(opts.Path, opts.File);
+                    TraceService.Info($"New major version created {nextVersion} on {opts.Path}.");
+                }
+                else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
+                {
+                    var nextVersion = versionService.IncrementMinorVersion(opts.Path, opts.File);
+                    TraceService.Info($"New minor version created {nextVersion} on {opts.Path}.");
+                }
             }
-            else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
+            catch (Exception ex)
             {
-                var nextVersion = versionService.IncrementMinorVersion(opts.Path, opts.File);
-                TraceService.Info($"New minor version created {nextVersion} on {opts.Path}.");
+                TraceService.Error($"Failed to execute vnext function. {Environment.NewLine}{ex.ToString()}");
+                throw;
             }
 
             return 0;
@@ -98,25 +114,33 @@ namespace ArdiLabs.Yuniql
 
         private static object RunMigration(RunOption opts)
         {
-            if (string.IsNullOrEmpty(opts.Path))
+            try
             {
-                var workingPath = Environment.CurrentDirectory;
-                opts.Path = workingPath;
+                if (string.IsNullOrEmpty(opts.Path))
+                {
+                    var workingPath = Environment.CurrentDirectory;
+                    opts.Path = workingPath;
+                }
+
+                TraceService.Info($"Started migration from {opts.Path}.");
+
+                //if no target version specified, capture the latest from local folder structure
+                if (string.IsNullOrEmpty(opts.TargetVersion))
+                {
+                    var localVersionService = new LocalVersionService();
+                    opts.TargetVersion = localVersionService.GetLatestVersion(opts.Path);
+                    TraceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
+                }
+
+                var migrationService = new MigrationService();
+                migrationService.Run(opts.Path, opts.ConnectionString, opts.TargetVersion, opts.AutoCreateDatabase);
+                TraceService.Info($"Completed migration from {opts.Path}.");
             }
-
-            TraceService.Info($"Started migration from {opts.Path}.");
-
-            //if no target version specified, capture the latest from local folder structure
-            if (string.IsNullOrEmpty(opts.TargetVersion))
+            catch (Exception ex)
             {
-                var localVersionService = new LocalVersionService();
-                opts.TargetVersion = localVersionService.GetLatestVersion(opts.Path);
-                TraceService.Info($"No explicit target version requested. Will use latest available locally {opts.TargetVersion} on {opts.Path}.");
+                TraceService.Error($"Failed to execute run function. {Environment.NewLine}{ex.ToString()}");
+                throw;
             }
-
-            var migrationService = new MigrationService();
-            migrationService.Run(opts.Path, opts.ConnectionString, opts.TargetVersion, opts.AutoCreateDatabase);
-            TraceService.Info($"Completed migration from {opts.Path}.");
 
             return 0;
         }
