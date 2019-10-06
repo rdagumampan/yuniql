@@ -83,7 +83,7 @@ namespace ArdiLabs.Yuniql
 
         public bool IsTargetDatabaseConfigured(SqlConnectionStringBuilder sqlConnectionString)
         {
-            var sqlStatement = $"SELECT ISNULL(OBJECT_ID('dbo.__DbVersion'),0) AS ObjId";
+            var sqlStatement = $"SELECT ISNULL(OBJECT_ID('dbo.__YuniqlDbVersion'),0) AS ObjectID";
             var result = DbHelper.QuerySingleBool(sqlConnectionString, sqlStatement);
 
             return result;
@@ -93,31 +93,29 @@ namespace ArdiLabs.Yuniql
         {
             var sqlStatement = $@"
                     USE {sqlConnectionString.InitialCatalog};
-                    IF OBJECT_ID('[dbo].[__DbVersion]') IS NULL 
+
+                    IF OBJECT_ID('[dbo].[__YuniqlDbVersion]') IS NULL 
                     BEGIN
-                        CREATE TABLE[dbo].[__DbVersion](        
-                            [Id][int] IDENTITY(1, 1) NOT NULL,        
+                        --creates the table to hold migration history
+                        CREATE TABLE[dbo].[__YuniqlDbVersion](        
+                            [Id][INT] IDENTITY(1, 1) NOT NULL,        
                             [Version] [NVARCHAR] (10) NOT NULL,
                             [Created] [DATETIME2] NOT NULL,         
                             [CreatedBy] [NVARCHAR] (200) NULL,
-                        CONSTRAINT[PK___DbVersion] PRIMARY KEY CLUSTERED
-                        (
-                            [Id] ASC
-                        ) WITH(
-                            PAD_INDEX = OFF, 
-                            STATISTICS_NORECOMPUTE = OFF, 
-                            IGNORE_DUP_KEY = OFF, 
-                            ALLOW_ROW_LOCKS = ON, 
-                            ALLOW_PAGE_LOCKS = ON
-                        ) ON [PRIMARY]
+                            CONSTRAINT[PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED (
+                                [Id] ASC 
+                            )
                         ) ON [PRIMARY];
 
-                        ALTER TABLE [dbo].[__DbVersion] ADD CONSTRAINT[DF___DbVersion_Created]  DEFAULT(GETUTCDATE()) FOR [Created];
-                        ALTER TABLE [dbo].[__DbVersion] ADD CONSTRAINT[DF___DbVersion_CreatedBy]  DEFAULT(SUSER_SNAME()) FOR [CreatedBy];
+                        ALTER TABLE [dbo].[__YuniqlDbVersion] ADD CONSTRAINT[DF___YuniqlDbVersion_Created]  DEFAULT(GETUTCDATE()) FOR [Created];
+                        ALTER TABLE [dbo].[__YuniqlDbVersion] ADD CONSTRAINT[DF___YuniqlDbVersion_CreatedBy]  DEFAULT(SUSER_SNAME()) FOR [CreatedBy];
 
-                        INSERT INTO [dbo].[__DbVersion] (Version) VALUES('v0.00');
+                        --creates default version
+                        INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES('v0.00');
                     END
                 ";
+
+            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
@@ -132,7 +130,7 @@ namespace ArdiLabs.Yuniql
 
         public string GetCurrentVersion(SqlConnectionStringBuilder sqlConnectionString)
         {
-            var sqlStatement = $"SELECT TOP 1 Version FROM dbo.__DbVersion ORDER BY Id DESC";
+            var sqlStatement = $"SELECT TOP 1 Version FROM dbo.__YuniqlDbVersion ORDER BY Id DESC";
             var result = DbHelper.QuerySingleString(sqlConnectionString, sqlStatement);
 
             return result;
@@ -140,7 +138,7 @@ namespace ArdiLabs.Yuniql
 
         public void IncrementVersion(SqlConnectionStringBuilder sqlConnectionString, string nextVersion)
         {
-            var sqlStatement = $"INSERT INTO dbo.__DbVersion (Version) VALUES (N'{nextVersion}')";
+            var sqlStatement = $"INSERT INTO dbo.__YuniqlDbVersion (Version) VALUES (N'{nextVersion}')";
             DbHelper.ExecuteScalar(sqlConnectionString, sqlStatement);
         }
 
@@ -148,7 +146,9 @@ namespace ArdiLabs.Yuniql
         {
             var result = new List<DbVersion>();
 
-            var sqlStatement = $"SELECT Id, Version FROM dbo.__DbVersion ORDER BY Version ASC;";
+            var sqlStatement = $"SELECT Id, Version FROM dbo.__YuniqlDbVersion ORDER BY Version ASC;";
+            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
                 connection.Open();
@@ -186,22 +186,24 @@ namespace ArdiLabs.Yuniql
                         sqlScriptFiles.ForEach(scriptFile =>
                         {
                             //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
-                            var sqlStatementFile = File.ReadAllText(scriptFile);
-                            var sqlStatements = Regex.Split(sqlStatementFile, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+                            var sqlStatementRaw = File.ReadAllText(scriptFile);
+                            var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
                                 .Where(s => !string.IsNullOrWhiteSpace(s))
                                 .ToList()
 ;
                             sqlStatements.ForEach(sqlStatement =>
                             {
+                                TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
+
                                 var command = connection.CreateCommand();
                                 command.Transaction = transaction;
                                 command.CommandType = CommandType.Text;
                                 command.CommandText = sqlStatement;
                                 command.CommandTimeout = 0;
                                 command.ExecuteNonQuery();
-
-                                TraceService.Info($"");
                             });
+
+                            TraceService.Info($"Executed script file {scriptFile}.");
                         });
 
                         transaction.Commit();
@@ -270,27 +272,31 @@ namespace ArdiLabs.Yuniql
                         sqlScriptFiles.ForEach(scriptFile =>
                         {
                             //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
-                            var sqlStatementFile = File.ReadAllText(scriptFile);
-                            var sqlStatements = Regex.Split(sqlStatementFile, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+                            var sqlStatementRaw = File.ReadAllText(scriptFile);
+                            var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
                                 .Where(s => !string.IsNullOrWhiteSpace(s))
                                 .ToList()
 ;
                             sqlStatements.ForEach(sqlStatement =>
                             {
+                                TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
+
                                 var command = connection.CreateCommand();
                                 command.Transaction = transaction;
                                 command.CommandType = CommandType.Text;
                                 command.CommandText = sqlStatement;
                                 command.CommandTimeout = 0;
                                 command.ExecuteNonQuery();
-
-                                TraceService.Info($"Executed script file {scriptFile}.");
                             });
+
+                            TraceService.Info($"Executed script file {scriptFile}.");
                         });
 
                         //increment db version
                         var versionName = new DirectoryInfo(versionFolder).Name;
-                        var incrementVersionSqlStatement = $"INSERT INTO dbo.__DbVersion (Version) VALUES ('{versionName.Substring(versionName.IndexOf("-") + 1)}')";
+                        var incrementVersionSqlStatement = $"INSERT INTO dbo.__YuniqlDbVersion (Version) VALUES ('{versionName.Substring(versionName.IndexOf("-") + 1)}')";
+                        TraceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
+
                         var incrementVersioncommand = connection.CreateCommand();
                         incrementVersioncommand.Transaction = transaction;
                         incrementVersioncommand.CommandType = CommandType.Text;

@@ -9,37 +9,48 @@ namespace ArdiLabs.Yuniql
 {
     public class Program
     {
-
-        //yunisql init
-        //yunisql init -p c:\temp\demo | --path c:\temp\demo
-        //yunisql vnext
-        //yunisql vnext -p c:\temp\demo | --path c:\temp\demo
-        //yunisql vnext -M | --major
-        //yunisql vnext -m | --minor
-        //yunisql vnext -f "Table1.sql"
-        //yunisql run
-        //yunisql run -a true | --auto-create-db true
-        //yunisql run -p c:\temp\demo | --path c:\temp\demo
-        //yunisql run -t v1.05 | --target-version v1.05
-        //yunisql run -c "<connectiong-string>"
-        //yunisql -v | --version
-        //yunisql -h | --help
+        //yuniql init
+        //yuniql init -p c:\temp\demo | --path c:\temp\demo
+        //yuniql vnext
+        //yuniql vnext -p c:\temp\demo | --path c:\temp\demo
+        //yuniql vnext -M | --major
+        //yuniql vnext -m | --minor
+        //yuniql vnext -f "Table1.sql"
+        //yuniql run
+        //yuniql run -a true | --auto-create-db true
+        //yuniql run -p c:\temp\demo | --path c:\temp\demo
+        //yuniql run -t v1.05 | --target-version v1.05
+        //yuniql run -c "<connectiong-string>"
+        //yuniql -v | --version
+        //yuniql -h | --help
+        //yuniql -d | --debug
 
         static void Main(string[] args)
         {
             TraceService.Info("Assembly.GetExecutingAssembly().Location: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             TraceService.Info("AppContext.BaseDirectory: " + AppContext.BaseDirectory);
-            TraceService.Info("AppDomain.CurrentDomain.BaseDirectory: "+ AppDomain.CurrentDomain.BaseDirectory);
+            TraceService.Info("AppDomain.CurrentDomain.BaseDirectory: " + AppDomain.CurrentDomain.BaseDirectory);
             TraceService.Info("Environment.CurrentDirectory: " + Environment.CurrentDirectory);
             TraceService.Info("Directory.GetCurrentDirectory: " + Directory.GetCurrentDirectory());
-            TraceService.Info("Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath);: "+ Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath));
+            TraceService.Info("Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath);: " + Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath));
             TraceService.Info("Path.GetDirectoryName(Assembly.GetEntryAssembly().Location): " + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
             CommandLine.Parser.Default.ParseArguments<InitOption, RunOption, NextVersionOption>(args)
               .MapResult(
-                (InitOption opts) => RunInitOption(opts),
-                (RunOption opts) => RunMigration(opts),
-                (NextVersionOption opts) => IncrementVersion(opts),
+                (InitOption opts) =>
+                {
+                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    return RunInitOption(opts);
+                },
+                (RunOption opts) =>
+                {
+                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    return RunMigration(opts);
+                },
+                (NextVersionOption opts) => {
+                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    return IncrementVersion(opts);
+                },
                 errs => 1);
         }
 
@@ -49,7 +60,7 @@ namespace ArdiLabs.Yuniql
 
             if (string.IsNullOrEmpty(opts.Path))
             {
-                var workingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                var workingPath = Environment.CurrentDirectory;
                 versionService.Init(workingPath);
                 TraceService.Info($"Initialized {opts.Path}.");
             }
@@ -66,7 +77,7 @@ namespace ArdiLabs.Yuniql
         {
             if (string.IsNullOrEmpty(opts.Path))
             {
-                var workingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                var workingPath = Environment.CurrentDirectory;
                 opts.Path = workingPath;
             }
 
@@ -89,7 +100,7 @@ namespace ArdiLabs.Yuniql
         {
             if (string.IsNullOrEmpty(opts.Path))
             {
-                var workingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                var workingPath = Environment.CurrentDirectory;
                 opts.Path = workingPath;
             }
 

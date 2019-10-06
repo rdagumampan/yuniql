@@ -8,6 +8,8 @@ namespace ArdiLabs.Yuniql
     {
         public static void ExecuteNonQuery(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
+            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
                 connection.Open();
@@ -21,8 +23,9 @@ namespace ArdiLabs.Yuniql
 
         public static int ExecuteScalar(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
-            var result = 0;
+            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
+            var result = 0;
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
                 connection.Open();
@@ -38,8 +41,9 @@ namespace ArdiLabs.Yuniql
 
         public static bool QuerySingleBool(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
-            bool result;
+            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
+            bool result;
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
                 connection.Open();
@@ -59,8 +63,9 @@ namespace ArdiLabs.Yuniql
 
         public static string QuerySingleString(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
-            string result;
+            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
+            string result;
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
                 connection.Open();

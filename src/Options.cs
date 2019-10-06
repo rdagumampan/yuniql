@@ -12,6 +12,10 @@ namespace ArdiLabs.Yuniql
         //yunisql init -p c:\temp\demo | --path c:\temp\demo
         [Option('p', "path", Required = false, HelpText = "Path to initialize")]
         public string Path { get; set; }
+
+        //yunisql init -d | --debug
+        [Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts")]
+        public bool Debug { get; set; }
     }
 
     //yunisql vnext
@@ -33,6 +37,10 @@ namespace ArdiLabs.Yuniql
         //yunisql vnext -f "Table1.sql"
         [Option('f', "file", Required = false, HelpText = "Increment version and create empty .sql file")]
         public string File { get; set; }
+
+        //yunisql vnext -d | --debug
+        [Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts")]
+        public bool Debug { get; set; }
     }
 
     //yunisql run
@@ -54,5 +62,9 @@ namespace ArdiLabs.Yuniql
         //yunisql run -a true | --auto-create-db true
         [Option('a', "auto-create-db", Required = false, HelpText = "Create database automatically")]
         public bool AutoCreateDatabase { get; set; }
+
+        //yunisql run -d | --debug
+        [Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts")]
+        public bool Debug { get; set; }
     }
 }

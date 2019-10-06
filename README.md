@@ -17,6 +17,7 @@ yuniql run -t v1.05 | --target-version v1.05
 yuniql run -c "<connectiong-string>"
 yuniql -v | --version
 yuniql -h | --help
+yuniql -d | --debug
 ```
 
 ### Run from windows (self-contained/.exe/win-x64)
