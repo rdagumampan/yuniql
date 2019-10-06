@@ -29,3 +29,7 @@ src/Yuniql.csproj.user
 src/Properties/PublishProfiles/FolderProfile.pubxml.user
 src/Properties/launchSettings.json
 src/Properties/PublishProfiles/FolderProfile.pubxml
+/src/bin
+/src/obj
+/src/.vs/Yuniql
+/.vs

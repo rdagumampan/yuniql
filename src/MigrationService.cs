@@ -11,7 +11,7 @@ namespace ArdiLabs.Yuniql
 {
     public class MigrationService
     {
-        public void Run(string workingPath, string connectionString, bool autoCreateDatabase = false, string targetVersion = null)
+        public void Run(string workingPath, string connectionString, string targetVersion, bool autoCreateDatabase)
         {
             var targetSqlDbConnectionString = new SqlConnectionStringBuilder(connectionString);
 
@@ -23,6 +23,7 @@ namespace ArdiLabs.Yuniql
             if (!targetDatabaseExists && autoCreateDatabase)
             {
                 CreateDatabase(masterSqlDbConnectionString, targetSqlDbConnectionString.InitialCatalog);
+                TraceService.Info($"Created database {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
             }
 
             //check database has been pre-configured to support migration
@@ -30,47 +31,31 @@ namespace ArdiLabs.Yuniql
             if (!targetDatabaseConfigured)
             {
                 ConfigureDatabase(targetSqlDbConnectionString);
+                TraceService.Info($"Configured migration support of {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
             }
 
-            //runs all scripts in the _pre folder
-
-            //runs all scripts int the version folders
-            var currentVersion = GetCurrentVersion(targetSqlDbConnectionString);
-            var dbVersions = GetAllDbVersions(targetSqlDbConnectionString)
-                    .Select(dv => dv.Version)
-                    .OrderBy(v => v);
-
-            //excludes all versions already executed
-            var versionFolders = Directory.GetDirectories(workingPath, "v*.*")
-                .Where(v => !dbVersions.Contains(new DirectoryInfo(v).Name))
-                .ToList();
-
-            //exclude all versions greater than the target version
-            if (!string.IsNullOrEmpty(targetVersion))
+            //checks if target database runs the latest version
+            if (!IsTargetDatabaseLatest(targetSqlDbConnectionString, targetVersion))
             {
-                versionFolders.RemoveAll(v =>
-                {
-                    var cv = new LocalVersion(new DirectoryInfo(v).Name);
-                    var tv = new LocalVersion(targetVersion);
+                //runs all scripts in the _pre folder
+                RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_pre"));
+                TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
-                    return string.Compare(cv.SemVersion, tv.SemVersion) == 1;
-                });
-            }
+                //runs all scripts int the vxx.xx folders
+                RunMigrationScripts(targetSqlDbConnectionString, workingPath, targetVersion);
 
-            if (versionFolders.Any())
-            {
+                //runs all scripts in the _draft folder
+                RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_draft"));
+                TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
-                versionFolders.Sort();
-                versionFolders.ForEach(versionFolder =>
-                {
-                    RunMigrationStep(targetSqlDbConnectionString, versionFolder);
-                });
+                //runs all scripts in the _post folder
+                RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_post"));
+                TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
             }
             else
             {
-                Console.WriteLine("DB runs the latest version already.");
+                TraceService.Info($"Target database is updated. No changes made at {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
             }
-
         }
 
         public bool IsTargetDatabaseExists(SqlConnectionStringBuilder sqlConnectionString, string targetDatabaseName)
@@ -79,6 +64,15 @@ namespace ArdiLabs.Yuniql
             var result = DbHelper.QuerySingleBool(sqlConnectionString, sqlStatement);
 
             return result;
+        }
+
+        public bool IsTargetDatabaseLatest(SqlConnectionStringBuilder sqlConnectionString, string targetVersion)
+        {
+            var cv = new LocalVersion(GetCurrentVersion(sqlConnectionString));
+            var tv = new LocalVersion(targetVersion);
+
+            return string.Compare(cv.SemVersion, tv.SemVersion) == 1 || //db has more updated than local version
+                string.Compare(cv.SemVersion, tv.SemVersion) == 0;      //db has the same version as local version
         }
 
         public void CreateDatabase(SqlConnectionStringBuilder sqlConnectionString, string targetDatabaseName)
@@ -177,7 +171,91 @@ namespace ArdiLabs.Yuniql
             return result;
         }
 
-        public void RunMigrationStep(SqlConnectionStringBuilder sqlConnectionString, string versionFolder)
+        private void RunScripts(SqlConnectionStringBuilder sqlConnectionString, string versionFolder)
+        {
+            var sqlScriptFiles = Directory.GetFiles(versionFolder, "*.sql").ToList();
+
+            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        //execute all script files in the target folder
+                        sqlScriptFiles.ForEach(scriptFile =>
+                        {
+                            //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
+                            var sqlStatementFile = File.ReadAllText(scriptFile);
+                            var sqlStatements = Regex.Split(sqlStatementFile, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+                                .Where(s => !string.IsNullOrWhiteSpace(s))
+                                .ToList()
+;
+                            sqlStatements.ForEach(sqlStatement =>
+                            {
+                                var command = connection.CreateCommand();
+                                command.Transaction = transaction;
+                                command.CommandType = CommandType.Text;
+                                command.CommandText = sqlStatement;
+                                command.CommandTimeout = 0;
+                                command.ExecuteNonQuery();
+
+                                TraceService.Info($"");
+                            });
+                        });
+
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private void RunMigrationScripts(SqlConnectionStringBuilder targetSqlDbConnectionString, string workingPath, string targetVersion)
+        {
+            var currentVersion = GetCurrentVersion(targetSqlDbConnectionString);
+            var dbVersions = GetAllDbVersions(targetSqlDbConnectionString)
+                    .Select(dv => dv.Version)
+                    .OrderBy(v => v);
+
+            //excludes all versions already executed
+            var versionFolders = Directory.GetDirectories(workingPath, "v*.*")
+                .Where(v => !dbVersions.Contains(new DirectoryInfo(v).Name))
+                .ToList();
+
+            //exclude all versions greater than the target version
+            if (!string.IsNullOrEmpty(targetVersion))
+            {
+                versionFolders.RemoveAll(v =>
+                {
+                    var cv = new LocalVersion(new DirectoryInfo(v).Name);
+                    var tv = new LocalVersion(targetVersion);
+
+                    return string.Compare(cv.SemVersion, tv.SemVersion) == 1;
+                });
+            }
+
+            //execute all sql scripts in the version folders
+            if (versionFolders.Any())
+            {
+                versionFolders.Sort();
+                versionFolders.ForEach(versionFolder =>
+                {
+                    RunMigrationScriptsInternal(targetSqlDbConnectionString, versionFolder);
+                    TraceService.Info($"Executed script files on {versionFolder}");
+                });
+            }
+            else
+            {
+                TraceService.Info($"Target database is updated. No migration step executed at {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
+            }
+        }
+
+        private void RunMigrationScriptsInternal(SqlConnectionStringBuilder sqlConnectionString, string versionFolder)
         {
             var sqlScriptFiles = Directory.GetFiles(versionFolder, "*.sql").ToList();
 
@@ -205,6 +283,8 @@ namespace ArdiLabs.Yuniql
                                 command.CommandText = sqlStatement;
                                 command.CommandTimeout = 0;
                                 command.ExecuteNonQuery();
+
+                                TraceService.Info($"Executed script file {scriptFile}.");
                             });
                         });
 

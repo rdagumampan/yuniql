@@ -9,63 +9,32 @@ namespace ArdiLabs.Yuniql
 {
     public class Program
     {
-        //https://github.com/commandlineparser/commandline
-        //https://github.com/dotnet/command-line-api
 
         //yunisql init
-        [Verb("init", HelpText = "Initialize migration structure to target folder")]
-        public class InitOption
-        {
-            //yunisql init -p c:\temp\demo | --path c:\temp\demo
-            [Option('p', "path", Required = false, HelpText = "Path to initialize")]
-            public string Path { get; set; }
-        }
-
+        //yunisql init -p c:\temp\demo | --path c:\temp\demo
         //yunisql vnext
-        [Verb("vnext", HelpText = "Increment to next version")]
-        public class NextVersionOption
-        {
-            [Option('p', "path", Required = false, HelpText = "Path to increment version from")]
-            public string Path { get; set; }
-
-            //yunisql vnext -M | --major
-            [Option('M', "major", Required = false, HelpText = "Increment major version")]
-            public bool IncrementMajorVersion { get; set; }
-
-            //yunisql vnext -m | --minor
-            [Option('m', "minor", Required = false, HelpText = "Increment minor version")]
-            public bool IncrementMinorVersion { get; set; }
-
-            //yunisql vnext -f "Table1.sql"
-            [Option('f', "file", Required = false, HelpText = "Increment version and create empty .sql file")]
-            public string File { get; set; }
-        }
-
+        //yunisql vnext -p c:\temp\demo | --path c:\temp\demo
+        //yunisql vnext -M | --major
+        //yunisql vnext -m | --minor
+        //yunisql vnext -f "Table1.sql"
         //yunisql run
-        [Verb("run", HelpText = "Runs migration steps")]
-        public class RunOption
-        {
-            //yunisql run -p c:\temp\demo | --path c:\temp\demo
-            [Option('p', "path", Required = false, HelpText = "Path to run migration from")]
-            public string Path { get; set; }
-
-            //yunisql run -t v1.05 | --target-version v1.05
-            [Option('t', "target-version", Required = false, HelpText = "Target version to migrate into and skipping versions greater")]
-            public string TargetVersion { get; set; }
-
-            //yunisql run -c "<connectiong-string>"
-            [Option('c', "connection-string", Required = false, HelpText = "Connection string to target sql server instance", Default = "Data Source=.;Integrated Security=SSPI;Initial Catalog=YunisqlDemoDB")]
-            public string ConnectionString { get; set; }
-
-            [Option('a', "auto-create-db", Required = false, HelpText = "Create database automatically")]
-            public bool AutoCreateDatabase { get; set; }
-        }
-
+        //yunisql run -a true | --auto-create-db true
+        //yunisql run -p c:\temp\demo | --path c:\temp\demo
+        //yunisql run -t v1.05 | --target-version v1.05
+        //yunisql run -c "<connectiong-string>"
         //yunisql -v | --version
         //yunisql -h | --help
 
         static void Main(string[] args)
         {
+            TraceService.Info("Assembly.GetExecutingAssembly().Location: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            TraceService.Info("AppContext.BaseDirectory: " + AppContext.BaseDirectory);
+            TraceService.Info("AppDomain.CurrentDomain.BaseDirectory: "+ AppDomain.CurrentDomain.BaseDirectory);
+            TraceService.Info("Environment.CurrentDirectory: " + Environment.CurrentDirectory);
+            TraceService.Info("Directory.GetCurrentDirectory: " + Directory.GetCurrentDirectory());
+            TraceService.Info("Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath);: "+ Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath));
+            TraceService.Info("Path.GetDirectoryName(Assembly.GetEntryAssembly().Location): " + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+
             CommandLine.Parser.Default.ParseArguments<InitOption, RunOption, NextVersionOption>(args)
               .MapResult(
                 (InitOption opts) => RunInitOption(opts),
@@ -82,10 +51,12 @@ namespace ArdiLabs.Yuniql
             {
                 var workingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
                 versionService.Init(workingPath);
+                TraceService.Info($"Initialized {opts.Path}.");
             }
             else
             {
                 versionService.Init(opts.Path);
+                TraceService.Info($"Initialized {opts.Path}.");
             }
 
             return 0;
@@ -102,10 +73,13 @@ namespace ArdiLabs.Yuniql
             var versionService = new LocalVersionService();
             if (opts.IncrementMajorVersion)
             {
-                versionService.IncrementMajorVersion(opts.Path, opts.File);
-            } else if (opts.IncrementMinorVersion)
+                var nextVersion = versionService.IncrementMajorVersion(opts.Path, opts.File);
+                TraceService.Info($"New major version created {nextVersion} on {opts.Path}.");
+            }
+            else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
             {
-                versionService.IncrementMinorVersion(opts.Path, opts.File);
+                var nextVersion = versionService.IncrementMinorVersion(opts.Path, opts.File);
+                TraceService.Info($"New minor version created {nextVersion} on {opts.Path}.");
             }
 
             return 0;
@@ -119,8 +93,19 @@ namespace ArdiLabs.Yuniql
                 opts.Path = workingPath;
             }
 
+            TraceService.Info($"Started migration from {opts.Path}.");
+
+            //if no target version specified, capture the latest from local folder structure
+            if (string.IsNullOrEmpty(opts.TargetVersion))
+            {
+                var localVersionService = new LocalVersionService();
+                opts.TargetVersion = localVersionService.GetLatestVersion(opts.Path);
+                TraceService.Info($"No explicit target version requested. Will use latest available locally {opts.TargetVersion} on {opts.Path}.");
+            }
+
             var migrationService = new MigrationService();
-            migrationService.Run(opts.Path, opts.ConnectionString, opts.AutoCreateDatabase, opts.TargetVersion);
+            migrationService.Run(opts.Path, opts.ConnectionString, opts.TargetVersion, opts.AutoCreateDatabase);
+            TraceService.Info($"Completed migration from {opts.Path}.");
 
             return 0;
         }

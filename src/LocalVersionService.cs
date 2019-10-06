@@ -13,42 +13,49 @@ namespace ArdiLabs.Yuniql
             if (!Directory.Exists(draftFolderLocation))
             {
                 Directory.CreateDirectory(draftFolderLocation);
+                TraceService.Info($"Created script directory {draftFolderLocation}");
             }
 
             string initFolderLocation = Path.Combine(workingPath, "_init");
             if (!Directory.Exists(initFolderLocation))
             {
                 Directory.CreateDirectory(initFolderLocation);
+                TraceService.Info($"Created script directory {initFolderLocation}");
             }
 
             string preFolderLocation = Path.Combine(workingPath, "_pre");
             if (!Directory.Exists(preFolderLocation))
             {
                 Directory.CreateDirectory(preFolderLocation);
+                TraceService.Info($"Created script directory {preFolderLocation}");
             }
 
             string postFolderLocation = Path.Combine(workingPath, "_post");
             if (!Directory.Exists(postFolderLocation))
             {
                 Directory.CreateDirectory(postFolderLocation);
+                TraceService.Info($"Created script directory {postFolderLocation}");
             }
 
             string defaultVersion = Path.Combine(workingPath, "v0.00");
             if (!Directory.Exists(defaultVersion))
             {
                 Directory.CreateDirectory(defaultVersion);
+                TraceService.Info($"Created script directory {defaultVersion}");
             }
 
             var readMeFile = Path.Combine(workingPath, "README.md");
-            if (!Directory.Exists(readMeFile))
+            if (!File.Exists(readMeFile))
             {
                 File.CreateText(readMeFile);
+                TraceService.Info($"Created file {readMeFile}");
             }
 
             var dockerFile = Path.Combine(workingPath, "Dockerfile");
             if (!File.Exists(dockerFile))
             {
                 File.CreateText(dockerFile);
+                TraceService.Info($"Created file {dockerFile}");
             }
         }
 
@@ -75,7 +82,12 @@ namespace ArdiLabs.Yuniql
             return localVersions;
         }
 
-        public void IncrementMajorVersion(string workingPath, string sqlFileName)
+        public string GetLatestVersion(string workingPath)
+        {
+            return GetLocalVersions(workingPath).First().SemVersion;
+        }
+
+        public string IncrementMajorVersion(string workingPath, string sqlFileName)
         {
             var localVersions = GetLocalVersions(workingPath);
 
@@ -84,15 +96,19 @@ namespace ArdiLabs.Yuniql
 
             string nextVersionPath = Path.Combine(workingPath, nextMajorVersion.SemVersion);
             Directory.CreateDirectory(nextVersionPath);
+            TraceService.Info($"Created script directory {nextVersionPath}");
 
             if (!string.IsNullOrEmpty(sqlFileName))
             {
                 var sqlFilePath = Path.Combine(nextVersionPath, sqlFileName);
                 CreateTemplateSqlFile(sqlFilePath);
+                TraceService.Info($"Created file {sqlFilePath}");
             }
+
+            return nextMajorVersion.SemVersion;
         }
 
-        public void IncrementMinorVersion(string workingPath, string sqlFileName)
+        public string IncrementMinorVersion(string workingPath, string sqlFileName)
         {
             var localVersions = GetLocalVersions(workingPath);
 
@@ -101,12 +117,16 @@ namespace ArdiLabs.Yuniql
 
             string nextVersionPath = Path.Combine(workingPath, nextMinorVersion.SemVersion);
             Directory.CreateDirectory(nextVersionPath);
+            TraceService.Info($"Created script directory {nextVersionPath}");
 
             if (!string.IsNullOrEmpty(sqlFileName))
             {
                 var sqlFilePath = Path.Combine(nextVersionPath, sqlFileName);
                 CreateTemplateSqlFile(sqlFilePath);
+                TraceService.Info($"Created file {sqlFilePath}");
             }
+
+            return nextMinorVersion.SemVersion;
         }
 
         private static void CreateTemplateSqlFile(string sqlFilePath)

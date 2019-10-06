@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <StartupObject>ArdiLabs.Yuniql.Program</StartupObject>
     <PackageId>yuniql</PackageId>
     <Authors>yuniql</Authors>
@@ -10,6 +10,7 @@
     <Company>Ardi Labs</Company>
     <Version>0.1.0</Version>
     <AssemblyName>yuniql</AssemblyName>
+    <RootNamespace>ArdiLabs.Yuniql</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
