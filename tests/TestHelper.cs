@@ -7,13 +7,16 @@ namespace Yuniql.Tests
     {
         public static string GetConnectionString(string databaseName)
         {
+            //use this when running against local instance of sql server with integrated security
             //return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
+
+            //use this when running against sql server container with published port 1401
             return $"Server=localhost,1401;Database={databaseName};User Id=SA;Password=P@ssw0rd!";
         }
 
         public static string GetWorkingPath()
         {
-            return @$"c:\temp\yuniqltests\yuniqltests_{Guid.NewGuid().ToString().Substring(0, 4)}";
+            return Path.Combine(Environment.CurrentDirectory, @$"yuniqltests_{Guid.NewGuid().ToString().Substring(0, 4)}");
         }
 
         public static void CleanUp(string workingPath)
