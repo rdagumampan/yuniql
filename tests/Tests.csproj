@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Yuniql.csproj" />
+    <ProjectReference Include="..\src\Yuniql.csproj" />
   </ItemGroup>
 
 </Project>

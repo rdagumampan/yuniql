@@ -35,3 +35,5 @@ src/Properties/PublishProfiles/FolderProfile.pubxml
 /.vs
 /tests/Tests/bin/Debug/netcoreapp3.0
 /tests/Tests/obj
+/tests/obj
+/tests/bin/Debug/netcoreapp3.0
