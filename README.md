@@ -65,7 +65,7 @@ Connection strings:
 docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1401:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 
 docker build -t rdagumampan/yuniql-tests .
-docker run -t -d rdagumampan/yuniql-tests
+docker run -d -i -t rdagumampan/yuniql-tests
 ```
 
 ### todo

@@ -32,6 +32,10 @@ namespace ArdiLabs.Yuniql
             {
                 ConfigureDatabase(targetSqlDbConnectionString);
                 TraceService.Info($"Configured migration support of {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
+
+                //runs all scripts in the _init folder
+                RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_init"));
+                TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
             }
 
             //checks if target database runs the latest version

@@ -23,6 +23,28 @@ namespace Yuniql.Tests
                 Directory.Delete(workingPath, true);
             }
         }
+        public static string CreateScript(string scriptName)
+        {
+            return $@"
+                CREATE PROC [dbo].[{scriptName}]
+                AS
+                    SELECT 1;
+                GO
+                ";
+        }
+
+        public static string CreateAssetScript(string scriptName)
+        {
+            return $"SELECT ISNULL(OBJECT_ID('[dbo].[{scriptName}]'), 0) AS ObjectID";
+        }
+
+        public static void CreateScriptFile(string sqlFilePath, string sqlStatement)
+        {
+            using (var sw = File.CreateText(sqlFilePath))
+            {
+                sw.WriteLine(sqlStatement);
+            }
+        }
 
     }
 }

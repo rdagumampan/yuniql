@@ -1,6 +1,6 @@
 ﻿namespace ArdiLabs.Yuniql
 {
-    public class DbVersionArtifact
+    public class DbVersionData
     {
         public int Id { get; set; }
         public string Version { get; set; }
