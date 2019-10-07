@@ -56,8 +56,16 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 ```
 
 ### Deploy SQL Server on Docker container and run a yuniql migration
+
+Connection strings:
+- Local instance: Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB
+- Docker container: Server=localhost,1401;Database=YuniqlDemoDB;User Id=SA;Password=P@ssw0rd!;
+
 ```console
-docker build -t rdagumampan/yuniqldemo .s
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1401:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+
+docker build -t rdagumampan/yuniql-tests .
+docker run -t -d rdagumampan/yuniql-tests
 ```
 
 ### todo

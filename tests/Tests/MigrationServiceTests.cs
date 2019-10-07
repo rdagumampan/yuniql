@@ -58,5 +58,47 @@ namespace Yuniql.Tests
             //assert
             migrationService.IsTargetDatabaseExists(new SqlConnectionStringBuilder(connectionString), databaseName);
         }
+
+        [TestMethod]
+        public void Test_Run_Database_Already_Updated()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        [TestMethod]
+        public void Test_Run_Database_Init_Scripts_Executed()
+        {
+            throw new System.NotImplementedException();
+        }
+        public void Test_Run_Database_Pre_Scripts_Executed()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Test_Run_Database_Draft_Scripts_Executed()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Test_Run_Database_Version_Scripts_Executed()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Test_Run_Database_Executed_All_Versions()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Test_Run_Database_Skipped_Versions_Lower_Or_Same_As_Latest()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Test_Run_Database_Skipped_Versions_Higher_Than_Target_Version()
+        {
+            throw new System.NotImplementedException();
+        }
+
     }
 }

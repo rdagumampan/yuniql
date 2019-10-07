@@ -56,7 +56,7 @@ namespace ArdiLabs.Yuniql
         public string TargetVersion { get; set; }
 
         //yunisql run -c "<connectiong-string>"
-        [Option('c', "connection-string", Required = false, HelpText = "Connection string to target sql server instance", Default = "Data Source=.;Integrated Security=SSPI;Initial Catalog=YunisqlDemoDB")]
+        [Option('c', "connection-string", Required = false, HelpText = "Connection string to target sql server instance", Default = "Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB")]
         public string ConnectionString { get; set; }
 
         //yunisql run -a true | --auto-create-db true

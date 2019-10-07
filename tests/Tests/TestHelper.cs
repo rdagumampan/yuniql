@@ -7,7 +7,8 @@ namespace Yuniql.Tests
     {
         public static string GetConnectionString(string databaseName)
         {
-            return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
+            //return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
+            return $"Server=localhost,1401;Database={databaseName};User Id=SA;Password=P@ssw0rd!";
         }
 
         public static string GetWorkingPath()
