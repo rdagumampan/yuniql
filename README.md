@@ -1,14 +1,14 @@
 
 # yuniql - straight forward sql server database migration
 
-### Motivation
+#### Motivation
 - ridiculously simple! you just need to know sql
 - true cross-platform, runs on windows and linux
 - zero dependencies, self-contained app, no jvm!
 - devops ready, use your own version control and pipelines framework
 - open source, MIT license
 
-### Supported commands
+#### Supported commands
 ```console
 yuniql init
 yuniql init -p c:\temp\demo | --path c:\temp\demo
@@ -27,7 +27,7 @@ yuniql -h | --help
 yuniql -d | --debug
 ```
 
-### Run from windows (self-contained/.exe/win-x64)
+#### Run from windows (self-contained/.exe/win-x64)
 ```console
 yuniql init
 yuniql vnext
@@ -36,7 +36,7 @@ yuniql vnext -a
 yuniql run -a
 ```
 
-### Run from windows (dotnet/.netcore 3.0)
+#### Run from windows (dotnet/.netcore 3.0)
 ```console
 dotnet "yuniql.dll" "init" -p "c:\temp\demo"
 dotnet "yuniql.dll" "vnext" -p "c:\temp\demo"
@@ -45,17 +45,17 @@ dotnet "yuniql.dll" "vnext" -m -p "c:\temp\demo"
 dotnet "yuniql.dll" "run" -p "c:\temp\demo" -a
 ```
 
-### Run from linux
+#### Run from linux
 ```console
 dotnet "yuniql.dll" "run" -p "c:\temp\demo" -a
 ```
 
-### Publish as self-contained application (.exe)
+#### Publish as self-contained application (.exe)
 ```console
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 ```
 
-### Deploy SQL Server on Docker container and run a yuniql migration
+#### Deploy SQL Server on Docker container and run a yuniql migration
 
 Connection strings:
 - Local instance: Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB
@@ -68,7 +68,7 @@ docker build -t rdagumampan/yuniql-tests .
 docker run -d -i -t rdagumampan/yuniql-tests
 ```
 
-### todo
+#### todo
 - automated tests
 - integrate with `dotnet tool` such as `dotnet tool install -g yuniql`
 - package as nuget that app can run during startup
@@ -80,14 +80,21 @@ docker run -d -i -t rdagumampan/yuniql-tests
 - add artifact base64 of each version
 - exec subfolders in version folder
 
-### Getting started
+#### Getting started
+1. Start from new database TBA
+2. Start with an existing database TBA
+3. Migrate from another tool TBA
 
-### How to get help
+#### How to get help
+Read the documentation and how-to guides. You may also get in touch via:
+- Submit an [issue](https://github.com/rdagumampan/yuniql/issues/new) on GitHub
+- Talk to us on [Gitter chat](https://gitter.im/yuniql/community)
+- Tag [#yuniql](https://twitter.com/) on Twitter
 
-## Contributing
+#### Contributing
 Start with submitting an issue request or picking on an issue for PR.
 
-## License
-MIT
+#### License
+TBA
 
 
