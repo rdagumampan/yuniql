@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using CommandLine;
 
 namespace ArdiLabs.Yuniql
@@ -35,7 +36,7 @@ namespace ArdiLabs.Yuniql
             TraceService.Debug("Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath);: " + Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath));
             TraceService.Debug("Path.GetDirectoryName(Assembly.GetEntryAssembly().Location): " + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
-            CommandLine.Parser.Default.ParseArguments<InitOption, RunOption, NextVersionOption>(args)
+            CommandLine.Parser.Default.ParseArguments<InitOption, RunOption, NextVersionOption, InfoOption>(args)
               .MapResult(
                 (InitOption opts) =>
                 {
@@ -50,6 +51,10 @@ namespace ArdiLabs.Yuniql
                 (NextVersionOption opts) => {
                     TraceSettings.Instance.IsDebugEnabled = opts.Debug;
                     return IncrementVersion(opts);
+                },
+                (InfoOption opts) => {
+                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    return RunInfoOption(opts);
                 },
                 errs => 1);
         }
@@ -139,6 +144,29 @@ namespace ArdiLabs.Yuniql
             catch (Exception ex)
             {
                 TraceService.Error($"Failed to execute run function. {Environment.NewLine}{ex.ToString()}");
+                throw;
+            }
+
+            return 0;
+        }
+
+        private static object RunInfoOption(InfoOption opts)
+        {
+            try
+            {
+                var migrationService = new MigrationService();
+                var versions = migrationService.GetAllDbVersions(new SqlConnectionStringBuilder(opts.ConnectionString));
+                var results = new StringBuilder();
+                results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");
+                versions.ForEach(v =>
+                {
+                    results.AppendLine($"{v.Version}\t\t{v.Created.ToString("o")}\t{v.CreatedBy}");
+                });
+                Console.WriteLine(results.ToString());
+            }
+            catch (Exception ex)
+            {
+                TraceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
                 throw;
             }
 

@@ -15,7 +15,7 @@ namespace ArdiLabs.Yuniql
         {
             var targetSqlDbConnectionString = new SqlConnectionStringBuilder(connectionString);
 
-            //check if database exists and auto-create if required
+            //check if database exists and auto-create when its not
             var masterSqlDbConnectionString = new SqlConnectionStringBuilder(connectionString);
             masterSqlDbConnectionString.InitialCatalog = "master";
 
@@ -26,7 +26,7 @@ namespace ArdiLabs.Yuniql
                 TraceService.Info($"Created database {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
             }
 
-            //check database has been pre-configured to support migration
+            //check if database has been pre-configured to support migration and setup when its not
             var targetDatabaseConfigured = IsTargetDatabaseConfigured(targetSqlDbConnectionString);
             if (!targetDatabaseConfigured)
             {
@@ -38,21 +38,21 @@ namespace ArdiLabs.Yuniql
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
             }
 
-            //checks if target database runs the latest version
+            //checks if target database already runs the latest version and skips work if it already is
             if (!IsTargetDatabaseLatest(targetSqlDbConnectionString, targetVersion))
             {
-                //runs all scripts in the _pre folder
+                //runs all scripts in the _pre folder and subfolders
                 RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_pre"));
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
-                //runs all scripts int the vxx.xx folders
+                //runs all scripts int the vxx.xx folders and subfolders
                 RunMigrationScripts(targetSqlDbConnectionString, workingPath, targetVersion);
 
-                //runs all scripts in the _draft folder
+                //runs all scripts in the _draft folder and subfolders
                 RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_draft"));
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
-                //runs all scripts in the _post folder
+                //runs all scripts in the _post folder and subfolders
                 RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_post"));
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
             }
@@ -87,7 +87,7 @@ namespace ArdiLabs.Yuniql
 
         private bool IsTargetDatabaseConfigured(SqlConnectionStringBuilder sqlConnectionString)
         {
-            var sqlStatement = $"SELECT ISNULL(OBJECT_ID('dbo.__YuniqlDbVersion'),0) AS ObjectID";
+            var sqlStatement = $"SELECT ISNULL(OBJECT_ID('dbo.__YuniqlDbVersion'),0) IsDatabaseConfigured";
             var result = DbHelper.QuerySingleBool(sqlConnectionString, sqlStatement);
 
             return result;
@@ -134,7 +134,7 @@ namespace ArdiLabs.Yuniql
 
         private string GetCurrentVersion(SqlConnectionStringBuilder sqlConnectionString)
         {
-            var sqlStatement = $"SELECT TOP 1 Version FROM dbo.__YuniqlDbVersion ORDER BY Id DESC";
+            var sqlStatement = $"SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY Id DESC;";
             var result = DbHelper.QuerySingleString(sqlConnectionString, sqlStatement);
 
             return result;
@@ -142,15 +142,15 @@ namespace ArdiLabs.Yuniql
 
         private void IncrementVersion(SqlConnectionStringBuilder sqlConnectionString, string nextVersion)
         {
-            var sqlStatement = $"INSERT INTO dbo.__YuniqlDbVersion (Version) VALUES (N'{nextVersion}')";
+            var sqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES (N'{nextVersion}');";
             DbHelper.ExecuteScalar(sqlConnectionString, sqlStatement);
         }
 
-        private List<DbVersion> GetAllDbVersions(SqlConnectionStringBuilder sqlConnectionString)
+        public List<DbVersion> GetAllDbVersions(SqlConnectionStringBuilder sqlConnectionString)
         {
             var result = new List<DbVersion>();
 
-            var sqlStatement = $"SELECT Id, Version FROM dbo.__YuniqlDbVersion ORDER BY Version ASC;";
+            var sqlStatement = $"SELECT Id, Version, Created, CreatedBy FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
@@ -167,7 +167,9 @@ namespace ArdiLabs.Yuniql
                     var dbVersion = new DbVersion
                     {
                         Id = reader.GetInt32(0),
-                        Version = reader.GetString(1)
+                        Version = reader.GetString(1),
+                        Created= reader.GetDateTime(2),
+                        CreatedBy = reader.GetString(3)
                     };
                     result.Add(dbVersion);
                 }
@@ -298,7 +300,7 @@ namespace ArdiLabs.Yuniql
 
                         //increment db version
                         var versionName = new DirectoryInfo(versionFolder).Name;
-                        var incrementVersionSqlStatement = $"INSERT INTO dbo.__YuniqlDbVersion (Version) VALUES ('{versionName.Substring(versionName.IndexOf("-") + 1)}')";
+                        var incrementVersionSqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{versionName.Substring(versionName.IndexOf("-") + 1)}');";
                         TraceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
 
                         var incrementVersioncommand = connection.CreateCommand();
