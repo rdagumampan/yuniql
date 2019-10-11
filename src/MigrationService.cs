@@ -100,24 +100,25 @@ namespace ArdiLabs.Yuniql
 
                     IF OBJECT_ID('[dbo].[__YuniqlDbVersion]') IS NULL 
                     BEGIN
-                        --creates the table to hold migration history
-                        CREATE TABLE[dbo].[__YuniqlDbVersion](        
-                            [Id][INT] IDENTITY(1, 1) NOT NULL,        
-                            [Version] [NVARCHAR] (10) NOT NULL,
-                            [Created] [DATETIME2] NOT NULL,         
-                            [CreatedBy] [NVARCHAR] (200) NULL,
-                            CONSTRAINT[PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED (
-                                [Id] ASC 
-                            )
-                        ) ON [PRIMARY];
+	                    CREATE TABLE [dbo].[__YuniqlDbVersion](
+		                    [Id] [SMALLINT] IDENTITY(1,1),
+		                    [Version] [NVARCHAR](32) NOT NULL,
+		                    [DateInsertedUtc] [DATETIME] NOT NULL,
+		                    [LastUpdatedUtc] [DATETIME] NOT NULL,
+		                    [LastUserId] [NVARCHAR](128) NOT NULL,
+		                    [Artifact] [VARBINARY](MAX) NULL,
+		                    CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([Id] ASC),
+		                    CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED ([Version] ASC)
+	                    );
 
-                        ALTER TABLE [dbo].[__YuniqlDbVersion] ADD CONSTRAINT[DF___YuniqlDbVersion_Created]  DEFAULT(GETUTCDATE()) FOR [Created];
-                        ALTER TABLE [dbo].[__YuniqlDbVersion] ADD CONSTRAINT[DF___YuniqlDbVersion_CreatedBy]  DEFAULT(SUSER_SNAME()) FOR [CreatedBy];
+	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_DateInsertedUtc]  DEFAULT (GETUTCDATE()) FOR [DateInsertedUtc];
+	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_LastUpdatedUtc]  DEFAULT (GETUTCDATE()) FOR [LastUpdatedUtc];
+	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_LastUserId]  DEFAULT (SUSER_SNAME()) FOR [LastUserId];
 
-                        --creates default version
-                        INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES('v0.00');
-                    END
-                ";
+	                    --creates default version
+	                    INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES('v0.00');
+                    END                
+            ";
 
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -150,7 +151,7 @@ namespace ArdiLabs.Yuniql
         {
             var result = new List<DbVersion>();
 
-            var sqlStatement = $"SELECT Id, Version, Created, CreatedBy FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
+            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
@@ -166,10 +167,10 @@ namespace ArdiLabs.Yuniql
                 {
                     var dbVersion = new DbVersion
                     {
-                        Id = reader.GetInt32(0),
+                        Id = reader.GetInt16(0),
                         Version = reader.GetString(1),
-                        Created= reader.GetDateTime(2),
-                        CreatedBy = reader.GetString(3)
+                        DateInsertedUtc= reader.GetDateTime(2),
+                        LastUserId = reader.GetString(3)
                     };
                     result.Add(dbVersion);
                 }

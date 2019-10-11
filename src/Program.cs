@@ -160,7 +160,7 @@ namespace ArdiLabs.Yuniql
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");
                 versions.ForEach(v =>
                 {
-                    results.AppendLine($"{v.Version}\t\t{v.Created.ToString("o")}\t{v.CreatedBy}");
+                    results.AppendLine($"{v.Version}\t\t{v.DateInsertedUtc.ToString("o")}\t{v.LastUserId}");
                 });
                 Console.WriteLine(results.ToString());
             }

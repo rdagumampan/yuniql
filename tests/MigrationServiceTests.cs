@@ -225,7 +225,7 @@ namespace Yuniql.Tests
         {
             var result = new List<DbVersion>();
 
-            var sqlStatement = $"SELECT Id, Version FROM dbo.__YuniqlDbVersion ORDER BY Version ASC;";
+            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
 
             using (var connection = new SqlConnection(sqlConnectionString))
             {
@@ -240,8 +240,10 @@ namespace Yuniql.Tests
                 {
                     var dbVersion = new DbVersion
                     {
-                        Id = reader.GetInt32(0),
-                        Version = reader.GetString(1)
+                        Id = reader.GetInt16(0),
+                        Version = reader.GetString(1),
+                        DateInsertedUtc = reader.GetDateTime(2),
+                        LastUserId = reader.GetString(3)
                     };
                     result.Add(dbVersion);
                 }
