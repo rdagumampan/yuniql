@@ -169,7 +169,7 @@ namespace ArdiLabs.Yuniql
                     {
                         Id = reader.GetInt16(0),
                         Version = reader.GetString(1),
-                        DateInsertedUtc= reader.GetDateTime(2),
+                        DateInsertedUtc = reader.GetDateTime(2),
                         LastUserId = reader.GetString(3)
                     };
                     result.Add(dbVersion);
@@ -255,7 +255,9 @@ namespace ArdiLabs.Yuniql
                 versionFolders.ForEach(versionFolder =>
                 {
                     RunMigrationScriptsInternal(targetSqlDbConnectionString, versionFolder);
-                    TraceService.Info($"Executed script files on {versionFolder}");
+                    RunCsvImport(targetSqlDbConnectionString, versionFolder);
+
+                    TraceService.Info($"Completed migration to version {versionFolder}");
                 });
             }
             else
@@ -264,9 +266,38 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        private void RunMigrationScriptsInternal(SqlConnectionStringBuilder sqlConnectionString, string versionFolder)
+        private void RunCsvImport(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath) {
+            var csvFiles = Directory.GetFiles(versionFullPath, "*.csv").ToList();
+
+            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        //execute all script files in the version folder
+                        csvFiles.ForEach(csvFile =>
+                        {
+                            var csvImportService = new CsvImportService();
+                            csvImportService.Run(sqlConnectionString, csvFile);
+                            TraceService.Info($"Imported csv file {csvFile}.");
+                        });
+
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private void RunMigrationScriptsInternal(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath)
         {
-            var sqlScriptFiles = Directory.GetFiles(versionFolder, "*.sql").ToList();
+            var sqlScriptFiles = Directory.GetFiles(versionFullPath, "*.sql").ToList();
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
@@ -300,7 +331,7 @@ namespace ArdiLabs.Yuniql
                         });
 
                         //increment db version
-                        var versionName = new DirectoryInfo(versionFolder).Name;
+                        var versionName = new DirectoryInfo(versionFullPath).Name;
                         var incrementVersionSqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{versionName.Substring(versionName.IndexOf("-") + 1)}');";
                         TraceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
 

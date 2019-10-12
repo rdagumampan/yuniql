@@ -79,6 +79,11 @@ docker run -d -i -t rdagumampan/yuniql-tests
 - add driver version on version table
 - add artifact base64 of each version
 - exec subfolders in version folder
+- import csv insider folder
+- yuniql baseline
+- yuniql rebase
+- plugin dlls
+- setup ci/cd
 
 #### Getting started
 1. Start from new database TBA
