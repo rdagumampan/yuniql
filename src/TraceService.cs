@@ -2,9 +2,10 @@
 
 namespace ArdiLabs.Yuniql
 {
-
-    public class TraceService : ITraceService {
-        public static void Info(string message, object payload = null) {
+    public class TraceService : ITraceService
+    {
+        public static void Info(string message, object payload = null)
+        {
             Console.WriteLine($"INF   {DateTime.UtcNow.ToString("o")}   {message}");
         }
 
