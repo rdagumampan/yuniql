@@ -10,6 +10,14 @@
 - devops ready, use your own version control and pipelines framework
 - open source, MIT license
 
+#### Features
+- pure sql migration
+- cross platform releases
+- devops pipelines ready
+- docker container ready
+- bulk import csv files
+- pluggable versions *
+
 #### Supported commands
 ```console
 yuniql init
@@ -75,9 +83,7 @@ docker run -d -i -t rdagumampan/yuniql-tests
 - integrate with `dotnet tool` such as `dotnet tool install -g yuniql`
 - package as nuget that app can run during startup
 - deploy docker container and run migration
-- yuniql --info
 - support placeholders ${ENV.VariableName}, ${VariableleName}
-- bulk load from csv files
 - add driver version on version table
 - add artifact base64 of each version
 - exec subfolders in version folder

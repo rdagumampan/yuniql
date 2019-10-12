@@ -18,9 +18,9 @@ namespace ArdiLabs.Yuniql
             //save the csv data into staging sql table
             BulkCopyInternal(sqlConnectionString, dataTable);
 
-            //validate staging data against destination table schema defs
+            //TODO: validate staging data against destination table schema defs
 
-            //transport staging data into destination table
+            //TODO: transport staging data into destination table
         }
 
         private DataTable ParseCsvFile(string csvFileFullPath)
