@@ -1,7 +1,7 @@
 
 # yuniql - straight forward sql server database migration
 
-![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true)
+![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0)
 [Download latest build](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql.zip)
 
 #### Motivation
