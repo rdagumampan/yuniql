@@ -8,7 +8,7 @@ using CsvHelper;
 //https://github.com/22222/CsvTextFieldParser
 namespace ArdiLabs.Yuniql
 {
-    public class CsvImportService
+    public class CsvImportService : ICsvImportService
     {
         public void Run(SqlConnectionStringBuilder sqlConnectionString, string csvFileFullPath)
         {
@@ -65,7 +65,7 @@ namespace ArdiLabs.Yuniql
                 return new CsvDataReader(csvReader);
             }
         }
-        
+
         private void BulkCopyInternal(SqlConnectionStringBuilder sqlConnectionString, DataTable csvFileDatatTable)
         {
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))

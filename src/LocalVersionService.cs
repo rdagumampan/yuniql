@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ArdiLabs.Yuniql
 {
-    public class LocalVersionService
+    public class LocalVersionService : ILocalVersionService
     {
         public void Init(string workingPath)
         {
@@ -91,7 +91,7 @@ namespace ArdiLabs.Yuniql
         {
             var localVersions = GetLocalVersions(workingPath);
 
-            var nextMajorVersion = new LocalVersion { Major = localVersions.First().Major + 1, Minor = 0};
+            var nextMajorVersion = new LocalVersion { Major = localVersions.First().Major + 1, Minor = 0 };
             localVersions.Add(nextMajorVersion);
 
             string nextVersionPath = Path.Combine(workingPath, nextMajorVersion.SemVersion);

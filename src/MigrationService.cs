@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace ArdiLabs.Yuniql
 {
-    public class MigrationService
+    public class MigrationService : IMigrationService
     {
         public void Run(string workingPath, string connectionString, string targetVersion, bool autoCreateDatabase)
         {
@@ -266,7 +266,8 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        private void RunCsvImport(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath) {
+        private void RunCsvImport(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath)
+        {
             var csvFiles = Directory.GetFiles(versionFullPath, "*.csv").ToList();
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
