@@ -2,6 +2,7 @@
 # yuniql - straight forward sql server database migration
 
 ![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true)
+[Download latest build](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql.zip)
 
 #### Motivation
 - ridiculously simple! you just need to know sql
