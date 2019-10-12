@@ -22,6 +22,7 @@ namespace ArdiLabs.Yuniql
         //yuniql run -p c:\temp\demo | --path c:\temp\demo
         //yuniql run -t v1.05 | --target-version v1.05
         //yuniql run -c "<connectiong-string>"
+        //yuniql info -c "<connectiong-string>" 
         //yuniql -v | --version
         //yuniql -h | --help
         //yuniql -d | --debug

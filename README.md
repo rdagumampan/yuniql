@@ -76,26 +76,22 @@ Connection strings:
 - Docker container: Server=localhost,1401;Database=YuniqlDemoDB;User Id=SA;Password=P@ssw0rd!;
 
 ```console
-docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1401:1433 -d mcr.microsoft.com/mssql/server:2017-latest
-
-docker build -t rdagumampan/yuniql-tests .
-docker run -d -i -t rdagumampan/yuniql-tests
+docker-compose build --no-cache
+docker-compose up -d && docker-compose logs -f
+docker-compose down
 ```
 
 #### todo
-- automated tests
-- integrate with `dotnet tool` such as `dotnet tool install -g yuniql`
-- package as nuget that app can run during startup
-- deploy docker container and run migration
+- `yuniql baseline`
+- `yuniql rebase`
+- `dotnet tool install -g yuniql`
+- `docker compose-up yuniql-integration-tests.yml`
 - support placeholders ${ENV.VariableName}, ${VariableleName}
+- plugin dlls
+- package as nuget that app can run during startup
 - add driver version on version table
 - add artifact base64 of each version
 - exec subfolders in version folder
-- import csv insider folder
-- yuniql baseline
-- yuniql rebase
-- plugin dlls
-- setup ci/cd
 
 #### Getting started
 1. Start from new database TBA

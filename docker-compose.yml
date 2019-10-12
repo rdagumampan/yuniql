@@ -1,1 +1,35 @@
-﻿
+﻿version: '3.1'
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    hostname: 'yuniql-integration-db'
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "P@ssw0rd!"
+      MSSQL_PID: "Express"
+    ports:
+      - "1405:1433"
+    healthcheck:
+      test: [ "CMD", "sqlcmd", "-U", "sa", "-P", "P@ssw0rd!", "-Q", "SELECT 1" ]
+      interval: 1s
+      retries: 20
+    tty: true
+    networks:
+      - integration
+
+  app:
+    image: rdagumampan/yuniql-integration
+    hostname: 'yuniql-integration-app'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      YUNIQL_CONNECTION_STRING: 'Server=yuniql-integration-db,1405;Database=YuniqlTestDB;User Id=sa;Password=P@ssw0rd!'
+    entrypoint: /bin/bash -c "/bin/bash -c \"dotnet test\""
+    tty: true
+    networks:
+      - integration
+
+networks:
+  integration:
+    driver: overlay

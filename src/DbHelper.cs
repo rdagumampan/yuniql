@@ -8,6 +8,7 @@ namespace ArdiLabs.Yuniql
     {
         public static void ExecuteNonQuery(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
+            TraceService.Info(sqlConnectionString.ConnectionString);
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
@@ -23,6 +24,7 @@ namespace ArdiLabs.Yuniql
 
         public static int ExecuteScalar(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
+            TraceService.Info(sqlConnectionString.ConnectionString);
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             var result = 0;
@@ -41,6 +43,7 @@ namespace ArdiLabs.Yuniql
 
         public static bool QuerySingleBool(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
+            TraceService.Info(sqlConnectionString.ConnectionString);
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             bool result;
@@ -63,6 +66,7 @@ namespace ArdiLabs.Yuniql
 
         public static string QuerySingleString(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
+            TraceService.Info(sqlConnectionString.ConnectionString);
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             string result;

@@ -16,7 +16,7 @@ namespace ArdiLabs.Yuniql
             var dataTable = ParseCsvFile(csvFileFullPath);
 
             //save the csv data into staging sql table
-            BulkCopyInternal(sqlConnectionString, dataTable);
+            BulkCopyWithDataTable(sqlConnectionString, dataTable);
 
             //TODO: validate staging data against destination table schema defs
 
@@ -66,7 +66,7 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        private void BulkCopyInternal(SqlConnectionStringBuilder sqlConnectionString, DataTable csvFileDatatTable)
+        private void BulkCopyWithDataTable(SqlConnectionStringBuilder sqlConnectionString, DataTable csvFileDatatTable)
         {
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
@@ -87,7 +87,7 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        private void BulkCopyInternal(SqlConnectionStringBuilder sqlConnectionString, string destinationTableName, IDataReader csvFileDatatTable)
+        private void BulkCopyWithDataReader(SqlConnectionStringBuilder sqlConnectionString, string destinationTableName, IDataReader csvFileDatatTable)
         {
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {

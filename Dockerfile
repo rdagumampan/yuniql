@@ -1,19 +1,18 @@
 ﻿FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-env
 
-#copy local files into app or clone github repo
 WORKDIR /code
-RUN git clone https://github.com/rdagumampan/yuniql.git /code
 
-#build
+#copy local files into app or clone github repo
+COPY ./src ./src/
+COPY ./tests ./tests/
+
+#RUN git clone https://github.com/rdagumampan/yuniql.git /code
+
+#build and run integration tests
 WORKDIR /code/src
 RUN ls
-RUN dotnet restore
-RUN dotnet publish -c release -r linux-x64 /p:publishsinglefile=true /p:publishtrimmed=true -o /app
-
-#FROM mcr.microsoft.com/dotnet/core/runtime:3.0 AS runtime-env
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS runtime-env
-WORKDIR /app
-COPY --from=build-env /app ./
+WORKDIR /code/tests
 RUN ls
 
-ENTRYPOINT ["dotnet", "yuniql"]
+RUN dotnet restore
+RUN dotnet build
