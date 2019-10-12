@@ -14,11 +14,13 @@
 
 #### Features
 - pure sql migration
-- cross platform releases
+- cross platform releases ***
 - devops pipelines ready
 - docker container ready
 - bulk import csv files
-- pluggable versions *
+- pluggable versions ***
+
+*** in progress
 
 #### Supported commands
 ```console
