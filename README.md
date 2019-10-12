@@ -1,6 +1,8 @@
 
 # yuniql - straight forward sql server database migration
 
+![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true)
+
 #### Motivation
 - ridiculously simple! you just need to know sql
 - true cross-platform, runs on windows and linux
