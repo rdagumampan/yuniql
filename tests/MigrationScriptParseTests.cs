@@ -6,6 +6,7 @@ using Shouldly;
 
 namespace Yuniql.Tests
 {
+    [TestCategory("MockedTests")]
     [TestClass]
     public class MigrationScriptParseTests
     {

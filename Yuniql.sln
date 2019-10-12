@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql", "src\Yuniql.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "tests\Tests.csproj", "{BF9FEEAB-DE5A-479B-9673-9DFD107D453B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2EF2EF18-5FCB-4E08-A43F-B2254C7BE9E5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Todo", "Todo", "{2EF2EF18-5FCB-4E08-A43F-B2254C7BE9E5}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
