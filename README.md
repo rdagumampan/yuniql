@@ -1,11 +1,8 @@
 
-# yuniql - straight forward sql server database migration
-![yuniql-logo](yuniql-logo.png)
+# yuniql ![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true) ![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql)](https://gitter.im/yuniql/yuniql) [![Download latest build](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true&passingText=Download%20latest-win-x64)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip)
 
-![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true)
-![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql)
-[![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql)](https://gitter.im/yuniql/yuniql)
-[![Download latest build](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true&passingText=Download%20latest-win-x64)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip)
+straight forward sql server database migration
+<img align="right" src="yuniql-logo.png">
 
 #### Motivation
 
@@ -13,7 +10,7 @@
 - true cross-platform, runs on windows and linux
 - zero dependencies, self-contained app, no jvm!
 - devops ready, use your own version control and pipelines framework
-- open source, MIT license
+- open source, TBA license
 
 #### Features
 - pure sql migration
@@ -83,18 +80,6 @@ docker-compose build --no-cache
 docker-compose up -d && docker-compose logs -f
 docker-compose down
 ```
-
-#### todo
-- `yuniql baseline`
-- `yuniql rebase`
-- `dotnet tool install -g yuniql`
-- `docker compose-up yuniql-integration-tests.yml`
-- support placeholders ${ENV.VariableName}, ${VariableleName}
-- plugin dlls
-- package as nuget that app can run during startup
-- add driver version on version table
-- add artifact base64 of each version
-- exec subfolders in version folder
 
 #### Getting started
 1. Start from new database TBA
