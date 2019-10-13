@@ -1,35 +1,43 @@
-﻿version: '3.1'
+﻿version: '3.3'
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2017-latest
-    hostname: 'yuniql-integration-db'
+    hostname: "yuniql-integration-db"
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "P@ssw0rd!"
-      MSSQL_PID: "Express"
+      MSSQL_PID: "Developer"
     ports:
-      - "1405:1433"
+      - "1433:1433"
     healthcheck:
-      test: [ "CMD", "sqlcmd", "-U", "sa", "-P", "P@ssw0rd!", "-Q", "SELECT 1" ]
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd","-s", "yuniqldb.ardilabs.com", "-U", "sa", "-P", "P@ssw0rd!", "-Q", "SELECT 1" ]
       interval: 1s
       retries: 20
     tty: true
     networks:
-      - integration
+      testvnet:
+        aliases:
+          - yuniqldb.ardilabs.com
 
   app:
     image: rdagumampan/yuniql-integration
-    hostname: 'yuniql-integration-app'
+    hostname: "yuniql-integration-app"
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      YUNIQL_CONNECTION_STRING: 'Server=yuniql-integration-db,1405;Database=YuniqlTestDB;User Id=sa;Password=P@ssw0rd!'
+      YUNIQL_CONNECTION_STRING: "Server=yuniqldb.ardilabs.com;Database=YuniqlTestDB;User Id=sa;Password=P@ssw0rd!"
     entrypoint: /bin/bash -c "/bin/bash -c \"dotnet test\""
     tty: true
+    depends_on:
+      - db
+#      db:
+#        condition: service_healthy
     networks:
-      - integration
+      testvnet:
+        aliases:
+          - yuniqltest.ardilabs.com
 
 networks:
-  integration:
-    driver: overlay
+  testvnet:
+    driver: bridge
