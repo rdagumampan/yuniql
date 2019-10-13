@@ -10,7 +10,7 @@ straight forward sql server database migration
 - true cross-platform, runs on windows and linux
 - zero dependencies, self-contained app, no jvm!
 - devops ready, use your own version control and pipelines framework
-- open source, MIT license
+- open source, TBA license
 
 #### Features
 - pure sql migration
@@ -80,18 +80,6 @@ docker-compose build --no-cache
 docker-compose up -d && docker-compose logs -f
 docker-compose down
 ```
-
-#### todo
-- `yuniql baseline`
-- `yuniql rebase`
-- `dotnet tool install -g yuniql`
-- `docker compose-up yuniql-integration-tests.yml`
-- support placeholders ${ENV.VariableName}, ${VariableleName}
-- plugin dlls
-- package as nuget that app can run during startup
-- add driver version on version table
-- add artifact base64 of each version
-- exec subfolders in version folder
 
 #### Getting started
 1. Start from new database TBA
