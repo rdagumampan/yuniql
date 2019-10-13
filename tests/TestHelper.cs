@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.IO;
 
 namespace Yuniql.Tests
@@ -11,15 +12,18 @@ namespace Yuniql.Tests
             if (string.IsNullOrEmpty(connectionString))
             {
                 //use this when running against local instance of sql server with integrated security
-                //return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
+                return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
 
                 //use this when running against sql server container with published port 1401
-                connectionString = $"Server=localhost,1401;Database={databaseName};User Id=sa;Password=P@ssw0rd!";
+                //connectionString = $"Server=localhost,1401;Database={databaseName};User Id=sa;Password=P@ssw0rd!";
             }
 
-            Console.WriteLine(connectionString);
+            var result = new SqlConnectionStringBuilder(connectionString);
+            result.InitialCatalog = databaseName;
 
-            return connectionString;
+            Console.WriteLine(result.ConnectionString);
+
+            return result.ConnectionString;
         }
 
         public static string GetWorkingPath()

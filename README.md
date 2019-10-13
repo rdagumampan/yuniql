@@ -71,10 +71,6 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 
 #### Deploy SQL Server on Docker container and run a yuniql migration
 
-Connection strings:
-- Local instance: Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB
-- Docker container: Server=localhost,1401;Database=YuniqlDemoDB;User Id=SA;Password=P@ssw0rd!;
-
 ```console
 docker-compose build --no-cache
 docker-compose up -d && docker-compose logs -f
