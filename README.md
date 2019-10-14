@@ -3,17 +3,9 @@
 
 Database schema versioning and migration tool based on plain sql scripts. Yuniql lets you take full control of your db schema evolution by automating what you would normally do by hand. Scripts are stored in folders and raw sql files so you can leverage full power of `git`. Yuniql CLI seamlessly integrates with your Continuous Delivery (CD) pipelines for truely DB DevOps development experience.
 
-Yuniql is released as self-contained .NET Core application (no need for JVM or .NET Runtime). Container images are also available for developer to seamless Continuous Delivery of database changes.
+Yuniql is released as self-contained .NET Core application (no need for JVM or .NET Runtime) for Windows. Container images are also available for seamless Continuous Delivery of database changes in Linux.
 
 <img align="right" src="yuniql-logo.png">
-
-#### Motivation
-
-- ridiculously simple! you just need to know sql
-- true cross-platform, runs on windows and linux
-- zero dependencies, self-contained app, no jvm!
-- devops ready, use your own version control and pipelines framework
-- free and open source, TBA license
 
 #### Features
 - pure sql migration
