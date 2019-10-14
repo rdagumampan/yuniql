@@ -10,7 +10,7 @@ straight forward sql server database migration
 - true cross-platform, runs on windows and linux
 - zero dependencies, self-contained app, no jvm!
 - devops ready, use your own version control and pipelines framework
-- open source, TBA license
+- free and open source, TBA license
 
 #### Features
 - pure sql migration
@@ -22,7 +22,7 @@ straight forward sql server database migration
 
 *** in progress
 
-#### Supported commands
+#### Supported Yuniql CLI commands
 ```console
 yuniql init
 yuniql init -p c:\temp\demo | --path c:\temp\demo
@@ -50,26 +50,12 @@ yuniql vnext -a
 yuniql run -a
 ```
 
-#### Run from windows (dotnet/.netcore 3.0)
-```console
-dotnet "yuniql.dll" "init" -p "c:\temp\demo"
-dotnet "yuniql.dll" "vnext" -p "c:\temp\demo"
-dotnet "yuniql.dll" "vnext" -M -p "c:\temp\demo"
-dotnet "yuniql.dll" "vnext" -m -p "c:\temp\demo"
-dotnet "yuniql.dll" "run" -p "c:\temp\demo" -a
-```
-
-#### Run from linux
+#### Run from ubuntu linux
 ```console
 dotnet "yuniql.dll" "run" -p "c:\temp\demo" -a
 ```
 
-#### Publish as self-contained application (.exe)
-```console
-dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
-```
-
-#### Deploy SQL Server on Docker container and run a yuniql migration
+#### Run integration tests on local docker swarm
 
 ```console
 docker-compose build --no-cache
@@ -78,9 +64,9 @@ docker-compose down
 ```
 
 #### Getting started
-1. Start from new database TBA
-2. Start with an existing database TBA
-3. Migrate from another tool TBA
+1. Versioning a new database TBA
+2. Versioning an existing database TBA
+3. Migrating from another tool TBA
 
 #### How to get help
 Read the documentation and how-to guides. You may also get in touch via:
@@ -93,5 +79,3 @@ Start with submitting an issue request or picking on an issue for PR.
 
 #### License
 TBA
-
-
