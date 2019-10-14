@@ -11,7 +11,11 @@ namespace ArdiLabs.Yuniql
 {
     public class MigrationService : IMigrationService
     {
-        public void Run(string workingPath, string connectionString, string targetVersion, bool autoCreateDatabase)
+        public void Run(string workingPath, 
+            string connectionString, 
+            string targetVersion, 
+            bool autoCreateDatabase, 
+            List<KeyValuePair<string, string>> tokens = null)
         {
             var targetSqlDbConnectionString = new SqlConnectionStringBuilder(connectionString);
 
@@ -34,7 +38,7 @@ namespace ArdiLabs.Yuniql
                 TraceService.Info($"Configured migration support of {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
 
                 //runs all scripts in the _init folder
-                RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_init"));
+                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_init"));
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
             }
 
@@ -42,18 +46,18 @@ namespace ArdiLabs.Yuniql
             if (!IsTargetDatabaseLatest(targetSqlDbConnectionString, targetVersion))
             {
                 //runs all scripts in the _pre folder and subfolders
-                RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_pre"));
+                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_pre"));
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts int the vxx.xx folders and subfolders
-                RunMigrationScripts(targetSqlDbConnectionString, workingPath, targetVersion);
+                RunVersionScripts(targetSqlDbConnectionString, workingPath, targetVersion);
 
                 //runs all scripts in the _draft folder and subfolders
-                RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_draft"));
+                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_draft"));
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_post"));
+                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_post"));
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
             }
             else
@@ -178,9 +182,12 @@ namespace ArdiLabs.Yuniql
             return result;
         }
 
-        private void RunScripts(SqlConnectionStringBuilder sqlConnectionString, string versionFolder)
+        private void RunNonVersionScripts(
+            SqlConnectionStringBuilder sqlConnectionString, 
+            string directoryFullPath, 
+            List<KeyValuePair<string, string>> tokens = null)
         {
-            var sqlScriptFiles = Directory.GetFiles(versionFolder, "*.sql").ToList();
+            var sqlScriptFiles = Directory.GetFiles(directoryFullPath, "*.sql").ToList();
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
@@ -200,6 +207,10 @@ namespace ArdiLabs.Yuniql
 ;
                             sqlStatements.ForEach(sqlStatement =>
                             {
+                                //replace tokens with values from the cli
+                                var tokeReplacementService = new TokenReplacementService();
+                                sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
+
                                 TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
 
                                 var command = connection.CreateCommand();
@@ -224,7 +235,11 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        private void RunMigrationScripts(SqlConnectionStringBuilder targetSqlDbConnectionString, string workingPath, string targetVersion)
+        private void RunVersionScripts(
+            SqlConnectionStringBuilder targetSqlDbConnectionString, 
+            string workingPath, 
+            string targetVersion,
+            List<KeyValuePair<string, string>> tokens = null)
         {
             var currentVersion = GetCurrentVersion(targetSqlDbConnectionString);
             var dbVersions = GetAllDbVersions(targetSqlDbConnectionString)
@@ -252,12 +267,12 @@ namespace ArdiLabs.Yuniql
             if (versionFolders.Any())
             {
                 versionFolders.Sort();
-                versionFolders.ForEach(versionFolder =>
+                versionFolders.ForEach(versionDirectory =>
                 {
-                    RunMigrationScriptsInternal(targetSqlDbConnectionString, versionFolder);
-                    RunCsvImport(targetSqlDbConnectionString, versionFolder);
+                    RunMigrationScriptsInternal(targetSqlDbConnectionString, versionDirectory);
+                    RunCsvImport(targetSqlDbConnectionString, versionDirectory);
 
-                    TraceService.Info($"Completed migration to version {versionFolder}");
+                    TraceService.Info($"Completed migration to version {versionDirectory}");
                 });
             }
             else
@@ -296,7 +311,7 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        private void RunMigrationScriptsInternal(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath)
+        private void RunMigrationScriptsInternal(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath, List<KeyValuePair<string, string>> tokens = null)
         {
             var sqlScriptFiles = Directory.GetFiles(versionFullPath, "*.sql").ToList();
 
@@ -318,6 +333,10 @@ namespace ArdiLabs.Yuniql
 ;
                             sqlStatements.ForEach(sqlStatement =>
                             {
+                                //replace tokens with values from the cli
+                                var tokeReplacementService = new TokenReplacementService();
+                                sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
+
                                 TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
 
                                 var command = connection.CreateCommand();

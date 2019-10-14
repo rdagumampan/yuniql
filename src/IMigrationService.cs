@@ -7,6 +7,6 @@ namespace ArdiLabs.Yuniql
     {
         List<DbVersion> GetAllDbVersions(SqlConnectionStringBuilder sqlConnectionString);
         bool IsTargetDatabaseExists(SqlConnectionStringBuilder sqlConnectionString, string targetDatabaseName);
-        void Run(string workingPath, string connectionString, string targetVersion, bool autoCreateDatabase);
+        void Run(string workingPath, string connectionString, string targetVersion, bool autoCreateDatabase, List<KeyValuePair<string, string>> tokens = null);
     }
 }

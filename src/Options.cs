@@ -1,4 +1,6 @@
 ﻿using CommandLine;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ArdiLabs.Yuniql
 {
@@ -66,6 +68,10 @@ namespace ArdiLabs.Yuniql
         //yuniql run -d | --debug
         [Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts")]
         public bool Debug { get; set; }
+
+        //yuniql run -k "LINKSERVER1=SERVER01" -k "LINKEDSERVER2=SERVER02" -k "ANOTHERDB=DB1" | --token "..." --token "..." --token "..."
+        [Option('k', "token", Required = false, HelpText = "Replace tokens using the passed key-value pairs")]
+        public IEnumerable<string> Tokens { get; set; }
     }
 
     //yuniql info
