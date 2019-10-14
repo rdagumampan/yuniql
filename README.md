@@ -1,28 +1,24 @@
-
 # yuniql ![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true) ![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql)](https://gitter.im/yuniql/yuniql) [![Download latest build](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true&passingText=Download%20latest-win-x64)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip)
 
-straight forward sql server database migration
+*** Disclaimer: Yuniql is not yet officially released. Much of the claims here are still work in progress but alpha version have major features available.
+
+Database schema versioning and migration based on plain sql scripts. Yuniql lets you take full control of your db schema evolution. Scripts are stored raw sql files in version folders so you can leverage full power of `git`. It automates what you would normally do by hand by executing all scripts in orderly and transactional fashion. Yuniql seamlessly integrates with your Continuous Delivery (CD) pipelines for truely DB DevOps development experience.
+
+Yuniql is released as self-contained .NET Core application (no need for JVM or .NET Runtime) for Windows. Container images are also available for seamless Continuous Delivery of database changes in Linux.
+
 <img align="right" src="yuniql-logo.png">
-
-#### Motivation
-
-- ridiculously simple! you just need to know sql
-- true cross-platform, runs on windows and linux
-- zero dependencies, self-contained app, no jvm!
-- devops ready, use your own version control and pipelines framework
-- open source, TBA license
 
 #### Features
 - pure sql migration
-- cross platform releases ***
 - devops pipelines ready
-- docker container ready
 - bulk import csv files
+- docker container ready
+- cross platform releases ***
 - pluggable versions ***
 
 *** in progress
 
-#### Supported commands
+#### Supported Yuniql CLI commands
 ```console
 yuniql init
 yuniql init -p c:\temp\demo | --path c:\temp\demo
@@ -50,26 +46,12 @@ yuniql vnext -a
 yuniql run -a
 ```
 
-#### Run from windows (dotnet/.netcore 3.0)
-```console
-dotnet "yuniql.dll" "init" -p "c:\temp\demo"
-dotnet "yuniql.dll" "vnext" -p "c:\temp\demo"
-dotnet "yuniql.dll" "vnext" -M -p "c:\temp\demo"
-dotnet "yuniql.dll" "vnext" -m -p "c:\temp\demo"
-dotnet "yuniql.dll" "run" -p "c:\temp\demo" -a
-```
-
-#### Run from linux
+#### Run from ubuntu linux *** in progress
 ```console
 dotnet "yuniql.dll" "run" -p "c:\temp\demo" -a
 ```
 
-#### Publish as self-contained application (.exe)
-```console
-dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
-```
-
-#### Deploy SQL Server on Docker container and run a yuniql migration
+#### Run integration tests on local docker swarm
 
 ```console
 docker-compose build --no-cache
@@ -78,9 +60,9 @@ docker-compose down
 ```
 
 #### Getting started
-1. Start from new database TBA
-2. Start with an existing database TBA
-3. Migrate from another tool TBA
+1. Versioning a new database TBA
+2. Versioning an existing database TBA
+3. Migrating from another tool TBA
 
 #### How to get help
 Read the documentation and how-to guides. You may also get in touch via:
@@ -93,5 +75,3 @@ Start with submitting an issue request or picking on an issue for PR.
 
 #### License
 TBA
-
-
