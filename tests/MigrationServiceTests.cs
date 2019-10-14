@@ -221,6 +221,39 @@ namespace Yuniql.Tests
             DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v1_03")).ShouldBeFalse();
         }
 
+        [DataTestMethod()]
+        [DataRow("_init", "_init")]
+        [DataRow("_pre", "_pre")]
+        [DataRow("v1.00", "v1_00")]
+        [DataRow("_post", "_post")]
+        [DataRow("_draft", "_draft")]
+        public void Test_Run_With_Parameterized_Tokens(string versionFolder, string scriptName)
+        {
+            //arrange
+            var workingPath = TestHelper.GetWorkingPath();
+            var databaseName = new DirectoryInfo(workingPath).Name;
+            var connectionString = TestHelper.GetConnectionString(databaseName);
+
+            var localVersionService = new LocalVersionService();
+            localVersionService.Init(workingPath);
+
+            localVersionService.IncrementMajorVersion(workingPath, null);
+            TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, versionFolder), $"test_{scriptName}.sql"), TestHelper.CreateTokenizedScript($"test_{scriptName}"));
+
+            //act
+            var migrationService = new MigrationService();
+            List<KeyValuePair<string, string>> tokens = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("Token1","Token1Value"),
+                new KeyValuePair<string, string>("Token2","Token2Value"),
+                new KeyValuePair<string, string>("Token3","Token3Value"),
+            };
+            migrationService.Run(workingPath, connectionString, "v1.00", autoCreateDatabase: true,  tokens: tokens);
+
+            //assert
+            DbHelper.QuerySingleString(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateSpHelpTextScript($"test_{scriptName}").TrimEnd()).Contains("Token1Value.Token2Value.Token3Value");
+        }
+        
         private List<DbVersion> GetAllDbVersions(string sqlConnectionString)
         {
             var result = new List<DbVersion>();

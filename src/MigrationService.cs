@@ -38,7 +38,7 @@ namespace ArdiLabs.Yuniql
                 TraceService.Info($"Configured migration support of {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
 
                 //runs all scripts in the _init folder
-                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_init"));
+                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_init"), tokens);
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
             }
 
@@ -46,18 +46,18 @@ namespace ArdiLabs.Yuniql
             if (!IsTargetDatabaseLatest(targetSqlDbConnectionString, targetVersion))
             {
                 //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_pre"));
+                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_pre"), tokens);
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts int the vxx.xx folders and subfolders
-                RunVersionScripts(targetSqlDbConnectionString, workingPath, targetVersion);
+                RunVersionScripts(targetSqlDbConnectionString, workingPath, targetVersion, tokens);
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_draft"));
+                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_draft"), tokens);
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_post"));
+                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_post"), tokens);
                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
             }
             else
@@ -269,7 +269,7 @@ namespace ArdiLabs.Yuniql
                 versionFolders.Sort();
                 versionFolders.ForEach(versionDirectory =>
                 {
-                    RunMigrationScriptsInternal(targetSqlDbConnectionString, versionDirectory);
+                    RunMigrationScriptsInternal(targetSqlDbConnectionString, versionDirectory, tokens);
                     RunCsvImport(targetSqlDbConnectionString, versionDirectory);
 
                     TraceService.Info($"Completed migration to version {versionDirectory}");

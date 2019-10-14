@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -138,8 +139,11 @@ namespace ArdiLabs.Yuniql
                     TraceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
                 }
 
+                //parse tokens
+                var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+
                 var migrationService = new MigrationService();
-                migrationService.Run(opts.Path, opts.ConnectionString, opts.TargetVersion, opts.AutoCreateDatabase);
+                migrationService.Run(opts.Path, opts.ConnectionString, opts.TargetVersion, opts.AutoCreateDatabase, tokens);
                 TraceService.Info($"Completed migration from {opts.Path}.");
             }
             catch (Exception ex)

@@ -69,9 +69,10 @@ namespace ArdiLabs.Yuniql
         [Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts")]
         public bool Debug { get; set; }
 
-        //yuniql run -k "LINKSERVER1=SERVER01" -k "LINKEDSERVER2=SERVER02" -k "ANOTHERDB=DB1" | --token "..." --token "..." --token "..."
-        [Option('k', "token", Required = false, HelpText = "Replace tokens using the passed key-value pairs")]
-        public IEnumerable<string> Tokens { get; set; }
+        //yuniql run -k "Token1=TokenValue1" -k "Token2=TokenValue2" -k "Token3=TokenValue3" | --token "..." --token "..." --token "..."
+        //yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3" | --token "...,...,..."
+        [Option('k', "token", Required = false, HelpText = "Replace tokens using the passed key-value pairs", Separator = ',')]
+        public IEnumerable<string> Tokens { get; set; } = new List<string>();
     }
 
     //yuniql info

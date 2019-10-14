@@ -15,7 +15,7 @@ namespace ArdiLabs.Yuniql
             var procssedSqlStatement = new StringBuilder(sqlStatement);
             tokens.ForEach(t =>
             {
-                procssedSqlStatement.Replace(t.Key, t.Value);
+                procssedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
             });
 
             return procssedSqlStatement.ToString();

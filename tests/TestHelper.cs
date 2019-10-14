@@ -12,16 +12,14 @@ namespace Yuniql.Tests
             if (string.IsNullOrEmpty(connectionString))
             {
                 //use this when running against local instance of sql server with integrated security
-                return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
+                //return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
 
                 //use this when running against sql server container with published port 1401
-                //connectionString = $"Server=localhost,1401;Database={databaseName};User Id=sa;Password=P@ssw0rd!";
+                return $"Server=localhost,1401;Database={databaseName};User Id=sa;Password=P@ssw0rd!";
             }
 
             var result = new SqlConnectionStringBuilder(connectionString);
             result.InitialCatalog = databaseName;
-
-            Console.WriteLine(result.ConnectionString);
 
             return result.ConnectionString;
         }
@@ -41,10 +39,10 @@ namespace Yuniql.Tests
         public static string CreateScript(string scriptName)
         {
             return $@"
-                CREATE PROC [dbo].[{scriptName}]
-                AS
-                    SELECT 1;
-                GO
+CREATE PROC [dbo].[{scriptName}]
+AS
+    SELECT 1;
+GO
                 ";
         }
 
@@ -64,59 +62,82 @@ namespace Yuniql.Tests
         public static string CreateCsvTableScript(string tableName)
         {
             return $@"
-                IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = '{tableName}'))
-                BEGIN
-                    CREATE TABLE [dbo].[{tableName}](
-	                    [FirstName] [nvarchar](50) NULL,
-	                    [LastName] [nvarchar](50) NULL,
-	                    [BirthDate] [datetime] NULL
-                    );
-                END
+IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = '{tableName}'))
+BEGIN
+    CREATE TABLE [dbo].[{tableName}](
+	    [FirstName] [nvarchar](50) NULL,
+	    [LastName] [nvarchar](50) NULL,
+	    [BirthDate] [datetime] NULL
+    );
+END
             ";
         }
         public static string CreateCsvTableScript2()
         {
-            var sqlStatement = @"IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = 'CompleteTable'))
-                BEGIN
-	                CREATE TABLE [dbo].[CompleteTable]
-	                (
-		                [ColumnBigInt] BIGINT NULL,
-		                [ColumnBinary] BINARY(4000) NULL,
-		                [ColumnBit] BIT NULL,
-		                [ColumnChar] CHAR(32) NULL,
-		                [ColumnDate] DATE NULL,
-		                [ColumnDateTime] DATETIME NULL,
-		                [ColumnDateTime2] DATETIME2(7) NULL,
-		                [ColumnDateTimeOffset] DATETIMEOFFSET(7) NULL,
-		                [ColumnDecimal] DECIMAL(18, 2) NULL,
-		                [ColumnFloat] FLOAT NULL,
-		                [ColumnGeography] GEOGRAPHY NULL,
-		                [ColumnGeometry] GEOMETRY NULL,
-		                [ColumnHierarchyId] HIERARCHYID NULL,
-		                [ColumnImage] IMAGE NULL,
-		                [ColumnInt] INT NULL,
-		                [ColumnMoney] MONEY NULL,
-		                [ColumnNChar] NCHAR(32) NULL,
-		                [ColumnNText] NTEXT NULL,
-		                [ColumnNumeric] NUMERIC(18, 2) NULL,
-		                [ColumnNVarChar] NVARCHAR(MAX) NULL,
-		                [ColumnReal] REAL NULL,
-		                [ColumnSmallDateTime] SMALLDATETIME NULL,
-		                [ColumnSmallInt] SMALLINT NULL,
-		                [ColumnSmallMoney] SMALLMONEY NULL,
-		                [ColumnSqlVariant] SQL_VARIANT NULL,
-		                [ColumnText] TEXT NULL,
-		                [ColumnTime] TIME(7) NULL,
-		                [ColumnTimestamp] TIMESTAMP NULL,
-		                [ColumnTinyInt] TINYINT NULL,
-		                [ColumnUniqueIdentifier] UNIQUEIDENTIFIER NULL,
-		                [ColumnVarBinary] VARBINARY(MAX) NULL,
-		                [ColumnVarChar] VARCHAR(MAX) NULL,
-		                [ColumnXml] XML NULL,
-	                );
-                END";
+            var sqlStatement = @"
+IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = 'CompleteTable'))
+BEGIN
+	CREATE TABLE [dbo].[CompleteTable]
+	(
+		[ColumnBigInt] BIGINT NULL,
+		[ColumnBinary] BINARY(4000) NULL,
+		[ColumnBit] BIT NULL,
+		[ColumnChar] CHAR(32) NULL,
+		[ColumnDate] DATE NULL,
+		[ColumnDateTime] DATETIME NULL,
+		[ColumnDateTime2] DATETIME2(7) NULL,
+		[ColumnDateTimeOffset] DATETIMEOFFSET(7) NULL,
+		[ColumnDecimal] DECIMAL(18, 2) NULL,
+		[ColumnFloat] FLOAT NULL,
+		[ColumnGeography] GEOGRAPHY NULL,
+		[ColumnGeometry] GEOMETRY NULL,
+		[ColumnHierarchyId] HIERARCHYID NULL,
+		[ColumnImage] IMAGE NULL,
+		[ColumnInt] INT NULL,
+		[ColumnMoney] MONEY NULL,
+		[ColumnNChar] NCHAR(32) NULL,
+		[ColumnNText] NTEXT NULL,
+		[ColumnNumeric] NUMERIC(18, 2) NULL,
+		[ColumnNVarChar] NVARCHAR(MAX) NULL,
+		[ColumnReal] REAL NULL,
+		[ColumnSmallDateTime] SMALLDATETIME NULL,
+		[ColumnSmallInt] SMALLINT NULL,
+		[ColumnSmallMoney] SMALLMONEY NULL,
+		[ColumnSqlVariant] SQL_VARIANT NULL,
+		[ColumnText] TEXT NULL,
+		[ColumnTime] TIME(7) NULL,
+		[ColumnTimestamp] TIMESTAMP NULL,
+		[ColumnTinyInt] TINYINT NULL,
+		[ColumnUniqueIdentifier] UNIQUEIDENTIFIER NULL,
+		[ColumnVarBinary] VARBINARY(MAX) NULL,
+		[ColumnVarChar] VARCHAR(MAX) NULL,
+		[ColumnXml] XML NULL,
+	);
+END
+";
 
             return sqlStatement;
+        }
+
+        public static string CreateTokenizedScript(string scriptName)
+        {
+            return $@"
+CREATE PROC [dbo].[{scriptName}]
+AS
+    SELECT '${{Token1}}.${{Token2}}.${{Token3}}' AS ReplacedStatement;
+";
+        }
+
+
+        public static string CreateSpHelpTextScript(string scriptName)
+        {
+            return $@"
+DECLARE @temp TABLE(SqlLine NVARCHAR(MAX));
+INSERT INTO @temp EXEC sp_helptext '{scriptName}';
+DECLARE @result NVARCHAR(MAX);
+SELECT @result = COALESCE(@result + SqlLine, SqlLine) FROM @temp;
+SELECT @result;
+";
         }
 
     }
