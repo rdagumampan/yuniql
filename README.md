@@ -1,7 +1,10 @@
 
 # yuniql ![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true) ![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql)](https://gitter.im/yuniql/yuniql) [![Download latest build](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true&passingText=Download%20latest-win-x64)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip)
 
-straight forward sql server database migration
+Database schema versioning and migration tool based on plain sql scripts. Yuniql lets you take full control of your db schema evolution by automating what you would normally do by hand. Scripts are stored in folders and raw sql files so you can leverage full power of `git`. Yuniql CLI seamlessly integrates with your Continuous Delivery (CD) pipelines for truely DB DevOps development experience.
+
+Yuniql is released as self-contained .NET Core application (no need for JVM or .NET Runtime). Container images are also available for developer to seamless Continuous Delivery of database changes.
+
 <img align="right" src="yuniql-logo.png">
 
 #### Motivation
@@ -14,10 +17,10 @@ straight forward sql server database migration
 
 #### Features
 - pure sql migration
-- cross platform releases ***
 - devops pipelines ready
-- docker container ready
 - bulk import csv files
+- docker container ready
+- cross platform releases ***
 - pluggable versions ***
 
 *** in progress
