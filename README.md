@@ -65,17 +65,13 @@ docker-compose down
 2. Versioning an existing database TBA
 3. Migrating from another tool TBA
 
-#### How to get help
-Read the documentation and how-to guides. You may also get in touch via:
+#### How to contribute or ask help
 - File a bug or feature as an [issue](https://github.com/rdagumampan/yuniql/issues/new)
-- Talk to us on [Gitter chat](https://gitter.im/yuniql/community)
+- Talk to us on [gitter chat](https://gitter.im/yuniql/community)
 - Comment on existing issues and suggest how they should be fixed/implemented
 - Fix a bug or implement feature by subimitting a PR
-- Write mo tests to increase our coverage
+- Write more tests to increase our coverage
 - Tag [#yuniql](https://twitter.com/) on Twitter
-
-#### Contributing
-Start with submitting an issue request or picking on an issue for PR.
 
 #### License
 TBA
