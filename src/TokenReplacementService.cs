@@ -12,6 +12,8 @@ namespace ArdiLabs.Yuniql
         private const string tokenPattern = @"\${([^}]+)}";
         public string Replace(List<KeyValuePair<string, string>> tokens, string sqlStatement)
         {
+            if (null == tokens || !tokens.Any()) return sqlStatement;
+
             var procssedSqlStatement = new StringBuilder(sqlStatement);
             tokens.ForEach(t =>
             {
