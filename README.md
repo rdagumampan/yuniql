@@ -67,8 +67,11 @@ docker-compose down
 
 #### How to get help
 Read the documentation and how-to guides. You may also get in touch via:
-- Submit an [issue](https://github.com/rdagumampan/yuniql/issues/new) on GitHub
+- File a bug or feature as an [issue](https://github.com/rdagumampan/yuniql/issues/new)
 - Talk to us on [Gitter chat](https://gitter.im/yuniql/community)
+- Comment on existing issues and suggest how they should be fixed/implemented
+- Fix a bug or implement feature by subimitting a PR
+- Write mo tests to increase our coverage
 - Tag [#yuniql](https://twitter.com/) on Twitter
 
 #### Contributing
