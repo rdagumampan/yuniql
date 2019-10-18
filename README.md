@@ -1,4 +1,4 @@
-# yuniql ![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true) ![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql)](https://gitter.im/yuniql/yuniql) [![Stack Overflow](https://img.shields.io/badge/stack%20overflow-yuniql-green.svg)](http://stackoverflow.com/questions/tagged/yuniql) [![Download latest build](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true&passingText=Download%20nightly-win-x64)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip)
+# yuniql ![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true) [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql)](https://ci.appveyor.com/project/rdagumampan/yuniql/build/tests) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql)](https://gitter.im/yuniql/yuniql) [![Stack Overflow](https://img.shields.io/badge/stack%20overflow-yuniql-green.svg)](http://stackoverflow.com/questions/tagged/yuniql) [![Download latest build](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true&passingText=Download%20nightly-win-x64)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip)
 
 *** Disclaimer: Yuniql is not yet officially released. Much of the claims here are still work in progress but nightly build have major features available.
 
@@ -65,14 +65,13 @@ docker-compose down
 2. Versioning an existing database TBA
 3. Migrating from another tool TBA
 
-#### How to get help
-Read the documentation and how-to guides. You may also get in touch via:
-- Submit an [issue](https://github.com/rdagumampan/yuniql/issues/new) on GitHub
-- Talk to us on [Gitter chat](https://gitter.im/yuniql/community)
+#### How to contribute or ask help
+- File a bug or feature as an [issue](https://github.com/rdagumampan/yuniql/issues/new)
+- Talk to us on [gitter chat](https://gitter.im/yuniql/community)
+- Comment on existing issues and suggest how they should be fixed/implemented
+- Fix a bug or implement feature by subimitting a PR
+- Write more tests to increase our coverage
 - Tag [#yuniql](https://twitter.com/) on Twitter
-
-#### Contributing
-Start with submitting an issue request or picking on an issue for PR.
 
 #### License
 TBA
