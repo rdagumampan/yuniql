@@ -35,3 +35,17 @@ Publish as self-contained application (linux-x64)
 ```console
 dotnet publish -c release -r linux-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 ```
+
+ADO Agent Task
+https://blog.ipswitch.com/how-to-build-an-azure-custom-build/release-task
+https://devkimchi.com/2019/06/26/building-azure-devops-extension-on-azure-devops-1/
+https://docs.microsoft.com/en-us/azure/devops/extend/get-started/node?view=azure-devops
+https://jessehouwing.net/vsts-extending-your-build-and-release-pipeline/
+
+https://devblogs.microsoft.com/devops/streamlining-azure-devops-extension-development/
+https://devblogs.microsoft.com/devops/bootstrapping-azure-devops-extensions-with-yeoman/
+
+SMO
+https://curatedsql.com/2017/07/14/using-smo-on-linux/
+https://www.sqlservermigrations.com/2018/08/script-databases-and-objects-using-powershell/
+http://www.maxtblog.com/2017/06/using-linux-sql-server-smo-in-powershell-core/

@@ -37,3 +37,6 @@ src/Properties/PublishProfiles/FolderProfile.pubxml
 /tests/Tests/obj
 /tests/obj
 /tests/bin/Debug/netcoreapp3.0
+/baseliner/bin/Debug/netcoreapp3.0
+/baseliner/obj
+/baseliner/.vs/Baseliner
