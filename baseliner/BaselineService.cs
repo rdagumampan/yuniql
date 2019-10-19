@@ -89,7 +89,7 @@ namespace Baseliner
         private Database database;
         public void Init()
         {
-            var connection = new ServerConnection(new SqlConnectionInfo(".", "sa", "Denmark2050!"));
+            var connection = new ServerConnection(new SqlConnectionInfo(Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")));
             connection.Connect();
 
             server = new Server(connection);
