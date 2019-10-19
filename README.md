@@ -65,6 +65,18 @@ docker-compose down
 2. Versioning an existing database TBA
 3. Migrating from another tool TBA
 
+#### Todo
+
+- execute all subdirectories
+- base docker image
+- yuniql baseline
+- yuniql rebase
+- yuniql erase
+- version plugins
+- nuget package
+- az devops tasks
+- global dotnet tool
+
 #### How to contribute or ask help
 - File a bug or feature as an [issue](https://github.com/rdagumampan/yuniql/issues/new)
 - Talk to us on [gitter chat](https://gitter.im/yuniql/community)

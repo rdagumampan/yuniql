@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <ApplicationIcon />
-    <OutputType>Library</OutputType>
-    <StartupObject />
+    <OutputType>Exe</OutputType>
+    <StartupObject>Baseliner.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

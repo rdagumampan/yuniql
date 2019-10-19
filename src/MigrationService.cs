@@ -6,15 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Transactions;
 
 namespace ArdiLabs.Yuniql
 {
     public class MigrationService : IMigrationService
     {
-        public void Run(string workingPath, 
-            string connectionString, 
-            string targetVersion, 
-            bool autoCreateDatabase, 
+        public void Run(string workingPath,
+            string connectionString,
+            string targetVersion,
+            bool autoCreateDatabase,
             List<KeyValuePair<string, string>> tokens = null)
         {
             var targetSqlDbConnectionString = new SqlConnectionStringBuilder(connectionString);
@@ -183,8 +184,8 @@ namespace ArdiLabs.Yuniql
         }
 
         private void RunNonVersionScripts(
-            SqlConnectionStringBuilder sqlConnectionString, 
-            string directoryFullPath, 
+            SqlConnectionStringBuilder sqlConnectionString,
+            string directoryFullPath,
             List<KeyValuePair<string, string>> tokens = null)
         {
             var sqlScriptFiles = Directory.GetFiles(directoryFullPath, "*.sql").ToList();
@@ -236,8 +237,8 @@ namespace ArdiLabs.Yuniql
         }
 
         private void RunVersionScripts(
-            SqlConnectionStringBuilder targetSqlDbConnectionString, 
-            string workingPath, 
+            SqlConnectionStringBuilder targetSqlDbConnectionString,
+            string workingPath,
             string targetVersion,
             List<KeyValuePair<string, string>> tokens = null)
         {
@@ -269,10 +270,38 @@ namespace ArdiLabs.Yuniql
                 versionFolders.Sort();
                 versionFolders.ForEach(versionDirectory =>
                 {
-                    RunMigrationScriptsInternal(targetSqlDbConnectionString, versionDirectory, tokens);
-                    RunCsvImport(targetSqlDbConnectionString, versionDirectory);
+                    using (var transactionScope =  new TransactionScope())
+                    {
+                        try
+                        {
+                            //run scripts in all sub-directories
+                            var versionSubDirectories = Directory.GetDirectories(versionDirectory, "*", SearchOption.AllDirectories).ToList();
+                            versionSubDirectories.ForEach(versionSubDirectory =>
+                            {
+                                RunMigrationScriptsInternal(targetSqlDbConnectionString, versionSubDirectory, tokens);
+                            });
 
-                    TraceService.Info($"Completed migration to version {versionDirectory}");
+                            //run all scripts in the current version folder
+                            RunMigrationScriptsInternal(targetSqlDbConnectionString, versionDirectory, tokens);
+
+                            //import csv files into tables of the the same filename as the csv
+                            RunCsvImport(targetSqlDbConnectionString, versionDirectory);
+
+                            //update db version
+                            var versionName = new DirectoryInfo(versionDirectory).Name;
+                            UpdateDbVersion(targetSqlDbConnectionString, versionName);
+
+                            //commit all changes
+                            transactionScope.Complete();
+
+                            TraceService.Info($"Completed migration to version {versionDirectory}");
+                        }
+                        catch (Exception)
+                        {
+                            transactionScope.Dispose();
+                            throw;
+                        }
+                    }
                 });
             }
             else
@@ -318,58 +347,49 @@ namespace ArdiLabs.Yuniql
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
                 connection.Open();
-                using (var transaction = connection.BeginTransaction())
+                //execute all script files in the version folder
+                sqlScriptFiles.ForEach(scriptFile =>
                 {
-                    try
-                    {
-                        //execute all script files in the version folder
-                        sqlScriptFiles.ForEach(scriptFile =>
-                        {
-                            //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
-                            var sqlStatementRaw = File.ReadAllText(scriptFile);
-                            var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
-                                .Where(s => !string.IsNullOrWhiteSpace(s))
-                                .ToList()
+                    //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
+                    var sqlStatementRaw = File.ReadAllText(scriptFile);
+                    var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+                        .Where(s => !string.IsNullOrWhiteSpace(s))
+                        .ToList()
 ;
-                            sqlStatements.ForEach(sqlStatement =>
-                            {
-                                //replace tokens with values from the cli
-                                var tokeReplacementService = new TokenReplacementService();
-                                sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
-
-                                TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-
-                                var command = connection.CreateCommand();
-                                command.Transaction = transaction;
-                                command.CommandType = CommandType.Text;
-                                command.CommandText = sqlStatement;
-                                command.CommandTimeout = 0;
-                                command.ExecuteNonQuery();
-                            });
-
-                            TraceService.Info($"Executed script file {scriptFile}.");
-                        });
-
-                        //increment db version
-                        var versionName = new DirectoryInfo(versionFullPath).Name;
-                        var incrementVersionSqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{versionName.Substring(versionName.IndexOf("-") + 1)}');";
-                        TraceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
-
-                        var incrementVersioncommand = connection.CreateCommand();
-                        incrementVersioncommand.Transaction = transaction;
-                        incrementVersioncommand.CommandType = CommandType.Text;
-                        incrementVersioncommand.CommandText = incrementVersionSqlStatement;
-                        incrementVersioncommand.CommandTimeout = 0;
-                        incrementVersioncommand.ExecuteNonQuery();
-
-                        transaction.Commit();
-                    }
-                    catch (Exception)
+                    sqlStatements.ForEach(sqlStatement =>
                     {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
+                        //replace tokens with values from the cli
+                        var tokeReplacementService = new TokenReplacementService();
+                        sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
+
+                        TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
+
+                        var command = connection.CreateCommand();
+                        command.CommandType = CommandType.Text;
+                        command.CommandText = sqlStatement;
+                        command.CommandTimeout = 0;
+                        command.ExecuteNonQuery();
+                    });
+
+                    TraceService.Info($"Executed script file {scriptFile}.");
+                });
+            }
+        }
+
+        private void UpdateDbVersion(SqlConnectionStringBuilder sqlConnectionString, string version)
+        {
+            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            {
+                connection.Open();
+
+                var incrementVersionSqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{version}');";
+                TraceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
+
+                var incrementVersioncommand = connection.CreateCommand();
+                incrementVersioncommand.CommandType = CommandType.Text;
+                incrementVersioncommand.CommandText = incrementVersionSqlStatement;
+                incrementVersioncommand.CommandTimeout = 0;
+                incrementVersioncommand.ExecuteNonQuery();
             }
         }
     }

@@ -253,7 +253,56 @@ namespace Yuniql.Tests
             //assert
             DbHelper.QuerySingleString(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateSpHelpTextScript($"test_{scriptName}").TrimEnd()).Contains("Token1Value.Token2Value.Token3Value");
         }
-        
+
+        [TestMethod]
+        public void Test_Run_Database_Executed_All_Version_SubDirectories()
+        {
+            //arrange
+            var workingPath = TestHelper.GetWorkingPath();
+            var databaseName = new DirectoryInfo(workingPath).Name;
+            var connectionString = TestHelper.GetConnectionString(databaseName);
+
+            var localVersionService = new LocalVersionService();
+            localVersionService.Init(workingPath);
+
+            localVersionService.IncrementMajorVersion(workingPath, null);
+            string v1rootDirectory = Path.Combine(Path.Combine(workingPath, "v1.00"));
+            TestHelper.CreateScriptFile(Path.Combine(v1rootDirectory, $"test_v1_00.sql"), TestHelper.CreateScript($"test_v1_00")); ;
+
+            string v1level1Directory = Path.Combine(v1rootDirectory, "v1.00-level1");
+            Directory.CreateDirectory(v1level1Directory);
+            TestHelper.CreateScriptFile(Path.Combine(v1level1Directory, $"test_v1_00_level1.sql"), TestHelper.CreateScript($"test_v1_00_level1"));
+
+            string v1level1SubDirectory = Path.Combine(v1level1Directory, "v1.00-level1-sublevel1");
+            Directory.CreateDirectory(v1level1SubDirectory);
+            TestHelper.CreateScriptFile(Path.Combine(v1level1SubDirectory, $"test_v1_00_level1_sublevel1.sql"), TestHelper.CreateScript($"test_v1_00_level1_sublevel1"));
+
+            localVersionService.IncrementMajorVersion(workingPath, null);
+            string v2rootDirectory = Path.Combine(Path.Combine(workingPath, "v2.00"));
+            TestHelper.CreateScriptFile(Path.Combine(v2rootDirectory, $"test_v2_00.sql"), TestHelper.CreateScript($"test_v2_00")); ;
+
+            string v2level1Directory = Path.Combine(v2rootDirectory, "v2.00-level1");
+            Directory.CreateDirectory(v2level1Directory);
+            TestHelper.CreateScriptFile(Path.Combine(v2level1Directory, $"test_v2_00_level1.sql"), TestHelper.CreateScript($"test_v2_00_level1"));
+
+            string v2level1SubDirectory = Path.Combine(v2level1Directory, "v2.00-level1-sublevel1");
+            Directory.CreateDirectory(v2level1SubDirectory);
+            TestHelper.CreateScriptFile(Path.Combine(v2level1SubDirectory, $"test_v2_00_level1_sublevel1.sql"), TestHelper.CreateScript($"test_v2_00_level1_sublevel1"));
+
+            //act
+            var migrationService = new MigrationService();
+            migrationService.Run(workingPath, connectionString, "v2.00", autoCreateDatabase: true);
+
+            //assert
+            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v1_00")).ShouldBeTrue();
+            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v1_00_level1")).ShouldBeTrue();
+            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v1_00_level1_sublevel1")).ShouldBeTrue();
+
+            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v2_00")).ShouldBeTrue();
+            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v2_00_level1")).ShouldBeTrue();
+            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v2_00_level1_sublevel1")).ShouldBeTrue();
+        }
+
         private List<DbVersion> GetAllDbVersions(string sqlConnectionString)
         {
             var result = new List<DbVersion>();

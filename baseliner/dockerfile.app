@@ -7,8 +7,6 @@ COPY *.csproj .
 COPY *.sln .
 COPY *.cs ./
 
-#RUN git clone https://github.com/rdagumampan/yuniql.git /code
-
 #build and run integration tests
 RUN ls
 

@@ -1,10 +1,13 @@
-FROM mcr.microsoft.com/mssql/server:2017-latest
-#FROM mcr.microsoft.com/mssql/server:vNext-CTP2.0-ubuntu
+#FROM mcr.microsoft.com/mssql/server:2017-latest
+FROM mcr.microsoft.com/mssql/server:2019-CTP3.2-ubuntu
 
 RUN apt-get update
 RUN apt-get install curl -y
+RUN apt-get install iputils-ping -y
 
 WORKDIR /var/opt/mssql/backup/
 RUN curl -L -o aw.bak 'https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorksLT2017.bak'
 
 RUN ls
+
+EXPOSE 1533
