@@ -21,6 +21,7 @@ using System.Collections.Generic;
 //https://www.sqlservermigrations.com/2018/08/script-databases-and-objects-using-powershell/
 
 //http://patlau.blogspot.com/2012/09/generate-sqlserver-scripts-with.html
+//https://github.com/commercehub-oss/scriptdb
 
 namespace Baseliner
 {
@@ -227,48 +228,47 @@ namespace Baseliner
 
             var schemasDirectory = GetDropFolder("01-schemas");
             var schemasUrns = GetUrns(database.XmlSchemaCollections);
-            GenerateScripts(scripter, schemasDirectory, schemasUrns);
+            GenerateSchemaBasedScripts(scripter, schemasDirectory, schemasUrns);
 
             var typeDirectory = GetDropFolder("02-types");
             var typeUrns = GetUrns(database.UserDefinedTypes);
-            GenerateScripts(scripter, typeDirectory, typeUrns);
+            GenerateSchemaBasedScripts(scripter, typeDirectory, typeUrns);
 
             var dataTypeDirectory = GetDropFolder("02-types");
             var dataTypeUrns = GetUrns(database.UserDefinedDataTypes);
-            GenerateScripts(scripter, dataTypeDirectory, dataTypeUrns);
+            GenerateSchemaBasedScripts(scripter, dataTypeDirectory, dataTypeUrns);
 
             var tableTypeDirectory = GetDropFolder("02-types");
             var tableTypeUrns = GetUrns(database.UserDefinedTableTypes);
-            GenerateScripts(scripter, tableTypeDirectory, tableTypeUrns);
+            GenerateSchemaBasedScripts(scripter, tableTypeDirectory, tableTypeUrns);
 
             var xmlschemasDirectory = GetDropFolder("03-xmlschemas");
             var xmlschemasUrns = GetUrns(database.XmlSchemaCollections);
-            GenerateScripts(scripter, xmlschemasDirectory, xmlschemasUrns);
+            GenerateSchemaBasedScripts(scripter, xmlschemasDirectory, xmlschemasUrns);
 
             var tableDirectory = GetDropFolder("04-tables");
             var tableUrns = GetTableUrns(scripter);
-            GenerateScripts(scripter, tableDirectory, tableUrns);
+            GenerateSchemaBasedScripts(scripter, tableDirectory, tableUrns);
 
             var viewDirectory = GetDropFolder("05-views");
             var viewUrns = GetUrns(database.Views);
-            GenerateScripts(scripter, viewDirectory, viewUrns);
+            GenerateSchemaBasedScripts(scripter, viewDirectory, viewUrns);
 
             var procedureDirectory = GetDropFolder("06-procedures");
             var procedureUrns = GetUrns(database.StoredProcedures);
-            GenerateScripts(scripter, procedureDirectory, procedureUrns);
+            GenerateSchemaBasedScripts(scripter, procedureDirectory, procedureUrns);
 
             var functionDirectory = GetDropFolder("07-functions");
             var functionUrns = GetUrns(database.UserDefinedFunctions);
-            GenerateScripts(scripter, functionDirectory, functionUrns);
+            GenerateSchemaBasedScripts(scripter, functionDirectory, functionUrns);
 
             var sequencesDirectory = GetDropFolder("08-sequences");
             var sequencesUrns = GetUrns(database.Sequences);
-            GenerateScripts(scripter, sequencesDirectory, sequencesUrns);
+            GenerateSchemaBasedScripts(scripter, sequencesDirectory, sequencesUrns);
 
             var triggersDirectory = GetDropFolder("09-triggers");
             var triggersUrns = GetUrns(database.Triggers);
-            GenerateScripts(scripter, triggersDirectory, triggersUrns);
-
+            GenerateSchemaBasedScripts(scripter, triggersDirectory, triggersUrns);
         }
 
         public List<Urn> GetUrns(SmoCollectionBase collections)
@@ -276,6 +276,11 @@ namespace Baseliner
             var urns = new List<Urn>();
             foreach (SqlSmoObject smo in collections)
             {
+                if (smo is Table && ((smo as Table).IsSystemObject)) continue;
+                if (smo is View && ((smo as View).IsSystemObject)) continue;
+                if (smo is UserDefinedFunction && ((smo as UserDefinedFunction).IsSystemObject)) continue;
+                if (smo is StoredProcedure && ((smo as StoredProcedure).IsSystemObject)) continue;
+
                 urns.Add(smo.Urn);
             }
             return urns;
@@ -303,19 +308,24 @@ namespace Baseliner
             return dependencyUrns;
         }
 
-        public void GenerateScripts(Scripter scripter, string destinationDirectory, List<Urn> urns)
+        public void GenerateSchemaBasedScripts(Scripter scripter, string destinationDirectory, List<Urn> urns)
         {
             var sequenceNo = 1;
             foreach (var urn in urns)
             {
-                var smo = server.GetSmoObject(urn) as ScriptSchemaObjectBase;
-                var schemaPrefix = string.Empty;
-                if (!string.IsNullOrEmpty(smo.Schema))
+                var smo = server.GetSmoObject(urn) as ScriptNameObjectBase;
+                var baseFileName = $"{smo.Name}";
+
+                if (smo is ScriptSchemaObjectBase)
                 {
-                    schemaPrefix = $"{smo.Schema}.";
+                    var ssmo = smo as ScriptSchemaObjectBase;
+                    if (!string.IsNullOrEmpty(ssmo.Schema))
+                    {
+                        baseFileName = $"{ssmo.Schema}.{ssmo.Name}";
+                    }
                 }
 
-                scripter.Options.FileName = Path.Combine(destinationDirectory, $"{sequenceNo.ToString("000")}.{schemaPrefix}{smo.Name}.sql");
+                scripter.Options.FileName = Path.Combine(destinationDirectory, $"{sequenceNo.ToString("000")}-{baseFileName}.sql");
                 scripter.Script(new Urn[] { urn });
                 sequenceNo++;
 
