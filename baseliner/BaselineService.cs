@@ -329,22 +329,29 @@ namespace Baseliner
             foreach (var urn in urns)
             {
                 var smo = server.GetSmoObject(urn) as ScriptNameObjectBase;
-                var baseFileName = $"{smo.Name}";
-
-                if (smo is ScriptSchemaObjectBase)
+                if (null!= smo)
                 {
-                    var ssmo = smo as ScriptSchemaObjectBase;
-                    if (!string.IsNullOrEmpty(ssmo.Schema))
+                    var baseFileName = $"{smo.Name}";
+
+                    if (smo is ScriptSchemaObjectBase)
                     {
-                        baseFileName = $"{ssmo.Schema}.{ssmo.Name}";
+                        var ssmo = smo as ScriptSchemaObjectBase;
+                        if (!string.IsNullOrEmpty(ssmo.Schema))
+                        {
+                            baseFileName = $"{ssmo.Schema}.{ssmo.Name}";
+                        }
                     }
+
+                    scripter.Options.FileName = Path.Combine(destinationDirectory, $"{sequenceNo.ToString("000")}-{baseFileName}.sql");
+                    scripter.Script(new Urn[] { urn });
+                    sequenceNo++;
+
+                    Console.WriteLine($"OK {scripter.Options.FileName}");
                 }
-
-                scripter.Options.FileName = Path.Combine(destinationDirectory, $"{sequenceNo.ToString("000")}-{baseFileName}.sql");
-                scripter.Script(new Urn[] { urn });
-                sequenceNo++;
-
-                Console.WriteLine($"OK {scripter.Options.FileName}");
+                else
+                {
+                    Console.WriteLine($"Failed to generate scripts for urn: {urn}");
+                }
             }
         }
 
