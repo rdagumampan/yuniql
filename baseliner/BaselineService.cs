@@ -38,27 +38,22 @@ namespace Baseliner
 
     public class BaselineService
     {
+        private List<string> processedUrns = new List<string>();
+
         public delegate bool FilterDelegate(Urn urn);
         public static bool FilterMethod(Urn urn)
         {
-            if (urn.Type == "StoredProcedure")
-            {
-                Console.WriteLine("Filtered StoredProcedure");
-                return true;
-            }
-
             if (urn.Type == "UserDefinedDataType")
             {
                 Console.WriteLine("Filtered UserDefinedDataType");
                 return true;
             }
 
-
-            if (urn.Type == "UnresolvedEntity")
-            {
-                Console.WriteLine("Filtered UnresolvedEntity");
-                return true;
-            }
+            //if (urn.Type == "UserDefinedFunction")
+            //{
+            //    Console.WriteLine("Filtered UserDefinedFunction");
+            //    return true;
+            //}
 
             if (urn.Type == "XmlSchemaCollection")
             {
@@ -66,9 +61,15 @@ namespace Baseliner
                 return true;
             }
 
-            if (urn.Type == "UserDefinedFunction")
+            if (urn.Type == "StoredProcedure")
             {
-                Console.WriteLine("Filtered UserDefinedFunction");
+                Console.WriteLine("Filtered StoredProcedure");
+                return true;
+            }
+
+            if (urn.Type == "UnresolvedEntity")
+            {
+                Console.WriteLine("Filtered UnresolvedEntity");
                 return true;
             }
 
@@ -95,7 +96,8 @@ namespace Baseliner
             {
                 //use this when running against local instance of sql server with integrated security
                 //connectionString = $"Data Source=.;Integrated Security=SSPI;Initial Catalog=AdventureWorks";
-                connectionString = $"Server=.;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!";
+                connectionString = $"Server=.;Database=AdventureWorksLT2016;User Id=sa;Password=P@ssw0rd!";
+                //connectionString = $"Server=.;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!";
             }
 
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
@@ -107,8 +109,8 @@ namespace Baseliner
             connection.Connect();
 
             server = new Server(connection);
-            database = server.Databases["AdventureWorks"];
-
+            database = server.Databases["AdventureWorksLT2016"];
+            //database = server.Databases["AdventureWorks"];
         }
         public Scripter CreateScripter()
         {
@@ -244,7 +246,7 @@ namespace Baseliner
             var scripter = CreateScripter();
 
             var schemasDirectory = GetDropFolder("01-schemas");
-            var schemasUrns = GetGenericUrns(database.XmlSchemaCollections);
+            var schemasUrns = GetGenericUrns(database.Schemas);
             GenerateSchemaBasedScripts(scripter, schemasDirectory, schemasUrns);
 
             var typeDirectory = GetDropFolder("02-types");
@@ -271,13 +273,13 @@ namespace Baseliner
             var viewUrns = GetGenericUrns(database.Views);
             GenerateSchemaBasedScripts(scripter, viewDirectory, viewUrns);
 
-            var procedureDirectory = GetDropFolder("06-procedures");
-            var procedureUrns = GetGenericUrns(database.StoredProcedures);
-            GenerateSchemaBasedScripts(scripter, procedureDirectory, procedureUrns);
-
-            var functionDirectory = GetDropFolder("07-functions");
+            var functionDirectory = GetDropFolder("06-functions");
             var functionUrns = GetGenericUrns(database.UserDefinedFunctions);
             GenerateSchemaBasedScripts(scripter, functionDirectory, functionUrns);
+
+            var procedureDirectory = GetDropFolder("07-procedures");
+            var procedureUrns = GetGenericUrns(database.StoredProcedures);
+            GenerateSchemaBasedScripts(scripter, procedureDirectory, procedureUrns);
 
             var sequencesDirectory = GetDropFolder("08-sequences");
             var sequencesUrns = GetGenericUrns(database.Sequences);
@@ -293,6 +295,7 @@ namespace Baseliner
             var urns = new List<Urn>();
             foreach (SqlSmoObject smo in collections)
             {
+                if (smo is Schema && ((smo as Schema).IsSystemObject)) continue;
                 if (smo is Table && ((smo as Table).IsSystemObject)) continue;
                 if (smo is View && ((smo as View).IsSystemObject)) continue;
                 if (smo is StoredProcedure && ((smo as StoredProcedure).IsSystemObject)) continue;
@@ -331,8 +334,10 @@ namespace Baseliner
             var sequenceNo = 1;
             foreach (var urn in urns)
             {
+                if (processedUrns.Contains(urn)) continue;
+
                 var smo = server.GetSmoObject(urn) as ScriptNameObjectBase;
-                if (null!= smo)
+                if (null != smo)
                 {
                     var baseFileName = $"{smo.Name}";
 
@@ -347,6 +352,8 @@ namespace Baseliner
 
                     scripter.Options.FileName = Path.Combine(destinationDirectory, $"{sequenceNo.ToString("000")}-{baseFileName}.sql");
                     scripter.Script(new Urn[] { urn });
+
+                    processedUrns.Add(urn);
                     sequenceNo++;
 
                     Console.WriteLine($"OK {scripter.Options.FileName}");
