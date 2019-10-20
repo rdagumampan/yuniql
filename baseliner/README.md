@@ -14,3 +14,9 @@ Publish as self-contained application (win-x64)
 ```console
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 ```
+
+
+https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2016.bak
+https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorksLT2016.bak
+https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorksDW2016.bak
+

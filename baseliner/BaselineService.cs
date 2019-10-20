@@ -96,12 +96,13 @@ namespace Baseliner
             {
                 //use this when running against local instance of sql server with integrated security
                 //connectionString = $"Data Source=.;Integrated Security=SSPI;Initial Catalog=AdventureWorks";
-                connectionString = $"Server=.;Database=AdventureWorksLT2016;User Id=sa;Password=P@ssw0rd!";
-                //connectionString = $"Server=.;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!";
+                //connectionString = $"Server=.;Database=AdventureWorksLT2016;User Id=sa;Password=P@ssw0rd!";
+                connectionString = $"Server=.;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!";
             }
 
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             var connection = new ServerConnection();
+
             connection.ServerInstance = connectionStringBuilder.DataSource;
             connection.LoginSecure = connectionStringBuilder.IntegratedSecurity;
             connection.Login = connectionStringBuilder.UserID;
@@ -109,7 +110,7 @@ namespace Baseliner
             connection.Connect();
 
             server = new Server(connection);
-            database = server.Databases["AdventureWorksLT2016"];
+            database = server.Databases[connectionStringBuilder.InitialCatalog];
             //database = server.Databases["AdventureWorks"];
         }
         public Scripter CreateScripter()
@@ -145,7 +146,7 @@ namespace Baseliner
 
             //table specific options
             options.Default = true;
-            options.Triggers = false;
+            options.Triggers = true;
 
             //table indexes specific options
             options.Indexes = true;
@@ -199,7 +200,7 @@ namespace Baseliner
             options.FullTextCatalogs = false;
             options.IncludeFullTextCatalogRootPath = false;
 
-            options.ExtendedProperties = false;
+            options.ExtendedProperties = true;
             options.DdlBodyOnly = false;
             options.DdlHeaderOnly = false;
 
@@ -210,14 +211,14 @@ namespace Baseliner
             //storage specific options, exclude storage settings
             options.NoTablePartitioningSchemes = true;
             options.NoIndexPartitioningSchemes = true;
-            options.NoXmlNamespaces = true;
+            options.NoXmlNamespaces = false;
             options.NoCollation = true;
             options.NoFileStreamColumn = true;
             options.NoFileStream = true;
             options.NoFileGroup = true;
-            options.NoIdentities = true;
+            options.NoIdentities = false;
             options.NoAssemblies = true;
-            options.NoViewColumns = true;
+            options.NoViewColumns = false;
 
             //sql server platform specific options
             //options.TargetDatabaseEngineEdition = false;
@@ -367,7 +368,8 @@ namespace Baseliner
 
         public string GetDropFolder(string folder)
         {
-            var workingPath = Environment.CurrentDirectory;
+            //var workingPath = Environment.CurrentDirectory;
+            var workingPath = @"C:\temp\demo\v0.01";
             var tableDirectory = Path.Combine(workingPath, folder);
             if (!Directory.Exists(tableDirectory))
             {
