@@ -18,6 +18,7 @@ namespace ArdiLabs.Yuniql
             tokens.ForEach(t =>
             {
                 procssedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
+                TraceService.Debug($"Replaced {t.Key} with {t.Value}");
             });
 
             return procssedSqlStatement.ToString();

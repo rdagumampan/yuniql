@@ -186,12 +186,12 @@ namespace ArdiLabs.Yuniql
             return 0;
         }
 
-        private static object RunBaselineOption(InfoOption opts)
+        private static object RunBaselineOption(BaselineOption opts)
         {
             throw new NotImplementedException("Not yet implemented, stay tune!");
         }
 
-        private static object RunRebaseOption(InfoOption opts)
+        private static object RunRebaseOption(RebaseOption opts)
         {
             throw new NotImplementedException("Not yet implemented, stay tune!");
         }

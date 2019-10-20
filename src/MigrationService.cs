@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Transactions;
 
@@ -189,6 +188,8 @@ namespace ArdiLabs.Yuniql
             List<KeyValuePair<string, string>> tokens = null)
         {
             var sqlScriptFiles = Directory.GetFiles(directoryFullPath, "*.sql").ToList();
+            TraceService.Info($"Found the {sqlScriptFiles.Count} script files on {directoryFullPath}");
+            TraceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
@@ -312,37 +313,28 @@ namespace ArdiLabs.Yuniql
 
         private void RunCsvImport(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath)
         {
+            //execute all script files in the version folder
             var csvFiles = Directory.GetFiles(versionFullPath, "*.csv").ToList();
+            TraceService.Info($"Found the {csvFiles.Count} csv files on {versionFullPath}");
+            TraceService.Info($"{string.Join(@"\r\n\t", csvFiles.Select(s => new FileInfo(s).Name))}");
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
                 connection.Open();
-                using (var transaction = connection.BeginTransaction())
+                csvFiles.ForEach(csvFile =>
                 {
-                    try
-                    {
-                        //execute all script files in the version folder
-                        csvFiles.ForEach(csvFile =>
-                        {
-                            var csvImportService = new CsvImportService();
-                            csvImportService.Run(sqlConnectionString, csvFile);
-                            TraceService.Info($"Imported csv file {csvFile}.");
-                        });
-
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
+                    var csvImportService = new CsvImportService();
+                    csvImportService.Run(sqlConnectionString, csvFile);
+                    TraceService.Info($"Imported csv file {csvFile}.");
+                });
             }
         }
 
         private void RunMigrationScriptsInternal(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath, List<KeyValuePair<string, string>> tokens = null)
         {
             var sqlScriptFiles = Directory.GetFiles(versionFullPath, "*.sql").ToList();
+            TraceService.Info($"Found the {sqlScriptFiles.Count} script files on {versionFullPath}");
+            TraceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s=> new FileInfo(s).Name))}");
 
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {

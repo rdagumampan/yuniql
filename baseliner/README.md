@@ -9,3 +9,8 @@ docker exec -it baseliner_db_1 /opt/mssql-tools/bin/sqlcmd -S localhost `
 
 docker 
 ```
+
+Publish as self-contained application (win-x64)
+```console
+dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
+```

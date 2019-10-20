@@ -115,7 +115,7 @@ namespace Baseliner
             var options = new ScriptingOptions();
             options.EnforceScriptingOptions = true;
 
-            //we script only the schema and their dependencies
+            //we script only the schema and dependencies are handled separately thru dependency tree walk
             options.ScriptData = false;
             options.ScriptSchema = true;
             options.WithDependencies = false;
@@ -138,7 +138,7 @@ namespace Baseliner
             options.AppendToFile = true;
             options.IncludeDatabaseContext = false;
 
-            //general options
+            //general options for all schema objects
             options.PrimaryObject = true;
 
             //table specific options
@@ -147,12 +147,13 @@ namespace Baseliner
 
             //table indexes specific options
             options.Indexes = true;
-            options.XmlIndexes = false;
             options.ClusteredIndexes = true;
             options.NonClusteredIndexes = true;
             options.ColumnStoreIndexes = false;
             options.SpatialIndexes = false;
+            options.XmlIndexes = false;
 
+            //we choose to be selective of what index to script out
             options.DriAll = false;
 
             options.DriDefaults = true;
@@ -169,28 +170,28 @@ namespace Baseliner
             options.DriForeignKeys = true;
             options.DriUniqueKeys = true;
 
-            //security specific options 
+            //security specific options, exclude security
             options.Permissions = false;
             options.IncludeDatabaseRoleMemberships = false;
             options.LoginSid = false;
 
-            //system object options
+            //system object options, exclude system objects
             options.AllowSystemObjects = false;
             options.DriIncludeSystemNames = false;
 
-            //scripted data conversion options
+            //scripted data conversion options, exclude table data
             options.ScriptDataCompression = false;
             options.TimestampToBinary = false;
             options.ConvertUserDefinedDataTypesToBaseType = false;
             options.Bindings = true;
             options.ChangeTracking = false;
 
-            //agents and jobs specific options
+            //agents and jobs specific options, exclude agents
             options.AgentNotify = false;
             options.AgentJobId = false;
             options.AgentAlertJob = false;
 
-            //full text search specific options
+            //full text search specific options, exclude fulltext
             options.FullTextStopLists = false;
             options.FullTextIndexes = false;
             options.FullTextCatalogs = false;
@@ -203,6 +204,8 @@ namespace Baseliner
             options.NoVardecimal = true;
             options.NoMailProfilePrincipals = true;
             options.NoMailProfileAccounts = true;
+
+            //storage specific options, exclude storage settings
             options.NoTablePartitioningSchemes = true;
             options.NoIndexPartitioningSchemes = true;
             options.NoXmlNamespaces = true;
@@ -241,23 +244,23 @@ namespace Baseliner
             var scripter = CreateScripter();
 
             var schemasDirectory = GetDropFolder("01-schemas");
-            var schemasUrns = GetUrns(database.XmlSchemaCollections);
+            var schemasUrns = GetGenericUrns(database.XmlSchemaCollections);
             GenerateSchemaBasedScripts(scripter, schemasDirectory, schemasUrns);
 
             var typeDirectory = GetDropFolder("02-types");
-            var typeUrns = GetUrns(database.UserDefinedTypes);
+            var typeUrns = GetGenericUrns(database.UserDefinedTypes);
             GenerateSchemaBasedScripts(scripter, typeDirectory, typeUrns);
 
             var dataTypeDirectory = GetDropFolder("02-types");
-            var dataTypeUrns = GetUrns(database.UserDefinedDataTypes);
+            var dataTypeUrns = GetGenericUrns(database.UserDefinedDataTypes);
             GenerateSchemaBasedScripts(scripter, dataTypeDirectory, dataTypeUrns);
 
             var tableTypeDirectory = GetDropFolder("02-types");
-            var tableTypeUrns = GetUrns(database.UserDefinedTableTypes);
+            var tableTypeUrns = GetGenericUrns(database.UserDefinedTableTypes);
             GenerateSchemaBasedScripts(scripter, tableTypeDirectory, tableTypeUrns);
 
             var xmlschemasDirectory = GetDropFolder("03-xmlschemas");
-            var xmlschemasUrns = GetUrns(database.XmlSchemaCollections);
+            var xmlschemasUrns = GetGenericUrns(database.XmlSchemaCollections);
             GenerateSchemaBasedScripts(scripter, xmlschemasDirectory, xmlschemasUrns);
 
             var tableDirectory = GetDropFolder("04-tables");
@@ -265,27 +268,27 @@ namespace Baseliner
             GenerateSchemaBasedScripts(scripter, tableDirectory, tableUrns);
 
             var viewDirectory = GetDropFolder("05-views");
-            var viewUrns = GetUrns(database.Views);
+            var viewUrns = GetGenericUrns(database.Views);
             GenerateSchemaBasedScripts(scripter, viewDirectory, viewUrns);
 
             var procedureDirectory = GetDropFolder("06-procedures");
-            var procedureUrns = GetUrns(database.StoredProcedures);
+            var procedureUrns = GetGenericUrns(database.StoredProcedures);
             GenerateSchemaBasedScripts(scripter, procedureDirectory, procedureUrns);
 
             var functionDirectory = GetDropFolder("07-functions");
-            var functionUrns = GetUrns(database.UserDefinedFunctions);
+            var functionUrns = GetGenericUrns(database.UserDefinedFunctions);
             GenerateSchemaBasedScripts(scripter, functionDirectory, functionUrns);
 
             var sequencesDirectory = GetDropFolder("08-sequences");
-            var sequencesUrns = GetUrns(database.Sequences);
+            var sequencesUrns = GetGenericUrns(database.Sequences);
             GenerateSchemaBasedScripts(scripter, sequencesDirectory, sequencesUrns);
 
             var triggersDirectory = GetDropFolder("09-triggers");
-            var triggersUrns = GetUrns(database.Triggers);
+            var triggersUrns = GetGenericUrns(database.Triggers);
             GenerateSchemaBasedScripts(scripter, triggersDirectory, triggersUrns);
         }
 
-        public List<Urn> GetUrns(SmoCollectionBase collections)
+        public List<Urn> GetGenericUrns(SmoCollectionBase collections)
         {
             var urns = new List<Urn>();
             foreach (SqlSmoObject smo in collections)
