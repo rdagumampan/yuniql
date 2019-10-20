@@ -5,6 +5,7 @@ using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Sdk.Sfc;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 
 //https://gist.github.com/vincpa/1755925
 //https://www.sqlservermigrations.com/2018/08/script-databases-and-objects-using-powershell/
@@ -89,7 +90,20 @@ namespace Baseliner
         private Database database;
         public void Init()
         {
-            var connection = new ServerConnection(new SqlConnectionInfo(Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")));
+            var connectionString = Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                //use this when running against local instance of sql server with integrated security
+                //connectionString = $"Data Source=.;Integrated Security=SSPI;Initial Catalog=AdventureWorks";
+                connectionString = $"Server=.;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!";
+            }
+
+            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            var connection = new ServerConnection();
+            connection.ServerInstance = connectionStringBuilder.DataSource;
+            connection.LoginSecure = connectionStringBuilder.IntegratedSecurity;
+            connection.Login = connectionStringBuilder.UserID;
+            connection.Password = connectionStringBuilder.Password;
             connection.Connect();
 
             server = new Server(connection);
@@ -278,9 +292,10 @@ namespace Baseliner
             {
                 if (smo is Table && ((smo as Table).IsSystemObject)) continue;
                 if (smo is View && ((smo as View).IsSystemObject)) continue;
-                if (smo is UserDefinedFunction && ((smo as UserDefinedFunction).IsSystemObject)) continue;
                 if (smo is StoredProcedure && ((smo as StoredProcedure).IsSystemObject)) continue;
+                if (smo is UserDefinedFunction && ((smo as UserDefinedFunction).IsSystemObject)) continue;
 
+                Console.WriteLine($"GetUrns: {smo.Urn}");
                 urns.Add(smo.Urn);
             }
             return urns;

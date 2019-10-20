@@ -13,14 +13,14 @@ services:
     ports:
       - "1433:1433"
     healthcheck:
-      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd","-s", "yuniqldb.ardilabs.com", "-U", "sa", "-P", "P@ssw0rd!", "-Q", "SELECT 1" ]
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd","-s", "yuniql-baseliner-db.ardilabs.com", "-U", "sa", "-P", "P@ssw0rd!", "-Q", "SELECT 1" ]
       interval: 1s
       retries: 20
     tty: true
     networks:
       baselinervnet:
         aliases:
-          - yuniqldb.ardilabs.com
+          - yuniql-baseliner-db.ardilabs.com
 
   app:
     image: rdagumampan/yuniql-baseliner-app
@@ -29,8 +29,8 @@ services:
       context: .
       dockerfile: dockerfile.app
     environment:
-      YUNIQL_CONNECTION_STRING: "Server=yuniqldb.ardilabs.com;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!"
-#    entrypoint: /bin/bash -c "/bin/bash -c \"dotnet run\""
+      YUNIQL_CONNECTION_STRING: "Server=yuniql-baseliner-db.ardilabs.com;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!"
+    entrypoint: /bin/bash -c "/bin/bash -c \"dotnet run\""
     tty: true
     depends_on:
       - db
