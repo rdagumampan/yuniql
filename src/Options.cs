@@ -87,4 +87,30 @@ namespace ArdiLabs.Yuniql
         [Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts")]
         public bool Debug { get; set; }
     }
+
+    //yuniql baseline
+    [Verb("baseline", HelpText = "Scripts selected database objects to form your v0.00 schema")]
+    public class BaselineOption
+    {
+        //yuniql info -c "<connectiong-string>"
+        [Option('c', "connection-string", Required = true, HelpText = "Connection string to target sql server instance", Default = "Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB")]
+        public string ConnectionString { get; set; }
+
+        //yuniql run -d | --debug
+        [Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts")]
+        public bool Debug { get; set; }
+    }
+
+    //yuniql baseline
+    [Verb("rebase", HelpText = "Consolidateds all existing versions, archive them and create a new v0.00 baseline")]
+    public class RebaseOption
+    {
+        //yuniql info -c "<connectiong-string>"
+        [Option('c', "connection-string", Required = true, HelpText = "Connection string to target sql server instance", Default = "Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB")]
+        public string ConnectionString { get; set; }
+
+        //yuniql run -d | --debug
+        [Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts")]
+        public bool Debug { get; set; }
+    }
 }

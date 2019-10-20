@@ -58,6 +58,14 @@ namespace ArdiLabs.Yuniql
                     TraceSettings.Instance.IsDebugEnabled = opts.Debug;
                     return RunInfoOption(opts);
                 },
+                (BaselineOption opts) => {
+                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    return RunBaselineOption(opts);
+                },
+                (RebaseOption opts) => {
+                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    return RunRebaseOption(opts);
+                },
                 errs => 1);
         }
 
@@ -177,5 +185,16 @@ namespace ArdiLabs.Yuniql
 
             return 0;
         }
+
+        private static object RunBaselineOption(InfoOption opts)
+        {
+            throw new NotImplementedException("Not yet implemented, stay tune!");
+        }
+
+        private static object RunRebaseOption(InfoOption opts)
+        {
+            throw new NotImplementedException("Not yet implemented, stay tune!");
+        }
+
     }
 }
