@@ -79,7 +79,7 @@ namespace ArdiLabs.Yuniql
                 {
                     var workingPath = Environment.CurrentDirectory;
                     versionService.Init(workingPath);
-                    TraceService.Info($"Initialized {opts.Path}.");
+                    TraceService.Info($"Initialized {workingPath}.");
                 }
                 else
                 {

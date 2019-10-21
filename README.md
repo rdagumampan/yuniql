@@ -67,6 +67,7 @@ docker-compose down
 
 #### Todo
 
+- default cs to env var when yunql run
 - execute all subdirectories
 - base docker image
 - yuniql baseline
