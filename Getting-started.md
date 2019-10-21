@@ -112,14 +112,15 @@ yuniql-nightly> yuniql run -a -c "Server=localhost,1400;Database=HelloYuniqlDb;U
 yuniql-nightly> yuniql info
 ```
 
-| VisitorID | FirstName | LastName | Address | Email |
-| --- | --- | --- | --- | --- |
-|1000|Jack|Poole|Manila|jack.poole@never-exists.com|
-|1001|Diana|Churchill|Makati|diana.churchill@never-exists.com|
-|1002|Rebecca|Lyman|Rizal|rebecca.lyman@never-exists.com|
-|1003|Sam|Macdonald|Batangas|sam.macdonald@never-exists.com|
-|1004|Matt|Paige|Laguna|matt.paige@never-exists.com|
-
+```sql
+VisitorID   FirstName   LastName    Address  Email
+----------- ----------- ----------- ------------------------------------------
+1000        Jack        Poole       Manila   jack.poole@never-exists.com
+1001        Diana       Churchill   Makati   diana.churchill@never-exists.com
+1002        Rebecca     Lyman       Rizal    rebecca.lyman@never-exists.com
+1003        Sam         Macdonald   Batangas sam.macdonald@never-exists.com
+1004        Matt        Paige       Laguna   matt.paige@never-exists.com
+```
 ## Initialize git repo
 
 ```git
