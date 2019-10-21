@@ -1,8 +1,8 @@
-# Getting started
+## Getting started
 
-## Prepare your environment
+#### Prepare your environment
 
-### Deploy a sql server linux container
+##### Deploy a sql server linux container
 	
 ```bash
 docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Manila2050!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
@@ -12,13 +12,13 @@ CONTAINER ID            IMAGE                                        PORTS
 <dynamic-container-id>  mcr.microsoft.com/mssql/server:2017-latest   0.0.0.0:1400->1433/tcp
 ```
 
-### Configure your connection string
+##### Configure your connection string
 
 ```bash
 SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=HelloYuniqlDb;User Id=SA;Password=Manila2050!" 
 ```
 
-## Download yuniql
+#### Download yuniql
 
 ```powershell
 powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip -OutFile  "c:\temp\yuniql-nightly.zip"
@@ -26,24 +26,14 @@ powershell Expand-Archive "c:\temp\yuniql-nightly.zip" -DestinationPath "c:\temp
 cd c:\temp\yuniql-nightly
 ```
 
-## Initialize your workspace
+#### Initialize your workspace
 
 ```bash
 yuniql-nightly> yuniql init
 yuniql-nightly> dir /O:N
-
-INF   2019-10-21T20:41:49.3420320Z   Created script directory c:\temp\yuniql-nightly\_init
-INF   2019-10-21T20:41:49.3425548Z   Created script directory c:\temp\yuniql-nightly\_pre
-INF   2019-10-21T20:41:49.3433916Z   Created script directory c:\temp\yuniql-nightly\v0.00
-INF   2019-10-21T20:41:49.3439002Z   Created script directory c:\temp\yuniql-nightly\_draft
-INF   2019-10-21T20:41:49.3443766Z   Created script directory c:\temp\yuniql-nightly\_post
-INF   2019-10-21T20:41:49.3462972Z   Created file c:\temp\yuniql-nightly\README.md
-INF   2019-10-21T20:41:49.3467579Z   Created file c:\temp\yuniql-nightly\Dockerfile
-INF   2019-10-21T20:41:49.3468992Z   Initialized c:\temp\yuniql-nightly
-
 ```
 
-## Increment major version
+#### Increment major version
 
 ```bash
 yuniql-nightly> yuniql vnext -M
@@ -59,7 +49,7 @@ yuniql-nightly> dir /O:N
 10/21/2019  22:41                 README.md
 ```
 
-## Create your first script inside `v1.00`
+#### Create your first script inside `v1.00`
 
 ```sql
 //setup_tables.sql
@@ -72,18 +62,18 @@ CREATE TABLE Visitor (
 );
 ```
 
-## Run migration
+#### Run migration
 
 ```bash
-yuniql-nightly> yuniql run -a -c "Server=localhost,1400;Database=HelloYuniqlDb;User Id=SA;Password=Manila2050!"
-yuniql-nightly> yuniql info -c "Server=localhost,1400;Database=HelloYuniqlDb;User Id=SA;Password=Manila2050!"
+yuniql-nightly> yuniql run -a
+yuniql-nightly> yuniql info
 
 Version         Created                         CreatedBy
 v0.00           2019-10-21T21:16:48.8130000     sa
 v1.00           2019-10-21T21:16:49.4130000     sa
 ```
 
-## Increment minor version
+#### Increment minor version
 
 ```bash
 yuniql-nightly> yuniql vnext
@@ -94,7 +84,7 @@ yuniql-nightly> dir /O:N
 10/21/2019  22:46    <DIR>          v1.01
 ```
 
-## Create your second script inside `v1.01`
+#### Create your second script inside `v1.01`
 
 ```sql
 //initialize_tables.sql
@@ -105,10 +95,10 @@ INSERT INTO [dbo].[Visitor]([FirstName],[LastName],[Address],[Email])VALUES('Sam
 INSERT INTO [dbo].[Visitor]([FirstName],[LastName],[Address],[Email])VALUES('Matt','Paige','Laguna','matt.paige@never-exists.com')
 ```
 
-## Run migration
+#### Run migration
 
 ```bash
-yuniql-nightly> yuniql run -a -c "Server=localhost,1400;Database=HelloYuniqlDb;User Id=SA;Password=Manila2050!"
+yuniql-nightly> yuniql run -a
 yuniql-nightly> yuniql info
 ```
 
@@ -121,7 +111,7 @@ VisitorID   FirstName   LastName    Address  Email
 1003        Sam         Macdonald   Batangas sam.macdonald@never-exists.com
 1004        Matt        Paige       Laguna   matt.paige@never-exists.com
 ```
-## Initialize git repo
+#### Initialize git repo
 
 ```git
 yuniql-nightly> git init
@@ -129,13 +119,13 @@ yuniql-nightly> git add -A
 yuniql-nightly> git commit -m "This is my first yuniql migration"
 ```
 
-## Create destination git repo and push your changes
+#### Create destination git repo and push your changes
 
 ```bash
 yuniql-nightly> git remote add origin git@github.com:<your-github-account>/<your-repository-name>.git
 yuniql-nightly> git push -u origin master
 ```
 
-## Found bugs?
+#### Found bugs?
 
 Help us improve further please [create an issue](https://github.com/rdagumampan/yuniql/issues/new).
