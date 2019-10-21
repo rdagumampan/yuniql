@@ -1,4 +1,11 @@
-﻿
+#yuniql baseliner
+
+Supported commands
+```console
+yuniql baseline
+yuniql rebase
+```
+
 #https://docs.microsoft.com/en-us/sql/linux/tutorial-restore-backup-in-sql-server-container?view=sql-server-ver15
 
 FILE LIST ONLY
