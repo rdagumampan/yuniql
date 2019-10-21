@@ -24,7 +24,9 @@ SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=HelloYuniqlDb;User
 #### 2. Download yuniql
 
 ```powershell
-powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip -OutFile  "c:\temp\yuniql-nightly.zip"
+powershell Invoke-WebRequest 
+	-Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip 
+	-OutFile  "c:\temp\yuniql-nightly.zip"
 powershell Expand-Archive "c:\temp\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql-nightly"
 cd c:\temp\yuniql-nightly
 ```
@@ -98,14 +100,16 @@ INSERT INTO [dbo].[Visitor]([FirstName],[LastName],[Address],[Email])VALUES('Sam
 INSERT INTO [dbo].[Visitor]([FirstName],[LastName],[Address],[Email])VALUES('Matt','Paige','Laguna','matt.paige@never-exists.com')
 ```
 
-#### 9. Run migration
+#### 9. Run migration again
 
 ```bash
-yuniql-nightly> yuniql run -a
+yuniql-nightly> yuniql run
 yuniql-nightly> yuniql info
 ```
 
+Verify that records has been inserted as part version `v1.01`
 ```sql
+//SELECT * FROM [dbo].[Visitor]
 VisitorID   FirstName   LastName    Address  Email
 ----------- ----------- ----------- ------------------------------------------
 1000        Jack        Poole       Manila   jack.poole@never-exists.com
