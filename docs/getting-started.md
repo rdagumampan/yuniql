@@ -8,6 +8,8 @@ This 10-step tutorial shows you how to deploy your first sql-based migration int
 
 	```bash
 	docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Manila2050!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+	```
+	```
 	docker ps
 
 	CONTAINER ID            IMAGE                                        PORTS                 
