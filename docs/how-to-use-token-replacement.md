@@ -2,14 +2,14 @@
 
 A series of key/value pairs of tokens can be passed to `yuniql`. During migration run, yuniql inspects all script files and replaces them. This is particulary useful in cases such as cross-database and linked-server queries where the databases and server names varies per environment.
 
-The following script would failed when run in TEST where `EMPLOYEEDB_DEV` database does not exists but `EMPLOYEEDB_TEST`.
+The following script would fail when run in TEST where `EMPLOYEEDB_DEV` database does not exists but `EMPLOYEEDB_TEST`.
 ```sql
 SELECT E.FirstName, E.LastName, E.Address, E.Email 
 FROM [EMPLOYEEDB_DEV].[dbo].[Employee] E 
 ORDER BY E.FirstName ASC
 ```
 
-To resolve this, pre-pare your script with token `%{ENV_EMPLOYEEDB}`. You can use whatever token name.
+To resolve this, let's pre-pare your script with token `%{ENV_EMPLOYEEDB}`. You can of course use whatever token name.
 ```sql
 SELECT E.FirstName, E.LastName, E.Address, E.Email 
 FROM EMPLOYEEDB_%{ENV-DBNAME-SUFFIX}.[dbo].[Employee] E 
