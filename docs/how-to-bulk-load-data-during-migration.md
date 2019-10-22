@@ -11,7 +11,7 @@ Master data and lookup table data almost comes natural as part of every database
 
 2. Create script file on `v0.01`
 
-	```bash
+	```sql
 	--setup_tables.sql
 	CREATE TABLE Visitor (
 		VisitorID INT IDENTITY(1000,1),
@@ -24,7 +24,7 @@ Master data and lookup table data almost comes natural as part of every database
 
 3. Create a `visitor-data.csv` on version `v0.01`
 
-	```
+	```csv
 	"VisitorID","FirstName","LastName","Address","Email"
 	"1000","Jack","Poole","Manila","jack.poole@never-exists.com"
 	"1001","Diana","Churchill","Makati","diana.churchill@never-exists.com"
@@ -35,14 +35,14 @@ Master data and lookup table data almost comes natural as part of every database
 
 4. Run migration
 
-	``
+	```bash
 	yuniql run -a -c "<your-connection-string>"
 	yuniql info
-	``
+	```
 
 5. Verify if all is good
 
-	```
+	```sql
 	SELECT * FROM [dbo].[Visitor]
 	```
 
