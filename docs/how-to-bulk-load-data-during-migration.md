@@ -32,6 +32,8 @@ Master data and lookup tables almost comes natural as part of every database pro
 	"1004","Matt","Paige","Laguna","matt.paige@never-exists.com"
 	```
 
+>>NOTE: The file name of the CSV file must match the destination table else an exception is thrown.
+
 4. Run migration
 
 	```bash
