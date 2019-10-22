@@ -54,7 +54,7 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 	10/21/2019  22:46    <DIR>          v1.00
 	10/21/2019  22:41                   Dockerfile
 	10/21/2019  22:41                   README.md
-	10/21/2019  22:41                   .gitignpore
+	10/21/2019  22:41                   .gitignore
 	```
 
 4. Create your first script file `setup-tables.sql` inside `v1.00`
