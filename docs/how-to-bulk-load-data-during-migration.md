@@ -9,10 +9,9 @@ Master data and lookup tables almost comes natural as part of every database pro
 	yuniql vnext
 	```
 
-2. Create script file on `v0.01`
+2. Create script file `setup_tables.sql` on `v0.01`
 
 	```sql
-	--setup_tables.sql
 	CREATE TABLE Visitor (
 		VisitorID INT IDENTITY(1000,1),
 		FirstName NVARCHAR(255),
@@ -22,7 +21,7 @@ Master data and lookup tables almost comes natural as part of every database pro
 	);
 	```
 
-3. Create a `visitor-data.csv` on version `v0.01`
+3. Create a `Visitor.csv` on version `v0.01`
 
 	```csv
 	"VisitorID","FirstName","LastName","Address","Email"
@@ -37,7 +36,11 @@ Master data and lookup tables almost comes natural as part of every database pro
 
 	```bash
 	yuniql run -a -c "<your-connection-string>"
-	yuniql info
+	
+	INF   2019-10-22T18:36:08.7621330Z   Executed script file C:\temp\yuniql-nightly\v0.01\setup-tables.sql.
+	INF   2019-10-22T18:36:08.7638901Z   Found the 1 csv files on C:\temp\yuniql-nightly\v0.01
+	INF   2019-10-22T18:36:08.7649367Z   Visitor.csv
+	INF   2019-10-22T18:36:09.0854032Z   Imported csv file C:\temp\yuniql-nightly\v0.01\Visitor.csv.
 	```
 
 5. Verify if all is good
