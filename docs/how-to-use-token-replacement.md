@@ -19,9 +19,9 @@ ORDER BY E.FirstName ASC
 Pass the tokens when you run migration
 
 ```
-yuniql run -k "ENV-DBNAME-SUFFIX=DEV"
-yuniql run -k "ENV-DBNAME-SUFFIX=TEST"
-yuniql run -k "ENV-DBNAME-SUFFIX=PROD"
+yuniql run -k "ENV-DBNAME-SUFFIX=DEV" -c "<you-dev-connection-string>"
+yuniql run -k "ENV-DBNAME-SUFFIX=TEST" -c "<you-test-connection-string>"
+yuniql run -k "ENV-DBNAME-SUFFIX=PROD" -c "<you-prod-connection-string>"
 ```
 
 #### Found bugs?
