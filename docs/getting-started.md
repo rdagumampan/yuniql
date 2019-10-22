@@ -59,10 +59,10 @@ yuniql-nightly> dir /O:N
 10/21/2019  22:41                 README.md
 ```
 
-4. Create your first script file inside v1.00
+4. Create your first script file `setup_tables.sql` inside `v1.00`
 
 ```sql
-//setup_tables.sql
+--setup_tables.sql
 CREATE TABLE Visitor (
 	VisitorID INT IDENTITY(1000,1),
 	FirstName NVARCHAR(255),
@@ -94,10 +94,10 @@ yuniql-nightly> dir /O:N
 10/21/2019  22:46    <DIR>          v1.01
 ```
 
-7. Create your second script file inside v1.01
+7. Create your second script file `initialize_tables.sql` inside `v1.01`
 
 ```sql
-//initialize_tables.sql
+--initialize_tables.sql
 INSERT INTO [dbo].[Visitor]([FirstName],[LastName],[Address],[Email])VALUES('Jack','Poole','Manila','jack.poole@never-exists.com')
 INSERT INTO [dbo].[Visitor]([FirstName],[LastName],[Address],[Email])VALUES('Diana','Churchill','Makati','diana.churchill@never-exists.com')
 INSERT INTO [dbo].[Visitor]([FirstName],[LastName],[Address],[Email])VALUES('Rebecca','Lyman','Rizal','rebecca.lyman@never-exists.com')
