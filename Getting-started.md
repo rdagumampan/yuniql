@@ -43,6 +43,7 @@ yuniql-nightly> dir /O:N
 ```
 
 3. Increment major version
+The `vnext -M` creates a new major version with format `v{major}.{minor}`. You can of course create this manually inthe directory!
 
 ```bash
 yuniql-nightly> yuniql vnext -M
