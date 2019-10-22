@@ -135,9 +135,10 @@ yuniql-nightly> git commit -m "This is my first yuniql migration"
 You may use any other git provider and replace the `.git` folder.
 
 ```bash
-yuniql-nightly> git remote add origin git@github.com:<your-github-account>/<your-repository-name>.git
+yuniql-nightly> git remote add origin https://github.com/{your-github-account}/{your-github-database-repo}.git
 yuniql-nightly> git push -u origin master
 ```
+>NOTE: For simplicity I use HTTPS mode in setting git repo. If you use SSH, you need to download and configure your keys.
 
 #### III. Found bugs?
 
