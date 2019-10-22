@@ -23,8 +23,28 @@ When you run `yuniql vnext`, it identifies the latest version locally and increm
 There are also advanced options such as `yuniql vnext -M` that increments major version and `yuniql vnext -f initialize_tables.sql` that creates a template file in the created version directory.
 
 #### yuniql run
+When you run `yuniql run` the first time, inspects the target database and creates required table to track the versions. All script files in `_init` directory will be executed. The order of execution is as follows `_init`,`_pre`,`vx.xx`,`_draft`,`_post`. Several variations on how can run migration are listed below.
 
+`yuniql run -a`
+- Uses connection string from env variable `YUNIQL_CONNECTION_STRING`
+- Auto-create target database
+- Runs migration
+
+`yuniql run -c "<connectiong-string>"`
+- Runs migration using the specified connectiong string
+
+`yuniql run -p c:\temp\demo`
+- Runs migration from target directory
+
+`yuniql run -t v1.05`
+- Runs migration only upto the version v1.-05
+
+`yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"`
+- Replace each tokens in each script file
+  
 #### yuniql info
+
+`yuniql info` shows all version currently present in the target database
 
 ### Found bugs?
 
