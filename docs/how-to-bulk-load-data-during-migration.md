@@ -2,14 +2,17 @@
 
 Master data and lookup tables almost comes natural as part of every database provisioning process. With this, you may prepare them in CSV files and yuniql will inspect them and bulk load into tables bearing same name as the CSV file. The following example demonstrates how to do this.
 
-1. Initialize local version
+1. Download the latest build and extract to local directory.
+https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip
+
+2. Initialize local version
 
 	```bash
 	yuniql init
 	yuniql vnext
 	```
 
-2. Create script file `setup_tables.sql` on `v0.01`
+3. Create script file `setup_tables.sql` on `v0.01`
 
 	```sql
 	CREATE TABLE Visitor (
@@ -21,7 +24,7 @@ Master data and lookup tables almost comes natural as part of every database pro
 	);
 	```
 
-3. Create a `Visitor.csv` on version `v0.01`
+4. Create a `Visitor.csv` on version `v0.01`
 
 	```csv
 	"VisitorID","FirstName","LastName","Address","Email"
@@ -34,7 +37,7 @@ Master data and lookup tables almost comes natural as part of every database pro
 
 	>NOTE: The file name of the CSV file must match the destination table else an exception is thrown.
 
-4. Run migration
+5. Run migration
 
 	```bash
 	yuniql run -a -c "<your-connection-string>"
@@ -45,7 +48,7 @@ Master data and lookup tables almost comes natural as part of every database pro
 	INF   2019-10-22T18:36:09.0854032Z   Imported csv file C:\temp\yuniql-nightly\v0.01\Visitor.csv.
 	```
 
-5. Verify if all is good
+6. Verify if all is good
 
 	```sql
 	SELECT * FROM [dbo].[Visitor]
