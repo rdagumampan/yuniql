@@ -7,10 +7,7 @@ This 10-step tutorial shows you how to deploy your first sql-based migration int
 1. Deploy a sql server linux container
 
 	```bash
-	docker run 
-		-e "ACCEPT_EULA=Y" 
-		-e "MSSQL_SA_PASSWORD=Manila2050!" 
-		-p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+	docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Manila2050!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 	docker ps
 
 	CONTAINER ID            IMAGE                                        PORTS                 
@@ -28,9 +25,7 @@ This 10-step tutorial shows you how to deploy your first sql-based migration int
 1. Download yuniql. You may also download manually [here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) and extract to desired directory.
 
 	```powershell
-	powershell Invoke-WebRequest 
-		-Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip 
-		-OutFile  "c:\temp\yuniql-nightly.zip"
+	powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip -OutFile  "c:\temp\yuniql-nightly.zip"
 	powershell Expand-Archive "c:\temp\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql-nightly"
 	cd c:\temp\yuniql-nightly
 	```
