@@ -1,8 +1,10 @@
-## Getting started
+### Getting started
 
-#### 1. Prepare your environment
+This 10-step tutorial shows you how to deploy your first sql-based migration into an sql server. For simplicity, we assume you have a Docker service running but you may choose any instance. Estimated completion time: 5 mins.
 
-##### 1.1 Deploy a sql server linux container
+#### II. Prepare your environment
+
+1. Deploy a sql server linux container
 
 ```bash
 docker run 
@@ -15,13 +17,15 @@ CONTAINER ID            IMAGE                                        PORTS
 <dynamic-container-id>  mcr.microsoft.com/mssql/server:2017-latest   0.0.0.0:1400->1433/tcp
 ```
 
-##### 1.2 Configure your connection string
+2. Configure your connection string
 
 ```bash
 SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=HelloYuniqlDb;User Id=SA;Password=Manila2050!" 
 ```
 
-#### 2. Download yuniql
+#### II. Run your first migration
+
+1. Download yuniql. You may also download manually [here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) and extract to desired directory.
 
 ```powershell
 powershell Invoke-WebRequest 
@@ -31,14 +35,14 @@ powershell Expand-Archive "c:\temp\yuniql-nightly.zip" -DestinationPath "c:\temp
 cd c:\temp\yuniql-nightly
 ```
 
-#### 3. Initialize your workspace
+2. Initialize your workspace
 
 ```bash
 yuniql-nightly> yuniql init
 yuniql-nightly> dir /O:N
 ```
 
-#### 4. Increment major version
+3. Increment major version
 
 ```bash
 yuniql-nightly> yuniql vnext -M
@@ -54,7 +58,7 @@ yuniql-nightly> dir /O:N
 10/21/2019  22:41                 README.md
 ```
 
-#### 5. Create your first script inside `v1.00`
+4. Create your first script file inside v1.00
 
 ```sql
 //setup_tables.sql
@@ -67,7 +71,7 @@ CREATE TABLE Visitor (
 );
 ```
 
-#### 6. Run migration
+5. Run migration
 
 ```bash
 yuniql-nightly> yuniql run -a
@@ -78,7 +82,7 @@ v0.00           2019-10-21T21:16:48.8130000     sa
 v1.00           2019-10-21T21:16:49.4130000     sa
 ```
 
-#### 7. Increment minor version
+6. Increment minor version
 
 ```bash
 yuniql-nightly> yuniql vnext
@@ -89,7 +93,7 @@ yuniql-nightly> dir /O:N
 10/21/2019  22:46    <DIR>          v1.01
 ```
 
-#### 8. Create your second script inside `v1.01`
+7. Create your second script file inside v1.01
 
 ```sql
 //initialize_tables.sql
@@ -100,7 +104,7 @@ INSERT INTO [dbo].[Visitor]([FirstName],[LastName],[Address],[Email])VALUES('Sam
 INSERT INTO [dbo].[Visitor]([FirstName],[LastName],[Address],[Email])VALUES('Matt','Paige','Laguna','matt.paige@never-exists.com')
 ```
 
-#### 9. Run migration again
+8. Run migration again
 
 ```bash
 yuniql-nightly> yuniql run
@@ -118,7 +122,7 @@ VisitorID   FirstName   LastName    Address  Email
 1003        Sam         Macdonald   Batangas sam.macdonald@never-exists.com
 1004        Matt        Paige       Laguna   matt.paige@never-exists.com
 ```
-#### 10. Initialize git repo
+9. Initialize git repo
 
 ```git
 yuniql-nightly> git init
@@ -126,13 +130,14 @@ yuniql-nightly> git add -A
 yuniql-nightly> git commit -m "This is my first yuniql migration"
 ```
 
-#### 11. Create destination git repo and push your changes
+10. Create destination git repo and push your changes.
+You may use any other git provider and replace the `.git` folder.
 
 ```bash
 yuniql-nightly> git remote add origin git@github.com:<your-github-account>/<your-repository-name>.git
 yuniql-nightly> git push -u origin master
 ```
 
-#### Found bugs?
+#### III. Found bugs?
 
 Help us improve further please [create an issue](https://github.com/rdagumampan/yuniql/issues/new).
