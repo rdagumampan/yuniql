@@ -36,12 +36,12 @@ dir /O:N
 
 #### `yuniql baseline`
 
-`yuniql baseline` is an experimental feature where we automate the script-generation of primary database objects and place results in `v0.00` of your migration project. A command flow would look like this:
+`yuniql baseline` is an experimental feature where we automate the script-generation of primary database objects and place results in `v0.00` of your migration project.  A command flow would look like this:
 
-`yuniqlx` is expanded build with support for `baseline` automation. Because it's not everyday that we do baseline plus its heavy references to Sql Server SMO, I don't want to make this part of every release.
-
-Download `yuniqlx` here.
+1. Download `yuniqlx` here.
 {INSERT_YUNIQLX_DOWNLOAD_LINK}
+
+2. Baseline your db
 
 ```
 yuniqlx init
@@ -49,6 +49,8 @@ yuniqlx baseline -c <your-reference-database-connection-string>
 
 yuniql run -a -c <your-target-database-connection-string>
 ```
+
+>NOTE: `yuniqlx` is expanded build with support for `baseline` automation. Because it's not everyday that we do baseline plus its heavy references to Sql Server SMO, I don't want to make this part of every release.
 
 #### Found bugs?
 
