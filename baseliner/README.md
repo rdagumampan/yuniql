@@ -1,12 +1,20 @@
-#yuniql baseliner
+# yuniql baseliner
+
+Baseline version automation of your sql server database.
 
 Supported commands
+
 ```console
-yuniql baseline
-yuniql rebase
+yuniqlx baseline
+yuniqlx rebase
 ```
 
-#https://docs.microsoft.com/en-us/sql/linux/tutorial-restore-backup-in-sql-server-container?view=sql-server-ver15
+#### References
+
+https://docs.microsoft.com/en-us/sql/linux/tutorial-restore-backup-in-sql-server-container?view=sql-server-ver15
+https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2016.bak
+https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorksLT2016.bak
+https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorksDW2016.bak
 
 FILE LIST ONLY
 ```powershell
@@ -21,9 +29,3 @@ Publish as self-contained application (win-x64)
 ```console
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 ```
-
-
-https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorks2016.bak
-https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorksLT2016.bak
-https://github.com/Microsoft/sql-server-samples/releases/download/adventureworks/AdventureWorksDW2016.bak
-
