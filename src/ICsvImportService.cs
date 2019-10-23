@@ -1,9 +1,10 @@
-﻿using System.Data.SqlClient;
+﻿using System.Data;
+using System.Data.SqlClient;
 
 namespace ArdiLabs.Yuniql
 {
     public interface ICsvImportService
     {
-        void Run(SqlConnectionStringBuilder sqlConnectionString, string csvFileFullPath);
+        void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath);
     }
 }

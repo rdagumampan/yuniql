@@ -10,13 +10,16 @@ namespace ArdiLabs.Yuniql
 {
     public class CsvImportService : ICsvImportService
     {
-        public void Run(SqlConnectionStringBuilder sqlConnectionString, string csvFileFullPath)
+        public CsvImportService()
+        {
+        }
+        public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath)
         {
             //read csv file and load into data table
             var dataTable = ParseCsvFile(csvFileFullPath);
 
             //save the csv data into staging sql table
-            BulkCopyWithDataTable(sqlConnectionString, dataTable);
+            BulkCopyWithDataTable(connection, transaction, dataTable);
 
             //TODO: validate staging data against destination table schema defs
 
@@ -66,41 +69,31 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        private void BulkCopyWithDataTable(SqlConnectionStringBuilder sqlConnectionString, DataTable csvFileDatatTable)
+        private void BulkCopyWithDataTable(IDbConnection connection, IDbTransaction transaction, DataTable csvFileDatatTable)
         {
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
             {
-                connection.Open();
-
-                using (var sqlBulkCopy = new SqlBulkCopy(connection))
+                sqlBulkCopy.DestinationTableName = csvFileDatatTable.TableName;
+                sqlBulkCopy.BatchSize = 0;
+                sqlBulkCopy.EnableStreaming = true;
+                sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
+                foreach (var column in csvFileDatatTable.Columns)
                 {
-                    sqlBulkCopy.DestinationTableName = csvFileDatatTable.TableName;
-                    sqlBulkCopy.BatchSize = 0;
-                    sqlBulkCopy.EnableStreaming = true;
-                    sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
-                    foreach (var column in csvFileDatatTable.Columns)
-                    {
-                        sqlBulkCopy.ColumnMappings.Add(column.ToString(), column.ToString());
-                    }
-                    sqlBulkCopy.WriteToServer(csvFileDatatTable);
+                    sqlBulkCopy.ColumnMappings.Add(column.ToString(), column.ToString());
                 }
+                sqlBulkCopy.WriteToServer(csvFileDatatTable);
             }
         }
 
-        private void BulkCopyWithDataReader(SqlConnectionStringBuilder sqlConnectionString, string destinationTableName, IDataReader csvFileDatatTable)
+        private void BulkCopyWithDataReader(IDbConnection connection, IDbTransaction transaction, string destinationTableName, IDataReader csvFileDatatTable)
         {
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
             {
-                connection.Open();
-
-                using (var sqlBulkCopy = new SqlBulkCopy(connection))
-                {
-                    sqlBulkCopy.DestinationTableName = destinationTableName;
-                    sqlBulkCopy.BatchSize = 0;
-                    sqlBulkCopy.EnableStreaming = true;
-                    sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
-                    sqlBulkCopy.WriteToServer(csvFileDatatTable);
-                }
+                sqlBulkCopy.DestinationTableName = destinationTableName;
+                sqlBulkCopy.BatchSize = 0;
+                sqlBulkCopy.EnableStreaming = true;
+                sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
+                sqlBulkCopy.WriteToServer(csvFileDatatTable);
             }
         }
 

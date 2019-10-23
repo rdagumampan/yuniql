@@ -5,102 +5,140 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Transactions;
 
 namespace ArdiLabs.Yuniql
 {
     public class MigrationService : IMigrationService
     {
+        private readonly string connectionString;
+
+        public MigrationService(string connectionString)
+        {
+            this.connectionString = connectionString;
+        }
+
         public void Run(string workingPath,
-            string connectionString,
             string targetVersion,
             bool autoCreateDatabase,
             List<KeyValuePair<string, string>> tokens = null)
         {
-            var targetSqlDbConnectionString = new SqlConnectionStringBuilder(connectionString);
+            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            var targetDatabaseName = connectionStringBuilder.InitialCatalog;
+            var targetDatabaseServer = connectionStringBuilder.DataSource;
 
-            //check if database exists and auto-create when its not
-            var masterSqlDbConnectionString = new SqlConnectionStringBuilder(connectionString);
-            masterSqlDbConnectionString.InitialCatalog = "master";
-
-            var targetDatabaseExists = IsTargetDatabaseExists(masterSqlDbConnectionString, targetSqlDbConnectionString.InitialCatalog);
+            //create the database, we need this to be outside of the transaction scope
+            //in an event of failure, users have to manually drop the auto-created database
+            var targetDatabaseExists = IsTargetDatabaseExists(targetDatabaseName);
             if (!targetDatabaseExists && autoCreateDatabase)
             {
-                CreateDatabase(masterSqlDbConnectionString, targetSqlDbConnectionString.InitialCatalog);
-                TraceService.Info($"Created database {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
+                CreateDatabase(targetDatabaseName);
+                TraceService.Info($"Created database {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
             //check if database has been pre-configured to support migration and setup when its not
-            var targetDatabaseConfigured = IsTargetDatabaseConfigured(targetSqlDbConnectionString);
+            var targetDatabaseConfigured = IsTargetDatabaseConfigured();
             if (!targetDatabaseConfigured)
             {
-                ConfigureDatabase(targetSqlDbConnectionString);
-                TraceService.Info($"Configured migration support of {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
-
-                //runs all scripts in the _init folder
-                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_init"), tokens);
-                TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
+                ConfigureDatabase(targetDatabaseName);
+                TraceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
-            //checks if target database already runs the latest version and skips work if it already is
-            if (!IsTargetDatabaseLatest(targetSqlDbConnectionString, targetVersion))
+            //enclose all executions in a single transaction
+            using (var connection = new SqlConnection(connectionString))
             {
-                //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_pre"), tokens);
-                TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        //check if database has been pre-configured and execute init scripts
+                        if (!targetDatabaseConfigured)
+                        {
+                            //runs all scripts in the _init folder
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokens);
+                            TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
+                        }
 
-                //runs all scripts int the vxx.xx folders and subfolders
-                RunVersionScripts(targetSqlDbConnectionString, workingPath, targetVersion, tokens);
+                        //checks if target database already runs the latest version and skips work if it already is
+                        if (!IsTargetDatabaseLatest(connection, transaction, targetVersion))
+                        {
+                            //runs all scripts in the _pre folder and subfolders
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokens);
+                            TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
-                //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_draft"), tokens);
-                TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
+                            //runs all scripts int the vxx.xx folders and subfolders
+                            RunVersionScripts(connection, transaction, workingPath, targetVersion, tokens);
 
-                //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(targetSqlDbConnectionString, Path.Combine(workingPath, "_post"), tokens);
-                TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
-            }
-            else
-            {
-                TraceService.Info($"Target database is updated. No changes made at {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
+                            //runs all scripts in the _draft folder and subfolders
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokens);
+                            TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
+
+                            //runs all scripts in the _post folder and subfolders
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokens);
+                            TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
+                        }
+                        else
+                        {
+                            TraceService.Info($"Target database is updated. No changes made at {targetDatabaseName} on {targetDatabaseServer}.");
+                        }
+
+                        //commit all changes
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+
+                }
             }
         }
-
-        public bool IsTargetDatabaseExists(SqlConnectionStringBuilder sqlConnectionString, string targetDatabaseName)
+        private bool IsTargetDatabaseExists(string targetDatabaseName)
         {
             var sqlStatement = $"SELECT ISNULL(DB_ID (N'{targetDatabaseName}'),0);";
-            var result = DbHelper.QuerySingleBool(sqlConnectionString, sqlStatement);
+
+            //check if database exists and auto-create when its not
+            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            masterConnectionStringBuilder.InitialCatalog = "master";
+
+            var result = DbHelper.QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
 
             return result;
         }
 
-        private bool IsTargetDatabaseLatest(SqlConnectionStringBuilder sqlConnectionString, string targetVersion)
+        private bool IsTargetDatabaseConfigured()
         {
-            var cv = new LocalVersion(GetCurrentVersion(sqlConnectionString));
-            var tv = new LocalVersion(targetVersion);
+            var sqlStatement = $"SELECT ISNULL(OBJECT_ID('dbo.__YuniqlDbVersion'),0) IsDatabaseConfigured";
+            var result = DbHelper.QuerySingleBool(connectionString, sqlStatement);
 
+            return result;
+        }
+
+        private bool IsTargetDatabaseLatest(string targetVersion)
+        {
+            var dbcv = GetCurrentVersion();
+            if (string.IsNullOrEmpty(dbcv)) return false;
+
+            var cv = new LocalVersion(dbcv);
+            var tv = new LocalVersion(targetVersion);
             return string.Compare(cv.SemVersion, tv.SemVersion) == 1 || //db has more updated than local version
                 string.Compare(cv.SemVersion, tv.SemVersion) == 0;      //db has the same version as local version
         }
 
-        private void CreateDatabase(SqlConnectionStringBuilder sqlConnectionString, string targetDatabaseName)
+        private void CreateDatabase(string targetDatabaseName)
         {
             var sqlStatement = $"CREATE DATABASE {targetDatabaseName};";
-            DbHelper.ExecuteNonQuery(sqlConnectionString, sqlStatement);
+            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            masterConnectionStringBuilder.InitialCatalog = "master";
+
+            DbHelper.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
 
-        private bool IsTargetDatabaseConfigured(SqlConnectionStringBuilder sqlConnectionString)
-        {
-            var sqlStatement = $"SELECT ISNULL(OBJECT_ID('dbo.__YuniqlDbVersion'),0) IsDatabaseConfigured";
-            var result = DbHelper.QuerySingleBool(sqlConnectionString, sqlStatement);
-
-            return result;
-        }
-
-        private void ConfigureDatabase(SqlConnectionStringBuilder sqlConnectionString)
+        private void ConfigureDatabase(string targetDatabaseName)
         {
             var sqlStatement = $@"
-                    USE {sqlConnectionString.InitialCatalog};
+                    USE {targetDatabaseName};
 
                     IF OBJECT_ID('[dbo].[__YuniqlDbVersion]') IS NULL 
                     BEGIN
@@ -118,17 +156,15 @@ namespace ArdiLabs.Yuniql
 	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_DateInsertedUtc]  DEFAULT (GETUTCDATE()) FOR [DateInsertedUtc];
 	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_LastUpdatedUtc]  DEFAULT (GETUTCDATE()) FOR [LastUpdatedUtc];
 	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_LastUserId]  DEFAULT (SUSER_SNAME()) FOR [LastUserId];
-
-	                    --creates default version
-	                    INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES('v0.00');
                     END                
             ";
 
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
+
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = sqlStatement;
@@ -137,28 +173,22 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        private string GetCurrentVersion(SqlConnectionStringBuilder sqlConnectionString)
+        private string GetCurrentVersion()
         {
             var sqlStatement = $"SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY Id DESC;";
-            var result = DbHelper.QuerySingleString(sqlConnectionString, sqlStatement);
+            var result = DbHelper.QuerySingleString(connectionString, sqlStatement);
 
             return result;
         }
 
-        private void IncrementVersion(SqlConnectionStringBuilder sqlConnectionString, string nextVersion)
-        {
-            var sqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES (N'{nextVersion}');";
-            DbHelper.ExecuteScalar(sqlConnectionString, sqlStatement);
-        }
-
-        public List<DbVersion> GetAllDbVersions(SqlConnectionStringBuilder sqlConnectionString)
+        public List<DbVersion> GetAllDbVersions()
         {
             var result = new List<DbVersion>();
 
             var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
                 var command = connection.CreateCommand();
@@ -179,11 +209,13 @@ namespace ArdiLabs.Yuniql
                     result.Add(dbVersion);
                 }
             }
+
             return result;
         }
 
         private void RunNonVersionScripts(
-            SqlConnectionStringBuilder sqlConnectionString,
+            IDbConnection connection,
+            IDbTransaction transaction,
             string directoryFullPath,
             List<KeyValuePair<string, string>> tokens = null)
         {
@@ -191,60 +223,43 @@ namespace ArdiLabs.Yuniql
             TraceService.Info($"Found the {sqlScriptFiles.Count} script files on {directoryFullPath}");
             TraceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
 
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            //execute all script files in the target folder
+            sqlScriptFiles.ForEach(scriptFile =>
             {
-                connection.Open();
-                using (var transaction = connection.BeginTransaction())
+                //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
+                var sqlStatementRaw = File.ReadAllText(scriptFile);
+                var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .ToList()
+    ;
+                sqlStatements.ForEach(sqlStatement =>
                 {
-                    try
-                    {
-                        //execute all script files in the target folder
-                        sqlScriptFiles.ForEach(scriptFile =>
-                        {
-                            //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
-                            var sqlStatementRaw = File.ReadAllText(scriptFile);
-                            var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
-                                .Where(s => !string.IsNullOrWhiteSpace(s))
-                                .ToList()
-;
-                            sqlStatements.ForEach(sqlStatement =>
-                            {
-                                //replace tokens with values from the cli
-                                var tokeReplacementService = new TokenReplacementService();
-                                sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
+                    //replace tokens with values from the cli
+                    var tokeReplacementService = new TokenReplacementService();
+                    sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
 
-                                TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
+                    TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
 
-                                var command = connection.CreateCommand();
-                                command.Transaction = transaction;
-                                command.CommandType = CommandType.Text;
-                                command.CommandText = sqlStatement;
-                                command.CommandTimeout = 0;
-                                command.ExecuteNonQuery();
-                            });
+                    var command = connection.CreateCommand();
+                    command.Transaction = transaction;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = sqlStatement;
+                    command.CommandTimeout = 0;
+                    command.ExecuteNonQuery();
+                });
 
-                            TraceService.Info($"Executed script file {scriptFile}.");
-                        });
-
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
-            }
+                TraceService.Info($"Executed script file {scriptFile}.");
+            });
         }
 
         private void RunVersionScripts(
-            SqlConnectionStringBuilder targetSqlDbConnectionString,
+            IDbConnection connection,
+            IDbTransaction transaction,
             string workingPath,
             string targetVersion,
             List<KeyValuePair<string, string>> tokens = null)
         {
-            var currentVersion = GetCurrentVersion(targetSqlDbConnectionString);
-            var dbVersions = GetAllDbVersions(targetSqlDbConnectionString)
+            var dbVersions = GetAllDbVersions()
                     .Select(dv => dv.Version)
                     .OrderBy(v => v);
 
@@ -271,118 +286,112 @@ namespace ArdiLabs.Yuniql
                 versionFolders.Sort();
                 versionFolders.ForEach(versionDirectory =>
                 {
-                    //using (var transactionScope =  new TransactionScope())
-                    //{
-                        try
+                    try
+                    {
+                        //run scripts in all sub-directories
+                        var versionSubDirectories = Directory.GetDirectories(versionDirectory, "*", SearchOption.AllDirectories).ToList();
+                        versionSubDirectories.ForEach(versionSubDirectory =>
                         {
-                            //run scripts in all sub-directories
-                            var versionSubDirectories = Directory.GetDirectories(versionDirectory, "*", SearchOption.AllDirectories).ToList();
-                            versionSubDirectories.ForEach(versionSubDirectory =>
-                            {
-                                RunMigrationScriptsInternal(targetSqlDbConnectionString, versionSubDirectory, tokens);
-                            });
+                            RunMigrationScriptsInternal(connection, transaction, versionSubDirectory, tokens);
+                        });
 
-                            //run all scripts in the current version folder
-                            RunMigrationScriptsInternal(targetSqlDbConnectionString, versionDirectory, tokens);
+                        //run all scripts in the current version folder
+                        RunMigrationScriptsInternal(connection, transaction, versionDirectory, tokens);
 
-                            //import csv files into tables of the the same filename as the csv
-                            RunCsvImport(targetSqlDbConnectionString, versionDirectory);
+                        //import csv files into tables of the the same filename as the csv
+                        RunCsvImport(connection, transaction, versionDirectory);
 
-                            //update db version
-                            var versionName = new DirectoryInfo(versionDirectory).Name;
-                            UpdateDbVersion(targetSqlDbConnectionString, versionName);
+                        //update db version
+                        var versionName = new DirectoryInfo(versionDirectory).Name;
+                        UpdateDbVersion(connection, transaction, versionName);
 
-                            //commit all changes
-                            //transactionScope.Complete();
-
-                            TraceService.Info($"Completed migration to version {versionDirectory}");
-                        }
-                        catch (Exception)
-                        {
-                            //transactionScope.Dispose();
-                            throw;
-                        }
-                    //}
+                        TraceService.Info($"Completed migration to version {versionDirectory}");
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                 });
             }
             else
             {
-                TraceService.Info($"Target database is updated. No migration step executed at {targetSqlDbConnectionString.InitialCatalog} on {targetSqlDbConnectionString.DataSource}.");
+                var connectionString = new SqlConnectionStringBuilder(connection.ConnectionString);
+                TraceService.Info($"Target database is updated. No migration step executed at {connection.Database} on {connectionString.DataSource}.");
             }
         }
 
-        private void RunCsvImport(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath)
+        private void RunCsvImport(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string versionFullPath)
         {
             //execute all script files in the version folder
             var csvFiles = Directory.GetFiles(versionFullPath, "*.csv").ToList();
             TraceService.Info($"Found the {csvFiles.Count} csv files on {versionFullPath}");
             TraceService.Info($"{string.Join(@"\r\n\t", csvFiles.Select(s => new FileInfo(s).Name))}");
 
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            connection.Open();
+            csvFiles.ForEach(csvFile =>
             {
-                connection.Open();
-                csvFiles.ForEach(csvFile =>
-                {
-                    var csvImportService = new CsvImportService();
-                    csvImportService.Run(sqlConnectionString, csvFile);
-                    TraceService.Info($"Imported csv file {csvFile}.");
-                });
-            }
+                var csvImportService = new CsvImportService();
+                csvImportService.Run(connection, transaction, csvFile);
+                TraceService.Info($"Imported csv file {csvFile}.");
+            });
         }
 
-        private void RunMigrationScriptsInternal(SqlConnectionStringBuilder sqlConnectionString, string versionFullPath, List<KeyValuePair<string, string>> tokens = null)
+        private void RunMigrationScriptsInternal(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string versionFullPath,
+            List<KeyValuePair<string, string>> tokens = null)
         {
             var sqlScriptFiles = Directory.GetFiles(versionFullPath, "*.sql").ToList();
             TraceService.Info($"Found the {sqlScriptFiles.Count} script files on {versionFullPath}");
-            TraceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s=> new FileInfo(s).Name))}");
+            TraceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
 
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
+            //execute all script files in the version folder
+            sqlScriptFiles.ForEach(scriptFile =>
             {
-                connection.Open();
-                //execute all script files in the version folder
-                sqlScriptFiles.ForEach(scriptFile =>
+                //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
+                var sqlStatementRaw = File.ReadAllText(scriptFile);
+                var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .ToList()
+    ;
+                sqlStatements.ForEach(sqlStatement =>
                 {
-                    //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
-                    var sqlStatementRaw = File.ReadAllText(scriptFile);
-                    var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
-                        .Where(s => !string.IsNullOrWhiteSpace(s))
-                        .ToList()
-;
-                    sqlStatements.ForEach(sqlStatement =>
-                    {
-                        //replace tokens with values from the cli
-                        var tokeReplacementService = new TokenReplacementService();
-                        sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
+                    //replace tokens with values from the cli
+                    var tokeReplacementService = new TokenReplacementService();
+                    sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
 
-                        TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
+                    TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
 
-                        var command = connection.CreateCommand();
-                        command.CommandType = CommandType.Text;
-                        command.CommandText = sqlStatement;
-                        command.CommandTimeout = 0;
-                        command.ExecuteNonQuery();
-                    });
-
-                    TraceService.Info($"Executed script file {scriptFile}.");
+                    var command = connection.CreateCommand();
+                    command.Transaction = transaction;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = sqlStatement;
+                    command.CommandTimeout = 0;
+                    command.ExecuteNonQuery();
                 });
-            }
+
+                TraceService.Info($"Executed script file {scriptFile}.");
+            });
         }
 
-        private void UpdateDbVersion(SqlConnectionStringBuilder sqlConnectionString, string version)
+        private void UpdateDbVersion(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string version)
         {
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
-            {
-                connection.Open();
+            var incrementVersionSqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{version}');";
+            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
 
-                var incrementVersionSqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{version}');";
-                TraceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
-
-                var incrementVersioncommand = connection.CreateCommand();
-                incrementVersioncommand.CommandType = CommandType.Text;
-                incrementVersioncommand.CommandText = incrementVersionSqlStatement;
-                incrementVersioncommand.CommandTimeout = 0;
-                incrementVersioncommand.ExecuteNonQuery();
-            }
+            var command = connection.CreateCommand();
+            command.Transaction = transaction;
+            command.CommandType = CommandType.Text;
+            command.CommandText = incrementVersionSqlStatement;
+            command.CommandTimeout = 0;
+            command.ExecuteNonQuery();
         }
     }
 }

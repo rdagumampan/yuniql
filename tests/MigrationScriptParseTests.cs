@@ -37,11 +37,11 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"Test_Single_Run_Empty.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService();
-            migrationService.Run(workingPath, connectionString, "v1.00", autoCreateDatabase: true);
+            var migrationService = new MigrationService(connectionString);
+            migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("Test_Single_Run_Empty")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("Test_Single_Run_Empty")).ShouldBeFalse();
         }
 
         [TestMethod]
@@ -66,11 +66,11 @@ GO
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService();
-            migrationService.Run(workingPath, connectionString, "v1.00", autoCreateDatabase: true);
+            var migrationService = new MigrationService(connectionString);
+            migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName}")).ShouldBeTrue();
         }
         [TestMethod]
         public void Test_Run_Single_Without_GO()
@@ -93,11 +93,11 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService();
-            migrationService.Run(workingPath, connectionString, "v1.00", autoCreateDatabase: true);
+            var migrationService = new MigrationService(connectionString);
+            migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName}")).ShouldBeTrue();
         }
         [TestMethod]
         public void Test_Run_Multiple_Without_GO_In_Last_Line()
@@ -134,13 +134,13 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService();
-            migrationService.Run(workingPath, connectionString, "v1.00", autoCreateDatabase: true);
+            var migrationService = new MigrationService(connectionString);
+            migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName1}")).ShouldBeTrue();
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName2}")).ShouldBeTrue();
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName3}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName1}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName2}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName3}")).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -181,13 +181,13 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService();
-            migrationService.Run(workingPath, connectionString, "v1.00", autoCreateDatabase: true);
+            var migrationService = new MigrationService(connectionString);
+            migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName1}")).ShouldBeTrue();
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName2}")).ShouldBeTrue();
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName3}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName1}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName2}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"{sqlObjectName3}")).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -226,22 +226,22 @@ GO
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService();
+            var migrationService = new MigrationService(connectionString);
             Assert.ThrowsException<SqlException>(() =>
             {
-                migrationService.Run(workingPath, connectionString, "v1.00", autoCreateDatabase: true);
+                migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
             }).Message.ShouldContain("Divide by zero error encountered");
 
             //assert
             GetCurrentVersion(connectionString).ShouldBe("v0.00");
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"TestTable")).ShouldBeFalse();
-            DbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"TestStoredProcedure")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"TestTable")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"TestStoredProcedure")).ShouldBeFalse();
         }
 
         private string GetCurrentVersion(string sqlConnectionString)
         {
             var sqlStatement = $"SELECT TOP 1 Version FROM dbo.__YuniqlDbVersion ORDER BY Id DESC";
-            var result = DbHelper.QuerySingleString(new SqlConnectionStringBuilder(sqlConnectionString), sqlStatement);
+            var result = TestDbHelper.QuerySingleString(new SqlConnectionStringBuilder(sqlConnectionString), sqlStatement);
 
             return result;
         }

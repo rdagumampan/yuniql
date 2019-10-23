@@ -11,24 +11,7 @@ namespace ArdiLabs.Yuniql
 {
     public class Program
     {
-        //yuniql init
-        //yuniql init -p c:\temp\demo | --path c:\temp\demo
-        //yuniql vnext
-        //yuniql vnext -p c:\temp\demo | --path c:\temp\demo
-        //yuniql vnext -M | --major
-        //yuniql vnext -m | --minor
-        //yuniql vnext -f "Table1.sql"
-        //yuniql run
-        //yuniql run -a true | --auto-create-db true
-        //yuniql run -p c:\temp\demo | --path c:\temp\demo
-        //yuniql run -t v1.05 | --target-version v1.05
-        //yuniql run -c "<connectiong-string>"
-        //yuniql info -c "<connectiong-string>" 
-        //yuniql -v | --version
-        //yuniql -h | --help
-        //yuniql -d | --debug
-
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             TraceService.Debug("Assembly.GetExecutingAssembly().Location: " + Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             TraceService.Debug("AppContext.BaseDirectory: " + AppContext.BaseDirectory);
@@ -50,19 +33,23 @@ namespace ArdiLabs.Yuniql
                     TraceSettings.Instance.IsDebugEnabled = opts.Debug;
                     return RunMigration(opts);
                 },
-                (NextVersionOption opts) => {
+                (NextVersionOption opts) =>
+                {
                     TraceSettings.Instance.IsDebugEnabled = opts.Debug;
                     return IncrementVersion(opts);
                 },
-                (InfoOption opts) => {
+                (InfoOption opts) =>
+                {
                     TraceSettings.Instance.IsDebugEnabled = opts.Debug;
                     return RunInfoOption(opts);
                 },
-                (BaselineOption opts) => {
+                (BaselineOption opts) =>
+                {
                     TraceSettings.Instance.IsDebugEnabled = opts.Debug;
                     return RunBaselineOption(opts);
                 },
-                (RebaseOption opts) => {
+                (RebaseOption opts) =>
+                {
                     TraceSettings.Instance.IsDebugEnabled = opts.Debug;
                     return RunRebaseOption(opts);
                 },
@@ -147,16 +134,26 @@ namespace ArdiLabs.Yuniql
                     TraceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
                 }
 
+                //if no connection string passed, use environment variable or throw exception
+                if (string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")))
+                    {
+                        TraceService.Info("No connection string passed. We'll use environment variable YUNIQL_CONNECTION_STRING.");
+                        opts.ConnectionString = Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+                    }
+                }
+
                 //parse tokens
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
-                var migrationService = new MigrationService();
-                migrationService.Run(opts.Path, opts.ConnectionString, opts.TargetVersion, opts.AutoCreateDatabase, tokens);
-                TraceService.Info($"Completed migration from {opts.Path}.");
+                //run the migration
+                var migrationService = new MigrationService(opts.ConnectionString);
+                migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens);
             }
             catch (Exception ex)
             {
-                TraceService.Error($"Failed to execute run function. {Environment.NewLine}{ex.ToString()}");
+                TraceService.Error($"Failed to execute run function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
                 throw;
             }
 
@@ -167,14 +164,27 @@ namespace ArdiLabs.Yuniql
         {
             try
             {
-                var migrationService = new MigrationService();
-                var versions = migrationService.GetAllDbVersions(new SqlConnectionStringBuilder(opts.ConnectionString));
+                //if no connection string passed, use environment variable or throw exception
+                if (string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")))
+                    {
+                        TraceService.Info("No connection string passed. We'll use environment variable YUNIQL_CONNECTION_STRING.");
+                        opts.ConnectionString = Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+                    }
+                }
+
+                var versions = new List<DbVersion>();
+                var migrationService = new MigrationService(opts.ConnectionString);
+                versions = migrationService.GetAllDbVersions();
+
                 var results = new StringBuilder();
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");
                 versions.ForEach(v =>
                 {
                     results.AppendLine($"{v.Version}\t\t{v.DateInsertedUtc.ToString("o")}\t{v.LastUserId}");
                 });
+
                 Console.WriteLine(results.ToString());
             }
             catch (Exception ex)
