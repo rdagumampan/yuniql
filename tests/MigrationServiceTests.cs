@@ -115,12 +115,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, scriptFolder), $"test_{scriptFolder}.sql"), TestHelper.CreateScript($"test_{scriptFolder}"));
 
             //act
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                var migrationService = new MigrationService(connectionString);
-                migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
-            }
+            var migrationService = new MigrationService(connectionString);
+            migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
             string sqlAssertStatement = $"SELECT ISNULL(OBJECT_ID('[dbo].[test_{scriptFolder}]'), 0) AS ObjectID";

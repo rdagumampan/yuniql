@@ -233,7 +233,7 @@ GO
             }).Message.ShouldContain("Divide by zero error encountered");
 
             //assert
-            GetCurrentVersion(connectionString).ShouldBe("v0.00");
+            GetCurrentVersion(connectionString).ShouldBeNull();
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"TestTable")).ShouldBeFalse();
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript($"TestStoredProcedure")).ShouldBeFalse();
         }

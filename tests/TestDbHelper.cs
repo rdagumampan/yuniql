@@ -57,7 +57,7 @@ namespace Yuniql.Tests
 
         public static string QuerySingleString(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
-            string result;
+            string result = null;
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
             {
                 connection.Open();
@@ -68,8 +68,9 @@ namespace Yuniql.Tests
                 command.CommandTimeout = 0;
 
                 var reader = command.ExecuteReader();
-                reader.Read();
-                result = reader.GetString(0);
+                if (reader.Read()) {
+                    result = reader.GetString(0);
+                }
             }
 
             return result;

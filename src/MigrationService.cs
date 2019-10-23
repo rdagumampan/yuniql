@@ -43,31 +43,37 @@ namespace ArdiLabs.Yuniql
                 TraceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
-            //enclose all executions in a single transaction
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                using (var transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        //check if database has been pre-configured and execute init scripts
-                        if (!targetDatabaseConfigured)
-                        {
-                            //runs all scripts in the _init folder
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokens);
-                            TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
-                        }
+            var dbVersions = GetAllDbVersions()
+                .Select(dv => dv.Version)
+                .OrderBy(v => v)
+                .ToList();
 
-                        //checks if target database already runs the latest version and skips work if it already is
-                        if (!IsTargetDatabaseLatest(connection, transaction, targetVersion))
+            var targeDatabaseLatest = IsTargetDatabaseLatest(targetVersion);
+            if (!targeDatabaseLatest)
+            {
+                //enclose all executions in a single transaction
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction())
+                    {
+                        try
                         {
+                            //check if database has been pre-configured and execute init scripts
+                            if (!targetDatabaseConfigured)
+                            {
+                                //runs all scripts in the _init folder
+                                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokens);
+                                TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
+                            }
+
+                            //checks if target database already runs the latest version and skips work if it already is
                             //runs all scripts in the _pre folder and subfolders
                             RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokens);
                             TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                             //runs all scripts int the vxx.xx folders and subfolders
-                            RunVersionScripts(connection, transaction, workingPath, targetVersion, tokens);
+                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokens);
 
                             //runs all scripts in the _draft folder and subfolders
                             RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokens);
@@ -76,24 +82,25 @@ namespace ArdiLabs.Yuniql
                             //runs all scripts in the _post folder and subfolders
                             RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokens);
                             TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
+
+                            //commit all changes
+                            transaction.Commit();
                         }
-                        else
+                        catch (Exception)
                         {
-                            TraceService.Info($"Target database is updated. No changes made at {targetDatabaseName} on {targetDatabaseServer}.");
+                            transaction.Rollback();
+                            throw;
                         }
 
-                        //commit all changes
-                        transaction.Commit();
                     }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-
                 }
             }
+            else
+            {
+                TraceService.Info($"Target database is updated. No changes made at {targetDatabaseName} on {targetDatabaseServer}.");
+            }
         }
+
         private bool IsTargetDatabaseExists(string targetDatabaseName)
         {
             var sqlStatement = $"SELECT ISNULL(DB_ID (N'{targetDatabaseName}'),0);";
@@ -255,14 +262,11 @@ namespace ArdiLabs.Yuniql
         private void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
+            List<string> dbVersions,
             string workingPath,
             string targetVersion,
             List<KeyValuePair<string, string>> tokens = null)
         {
-            var dbVersions = GetAllDbVersions()
-                    .Select(dv => dv.Version)
-                    .OrderBy(v => v);
-
             //excludes all versions already executed
             var versionFolders = Directory.GetDirectories(workingPath, "v*.*")
                 .Where(v => !dbVersions.Contains(new DirectoryInfo(v).Name))
@@ -330,7 +334,6 @@ namespace ArdiLabs.Yuniql
             TraceService.Info($"Found the {csvFiles.Count} csv files on {versionFullPath}");
             TraceService.Info($"{string.Join(@"\r\n\t", csvFiles.Select(s => new FileInfo(s).Name))}");
 
-            connection.Open();
             csvFiles.ForEach(csvFile =>
             {
                 var csvImportService = new CsvImportService();

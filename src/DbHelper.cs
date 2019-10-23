@@ -37,9 +37,11 @@ namespace ArdiLabs.Yuniql
                 command.CommandText = sqlStatement;
                 command.CommandTimeout = 0;
 
-                var reader = command.ExecuteReader();
-                reader.Read();
-                result = Convert.ToBoolean(reader.GetValue(0));
+                using (var reader = command.ExecuteReader())
+                {
+                    reader.Read();
+                    result = Convert.ToBoolean(reader.GetValue(0));
+                }
             }
 
             return result;
@@ -47,7 +49,7 @@ namespace ArdiLabs.Yuniql
 
         public static string QuerySingleString(string connectionString, string sqlStatement)
         {
-            string result;
+            string result = null;
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -57,9 +59,13 @@ namespace ArdiLabs.Yuniql
                 command.CommandText = sqlStatement;
                 command.CommandTimeout = 0;
 
-                var reader = command.ExecuteReader();
-                reader.Read();
-                result = reader.GetString(0);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        result = reader.GetString(0);
+                    }
+                }
             }
 
             return result;
