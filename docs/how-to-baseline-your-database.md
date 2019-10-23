@@ -21,7 +21,7 @@ dir /O:N
 ```
 
 #### Script first
-For smaller databases especially those attached to microservices, the model is relatively small and tables can be scripted on the go. Its simple and you can manually place all your scripts in order in 'v0.00'. Scripts are executed in order by file name.
+For smaller databases especially those attached to microservices, the model is relatively small and tables can be scripted on the go. Its simple and you can manually place all your scripts in order in `v0.00`. Scripts are executed in order by file name.
 
 ```
 yuniql init
@@ -31,6 +31,22 @@ dir /O:N
 10/21/2019  22:41                   setup-tables.sql
 10/21/2019  22:41                   setup-stored-procedures.sql
 10/21/2019  22:41                   initialize-tables.sql
+```
+
+#### `yuniql baseline`
+
+`yuniql baseline` is an experimental feature where we automate the script-generation of primary database objects and place results in `v0.00` of your migration project. A command flow would look like this:
+
+`yuniqlx` is expanded build with support for `baseline` automation. Because it's not everyday that we do baseline plus its heavy references to Sql Server SMO, I don't want to make this part of every release.
+
+Download `yuniqlx` here.
+{INSERT_YUNIQLX_DOWNLOAD_LINK}
+
+```
+yuniqlx init
+yuniqlx baseline -c <your-reference-database-connection-string>
+
+yuniql run -a -c <your-target-database-connection-string>
 ```
 
 #### Found bugs?
