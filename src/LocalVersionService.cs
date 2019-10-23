@@ -47,16 +47,29 @@ namespace ArdiLabs.Yuniql
             var readMeFile = Path.Combine(workingPath, "README.md");
             if (!File.Exists(readMeFile))
             {
-                File.CreateText(readMeFile);
+                File.AppendAllText(readMeFile, @"
+# Database migrations
+
+This database migration project is created and to be executed thru `yuniql` tool. 
+For documentation and how-to guides, please visit yuniql [github page](https://github.com/rdagumampan/yuniql).
+");
                 TraceService.Info($"Created file {readMeFile}");
             }
 
             var dockerFile = Path.Combine(workingPath, "Dockerfile");
             if (!File.Exists(dockerFile))
             {
-                File.CreateText(dockerFile);
+                File.AppendAllText(dockerFile, "");
                 TraceService.Info($"Created file {dockerFile}");
             }
+
+            var gitIgnoreFile = Path.Combine(workingPath, ".gitignore");
+            if (!File.Exists(gitIgnoreFile))
+            {
+                File.AppendAllText(gitIgnoreFile, $"yuniql.exe{Environment.NewLine}yuniql.pdb");
+                TraceService.Info($"Created file {gitIgnoreFile}");
+            }
+
         }
 
         private List<LocalVersion> GetLocalVersions(string workingPath)

@@ -36,6 +36,7 @@ namespace Yuniql.Tests
             Directory.Exists(Path.Combine(workingPath, "_post")).ShouldBe(true);
             File.Exists(Path.Combine(workingPath, "README.md")).ShouldBe(true);
             File.Exists(Path.Combine(workingPath, "Dockerfile")).ShouldBe(true);
+            File.Exists(Path.Combine(workingPath, ".gitignore")).ShouldBe(true);
         }
 
         [TestMethod]
@@ -57,6 +58,7 @@ namespace Yuniql.Tests
             Directory.Exists(Path.Combine(workingPath, "_post")).ShouldBe(true);
             File.Exists(Path.Combine(workingPath, "README.md")).ShouldBe(true);
             File.Exists(Path.Combine(workingPath, "Dockerfile")).ShouldBe(true);
+            File.Exists(Path.Combine(workingPath, ".gitignore")).ShouldBe(true);
         }
 
         [TestMethod]

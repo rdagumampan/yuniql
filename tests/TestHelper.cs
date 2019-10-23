@@ -14,8 +14,8 @@ namespace Yuniql.Tests
                 //use this when running against local instance of sql server with integrated security
                 //return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
 
-                //use this when running against sql server container with published port 1401
-                return $"Server=localhost,1401;Database={databaseName};User Id=sa;Password=P@ssw0rd!";
+                //use this when running against sql server container with published port 1400
+                return $"Server=localhost,1400;Database={databaseName};User Id=SA;Password=Manila2050!";
             }
 
             var result = new SqlConnectionStringBuilder(connectionString);

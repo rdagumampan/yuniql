@@ -271,8 +271,8 @@ namespace ArdiLabs.Yuniql
                 versionFolders.Sort();
                 versionFolders.ForEach(versionDirectory =>
                 {
-                    using (var transactionScope =  new TransactionScope())
-                    {
+                    //using (var transactionScope =  new TransactionScope())
+                    //{
                         try
                         {
                             //run scripts in all sub-directories
@@ -293,16 +293,16 @@ namespace ArdiLabs.Yuniql
                             UpdateDbVersion(targetSqlDbConnectionString, versionName);
 
                             //commit all changes
-                            transactionScope.Complete();
+                            //transactionScope.Complete();
 
                             TraceService.Info($"Completed migration to version {versionDirectory}");
                         }
                         catch (Exception)
                         {
-                            transactionScope.Dispose();
+                            //transactionScope.Dispose();
                             throw;
                         }
-                    }
+                    //}
                 });
             }
             else
