@@ -1,8 +1,9 @@
 ### How to baseline your database
 
-A baseline version is your `v0.00` of your database schema. A baseline version helps create full visibility of your schema evolution. We identified two approaches to baselining databases:
+A baseline version is your `v0.00` of your database schema. A baseline version helps create full visibility of your schema evolution. We identified three approaches to baselining databases:
 1. Visual model first
 2. Script first
+3. `yuniqlx baseline`
 
 #### Visual Model First
 Typically, we don't start our databases by hand-writing sql scripts, instead we use visual modelling tools such as SSMS, SSDT, IDERA, Sparx EA and similar tools. Especially for larger DW and RDBMS projects, the scripts comes last as a result of good-enough ER model. The scripts are then generated from the tool and this would make a sufficient starting point for baselining the db schema.
