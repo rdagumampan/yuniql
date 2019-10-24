@@ -20,12 +20,12 @@ yuniql is released as self-contained .NET Core application (no need for JVM or .
 
 #### Getting started
 
-1. [How yuniql works](https://github.com/rdagumampan/yuniql/tree/master/docs/01 how-yuniql-works.md)
-2. [Getting started](https://github.com/rdagumampan/yuniql/tree/master/docs/02 getting-started.md)
-3. [How to baseline your database](https://github.com/rdagumampan/yuniql/tree/master/docs/03 how-to-baseline-your-database.md)
-4. [How to use token replacement](https://github.com/rdagumampan/yuniql/tree/master/docs/04 how-to-use-token-replacement.md)
-5. [How to bulk import data during migration](https://github.com/rdagumampan/yuniql/tree/master/docs/05 how-to-bulk-load-data-during-migration.md)
-6. [Best practices](https://github.com/rdagumampan/yuniql/tree/master/docs/06 best-practices)
+1. [How yuniql works](https://github.com/rdagumampan/yuniql/tree/master/docs/01-how-yuniql-works.md)
+2. [Getting started](https://github.com/rdagumampan/yuniql/tree/master/docs/02-getting-started.md)
+3. [How to baseline your database](https://github.com/rdagumampan/yuniql/tree/master/docs/03-how-to-baseline-your-database.md)
+4. [How to use token replacement](https://github.com/rdagumampan/yuniql/tree/master/docs/04-how-to-use-token-replacement.md)
+5. [How to bulk import data during migration](https://github.com/rdagumampan/yuniql/tree/master/docs/05-how-to-bulk-load-data-during-migration.md)
+6. [Best practices](https://github.com/rdagumampan/yuniql/tree/master/docs/06-best-practices)
 
 #### Supported `yuniql` CLI commands
 ```console
