@@ -150,6 +150,7 @@ You may use any other git provider and replace the `.git` folder.
 	>NOTE: For simplicity I use HTTPS mode in setting git repo. If you use SSH, you need to download and configure your keys.
 
 #### Digging deeper
+
 * [Setting up new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 * [Replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
@@ -157,7 +158,8 @@ You may use any other git provider and replace the `.git` folder.
 * [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
 
 #### `yuniql` CLI commands
-```console
+
+```bash
 yuniql init
 yuniql init -p c:\temp\demo | --path c:\temp\demo
 yuniql vnext
