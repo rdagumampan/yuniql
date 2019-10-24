@@ -2,23 +2,32 @@
 
 *** Disclaimer: Yuniql is not yet officially released. Much of the claims here are still work in progress but nightly build have major features available.
 
-Database schema versioning and migration based on plain sql scripts. Yuniql lets you take full control of your db schema evolution. Scripts are stored raw sql files in version folders so you can leverage full power of `git`. It automates what you would normally do by hand by executing all scripts in orderly and transactional fashion. Yuniql seamlessly integrates with your Continuous Delivery (CD) pipelines for truely DB DevOps development experience.
+yuniql is a database schema versioning and migration tool based on plain sql scripts. Scripts are stored raw `.sql` files in version folders so you can leverage full power of `git`. It automates what you would normally do by hand by executing all scripts in orderly and transactional fashion. Yuniql seamlessly integrates with your Continuous Delivery (CD) pipelines for truely DB DevOps development experience. yuniql lets you take full control of your db schema evolution.
 
-Yuniql is released as self-contained .NET Core application (no need for JVM or .NET CLR) for Windows. Container images are also available for seamless Continuous Delivery of database changes in Linux.
+yuniql is released as self-contained .NET Core application (no need for JVM or .NET CLR) for Windows. Container images are also available for seamless Continuous Delivery of database changes in Linux.
 
 <img align="right" src="yuniql-logo.png">
 
 #### Features
-- pure sql migration
+- pure sql
 - devops pipelines ready
+- docker containier ready
 - bulk import csv files
-- docker container ready
-- cross platform releases ***
-- pluggable versions ***
+- cross platform ***
+- enxtensible ***
 
 *** in progress
 
-#### Supported Yuniql CLI commands
+#### Getting started
+
+1. [How yuniql works](docs/01 how-yuniql-works.md)
+2. [Getting started](docs/02 getting-started.md)
+3. [How to baseline your database](docs/03 how-to-baseline-your-database.md)
+4. [How to use token replacement](docs/04 how-to-use-token-replacement.md)
+5. [How to bulk import data during migration](05 how-to-bulk-load-data-during-migration.md)
+6. [Best practices](docs/06 best-practices)
+
+#### Supported `yuniql` CLI commands
 ```console
 yuniql init
 yuniql init -p c:\temp\demo | --path c:\temp\demo
@@ -37,33 +46,6 @@ yuniql -v | --version
 yuniql -h | --help
 yuniql -d | --debug
 ```
-
-#### Run from windows (self-contained/.exe/win-x64)
-```console
-yuniql init
-yuniql vnext
-yuniql vnext -M
-yuniql vnext -a
-yuniql run -a
-```
-
-#### Run from ubuntu linux *** in progress
-```console
-dotnet "yuniql.dll" "run" -p "c:\temp\demo" -a
-```
-
-#### Run integration tests on local docker swarm
-
-```console
-docker-compose build --no-cache
-docker-compose up -d && docker-compose logs -f
-docker-compose down
-```
-
-#### Getting started
-1. Versioning a new database TBA
-2. Versioning an existing database TBA
-3. Migrating from another tool TBA
 
 #### Todo
 
