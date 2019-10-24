@@ -8,14 +8,17 @@
 
 <img align="right" src="yuniql-logo.png">
 
-#### Getting started
+### Getting started
 
-1. [How yuniql works](https://github.com/rdagumampan/yuniql/tree/master/docs/01-how-yuniql-works.md)
-2. [Getting started](https://github.com/rdagumampan/yuniql/tree/master/docs/02-getting-started.md)
-3. [How to baseline your database](https://github.com/rdagumampan/yuniql/tree/master/docs/03-how-to-baseline-your-database.md)
-4. [How to use token replacement](https://github.com/rdagumampan/yuniql/tree/master/docs/04-how-to-use-token-replacement.md)
-5. [How to bulk import data during migration](https://github.com/rdagumampan/yuniql/tree/master/docs/05-how-to-bulk-load-data-during-migration.md)
-6. [Best practices](https://github.com/rdagumampan/yuniql/tree/master/docs/06-best-practices)
+* [Getting started](https://github.com/rdagumampan/yuniql/wiki/Getting-started)
+* [Setting up new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
+
+### Digging deeper
+
+* [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
+* [Replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
+* [Bulk import data during migration](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-load-data-during-migration)
+* [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
 
 #### `yuniql` CLI commands
 ```console
