@@ -10,7 +10,7 @@
 
 #### Getting started
 
-This 10-step tutorial shows you how to deploy your first sql-based migration into an sql server. For simplicity, we assume you have a Docker service running but you may choose any instance. Estimated completion time: 5 mins.
+This 10-step tutorial shows you how to deploy your first sql-based migration into an sql server. For simplicity, we assume you have a Docker service running, a `C:\temp` directory, and `git` client. Estimated completion time: 10 mins.
 
 ##### Prepare your environment
 
