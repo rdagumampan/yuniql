@@ -58,7 +58,7 @@ namespace ArdiLabs.Yuniql
         public string TargetVersion { get; set; }
 
         //yuniql run -c "<connectiong-string>"
-        [Option('c', "connection-string", Required = false, HelpText = "Connection string to target sql server instance", Default = "Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB")]
+        [Option('c', "connection-string", Required = false, HelpText = "Connection string to target sql server instance")]
         public string ConnectionString { get; set; }
 
         //yuniql run -a true | --auto-create-db true
@@ -80,7 +80,7 @@ namespace ArdiLabs.Yuniql
     public class InfoOption
     {
         //yuniql info -c "<connectiong-string>"
-        [Option('c', "connection-string", Required = true, HelpText = "Connection string to target sql server instance", Default = "Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB")]
+        [Option('c', "connection-string", Required = false, HelpText = "Connection string to target sql server instance")]
         public string ConnectionString { get; set; }
 
         //yuniql run -d | --debug
@@ -93,7 +93,7 @@ namespace ArdiLabs.Yuniql
     public class BaselineOption
     {
         //yuniql info -c "<connectiong-string>"
-        [Option('c', "connection-string", Required = true, HelpText = "Connection string to target sql server instance", Default = "Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB")]
+        [Option('c', "connection-string", Required = true, HelpText = "Connection string to target sql server instance")]
         public string ConnectionString { get; set; }
 
         //yuniql run -d | --debug
@@ -106,7 +106,7 @@ namespace ArdiLabs.Yuniql
     public class RebaseOption
     {
         //yuniql info -c "<connectiong-string>"
-        [Option('c', "connection-string", Required = true, HelpText = "Connection string to target sql server instance", Default = "Data Source=.;Integrated Security=SSPI;Initial Catalog=YuniqlDemoDB")]
+        [Option('c', "connection-string", Required = true, HelpText = "Connection string to target sql server instance")]
         public string ConnectionString { get; set; }
 
         //yuniql run -d | --debug
