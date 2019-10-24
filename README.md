@@ -38,7 +38,7 @@ yuniql -h | --help
 yuniql -d | --debug
 ```
 
-*** in progress
+*** planned or being evaluated/developer/tested
 
 #### `yuniqlx` CLI commands
 
