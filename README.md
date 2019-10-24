@@ -34,14 +34,14 @@ This 10-step tutorial shows you how to deploy your first sql-based migration int
 
 ##### Run your first migration
 
-1. Download yuniql. You may also download manually [here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) and extract to desired directory.
+1. Download `yuniql`. You may also download manually [here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) and extract to desired directory.
 
 	```powershell
 	powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip -OutFile  "c:\temp\yuniql-nightly.zip"
 	powershell Expand-Archive "c:\temp\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql-nightly"
 	cd c:\temp\yuniql-nightly
 	```
-
+	>`Expand-Archive` requires at least powershell v5.0+ running on your machine
 2. Initialize your workspace
 
 	```bash
@@ -67,7 +67,7 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 	10/21/2019  22:41                   .gitignore
 	```
 
-4. Create your first script file `setup-tables.sql` inside `v1.00`
+4. Create your first script file `setup-tables.sql` inside `v1.00` directory
 
 	```sql
 	--setup-tables.sql
@@ -102,7 +102,7 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 	10/21/2019  22:46    <DIR>          v1.01
 	```
 
-7. Create your second script file `initialize-tables.sql` inside `v1.01`
+7. Create your second script file `initialize-tables.sql` inside `v1.01` directory
 
 	```sql
 	--initialize-tables.sql
@@ -120,7 +120,8 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 	yuniql-nightly> yuniql info
 	```
 
-	Verify that records has been inserted as part version `v1.01`
+	Verify that records has been inserted as part version `v1.01` using SSMS or preferred SQL client.
+	
 	```sql
 	//SELECT * FROM [dbo].[Visitor]
 	VisitorID   FirstName   LastName    Address  Email
@@ -131,7 +132,7 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 	1003        Sam         Macdonald   Batangas sam.macdonald@never-exists.com
 	1004        Matt        Paige       Laguna   matt.paige@never-exists.com
 	```
-9. Initialize git repo
+9. Initialize `git` repo
 
 	```git
 	yuniql-nightly> git init
@@ -139,7 +140,7 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 	yuniql-nightly> git commit -m "This is my first yuniql migration"
 	```
 
-10. Create destination git repo and push your changes.
+10. Create destination `git` repo and `push` your changes.
 You may use any other git provider and replace the `.git` folder.
 
 	```bash
