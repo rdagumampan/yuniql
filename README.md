@@ -2,21 +2,11 @@
 
 >*** Disclaimer: **`yuniql`** is not yet officially released. Much of the claims here are still work in progress but nightly build have major features available.
 
-**`yuniql`** is a database schema versioning and migration tool based on plain sql scripts. Scripts are stored raw `.sql` files in version folders so you can leverage full power of `git`. It automates what you would normally do by hand by executing all scripts in orderly and transactional fashion. Yuniql seamlessly integrates with your Continuous Delivery (CD) pipelines for truely DB DevOps development experience. yuniql lets you take full control of your db schema evolution.
+**`yuniql`** is a database schema versioning and migration tool based on plain sql scripts. Scripts are stored raw `.sql` files in version folders so you can leverage full power of `git`. It automates what you would normally do by hand by executing all scripts in orderly and transactional fashion. Yuniql seamlessly integrates with your Continuous Delivery (CD) pipelines for truely db/devops development experience.
 
 **`yuniql`** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR) for Windows. Container images are also available for seamless Continuous Delivery of database changes in Linux.
 
 <img align="right" src="yuniql-logo.png">
-
-#### Features
-- pure sql
-- devops pipelines ready
-- docker containier ready
-- bulk import csv files
-- cross platform ***
-- enxtensible ***
-
-*** in progress
 
 #### Getting started
 
@@ -27,7 +17,7 @@
 5. [How to bulk import data during migration](https://github.com/rdagumampan/yuniql/tree/master/docs/05-how-to-bulk-load-data-during-migration.md)
 6. [Best practices](https://github.com/rdagumampan/yuniql/tree/master/docs/06-best-practices)
 
-#### Supported `yuniql` CLI commands
+#### `yuniql` CLI commands
 ```console
 yuniql init
 yuniql init -p c:\temp\demo | --path c:\temp\demo
@@ -37,6 +27,7 @@ yuniql vnext -M | --major
 yuniql vnext -m | --minor
 yuniql vnext -f "Table1.sql"
 yuniql run
+yuniql run -u | --uncomitted ***
 yuniql run -a true | --auto-create-db true
 yuniql run -p c:\temp\demo | --path c:\temp\demo
 yuniql run -t v1.05 | --target-version v1.05
@@ -47,18 +38,27 @@ yuniql -h | --help
 yuniql -d | --debug
 ```
 
-#### Todo
+*** in progress
 
-- default cs to env var when yunql run
-- execute all subdirectories
-- base docker image
-- yuniql baseline
-- yuniql rebase
-- yuniql erase
-- version plugins
-- nuget package
-- az devops tasks
-- global dotnet tool
+#### `yuniqlx` CLI commands
+
+```bash
+yuniqlx baseline -c "<connectiong-string>" ***
+yuniqlx rebase -c "<connectiong-string>" ***
+yuniqlx erase -c "<connectiong-string>" ***
+```
+
+*** in progress
+
+#### Features
+- pure sql
+- devops pipelines ready
+- docker containier ready
+- bulk import csv files
+- cross platform ***
+- enxtensible ***
+
+*** in progress
 
 #### How to contribute or ask help
 - File a bug or feature as an [issue](https://github.com/rdagumampan/yuniql/issues/new)
