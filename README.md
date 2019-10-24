@@ -48,17 +48,17 @@ yuniqlx rebase -c "<connectiong-string>" ***
 yuniqlx erase -c "<connectiong-string>" ***
 ```
 
-*** in progress
+*** planned or being evaluated/developer/tested
 
 #### Features
-- pure sql
-- devops pipelines ready
-- docker containier ready
-- bulk import csv files
-- cross platform ***
-- enxtensible ***
+- Pure sql. All scripts are stored raw `.sql` files, no magic. 
+- Bulk import. Load up your master data and lookup tables from CSV files.
+- Cross platform. Works with windows and major linux distros. ***
+- Devops pipelines ready. Agent tasks available in Az DevOps Market Place. ***
+- Docker container ready. Base images to host your scripts and execute.
+- Extensible. Excute custom built C# plugins for very special action. ***
 
-*** in progress
+*** planned or being evaluated/developer/tested
 
 #### How to contribute or ask help
 - File a bug or feature as an [issue](https://github.com/rdagumampan/yuniql/issues/new)
