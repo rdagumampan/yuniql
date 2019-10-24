@@ -8,12 +8,12 @@
 
 <img align="right" src="yuniql-logo.png">
 
-### Getting started
+#### Getting started
 
 * [Getting started](https://github.com/rdagumampan/yuniql/wiki/Getting-started)
 * [Setting up new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 
-### Digging deeper
+#### Digging deeper
 
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 * [Replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
