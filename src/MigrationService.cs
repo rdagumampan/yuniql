@@ -336,7 +336,7 @@ namespace ArdiLabs.Yuniql
 
             csvFiles.ForEach(csvFile =>
             {
-                var csvImportService = new CsvImportService();
+                var csvImportService = new CsvSqlServerImportService();
                 csvImportService.Run(connection, transaction, csvFile);
                 TraceService.Info($"Imported csv file {csvFile}.");
             });

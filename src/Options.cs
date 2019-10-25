@@ -73,6 +73,10 @@ namespace ArdiLabs.Yuniql
         //yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3" | --token "...,...,..."
         [Option('k', "token", Required = false, HelpText = "Replace tokens using the passed key-value pairs", Separator = ',')]
         public IEnumerable<string> Tokens { get; set; } = new List<string>();
+
+        //yuniql run -d | --debug
+        [Option('u', "uncommitted", Required = false, HelpText = "Verifies if all migration steps can be executed successfully. All changes will be rolled back")]
+        public bool Uncommitted { get; set; }
     }
 
     //yuniql info

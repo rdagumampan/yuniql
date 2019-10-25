@@ -3,14 +3,13 @@ using System.Data.SqlClient;
 using System.Collections;
 using System.Data;
 using System.IO;
-using CsvHelper;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace ArdiLabs.Yuniql
 {
-    public class CsvImportService : ICsvImportService
+    public class CsvSqlServerImportService : ICsvImportService
     {
-        public CsvImportService()
+        public CsvSqlServerImportService()
         {
         }
         public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath)
@@ -60,15 +59,6 @@ namespace ArdiLabs.Yuniql
             return csvDatatable;
         }
 
-        private IDataReader ParseCsvAsDataReader(string csvFileFullPath)
-        {
-            using (var streamReader = new StreamReader(csvFileFullPath))
-            using (var csvReader = new CsvReader(streamReader))
-            {
-                return new CsvDataReader(csvReader);
-            }
-        }
-
         private void BulkCopyWithDataTable(IDbConnection connection, IDbTransaction transaction, DataTable csvFileDatatTable)
         {
             using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
@@ -84,19 +74,7 @@ namespace ArdiLabs.Yuniql
                 sqlBulkCopy.WriteToServer(csvFileDatatTable);
             }
         }
-
-        private void BulkCopyWithDataReader(IDbConnection connection, IDbTransaction transaction, string destinationTableName, IDataReader csvFileDatatTable)
-        {
-            using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
-            {
-                sqlBulkCopy.DestinationTableName = destinationTableName;
-                sqlBulkCopy.BatchSize = 0;
-                sqlBulkCopy.EnableStreaming = true;
-                sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
-                sqlBulkCopy.WriteToServer(csvFileDatatTable);
-            }
-        }
-
+        
         private void SqlBulkCopy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e)
         {
             TraceService.Info($"CsvImportService copied {e.RowsCopied} rows");
