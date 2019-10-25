@@ -1,0 +1,1 @@
+SELECT 'This is a post-migration task'
