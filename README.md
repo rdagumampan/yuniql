@@ -143,7 +143,7 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 10. Create destination `git` repo and `push` your changes.
 You may use any other git provider and replace the `.git` folder.
 
-	<img src "assets\yuniql-test-repo.png">
+<img src "assets\yuniql-test-repo.png">
 
 	```bash
 	yuniql-nightly> git remote add origin https://github.com/{your-github-account}/{your-github-database-repo}.git
