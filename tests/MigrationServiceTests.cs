@@ -308,8 +308,7 @@ namespace Yuniql.Tests
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v2_00_level1")).ShouldBeTrue();
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v2_00_level1_sublevel1")).ShouldBeTrue();
         }
-
-
+        
         [TestMethod]
         public void Test_Run_Database_Throws_Error_Must_Rollback()
         {
@@ -334,6 +333,39 @@ namespace Yuniql.Tests
 
             //assert
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v1_00")).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void Test_Verify_UnCommitted()
+        {
+            //arrange
+            var workingPath = TestHelper.GetWorkingPath();
+            var databaseName = new DirectoryInfo(workingPath).Name;
+            var connectionString = TestHelper.GetConnectionString(databaseName);
+
+            var localVersionService = new LocalVersionService();
+            localVersionService.Init(workingPath);
+
+            localVersionService.IncrementMajorVersion(workingPath, null);
+            TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestHelper.CreateScript($"test_v1_00"));
+
+            localVersionService.IncrementMinorVersion(workingPath, null);
+            TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestHelper.CreateScript($"test_v1_01"));
+
+            var migrationService = new MigrationService(connectionString);
+            migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
+
+            localVersionService.IncrementMinorVersion(workingPath, null);
+            TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestHelper.CreateScript($"test_v1_02"));
+
+            //act
+            migrationService = new MigrationService(connectionString);
+            migrationService.Run(workingPath, "v1.02", autoCreateDatabase: false, verificationRunOnly: true);
+
+            //assert
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v1_00")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v1_01")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v1_02")).ShouldBeFalse();
         }
 
         private List<DbVersion> GetAllDbVersions(string sqlConnectionString)

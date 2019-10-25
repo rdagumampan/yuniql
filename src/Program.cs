@@ -21,7 +21,14 @@ namespace ArdiLabs.Yuniql
             TraceService.Debug("Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath);: " + Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath));
             TraceService.Debug("Path.GetDirectoryName(Assembly.GetEntryAssembly().Location): " + Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
-            CommandLine.Parser.Default.ParseArguments<InitOption, RunOption, NextVersionOption, InfoOption>(args)
+            CommandLine.Parser.Default.ParseArguments<
+                InitOption,
+                RunOption,
+                NextVersionOption,
+                InfoOption,
+                VerifyOption,
+                BaselineOption,
+                RebaseOption>(args)
               .MapResult(
                 (InitOption opts) =>
                 {
@@ -42,6 +49,11 @@ namespace ArdiLabs.Yuniql
                 {
                     TraceSettings.Instance.IsDebugEnabled = opts.Debug;
                     return RunInfoOption(opts);
+                },
+                (VerifyOption opts) =>
+                {
+                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    return RunVerify(opts);
                 },
                 (BaselineOption opts) =>
                 {
@@ -157,6 +169,51 @@ namespace ArdiLabs.Yuniql
             return 0;
         }
 
+        private static object RunVerify(VerifyOption opts)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(opts.Path))
+                {
+                    var workingPath = Environment.CurrentDirectory;
+                    opts.Path = workingPath;
+                }
+
+                TraceService.Info($"Started verifcation from {opts.Path}.");
+
+                //if no target version specified, capture the latest from local folder structure
+                if (string.IsNullOrEmpty(opts.TargetVersion))
+                {
+                    var localVersionService = new LocalVersionService();
+                    opts.TargetVersion = localVersionService.GetLatestVersion(opts.Path);
+                    TraceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
+                }
+
+                //if no connection string passed, use environment variable or throw exception
+                if (string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    var environmentService = new EnvironmentService();
+                    opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+                }
+
+                //parse tokens
+                var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+
+                //run the migration
+                var migrationService = new MigrationService(opts.ConnectionString);
+                migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verificationRunOnly: true);
+
+                TraceService.Info("Verification run successful.");
+            }
+            catch (Exception ex)
+            {
+                TraceService.Error($"Failed to execute verification function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
+                throw;
+            }
+
+            return 0;
+        }
+
         private static object RunInfoOption(InfoOption opts)
         {
             try
@@ -198,27 +255,6 @@ namespace ArdiLabs.Yuniql
         private static object RunRebaseOption(RebaseOption opts)
         {
             throw new NotImplementedException("Not yet implemented, stay tune!");
-        }
-    }
-
-    public interface IEnvironmentService
-    {
-        string GetEnvironmentVariable(string name);
-    }
-
-    public class EnvironmentService: IEnvironmentService
-    {
-        public string GetEnvironmentVariable(string name)
-        {
-            string result = Environment.GetEnvironmentVariable(name);
-            if (string.IsNullOrEmpty(result) && Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                result = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.User);
-                if (string.IsNullOrEmpty(result))
-                    result = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine);
-            }
-
-            return result;
         }
     }
 }

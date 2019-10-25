@@ -20,7 +20,8 @@ namespace ArdiLabs.Yuniql
         public void Run(string workingPath,
             string targetVersion,
             bool autoCreateDatabase,
-            List<KeyValuePair<string, string>> tokens = null)
+            List<KeyValuePair<string, string>> tokens = null,
+            bool verificationRunOnly = false)
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             var targetDatabaseName = connectionStringBuilder.InitialCatalog;
@@ -83,8 +84,12 @@ namespace ArdiLabs.Yuniql
                             RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokens);
                             TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
 
-                            //commit all changes
-                            transaction.Commit();
+                            //when true, the execution is an uncommitted transaction 
+                            //and only for purpose of testing if all can go well when it run to the target environment
+                            if (verificationRunOnly)
+                                transaction.Rollback();
+                            else
+                                transaction.Commit();
                         }
                         catch (Exception)
                         {
