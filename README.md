@@ -29,7 +29,7 @@ This 10-step tutorial shows you how to deploy your first sql-based migration int
 2. Configure your connection string
 
 	```bash
-	SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=HelloYuniqlDb;User Id=SA;Password=Manila2050!" 
+	SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=HelloYuniqlDb;User Id=SA;Password=Manila2050!" /M
 	```
 
 ##### Run your first migration
