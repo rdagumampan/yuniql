@@ -137,11 +137,8 @@ namespace ArdiLabs.Yuniql
                 //if no connection string passed, use environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
-                    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")))
-                    {
-                        TraceService.Info("No connection string passed. We'll use environment variable YUNIQL_CONNECTION_STRING.");
-                        opts.ConnectionString = Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
-                    }
+                    var environmentService = new EnvironmentService();
+                    opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
                 //parse tokens
@@ -167,11 +164,8 @@ namespace ArdiLabs.Yuniql
                 //if no connection string passed, use environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
-                    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")))
-                    {
-                        TraceService.Info("No connection string passed. We'll use environment variable YUNIQL_CONNECTION_STRING.");
-                        opts.ConnectionString = Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
-                    }
+                    var environmentService = new EnvironmentService();
+                    opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
                 var versions = new List<DbVersion>();
@@ -205,6 +199,26 @@ namespace ArdiLabs.Yuniql
         {
             throw new NotImplementedException("Not yet implemented, stay tune!");
         }
+    }
 
+    public interface IEnvironmentService
+    {
+        string GetEnvironmentVariable(string name);
+    }
+
+    public class EnvironmentService: IEnvironmentService
+    {
+        public string GetEnvironmentVariable(string name)
+        {
+            string result = Environment.GetEnvironmentVariable(name);
+            if (string.IsNullOrEmpty(result) && Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                result = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.User);
+                if (string.IsNullOrEmpty(result))
+                    result = Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine);
+            }
+
+            return result;
+        }
     }
 }
