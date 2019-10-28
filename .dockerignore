@@ -2,3 +2,5 @@
 */.vs
 .git
 */.git
+bin
+obj

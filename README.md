@@ -2,7 +2,7 @@
 
 >*** Disclaimer: **`yuniql`** is not yet officially released. Much of the claims here are still work in progress but nightly build have major features available.
 
-<img align="right" src="yuniql-logo.png">
+<img align="right" src="assets/yuniql-logo.png">
 
 **`yuniql`** is a database schema versioning and migration tool based on plain sql scripts. Scripts are stored raw `.sql` files in version folders so you can leverage full power of `git`. It automates what you would normally do by hand by executing all scripts in orderly and transactional fashion. Yuniql seamlessly integrates with your Continuous Delivery (CD) pipelines for truely db/devops development experience.
 

@@ -336,6 +336,8 @@ namespace ArdiLabs.Yuniql
         {
             //execute all script files in the version folder
             var csvFiles = Directory.GetFiles(versionFullPath, "*.csv").ToList();
+            csvFiles.Sort();
+
             TraceService.Info($"Found the {csvFiles.Count} csv files on {versionFullPath}");
             TraceService.Info($"{string.Join(@"\r\n\t", csvFiles.Select(s => new FileInfo(s).Name))}");
 
@@ -358,7 +360,9 @@ namespace ArdiLabs.Yuniql
             TraceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
 
             //execute all script files in the version folder
-            sqlScriptFiles.ForEach(scriptFile =>
+            sqlScriptFiles.Sort();
+            sqlScriptFiles
+                .ForEach(scriptFile =>
             {
                 //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
                 var sqlStatementRaw = File.ReadAllText(scriptFile);

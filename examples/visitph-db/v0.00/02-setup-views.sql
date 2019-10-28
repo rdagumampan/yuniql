@@ -1,6 +1,6 @@
 CREATE VIEW [dbo].[VwVisitor]
 AS
-SELECT TOP (1000) [VisitorID]
+SELECT [VisitorID]
       ,[FirstName]
       ,[LastName]
       ,[Address]

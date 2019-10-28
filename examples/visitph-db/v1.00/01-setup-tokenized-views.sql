@@ -1,9 +1,9 @@
 CREATE VIEW [dbo].[VwVisitorTokenized]
 AS
 SELECT TOP (1000) [VisitorID]
-      ,[FirstName] AS '${VwColumnPrefix}FirstName'
-      ,[LastName] AS '${VwColumnPrefix}LastName'
-      ,[Address] AS '${VwColumnPrefix}Address'
-      ,[Email] AS '${VwColumnPrefix}Email'
+      ,[FirstName] AS '${VwColumnPrefix1}FirstName'
+      ,[LastName] AS '${VwColumnPrefix2}LastName'
+      ,[Address] AS '${VwColumnPrefix3}Address'
+      ,[Email] AS '${VwColumnPrefix4}Email'
 FROM [dbo].[Visitor];
 GO
