@@ -9,7 +9,6 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime-env
 
 WORKDIR app
 COPY --from=build-env /code/app .
-#COPY /examples/visitph-db/ ./db
 
 ENTRYPOINT ["dotnet", "yuniql.dll", "run", "-p", "db"]
 CMD ["additional-arguments-captured-from-docker-run"]
