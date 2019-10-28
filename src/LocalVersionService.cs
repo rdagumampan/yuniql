@@ -48,10 +48,28 @@ namespace ArdiLabs.Yuniql
             if (!File.Exists(readMeFile))
             {
                 File.AppendAllText(readMeFile, @"
-# Database migrations
 
-This database migration project is created and to be executed thru `yuniql` tool. 
-For documentation and how-to guides, please visit yuniql [github page](https://github.com/rdagumampan/yuniql).
+## Database migration project
+This database migration project is created and to be executed thru `yuniql`. 
+For more how-to guides and deep-divers, please visit yuniql [wiki page on github](https://github.com/rdagumampan/yuniql/wiki).
+
+## Run this migration with yuniql on docker
+Open command prompt in current folder.
+
+For simplified run
+```
+docker build -t visitph-example .
+docker run visitph-example -c ""your-connection-string""
+```
+
+For running with token replacement
+```
+docker run visitph-example -c ""your-connection-string\"" -k \""VwColumnPrefix1=App1,VwColumnPrefix2=App2,VwColumnPrefix3=App3,VwColumnPrefix4=App4\""
+```
+
+## Found bugs?
+
+Help us improve further please [create an issue](https://github.com/rdagumampan/yuniql/issues/new).
 ");
                 TraceService.Info($"Created file {readMeFile}");
             }
@@ -59,7 +77,10 @@ For documentation and how-to guides, please visit yuniql [github page](https://g
             var dockerFile = Path.Combine(workingPath, "Dockerfile");
             if (!File.Exists(dockerFile))
             {
-                File.AppendAllText(dockerFile, "");
+                File.AppendAllText(dockerFile, @"
+FROM rdagumampan/yuniql:nightly
+COPY . ./db                
+");
                 TraceService.Info($"Created file {dockerFile}");
             }
 
