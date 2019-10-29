@@ -299,6 +299,7 @@ namespace ArdiLabs.Yuniql
                     {
                         //run scripts in all sub-directories
                         var versionSubDirectories = Directory.GetDirectories(versionDirectory, "*", SearchOption.AllDirectories).ToList();
+                        versionSubDirectories.Sort();
                         versionSubDirectories.ForEach(versionSubDirectory =>
                         {
                             RunMigrationScriptsInternal(connection, transaction, versionSubDirectory, tokens);

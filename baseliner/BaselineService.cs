@@ -91,13 +91,13 @@ namespace Baseliner
         private Database database;
         public void Init()
         {
-            var connectionString = Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+            var connectionString = "";// Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
             if (string.IsNullOrEmpty(connectionString))
             {
                 //use this when running against local instance of sql server with integrated security
                 //connectionString = $"Data Source=.;Integrated Security=SSPI;Initial Catalog=AdventureWorks";
-                //connectionString = $"Server=.;Database=AdventureWorksLT2016;User Id=sa;Password=P@ssw0rd!";
-                connectionString = $"Server=.;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!";
+                connectionString = $"Server=.;Database=AdventureWorksLT2016;User Id=sa;Password=P@ssw0rd!";
+                //connectionString = $"Server=.;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!";
             }
 
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
