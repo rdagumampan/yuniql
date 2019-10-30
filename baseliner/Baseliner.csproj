@@ -1,13 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
-    <StartupObject>Baseliner.Program</StartupObject>
+    <StartupObject>ArdiLabs.Yuniql.Extensions.Program</StartupObject>
+    <AssemblyName>yuniqlx</AssemblyName>
+    <RootNamespace>ArdiLabs.Yuniql.Extensions</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.6.0" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="150.18178.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
   </ItemGroup>

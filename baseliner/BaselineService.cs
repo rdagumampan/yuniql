@@ -7,36 +7,9 @@ using Microsoft.SqlServer.Management.Sdk.Sfc;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-//https://gist.github.com/vincpa/1755925
-//https://www.sqlservermigrations.com/2018/08/script-databases-and-objects-using-powershell/
-//https://www.sqlservercentral.com/wp-content/uploads/2019/05/ALZDBA_ScriptDb_batch.ps1.txt
-
-//scripting with powershell core
-//https://github.com/microsoft/mssql-scripter
-//https://docs.microsoft.com/en-us/sql/ssdt/download-sql-server-data-tools-ssdt?view=sql-server-ver15
-//https://gist.github.com/vincpa/1755925
-//https://docs.microsoft.com/en-us/sql/relational-databases/server-management-objects-smo/tasks/scripting?view=sql-server-ver15
-
-//smo in linux
-//http://www.maxtblog.com/2017/06/using-linux-sql-server-smo-in-powershell-core/
-//https://www.sqlservermigrations.com/2018/08/script-databases-and-objects-using-powershell/
-
-//http://patlau.blogspot.com/2012/09/generate-sqlserver-scripts-with.html
-//https://github.com/commercehub-oss/scriptdb
-
-namespace Baseliner
+namespace ArdiLabs.Yuniql.Extensions
 {
-    public class Program
-    {
-        static void Main(string[] args)
-        {
-            var baselineService = new BaselineService();
-            baselineService.Run();
-        }
-
-    }
-
-    public class BaselineService
+    public class BaselineService : IDisposable
     {
         private List<string> processedUrns = new List<string>();
 
@@ -79,7 +52,9 @@ namespace Baseliner
         private static void Scripter_DiscoveryProgress(object sender, ProgressReportEventArgs e)
         {
             if (e.Current.Type is UserDefinedDataType)
+            {
                 e.Current.Value = string.Empty;
+            }
         }
 
         private static void Scripter_ScriptingProgress(object sender, ProgressReportEventArgs e)
@@ -89,17 +64,8 @@ namespace Baseliner
 
         private Server server;
         private Database database;
-        public void Init()
+        public void Init(string connectionString)
         {
-            var connectionString = "";// Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                //use this when running against local instance of sql server with integrated security
-                //connectionString = $"Data Source=.;Integrated Security=SSPI;Initial Catalog=AdventureWorks";
-                connectionString = $"Server=.;Database=AdventureWorksLT2016;User Id=sa;Password=P@ssw0rd!";
-                //connectionString = $"Server=.;Database=AdventureWorks;User Id=sa;Password=P@ssw0rd!";
-            }
-
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             var connection = new ServerConnection();
 
@@ -111,7 +77,6 @@ namespace Baseliner
 
             server = new Server(connection);
             database = server.Databases[connectionStringBuilder.InitialCatalog];
-            //database = server.Databases["AdventureWorks"];
         }
         public Scripter CreateScripter()
         {
@@ -241,52 +206,52 @@ namespace Baseliner
 
             return scripter;
         }
-        public void Run()
+        public void Run(string sourceConnectionString, string destinationFullPath)
         {
-            Init();
+            Init(sourceConnectionString);
             var scripter = CreateScripter();
 
-            var schemasDirectory = GetDropFolder("01-schemas");
+            var schemasDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "01-schemas");
             var schemasUrns = GetGenericUrns(database.Schemas);
             GenerateSchemaBasedScripts(scripter, schemasDirectory, schemasUrns);
 
-            var typeDirectory = GetDropFolder("02-types");
+            var typeDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "02-types");
             var typeUrns = GetGenericUrns(database.UserDefinedTypes);
             GenerateSchemaBasedScripts(scripter, typeDirectory, typeUrns);
 
-            var dataTypeDirectory = GetDropFolder("02-types");
+            var dataTypeDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "02-types");
             var dataTypeUrns = GetGenericUrns(database.UserDefinedDataTypes);
             GenerateSchemaBasedScripts(scripter, dataTypeDirectory, dataTypeUrns);
 
-            var tableTypeDirectory = GetDropFolder("02-types");
+            var tableTypeDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "02-types");
             var tableTypeUrns = GetGenericUrns(database.UserDefinedTableTypes);
             GenerateSchemaBasedScripts(scripter, tableTypeDirectory, tableTypeUrns);
 
-            var xmlschemasDirectory = GetDropFolder("03-xmlschemas");
+            var xmlschemasDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "03-xmlschemas");
             var xmlschemasUrns = GetGenericUrns(database.XmlSchemaCollections);
             GenerateSchemaBasedScripts(scripter, xmlschemasDirectory, xmlschemasUrns);
 
-            var tableDirectory = GetDropFolder("04-tables");
+            var tableDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "04-tables");
             var tableUrns = GetTableUrns(scripter);
             GenerateSchemaBasedScripts(scripter, tableDirectory, tableUrns);
 
-            var viewDirectory = GetDropFolder("05-views");
+            var viewDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "05-views");
             var viewUrns = GetGenericUrns(database.Views);
             GenerateSchemaBasedScripts(scripter, viewDirectory, viewUrns);
 
-            var functionDirectory = GetDropFolder("06-functions");
+            var functionDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "06-functions");
             var functionUrns = GetGenericUrns(database.UserDefinedFunctions);
             GenerateSchemaBasedScripts(scripter, functionDirectory, functionUrns);
 
-            var procedureDirectory = GetDropFolder("07-procedures");
+            var procedureDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "07-procedures");
             var procedureUrns = GetGenericUrns(database.StoredProcedures);
             GenerateSchemaBasedScripts(scripter, procedureDirectory, procedureUrns);
 
-            var sequencesDirectory = GetDropFolder("08-sequences");
+            var sequencesDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "08-sequences");
             var sequencesUrns = GetGenericUrns(database.Sequences);
             GenerateSchemaBasedScripts(scripter, sequencesDirectory, sequencesUrns);
 
-            var triggersDirectory = GetDropFolder("09-triggers");
+            var triggersDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "09-triggers");
             var triggersUrns = GetGenericUrns(database.Triggers);
             GenerateSchemaBasedScripts(scripter, triggersDirectory, triggersUrns);
         }
@@ -366,10 +331,8 @@ namespace Baseliner
             }
         }
 
-        public string GetDropFolder(string folder)
+        public string GetOrCreateDestinationDirectory(string workingPath, string folder)
         {
-            //var workingPath = Environment.CurrentDirectory;
-            var workingPath = @"C:\temp\demo\v0.01";
             var tableDirectory = Path.Combine(workingPath, folder);
             if (!Directory.Exists(tableDirectory))
             {
@@ -377,6 +340,20 @@ namespace Baseliner
             }
 
             return tableDirectory;
+        }
+
+        public void Dispose()
+        {
+            if (null != server)
+            {
+                server.ConnectionContext.Disconnect();
+                server = null;
+            }
+
+            if (null != database)
+            {
+                database = null;
+            }
         }
     }
 }
