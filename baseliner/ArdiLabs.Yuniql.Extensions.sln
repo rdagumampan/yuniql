@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Baseliner", "Baseliner.csproj", "{027C4F4E-4B91-4A55-B706-99ADCFA2775F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArdiLabs.Yuniql.Extensions", "ArdiLabs.Yuniql.Extensions.csproj", "{027C4F4E-4B91-4A55-B706-99ADCFA2775F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
