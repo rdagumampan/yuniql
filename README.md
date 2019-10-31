@@ -5,7 +5,7 @@
 
 <img align="right" src="assets/yuniql-logo.png">
 
-**`yuniql`** is a schema versioning and database migration tool for sql server. It uses pure sql-based strategy to manage schema evolution. Scripts are placed transparently as `.sql` files and versions are arranged as series of ordinary directories. Scripts are executed in the same order as they are list by your OS. Yuniql automates what you would normally do by hand and executes all scripts in orderly and transactional fashion. Yuniql seamlessly integrates with your Continuous Delivery (CD) pipelines for truely db/devops development experience.
+**`yuniql`** is a schema versioning and database migration tool for sql server. All scripts are organized transparently as `.sql` files and versions are arranged as series of ordinary directories. Yuniql automates what you would normally do by hand and executes all scripts in an orderly and transactional fashion. Yuniql also seamlessly integrates with your Continuous Delivery (CD) pipelines for truely db/devops development experience.
 
 **`yuniql`** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR) for Windows. Container images are also available for seamless Continuous Delivery of database changes in Linux.
 
@@ -187,20 +187,10 @@ yuniql -d | --debug
 #### `yuniqlx` CLI commands
 
 ```bash
-yuniqlx baseline -c "<connectiong-string>" ***
+yuniqlx baseline -c "<connectiong-string>"
 yuniqlx rebase -c "<connectiong-string>" ***
 yuniqlx erase -c "<connectiong-string>" ***
 ```
-
-*** planned or being evaluated/developer/tested
-
-#### Features
-- Pure sql. All scripts are stored raw `.sql` files, no magic. 
-- Bulk import. Load up your master data and lookup tables from CSV files.
-- Cross platform. Works with windows and major linux distros. ***
-- Devops pipelines ready. Agent tasks available in Az DevOps Market Place. ***
-- Docker container ready. Base images to host your scripts and execute.
-- Extensible. Excute custom built C# plugins for very special action. ***
 
 *** planned or being evaluated/developer/tested
 
