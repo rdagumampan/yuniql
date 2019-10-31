@@ -4,3 +4,5 @@
 */.git
 bin
 obj
+**/bin/
+**/obj/
