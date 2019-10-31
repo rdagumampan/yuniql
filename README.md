@@ -162,6 +162,7 @@ You may use any other git provider and replace the `.git` folder.
 * [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
 
 #### `yuniql` CLI commands
+See how it works here https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works
 
 ```bash
 yuniql init
@@ -186,6 +187,7 @@ yuniql -d | --debug
 *** planned or being evaluated/developer/tested
 
 #### `yuniqlx` CLI commands
+See how-to guide here https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database
 
 ```bash
 yuniqlx baseline -c "<connectiong-string>"
