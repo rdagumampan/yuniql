@@ -15,7 +15,8 @@ This 10-step tutorial shows you how to deploy your first sql-based migration int
 
 ##### Prepare your environment
 
-1. Deploy a sql server linux container
+1. Deploy a sql server linux container<br>
+Skip this if you use local or specific instance.
 
 	```bash
 	docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Manila2050!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
@@ -46,16 +47,16 @@ This 10-step tutorial shows you how to deploy your first sql-based migration int
 2. Initialize your workspace
 
 	```bash
-	yuniql-nightly> yuniql init
-	yuniql-nightly> dir /O:N
+	yuniql init
+	dir /O:N
 	```
 
 3. Increment major version
 The `vnext -M` creates a new major version with format `v{major}.{minor}`. You can of course create this manually inthe directory!
 
 	```bash
-	yuniql-nightly> yuniql vnext -M
-	yuniql-nightly> dir /O:N
+	yuniql vnext -M
+	dir /O:N
 
 	10/21/2019  22:41    <DIR>          _draft
 	10/21/2019  22:41    <DIR>          _init
@@ -84,8 +85,8 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 5. Run migration
 
 	```bash
-	yuniql-nightly> yuniql run -a
-	yuniql-nightly> yuniql info
+	yuniql run -a
+	yuniql info
 
 	Version         Created                         CreatedBy
 	v0.00           2019-10-21T21:16:48.8130000     sa
@@ -95,8 +96,8 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 6. Increment minor version
 
 	```bash
-	yuniql-nightly> yuniql vnext
-	yuniql-nightly> dir /O:N
+	yuniql vnext
+	dir /O:N
 
 	10/21/2019  22:41    <DIR>          v0.00
 	10/21/2019  22:46    <DIR>          v1.00
@@ -117,8 +118,8 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 8. Run migration again
 
 	```bash
-	yuniql-nightly> yuniql run
-	yuniql-nightly> yuniql info
+	yuniql run
+	yuniql info
 	```
 
 	Verify that records has been inserted as part version `v1.01` using SSMS or preferred SQL client.
@@ -136,9 +137,9 @@ The `vnext -M` creates a new major version with format `v{major}.{minor}`. You c
 9. Initialize `git` repo
 
 	```git
-	yuniql-nightly> git init
-	yuniql-nightly> git add -A
-	yuniql-nightly> git commit -m "This is my first yuniql migration"
+	git init
+	git add -A
+	git commit -m "This is my first yuniql migration"
 	```
 
 10. Create destination `git` repo and `push` your changes.
@@ -147,8 +148,8 @@ You may use any other git provider and replace the `.git` folder.
 	<img src="assets/yuniql-test-repo.png" width="450" height="200">
 
 	```bash
-	yuniql-nightly> git remote add origin https://github.com/{your-github-account}/{your-github-database-repo}.git
-	yuniql-nightly> git push -u origin master
+	git remote add origin https://github.com/{your-github-account}/{your-github-database-repo}.git
+	git push -u origin master
 	```
 	>NOTE: For simplicity I use HTTPS mode in setting git repo. If you use SSH, you need to download and configure your keys.
 
