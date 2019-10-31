@@ -172,8 +172,8 @@ yuniql vnext -p c:\temp\demo | --path c:\temp\demo
 yuniql vnext -M | --major
 yuniql vnext -m | --minor
 yuniql vnext -f "Table1.sql"
+yuniql verify
 yuniql run
-yuniql run -u | --uncomitted ***
 yuniql run -a true | --auto-create-db true
 yuniql run -p c:\temp\demo | --path c:\temp\demo
 yuniql run -t v1.05 | --target-version v1.05
