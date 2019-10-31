@@ -5,7 +5,7 @@
 
 <img align="right" src="assets/yuniql-logo.png">
 
-**`yuniql`** is a database schema versioning and migration tool based on plain sql scripts. Scripts are stored raw `.sql` files in version folders so you can leverage full power of `git`. It automates what you would normally do by hand by executing all scripts in orderly and transactional fashion. Yuniql seamlessly integrates with your Continuous Delivery (CD) pipelines for truely db/devops development experience.
+**`yuniql`** is a schema versioning and database migration tool for sql server. It uses pure sql-based strategy to manage schema evolution. Scripts are placed transparently as `.sql` files and versions are arranged as series of ordinary directories. Scripts are executed in the same order as they are list by your OS. Yuniql automates what you would normally do by hand and executes all scripts in orderly and transactional fashion. Yuniql seamlessly integrates with your Continuous Delivery (CD) pipelines for truely db/devops development experience.
 
 **`yuniql`** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR) for Windows. Container images are also available for seamless Continuous Delivery of database changes in Linux.
 
