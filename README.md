@@ -204,6 +204,13 @@ yuniqlx erase -c "<connectiong-string>" ***
 
 *** planned or being evaluated/developer/tested
 
+#### Build Status
+
+|Platform|Build Status|
+|---|---|
+|![linux-x64](assets/linux_med.png) **windows x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true)|
+|![win-x64](assets/win_med.png) **linux x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/e6hqrhqa6d1lnma0?svg=true)|
+
 #### How to contribute or ask help
 - File a bug or feature as an [issue](https://github.com/rdagumampan/yuniql/issues/new)
 - Talk to us on [gitter chat](https://gitter.im/yuniql/community)
