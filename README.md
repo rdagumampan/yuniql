@@ -206,7 +206,7 @@ yuniqlx erase -c "<connectiong-string>" ***
 
 #### Build Status
 
-|Platform|Build Status|
+|Platform|Docker Build Status|
 |---|---|
 |![linux-x64](assets/linux_med.png) **windows x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|
 |![win-x64](assets/win_med.png) **linux x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|
