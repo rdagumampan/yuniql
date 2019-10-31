@@ -158,6 +158,7 @@ You may use any other git provider and replace the `.git` folder.
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 * [Replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
 * [Bulk import data during migration](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-load-data-during-migration)
+* [Migrate via docker container](https://github.com/rdagumampan/yuniql/wiki/Run-migration-on-Docker-container)
 * [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
 
 #### `yuniql` CLI commands
