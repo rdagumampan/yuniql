@@ -9,13 +9,13 @@ Open command prompt in current folder.
 
 For simplified run
 ```
-docker build -t visitph-example .
-docker run visitph-example -c "your-connection-string"
+docker build -t adw-example .
+docker run adw-example -c "your-connection-string"
 ```
 
 For running with token replacement
 ```
-docker run visitph-example -c "your-connection-string\" -k \"VwColumnPrefix1=App1,VwColumnPrefix2=App2,VwColumnPrefix3=App3,VwColumnPrefix4=App4\"
+docker run adw-example -c "your-connection-string\" -k \"VwColumnPrefix1=App1,VwColumnPrefix2=App2,VwColumnPrefix3=App3,VwColumnPrefix4=App4\"
 ```
 
 ## Found bugs?
