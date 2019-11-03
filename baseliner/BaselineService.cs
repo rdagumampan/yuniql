@@ -9,40 +9,91 @@ using System.Data.SqlClient;
 
 namespace ArdiLabs.Yuniql.Extensions
 {
-    public class BaselineService : IDisposable
+    public class BaselineService
     {
         private List<string> processedUrns = new List<string>();
-
         public delegate bool FilterDelegate(Urn urn);
-        public static bool FilterMethod(Urn urn)
+
+        public void Run(string sourceConnectionString, string destinationFullPath)
+        {
+            var connectionStringBuilder = new SqlConnectionStringBuilder(sourceConnectionString);
+
+            var serverConnection = CreateServerConnection(sourceConnectionString);
+            var server = new Server(serverConnection);
+            server.SetDefaultInitFields(true);
+            server.ConnectionContext.Connect();
+
+            var scripter = CreateSqlScripter(server);
+            var database = server.Databases[connectionStringBuilder.InitialCatalog];
+
+            var schemasDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "01-schemas");
+            var schemasUrns = GetGenericUrns(database.Schemas);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, schemasDirectory, schemasUrns);
+
+            var typeDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "02-types");
+            var typeUrns = GetGenericUrns(database.UserDefinedTypes);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, typeDirectory, typeUrns);
+
+            var dataTypeDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "02-types");
+            var dataTypeUrns = GetGenericUrns(database.UserDefinedDataTypes);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, dataTypeDirectory, dataTypeUrns);
+
+            var tableTypeDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "02-types");
+            var tableTypeUrns = GetGenericUrns(database.UserDefinedTableTypes);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, tableTypeDirectory, tableTypeUrns);
+
+            var xmlschemasDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "03-xmlschemas");
+            var xmlschemasUrns = GetGenericUrns(database.XmlSchemaCollections);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, xmlschemasDirectory, xmlschemasUrns);
+
+            var tableDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "04-tables");
+            var tableUrns = GetTableUrns(database, scripter);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, tableDirectory, tableUrns);
+
+            var viewDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "05-views");
+            var viewUrns = GetGenericUrns(database.Views);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, viewDirectory, viewUrns);
+
+            var functionDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "06-functions");
+            var functionUrns = GetGenericUrns(database.UserDefinedFunctions);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, functionDirectory, functionUrns);
+
+            var procedureDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "07-procedures");
+            var procedureUrns = GetGenericUrns(database.StoredProcedures);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, procedureDirectory, procedureUrns);
+
+            var sequencesDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "08-sequences");
+            var sequencesUrns = GetGenericUrns(database.Sequences);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, sequencesDirectory, sequencesUrns);
+
+            var triggersDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "09-triggers");
+            var triggersUrns = GetGenericUrns(database.Triggers);
+            GenerateSchemaBasedScriptFiles(sourceConnectionString, scripter, triggersDirectory, triggersUrns);
+        }
+
+        public static bool FilterTypes(Urn urn)
         {
             if (urn.Type == "UserDefinedDataType")
             {
-                Console.WriteLine("Filtered UserDefinedDataType");
+                TraceService.Debug("Filtered UserDefinedDataType");
                 return true;
             }
 
-            //if (urn.Type == "UserDefinedFunction")
-            //{
-            //    Console.WriteLine("Filtered UserDefinedFunction");
-            //    return true;
-            //}
-
             if (urn.Type == "XmlSchemaCollection")
             {
-                Console.WriteLine("Filtered XmlSchemaCollection");
+                TraceService.Debug("Filtered XmlSchemaCollection");
                 return true;
             }
 
             if (urn.Type == "StoredProcedure")
             {
-                Console.WriteLine("Filtered StoredProcedure");
+                TraceService.Debug("Filtered StoredProcedure");
                 return true;
             }
 
             if (urn.Type == "UnresolvedEntity")
             {
-                Console.WriteLine("Filtered UnresolvedEntity");
+                TraceService.Debug("Filtered UnresolvedEntity");
                 return true;
             }
 
@@ -53,32 +104,35 @@ namespace ArdiLabs.Yuniql.Extensions
         {
             if (e.Current.Type is UserDefinedDataType)
             {
+                TraceService.Info("Discovery skipped UserDefinedDataType");
                 e.Current.Value = string.Empty;
             }
         }
 
         private static void Scripter_ScriptingProgress(object sender, ProgressReportEventArgs e)
         {
-            Console.WriteLine("---------" + e.Current.Type);
+            TraceService.Info("---------" + e.Current.Type);
         }
 
-        private Server server;
-        private Database database;
-        public void Init(string connectionString)
+        private void Scripter_ScriptingError(object sender, ScriptingErrorEventArgs e)
+        {
+            TraceService.Error($"Error scripting {e.Current.Value}. {e.InnerException.ToString()}");
+        }
+
+        private ServerConnection CreateServerConnection(string connectionString)
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            var connection = new ServerConnection();
 
+            var connection = new ServerConnection();
             connection.ServerInstance = connectionStringBuilder.DataSource;
             connection.LoginSecure = connectionStringBuilder.IntegratedSecurity;
             connection.Login = connectionStringBuilder.UserID;
             connection.Password = connectionStringBuilder.Password;
-            connection.Connect();
 
-            server = new Server(connection);
-            database = server.Databases[connectionStringBuilder.InitialCatalog];
+            return connection;
         }
-        public Scripter CreateScripter()
+
+        private Scripter CreateSqlScripter(Server server)
         {
             var options = new ScriptingOptions();
             options.EnforceScriptingOptions = true;
@@ -201,79 +255,32 @@ namespace ArdiLabs.Yuniql.Extensions
             options.ContinueScriptingOnError = false;
 
             var scripter = new Scripter(server);
-            scripter.FilterCallbackFunction = FilterMethod;
+            scripter.FilterCallbackFunction = FilterTypes;
             scripter.Options = options;
+            scripter.ScriptingError += Scripter_ScriptingError;
 
             return scripter;
         }
-        public void Run(string sourceConnectionString, string destinationFullPath)
-        {
-            Init(sourceConnectionString);
-            var scripter = CreateScripter();
 
-            var schemasDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "01-schemas");
-            var schemasUrns = GetGenericUrns(database.Schemas);
-            GenerateSchemaBasedScripts(scripter, schemasDirectory, schemasUrns);
-
-            var typeDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "02-types");
-            var typeUrns = GetGenericUrns(database.UserDefinedTypes);
-            GenerateSchemaBasedScripts(scripter, typeDirectory, typeUrns);
-
-            var dataTypeDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "02-types");
-            var dataTypeUrns = GetGenericUrns(database.UserDefinedDataTypes);
-            GenerateSchemaBasedScripts(scripter, dataTypeDirectory, dataTypeUrns);
-
-            var tableTypeDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "02-types");
-            var tableTypeUrns = GetGenericUrns(database.UserDefinedTableTypes);
-            GenerateSchemaBasedScripts(scripter, tableTypeDirectory, tableTypeUrns);
-
-            var xmlschemasDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "03-xmlschemas");
-            var xmlschemasUrns = GetGenericUrns(database.XmlSchemaCollections);
-            GenerateSchemaBasedScripts(scripter, xmlschemasDirectory, xmlschemasUrns);
-
-            var tableDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "04-tables");
-            var tableUrns = GetTableUrns(scripter);
-            GenerateSchemaBasedScripts(scripter, tableDirectory, tableUrns);
-
-            var viewDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "05-views");
-            var viewUrns = GetGenericUrns(database.Views);
-            GenerateSchemaBasedScripts(scripter, viewDirectory, viewUrns);
-
-            var functionDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "06-functions");
-            var functionUrns = GetGenericUrns(database.UserDefinedFunctions);
-            GenerateSchemaBasedScripts(scripter, functionDirectory, functionUrns);
-
-            var procedureDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "07-procedures");
-            var procedureUrns = GetGenericUrns(database.StoredProcedures);
-            GenerateSchemaBasedScripts(scripter, procedureDirectory, procedureUrns);
-
-            var sequencesDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "08-sequences");
-            var sequencesUrns = GetGenericUrns(database.Sequences);
-            GenerateSchemaBasedScripts(scripter, sequencesDirectory, sequencesUrns);
-
-            var triggersDirectory = GetOrCreateDestinationDirectory(destinationFullPath, "09-triggers");
-            var triggersUrns = GetGenericUrns(database.Triggers);
-            GenerateSchemaBasedScripts(scripter, triggersDirectory, triggersUrns);
-        }
-
-        public List<Urn> GetGenericUrns(SmoCollectionBase collections)
+        private List<Urn> GetGenericUrns(SmoCollectionBase collections)
         {
             var urns = new List<Urn>();
             foreach (SqlSmoObject smo in collections)
             {
+                //skip all system objects
                 if (smo is Schema && ((smo as Schema).IsSystemObject)) continue;
                 if (smo is Table && ((smo as Table).IsSystemObject)) continue;
                 if (smo is View && ((smo as View).IsSystemObject)) continue;
                 if (smo is StoredProcedure && ((smo as StoredProcedure).IsSystemObject)) continue;
                 if (smo is UserDefinedFunction && ((smo as UserDefinedFunction).IsSystemObject)) continue;
 
-                Console.WriteLine($"GetUrns: {smo.Urn}");
+                TraceService.Debug($"Listed urn for scripting: {smo.Urn}");
                 urns.Add(smo.Urn);
             }
             return urns;
         }
 
-        public List<Urn> GetTableUrns(Scripter scripter)
+        private List<Urn> GetTableUrns(Database database, Scripter scripter)
         {
             //prepare root list of urns to walk through
             var parentUrns = new List<Urn>();
@@ -295,43 +302,64 @@ namespace ArdiLabs.Yuniql.Extensions
             return dependencyUrns;
         }
 
-        public void GenerateSchemaBasedScripts(Scripter scripter, string destinationDirectory, List<Urn> urns)
+        private void GenerateSchemaBasedScriptFiles(string connectionString, Scripter scripter, string destinationDirectory, List<Urn> urns)
         {
-            var sequenceNo = 1;
-            foreach (var urn in urns)
+            var serverConnection = CreateServerConnection(connectionString);
+            var server = new Server(serverConnection);
+
+            try
             {
-                if (processedUrns.Contains(urn)) continue;
+                server.ConnectionContext.Connect();
 
-                var smo = server.GetSmoObject(urn) as ScriptNameObjectBase;
-                if (null != smo)
+                var sequenceNo = 1;
+                foreach (var urn in urns)
                 {
-                    var baseFileName = $"{smo.Name}";
+                    if (processedUrns.Contains(urn)) continue;
 
-                    if (smo is ScriptSchemaObjectBase)
+                    var smo = server.GetSmoObject(urn) as ScriptNameObjectBase;
+                    if (null != smo)
                     {
-                        var ssmo = smo as ScriptSchemaObjectBase;
-                        if (!string.IsNullOrEmpty(ssmo.Schema))
+                        var baseFileName = $"{smo.Name}";
+
+                        if (smo is ScriptSchemaObjectBase)
                         {
-                            baseFileName = $"{ssmo.Schema}.{ssmo.Name}";
+                            var ssmo = smo as ScriptSchemaObjectBase;
+                            if (!string.IsNullOrEmpty(ssmo.Schema))
+                            {
+                                baseFileName = $"{ssmo.Schema}.{ssmo.Name}";
+                            }
                         }
+
+                        scripter.Options.FileName = Path.Combine(destinationDirectory, $"{sequenceNo.ToString("000")}-{baseFileName}.sql");
+                        scripter.Script(new Urn[] { urn });
+
+                        processedUrns.Add(urn);
+                        sequenceNo++;
+
+                        TraceService.Info($"Generated script file {scripter.Options.FileName}");
                     }
-
-                    scripter.Options.FileName = Path.Combine(destinationDirectory, $"{sequenceNo.ToString("000")}-{baseFileName}.sql");
-                    scripter.Script(new Urn[] { urn });
-
-                    processedUrns.Add(urn);
-                    sequenceNo++;
-
-                    Console.WriteLine($"OK {scripter.Options.FileName}");
+                    else
+                    {
+                        TraceService.Error($"Failed to generate scripts for urn: {urn}");
+                    }
                 }
-                else
+            }
+            catch (Exception ex)
+            {
+                TraceService.Error($"Error generating schema files. {ex.ToString()}");
+                throw;
+            }
+            finally
+            {
+                if (server.ConnectionContext.IsOpen)
                 {
-                    Console.WriteLine($"Failed to generate scripts for urn: {urn}");
+                    server.ConnectionContext.Disconnect();
+                    server = null;
                 }
             }
         }
 
-        public string GetOrCreateDestinationDirectory(string workingPath, string folder)
+        private string GetOrCreateDestinationDirectory(string workingPath, string folder)
         {
             var tableDirectory = Path.Combine(workingPath, folder);
             if (!Directory.Exists(tableDirectory))
@@ -340,20 +368,6 @@ namespace ArdiLabs.Yuniql.Extensions
             }
 
             return tableDirectory;
-        }
-
-        public void Dispose()
-        {
-            if (null != server)
-            {
-                server.ConnectionContext.Disconnect();
-                server = null;
-            }
-
-            if (null != database)
-            {
-                database = null;
-            }
         }
     }
 }
