@@ -32,6 +32,7 @@ namespace ArdiLabs.Yuniql
             var targetDatabaseExists = IsTargetDatabaseExists(targetDatabaseName);
             if (!targetDatabaseExists && autoCreateDatabase)
             {
+                TraceService.Info($"Target database does not exist. Creating database {targetDatabaseName} on {targetDatabaseServer}.");
                 CreateDatabase(targetDatabaseName);
                 TraceService.Info($"Created database {targetDatabaseName} on {targetDatabaseServer}.");
             }
@@ -40,6 +41,7 @@ namespace ArdiLabs.Yuniql
             var targetDatabaseConfigured = IsTargetDatabaseConfigured();
             if (!targetDatabaseConfigured)
             {
+                TraceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");
                 ConfigureDatabase(targetDatabaseName);
                 TraceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
@@ -102,13 +104,13 @@ namespace ArdiLabs.Yuniql
             }
             else
             {
-                TraceService.Info($"Target database is updated. No changes made at {targetDatabaseName} on {targetDatabaseServer}.");
+                TraceService.Info($"Target database runs the latest version already. No changes made at {targetDatabaseName} on {targetDatabaseServer}.");
             }
         }
 
         private bool IsTargetDatabaseExists(string targetDatabaseName)
         {
-            var sqlStatement = $"SELECT ISNULL(DB_ID (N'{targetDatabaseName}'),0);";
+            var sqlStatement = $"SELECT ISNULL(database_id,0) FROM [sys].[databases] WHERE name = '{targetDatabaseName}'";
 
             //check if database exists and auto-create when its not
             var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
@@ -121,7 +123,7 @@ namespace ArdiLabs.Yuniql
 
         private bool IsTargetDatabaseConfigured()
         {
-            var sqlStatement = $"SELECT ISNULL(OBJECT_ID('dbo.__YuniqlDbVersion'),0) IsDatabaseConfigured";
+            var sqlStatement = $"SELECT ISNULL(object_id,0) FROM [sys].[tables] WHERE name = '__YuniqlDbVersion'";
             var result = DbHelper.QuerySingleBool(connectionString, sqlStatement);
 
             return result;

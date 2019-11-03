@@ -27,7 +27,7 @@ namespace ArdiLabs.Yuniql
             TraceService.Info(connectionString);
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
-            bool result;
+            bool result = false;
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -39,8 +39,10 @@ namespace ArdiLabs.Yuniql
 
                 using (var reader = command.ExecuteReader())
                 {
-                    reader.Read();
-                    result = Convert.ToBoolean(reader.GetValue(0));
+                    if (reader.Read())
+                    {
+                        result = Convert.ToBoolean(reader.GetValue(0));
+                    }
                 }
             }
 
@@ -106,7 +108,7 @@ namespace ArdiLabs.Yuniql
             TraceService.Info(activeConnection.ConnectionString);
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
-            bool result;
+            bool result = false;
             var command = activeConnection.CreateCommand();
             command.Transaction = transaction;
             command.CommandType = CommandType.Text;
@@ -115,8 +117,10 @@ namespace ArdiLabs.Yuniql
 
             using (var reader = command.ExecuteReader())
             {
-                reader.Read();
-                result = Convert.ToBoolean(reader.GetValue(0));
+                if (reader.Read())
+                {
+                    result = Convert.ToBoolean(reader.GetValue(0));
+                }
             }
 
             return result;
@@ -127,7 +131,7 @@ namespace ArdiLabs.Yuniql
             TraceService.Info(activeConnection.ConnectionString);
             TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
-            string result;
+            string result = null;
 
             var command = activeConnection.CreateCommand();
             command.Transaction = transaction;
@@ -137,8 +141,10 @@ namespace ArdiLabs.Yuniql
 
             using (var reader = command.ExecuteReader())
             {
-                reader.Read();
-                result = reader.GetString(0);
+                if (reader.Read())
+                {
+                    result = reader.GetString(0);
+                }
             }
             return result;
         }
