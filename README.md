@@ -48,9 +48,6 @@ The following commands `yuniql` to discover the project directory, creates the t
 	v1.01           2019-11-03T16:29:36.1130000     DESKTOP-ULR8GDO\rdagumampan
 	```
 
-	<br>
-	<img align="center" src="assets/visitordb-ssms.png" width="700">
-
 5. Verify results<br>
 Query tables with SSMS or your preferred SQL client
 	```sql
@@ -63,6 +60,9 @@ Query tables with SSMS or your preferred SQL client
 	1003        Sam         Macdonald   Batangas sam.macdonald@never-exists.com
 	1004        Matt        Paige       Laguna   matt.paige@never-exists.com
 	```
+
+	<br>
+	<img align="center" src="assets/visitordb-screensot-ssms.png" width="700">
 
 #### Digging deeper
 
