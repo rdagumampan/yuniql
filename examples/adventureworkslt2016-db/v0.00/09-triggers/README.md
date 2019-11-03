@@ -1,0 +1,1 @@
+This is just placeholder file so git dont ignore the directory.

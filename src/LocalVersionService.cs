@@ -58,13 +58,13 @@ Open command prompt in current folder.
 
 For simplified run
 ```
-docker build -t visitph-example .
-docker run visitph-example -c ""your-connection-string""
+docker build -t your-project-name .
+docker run your-project-name -c ""your-connection-string""
 ```
 
 For running with token replacement
 ```
-docker run visitph-example -c ""your-connection-string\"" -k \""VwColumnPrefix1=App1,VwColumnPrefix2=App2,VwColumnPrefix3=App3,VwColumnPrefix4=App4\""
+docker run your-project-name -c ""your-connection-string\"" -k \""VwColumnPrefix1=App1,VwColumnPrefix2=App2,VwColumnPrefix3=App3,VwColumnPrefix4=App4\""
 ```
 
 ## Found bugs?
@@ -87,7 +87,11 @@ COPY . ./db
             var gitIgnoreFile = Path.Combine(workingPath, ".gitignore");
             if (!File.Exists(gitIgnoreFile))
             {
-                File.AppendAllText(gitIgnoreFile, $"yuniql.exe{Environment.NewLine}yuniql.pdb");
+                File.AppendAllText(gitIgnoreFile, @"
+yuniql.exe
+yuniql.pdb
+yuniqlx.exe
+");
                 TraceService.Info($"Created file {gitIgnoreFile}");
             }
 

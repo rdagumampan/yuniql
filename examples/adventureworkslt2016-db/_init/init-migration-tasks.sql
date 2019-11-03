@@ -1,0 +1,1 @@
+SELECT 'This is an init-migration task'

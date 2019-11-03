@@ -1,0 +1,1 @@
+SELECT 'This is a repeatable-migration task'

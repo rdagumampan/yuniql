@@ -1,4 +1,3 @@
-
 ### Database migration project
 This database migration project is created and to be executed thru `yuniql`. 
 For more how-to guides and deep-divers, please visit yuniql [wiki page on github](https://github.com/rdagumampan/yuniql/wiki).
