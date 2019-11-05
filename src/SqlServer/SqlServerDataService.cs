@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ArdiLabs.Yuniql
 {
@@ -280,6 +283,13 @@ namespace ArdiLabs.Yuniql
             command.CommandText = incrementVersionSqlStatement;
             command.CommandTimeout = 0;
             command.ExecuteNonQuery();
+        }
+
+        public List<string> BreakStatements(string sqlStatementRaw)
+        {
+            return Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .ToList();
         }
     }
 }

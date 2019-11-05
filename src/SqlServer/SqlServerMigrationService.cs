@@ -155,10 +155,8 @@ namespace ArdiLabs.Yuniql
             {
                 //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
                 var sqlStatementRaw = File.ReadAllText(scriptFile);
-                var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
-                    .Where(s => !string.IsNullOrWhiteSpace(s))
-                    .ToList()
-    ;
+                var sqlStatements = dataService.BreakStatements(sqlStatementRaw);
+
                 sqlStatements.ForEach(sqlStatement =>
                 {
                     //replace tokens with values from the cli
@@ -276,9 +274,7 @@ namespace ArdiLabs.Yuniql
             {
                 //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
                 var sqlStatementRaw = File.ReadAllText(scriptFile);
-                var sqlStatements = Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
-                    .Where(s => !string.IsNullOrWhiteSpace(s))
-                    .ToList()
+                var sqlStatements = dataService.BreakStatements(sqlStatementRaw);
     ;
                 sqlStatements.ForEach(sqlStatement =>
                 {

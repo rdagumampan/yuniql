@@ -7,13 +7,13 @@ namespace ArdiLabs.Yuniql
         //unique sequence id for the version
         public int Id { get; set; }
 
-        //the version itselft as reflected in the directory structure
+        //the version itself as reflected in the directory structure
         public string Version { get; set; }
 
         //the date and time when migration was run
         public DateTime DateInsertedUtc { get; set; }
 
-        //the user id used to perform the migration
+        //the user id used who performed the migration
         public string LastUserId { get; set; }
 
         //some additional information on the version
