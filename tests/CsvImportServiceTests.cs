@@ -40,7 +40,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_01.sql"), TestHelper.CreateScript($"test_v1_01"));
 
             //act
-            var migrationService = new MigrationService(connectionString);
+            var dataService = new SqlServerDataService(connectionString);
+            var migrationService = new SqlServerMigrationService(connectionString, dataService);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert

@@ -8,20 +8,23 @@ using System.Text.RegularExpressions;
 
 namespace ArdiLabs.Yuniql
 {
-    public class MigrationService : IMigrationService
+    public class SqlServerMigrationService : IMigrationService
     {
         private readonly string connectionString;
+        private readonly IDataService dataService;
 
-        public MigrationService(string connectionString)
+        public SqlServerMigrationService(string connectionString, IDataService dataService)
         {
             this.connectionString = connectionString;
+            this.dataService = dataService;
         }
 
-        public void Run(string workingPath,
+        public void Run(
+            string workingPath,
             string targetVersion,
             bool autoCreateDatabase,
-            List<KeyValuePair<string, string>> tokens = null,
-            bool verificationRunOnly = false)
+            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            bool verifyOnly = false)
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             var targetDatabaseName = connectionStringBuilder.InitialCatalog;
@@ -29,24 +32,24 @@ namespace ArdiLabs.Yuniql
 
             //create the database, we need this to be outside of the transaction scope
             //in an event of failure, users have to manually drop the auto-created database
-            var targetDatabaseExists = IsTargetDatabaseExists(targetDatabaseName);
+            var targetDatabaseExists = dataService.IsTargetDatabaseExists();
             if (!targetDatabaseExists && autoCreateDatabase)
             {
                 TraceService.Info($"Target database does not exist. Creating database {targetDatabaseName} on {targetDatabaseServer}.");
-                CreateDatabase(targetDatabaseName);
+                dataService.CreateDatabase();
                 TraceService.Info($"Created database {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
             //check if database has been pre-configured to support migration and setup when its not
-            var targetDatabaseConfigured = IsTargetDatabaseConfigured();
+            var targetDatabaseConfigured = dataService.IsTargetDatabaseConfigured();
             if (!targetDatabaseConfigured)
             {
                 TraceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");
-                ConfigureDatabase(targetDatabaseName);
+                dataService.ConfigureDatabase();
                 TraceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
-            var dbVersions = GetAllDbVersions()
+            var dbVersions = dataService.GetAllVersions()
                 .Select(dv => dv.Version)
                 .OrderBy(v => v)
                 .ToList();
@@ -66,29 +69,29 @@ namespace ArdiLabs.Yuniql
                             if (!targetDatabaseConfigured)
                             {
                                 //runs all scripts in the _init folder
-                                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokens);
+                                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokenKeyPairs);
                                 TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
                             }
 
                             //checks if target database already runs the latest version and skips work if it already is
                             //runs all scripts in the _pre folder and subfolders
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokens);
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs);
                             TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                             //runs all scripts int the vxx.xx folders and subfolders
-                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokens);
+                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs);
 
                             //runs all scripts in the _draft folder and subfolders
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokens);
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs);
                             TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                             //runs all scripts in the _post folder and subfolders
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokens);
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs);
                             TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
 
                             //when true, the execution is an uncommitted transaction 
                             //and only for purpose of testing if all can go well when it run to the target environment
-                            if (verificationRunOnly)
+                            if (verifyOnly)
                                 transaction.Rollback();
                             else
                                 transaction.Commit();
@@ -108,30 +111,17 @@ namespace ArdiLabs.Yuniql
             }
         }
 
-        private bool IsTargetDatabaseExists(string targetDatabaseName)
-        {
-            var sqlStatement = $"SELECT ISNULL(database_id,0) FROM [sys].[databases] WHERE name = '{targetDatabaseName}'";
+        //private bool IsTargetDatabaseExists(string targetDatabaseName)
+        //{
+        //}
 
-            //check if database exists and auto-create when its not
-            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            masterConnectionStringBuilder.InitialCatalog = "master";
-
-            var result = DbHelper.QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
-
-            return result;
-        }
-
-        private bool IsTargetDatabaseConfigured()
-        {
-            var sqlStatement = $"SELECT ISNULL(object_id,0) FROM [sys].[tables] WHERE name = '__YuniqlDbVersion'";
-            var result = DbHelper.QuerySingleBool(connectionString, sqlStatement);
-
-            return result;
-        }
+        //private bool IsTargetDatabaseConfigured()
+        //{
+        //}
 
         private bool IsTargetDatabaseLatest(string targetVersion)
         {
-            var dbcv = GetCurrentVersion();
+            var dbcv = dataService.GetCurrentVersion();
             if (string.IsNullOrEmpty(dbcv)) return false;
 
             var cv = new LocalVersion(dbcv);
@@ -139,92 +129,15 @@ namespace ArdiLabs.Yuniql
             return string.Compare(cv.SemVersion, tv.SemVersion) == 1 || //db has more updated than local version
                 string.Compare(cv.SemVersion, tv.SemVersion) == 0;      //db has the same version as local version
         }
-
-        private void CreateDatabase(string targetDatabaseName)
+        
+        public string GetCurrentVersion()
         {
-            var sqlStatement = $"CREATE DATABASE {targetDatabaseName};";
-            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            masterConnectionStringBuilder.InitialCatalog = "master";
-
-            DbHelper.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
+            return dataService.GetCurrentVersion();
         }
 
-        private void ConfigureDatabase(string targetDatabaseName)
+        public List<DbVersion> GetAllVersions()
         {
-            var sqlStatement = $@"
-                    USE {targetDatabaseName};
-
-                    IF OBJECT_ID('[dbo].[__YuniqlDbVersion]') IS NULL 
-                    BEGIN
-	                    CREATE TABLE [dbo].[__YuniqlDbVersion](
-		                    [Id] [SMALLINT] IDENTITY(1,1),
-		                    [Version] [NVARCHAR](32) NOT NULL,
-		                    [DateInsertedUtc] [DATETIME] NOT NULL,
-		                    [LastUpdatedUtc] [DATETIME] NOT NULL,
-		                    [LastUserId] [NVARCHAR](128) NOT NULL,
-		                    [Artifact] [VARBINARY](MAX) NULL,
-		                    CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([Id] ASC),
-		                    CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED ([Version] ASC)
-	                    );
-
-	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_DateInsertedUtc]  DEFAULT (GETUTCDATE()) FOR [DateInsertedUtc];
-	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_LastUpdatedUtc]  DEFAULT (GETUTCDATE()) FOR [LastUpdatedUtc];
-	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_LastUserId]  DEFAULT (SUSER_SNAME()) FOR [LastUserId];
-                    END                
-            ";
-
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
-
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private string GetCurrentVersion()
-        {
-            var sqlStatement = $"SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY Id DESC;";
-            var result = DbHelper.QuerySingleString(connectionString, sqlStatement);
-
-            return result;
-        }
-
-        public List<DbVersion> GetAllDbVersions()
-        {
-            var result = new List<DbVersion>();
-
-            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
-
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var dbVersion = new DbVersion
-                    {
-                        Id = reader.GetInt16(0),
-                        Version = reader.GetString(1),
-                        DateInsertedUtc = reader.GetDateTime(2),
-                        LastUserId = reader.GetString(3)
-                    };
-                    result.Add(dbVersion);
-                }
-            }
-
-            return result;
+            return dataService.GetAllVersions();
         }
 
         private void RunNonVersionScripts(
@@ -253,13 +166,7 @@ namespace ArdiLabs.Yuniql
                     sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
 
                     TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-
-                    var command = connection.CreateCommand();
-                    command.Transaction = transaction;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = sqlStatement;
-                    command.CommandTimeout = 0;
-                    command.ExecuteNonQuery();
+                    dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
                 });
 
                 TraceService.Info($"Executed script file {scriptFile}.");
@@ -315,7 +222,7 @@ namespace ArdiLabs.Yuniql
 
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
-                        UpdateDbVersion(connection, transaction, versionName);
+                        dataService.UpdateVersion(connection, transaction, versionName);
 
                         TraceService.Info($"Completed migration to version {versionDirectory}");
                     }
@@ -346,7 +253,7 @@ namespace ArdiLabs.Yuniql
 
             csvFiles.ForEach(csvFile =>
             {
-                var csvImportService = new CsvSqlServerImportService();
+                var csvImportService = new SqlServerCsvImportService();
                 csvImportService.Run(connection, transaction, csvFile);
                 TraceService.Info($"Imported csv file {csvFile}.");
             });
@@ -380,33 +287,11 @@ namespace ArdiLabs.Yuniql
                     sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
 
                     TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-
-                    var command = connection.CreateCommand();
-                    command.Transaction = transaction;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = sqlStatement;
-                    command.CommandTimeout = 0;
-                    command.ExecuteNonQuery();
+                    dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
                 });
 
                 TraceService.Info($"Executed script file {scriptFile}.");
             });
-        }
-
-        private void UpdateDbVersion(
-            IDbConnection connection,
-            IDbTransaction transaction,
-            string version)
-        {
-            var incrementVersionSqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{version}');";
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
-
-            var command = connection.CreateCommand();
-            command.Transaction = transaction;
-            command.CommandType = CommandType.Text;
-            command.CommandText = incrementVersionSqlStatement;
-            command.CommandTimeout = 0;
-            command.ExecuteNonQuery();
         }
     }
 }

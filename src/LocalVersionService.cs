@@ -139,7 +139,7 @@ yuniqlx.exe
             if (!string.IsNullOrEmpty(sqlFileName))
             {
                 var sqlFilePath = Path.Combine(nextVersionPath, sqlFileName);
-                CreateTemplateSqlFile(sqlFilePath);
+                File.AppendAllText(sqlFilePath, @"");
                 TraceService.Info($"Created file {sqlFilePath}");
             }
 
@@ -160,41 +160,11 @@ yuniqlx.exe
             if (!string.IsNullOrEmpty(sqlFileName))
             {
                 var sqlFilePath = Path.Combine(nextVersionPath, sqlFileName);
-                CreateTemplateSqlFile(sqlFilePath);
+                File.AppendAllText(sqlFilePath, @"");
                 TraceService.Info($"Created file {sqlFilePath}");
             }
 
             return nextMinorVersion.SemVersion;
         }
-
-        private static void CreateTemplateSqlFile(string sqlFilePath)
-        {
-            using (var sw = File.CreateText(sqlFilePath))
-            {
-                sw.WriteLine(@"
---this is a demo comment
-CREATE TABLE [dbo].[_DemoTable](        
-	[Id][int] IDENTITY(1, 1) NOT NULL,        
-)
-GO
-
-CREATE PROC [dbo].[_DemoStoredProcedure]
-AS
-	SELECT 1;
-GO
-
-CREATE VIEW [dbo].[_DemoTableView]
-AS
-	SELECT Id FROM [dbo].[_DemoTable];
-GO
-
-DROP VIEW [dbo].[_DemoTableView];
-DROP PROC [dbo].[_DemoStoredProcedure];
-DROP TABLE [dbo].[_DemoTable];
-GO
-                    ");
-            }
-        }
-
     }
 }

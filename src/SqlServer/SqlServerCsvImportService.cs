@@ -7,9 +7,9 @@ using System.IO;
 //https://github.com/22222/CsvTextFieldParser
 namespace ArdiLabs.Yuniql
 {
-    public class CsvSqlServerImportService : ICsvImportService
+    public class SqlServerCsvImportService : ICsvImportService
     {
-        public CsvSqlServerImportService()
+        public SqlServerCsvImportService()
         {
         }
         public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath)

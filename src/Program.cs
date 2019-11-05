@@ -157,7 +157,8 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var migrationService = new MigrationService(opts.ConnectionString);
+                var dataService = new SqlServerDataService(opts.ConnectionString);
+                var migrationService = new SqlServerMigrationService(opts.ConnectionString, dataService);
                 migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens);
             }
             catch (Exception ex)
@@ -200,8 +201,9 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var migrationService = new MigrationService(opts.ConnectionString);
-                migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verificationRunOnly: true);
+                var dataService = new SqlServerDataService(opts.ConnectionString);
+                var migrationService = new SqlServerMigrationService(opts.ConnectionString, dataService);
+                migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verifyOnly: true);
 
                 TraceService.Info("Verification run successful.");
             }
@@ -226,8 +228,10 @@ namespace ArdiLabs.Yuniql
                 }
 
                 var versions = new List<DbVersion>();
-                var migrationService = new MigrationService(opts.ConnectionString);
-                versions = migrationService.GetAllDbVersions();
+
+                var dataService = new SqlServerDataService(opts.ConnectionString);
+                var migrationService = new SqlServerMigrationService(opts.ConnectionString, dataService);
+                versions = migrationService.GetAllVersions();
 
                 var results = new StringBuilder();
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");

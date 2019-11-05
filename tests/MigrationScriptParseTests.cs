@@ -37,7 +37,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"Test_Single_Run_Empty.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService(connectionString);
+            var dataService = new SqlServerDataService(connectionString);
+            var migrationService = new SqlServerMigrationService(connectionString, dataService);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -66,7 +67,8 @@ GO
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService(connectionString);
+            var dataService = new SqlServerDataService(connectionString);
+            var migrationService = new SqlServerMigrationService(connectionString, dataService);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -93,7 +95,8 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService(connectionString);
+            var dataService = new SqlServerDataService(connectionString);
+            var migrationService = new SqlServerMigrationService(connectionString, dataService);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -134,7 +137,8 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService(connectionString);
+            var dataService = new SqlServerDataService(connectionString);
+            var migrationService = new SqlServerMigrationService(connectionString, dataService);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -181,7 +185,8 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService(connectionString);
+            var dataService = new SqlServerDataService(connectionString);
+            var migrationService = new SqlServerMigrationService(connectionString, dataService);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -226,7 +231,8 @@ GO
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var migrationService = new MigrationService(connectionString);
+            var dataService = new SqlServerDataService(connectionString);
+            var migrationService = new SqlServerMigrationService(connectionString, dataService);
             Assert.ThrowsException<SqlException>(() =>
             {
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);

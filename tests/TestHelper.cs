@@ -15,7 +15,7 @@ namespace Yuniql.Tests
                 //return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
 
                 //use this when running against sql server container with published port 1400
-                return $"Server=localhost,1400;Database={databaseName};User Id=SA;Password=Manila2050!";
+                return $"Server=localhost,1400;Database={databaseName};User Id=SA;Password=P@ssw0rd!";
             }
 
             var result = new SqlConnectionStringBuilder(connectionString);
@@ -26,7 +26,7 @@ namespace Yuniql.Tests
 
         public static string GetWorkingPath()
         {
-            return Path.Combine(Environment.CurrentDirectory, @$"yuniqltests_{Guid.NewGuid().ToString().Substring(0, 4)}");
+            return Path.Combine(Environment.CurrentDirectory, @$"yuniql_testdb_{Guid.NewGuid().ToString().Substring(0, 4)}");
         }
 
         public static void CleanUp(string workingPath)
