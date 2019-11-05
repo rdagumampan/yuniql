@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
 using System;
+using ArdiLabs.Yuniql.SqlServer;
 
 namespace Yuniql.Tests
 {
@@ -40,8 +41,9 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_01.sql"), TestHelper.CreateScript($"test_v1_01"));
 
             //act
+            var csvImportService = new SqlServerCsvImportService();
             var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new SqlServerMigrationService(connectionString, dataService);
+            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert

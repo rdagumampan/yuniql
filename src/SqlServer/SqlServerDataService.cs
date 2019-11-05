@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.SqlServer
 {
     public class SqlServerDataService : IDataService
     {

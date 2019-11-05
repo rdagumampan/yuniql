@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArdiLabs.Yuniql.SqlServer;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -8,15 +9,17 @@ using System.Text.RegularExpressions;
 
 namespace ArdiLabs.Yuniql
 {
-    public class SqlServerMigrationService : IMigrationService
+    public class MigrationService : IMigrationService
     {
-        private readonly string connectionString;
-        private readonly IDataService dataService;
+        private readonly string _connectionString;
+        private readonly IDataService _dataService;
+        private readonly ICsvImportService _csvImportService;
 
-        public SqlServerMigrationService(string connectionString, IDataService dataService)
+        public MigrationService(string connectionString, IDataService dataService, ICsvImportService csvImportService)
         {
-            this.connectionString = connectionString;
-            this.dataService = dataService;
+            this._connectionString = connectionString;
+            this._dataService = dataService;
+            this._csvImportService = csvImportService;
         }
 
         public void Run(
@@ -26,30 +29,30 @@ namespace ArdiLabs.Yuniql
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             bool verifyOnly = false)
         {
-            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            var connectionStringBuilder = new SqlConnectionStringBuilder(_connectionString);
             var targetDatabaseName = connectionStringBuilder.InitialCatalog;
             var targetDatabaseServer = connectionStringBuilder.DataSource;
 
             //create the database, we need this to be outside of the transaction scope
             //in an event of failure, users have to manually drop the auto-created database
-            var targetDatabaseExists = dataService.IsTargetDatabaseExists();
+            var targetDatabaseExists = _dataService.IsTargetDatabaseExists();
             if (!targetDatabaseExists && autoCreateDatabase)
             {
                 TraceService.Info($"Target database does not exist. Creating database {targetDatabaseName} on {targetDatabaseServer}.");
-                dataService.CreateDatabase();
+                _dataService.CreateDatabase();
                 TraceService.Info($"Created database {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
             //check if database has been pre-configured to support migration and setup when its not
-            var targetDatabaseConfigured = dataService.IsTargetDatabaseConfigured();
+            var targetDatabaseConfigured = _dataService.IsTargetDatabaseConfigured();
             if (!targetDatabaseConfigured)
             {
                 TraceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");
-                dataService.ConfigureDatabase();
+                _dataService.ConfigureDatabase();
                 TraceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
-            var dbVersions = dataService.GetAllVersions()
+            var dbVersions = _dataService.GetAllVersions()
                 .Select(dv => dv.Version)
                 .OrderBy(v => v)
                 .ToList();
@@ -58,7 +61,7 @@ namespace ArdiLabs.Yuniql
             if (!targeDatabaseLatest)
             {
                 //enclose all executions in a single transaction
-                using (var connection = new SqlConnection(connectionString))
+                using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
                     using (var transaction = connection.BeginTransaction())
@@ -121,7 +124,7 @@ namespace ArdiLabs.Yuniql
 
         private bool IsTargetDatabaseLatest(string targetVersion)
         {
-            var dbcv = dataService.GetCurrentVersion();
+            var dbcv = _dataService.GetCurrentVersion();
             if (string.IsNullOrEmpty(dbcv)) return false;
 
             var cv = new LocalVersion(dbcv);
@@ -132,12 +135,12 @@ namespace ArdiLabs.Yuniql
         
         public string GetCurrentVersion()
         {
-            return dataService.GetCurrentVersion();
+            return _dataService.GetCurrentVersion();
         }
 
         public List<DbVersion> GetAllVersions()
         {
-            return dataService.GetAllVersions();
+            return _dataService.GetAllVersions();
         }
 
         private void RunNonVersionScripts(
@@ -155,7 +158,7 @@ namespace ArdiLabs.Yuniql
             {
                 //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
                 var sqlStatementRaw = File.ReadAllText(scriptFile);
-                var sqlStatements = dataService.BreakStatements(sqlStatementRaw);
+                var sqlStatements = _dataService.BreakStatements(sqlStatementRaw);
 
                 sqlStatements.ForEach(sqlStatement =>
                 {
@@ -164,7 +167,7 @@ namespace ArdiLabs.Yuniql
                     sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
 
                     TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-                    dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
+                    _dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
                 });
 
                 TraceService.Info($"Executed script file {scriptFile}.");
@@ -220,7 +223,7 @@ namespace ArdiLabs.Yuniql
 
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
-                        dataService.UpdateVersion(connection, transaction, versionName);
+                        _dataService.UpdateVersion(connection, transaction, versionName);
 
                         TraceService.Info($"Completed migration to version {versionDirectory}");
                     }
@@ -274,7 +277,7 @@ namespace ArdiLabs.Yuniql
             {
                 //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
                 var sqlStatementRaw = File.ReadAllText(scriptFile);
-                var sqlStatements = dataService.BreakStatements(sqlStatementRaw);
+                var sqlStatements = _dataService.BreakStatements(sqlStatementRaw);
     ;
                 sqlStatements.ForEach(sqlStatement =>
                 {
@@ -283,7 +286,7 @@ namespace ArdiLabs.Yuniql
                     sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
 
                     TraceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-                    dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
+                    _dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
                 });
 
                 TraceService.Info($"Executed script file {scriptFile}.");

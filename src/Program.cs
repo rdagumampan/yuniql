@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using ArdiLabs.Yuniql.SqlServer;
 using CommandLine;
 
 namespace ArdiLabs.Yuniql
@@ -157,8 +158,9 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
+                var csvImportService = new SqlServerCsvImportService();
                 var dataService = new SqlServerDataService(opts.ConnectionString);
-                var migrationService = new SqlServerMigrationService(opts.ConnectionString, dataService);
+                var migrationService = new MigrationService(opts.ConnectionString, dataService, csvImportService);
                 migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens);
             }
             catch (Exception ex)
@@ -201,8 +203,9 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
+                var csvImportService = new SqlServerCsvImportService();
                 var dataService = new SqlServerDataService(opts.ConnectionString);
-                var migrationService = new SqlServerMigrationService(opts.ConnectionString, dataService);
+                var migrationService = new MigrationService(opts.ConnectionString, dataService, csvImportService);
                 migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verifyOnly: true);
 
                 TraceService.Info("Verification run successful.");
@@ -227,11 +230,10 @@ namespace ArdiLabs.Yuniql
                     opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
-                var versions = new List<DbVersion>();
-
+                var csvImportService = new SqlServerCsvImportService();
                 var dataService = new SqlServerDataService(opts.ConnectionString);
-                var migrationService = new SqlServerMigrationService(opts.ConnectionString, dataService);
-                versions = migrationService.GetAllVersions();
+                var migrationService = new MigrationService(opts.ConnectionString, dataService, csvImportService);
+                var versions = migrationService.GetAllVersions();
 
                 var results = new StringBuilder();
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");
