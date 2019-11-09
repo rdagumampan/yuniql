@@ -44,6 +44,13 @@ namespace ArdiLabs.Yuniql
                 TraceService.Info($"Created script directory {postFolderLocation}");
             }
 
+            string eraseFolderLocation = Path.Combine(workingPath, "_erase");
+            if (!Directory.Exists(eraseFolderLocation))
+            {
+                Directory.CreateDirectory(eraseFolderLocation);
+                TraceService.Info($"Created script directory {eraseFolderLocation}");
+            }
+
             var readMeFile = Path.Combine(workingPath, "README.md");
             if (!File.Exists(readMeFile))
             {

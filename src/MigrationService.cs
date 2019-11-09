@@ -61,7 +61,7 @@ namespace ArdiLabs.Yuniql
             if (!targeDatabaseLatest)
             {
                 //enclose all executions in a single transaction
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
                     using (var transaction = connection.BeginTransaction())
@@ -254,8 +254,7 @@ namespace ArdiLabs.Yuniql
 
             csvFiles.ForEach(csvFile =>
             {
-                var csvImportService = new SqlServerCsvImportService();
-                csvImportService.Run(connection, transaction, csvFile);
+                _csvImportService.Run(connection, transaction, csvFile);
                 TraceService.Info($"Imported csv file {csvFile}.");
             });
         }
@@ -291,6 +290,31 @@ namespace ArdiLabs.Yuniql
 
                 TraceService.Info($"Executed script file {scriptFile}.");
             });
+        }
+
+        public void Erase(string workingPath)
+        {
+            //enclose all executions in a single transaction
+            using (var connection = _dataService.CreateConnection())
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        //runs all scripts in the _erase folder
+                        RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_erase"));
+                        TraceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
+
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
         }
     }
 }

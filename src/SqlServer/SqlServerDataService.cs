@@ -16,6 +16,11 @@ namespace ArdiLabs.Yuniql.SqlServer
             this._connectionString = connectionString;
         }
 
+        public IDbConnection CreateConnection()
+        {
+            return new SqlConnection(_connectionString);
+        }
+
         public void ExecuteNonQuery(string connectionString, string sqlStatement)
         {
             TraceService.Info(connectionString);

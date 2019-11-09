@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace ArdiLabs.Yuniql
 {
@@ -11,5 +9,7 @@ namespace ArdiLabs.Yuniql
         List<DbVersion> GetAllVersions();
 
         void Run(string workingPath, string targetVersion, bool autoCreateDatabase, List<KeyValuePair<string, string>> tokens = null, bool uncommitted = false);
+
+        void Erase(string workingPath);
     }
 }

@@ -28,6 +28,7 @@ namespace ArdiLabs.Yuniql
                 NextVersionOption,
                 InfoOption,
                 VerifyOption,
+                EraseOption,
                 BaselineOption,
                 RebaseOption>(args)
               .MapResult(
@@ -55,6 +56,11 @@ namespace ArdiLabs.Yuniql
                 {
                     TraceSettings.Instance.IsDebugEnabled = opts.Debug;
                     return RunVerify(opts);
+                },
+                (EraseOption opts) =>
+                {
+                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    return RunEraseOption(opts);
                 },
                 (BaselineOption opts) =>
                 {
@@ -243,6 +249,32 @@ namespace ArdiLabs.Yuniql
                 });
 
                 Console.WriteLine(results.ToString());
+            }
+            catch (Exception ex)
+            {
+                TraceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
+                throw;
+            }
+
+            return 0;
+        }
+
+        private static object RunEraseOption(EraseOption opts)
+        {
+            try
+            {
+                //if no connection string passed, use environment variable or throw exception
+                if (string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    var environmentService = new EnvironmentService();
+                    opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+                }
+
+                var csvImportService = new SqlServerCsvImportService();
+                var dataService = new SqlServerDataService(opts.ConnectionString);
+                
+                var migrationService = new MigrationService(opts.ConnectionString, dataService, csvImportService);
+                migrationService.Erase(opts.ConnectionString);
             }
             catch (Exception ex)
             {

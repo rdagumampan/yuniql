@@ -392,6 +392,49 @@ namespace Yuniql.Tests
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("test_v1_02")).ShouldBeFalse();
         }
 
+        [TestMethod]
+        public void Test_Erase()
+        {
+            //arrange
+            var workingPath = TestHelper.GetWorkingPath();
+            var databaseName = new DirectoryInfo(workingPath).Name;
+            var connectionString = TestHelper.GetConnectionString(databaseName);
+
+            var localVersionService = new LocalVersionService();
+            localVersionService.Init(workingPath);
+
+            localVersionService.IncrementMajorVersion(workingPath, null);
+            TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script1.sql"), TestHelper.CreateScript($"script1"));
+            TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script2.sql"), TestHelper.CreateScript($"script2"));
+            TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script3.sql"), TestHelper.CreateScript($"script3"));
+
+            //act
+            var csvImportService = new SqlServerCsvImportService();
+            var dataService = new SqlServerDataService(connectionString);
+            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
+
+            //assert
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script1")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script2")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script3")).ShouldBeTrue();
+
+            //arrange
+            TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "_erase"), $"erase.sql"), @"
+DROP PROCEDURE [dbo].[script1];
+DROP PROCEDURE [dbo].[script2];
+DROP PROCEDURE [dbo].[script3];
+");
+
+            //act
+            migrationService.Erase(workingPath);
+
+            //assert
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script1")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script2")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script3")).ShouldBeFalse();
+        }
+
         private List<DbVersion> GetAllDbVersions(string sqlConnectionString)
         {
             var result = new List<DbVersion>();

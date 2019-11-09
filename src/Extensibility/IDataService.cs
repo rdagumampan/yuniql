@@ -34,5 +34,7 @@ namespace ArdiLabs.Yuniql
         void UpdateVersion(IDbConnection activeConnection, IDbTransaction transaction, string version);
         
         List<string> BreakStatements(string sqlStatementRaw);
+
+        public IDbConnection CreateConnection();
     }
-}
+};
