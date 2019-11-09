@@ -4,6 +4,9 @@ namespace ArdiLabs.Yuniql
 {
     public class Program
     {
+        //https://github.com/commandlineparser/commandline
+        //https://github.com/dotnet/command-line-api
+
         public static void Main(string[] args)
         {
             var commandLineService = new CommandLineService();

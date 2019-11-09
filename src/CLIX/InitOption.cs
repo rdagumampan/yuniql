@@ -3,9 +3,6 @@ using System.Collections;
 
 namespace ArdiLabs.Yuniql
 {
-    //https://github.com/commandlineparser/commandline
-    //https://github.com/dotnet/command-line-api
-
     //yuniql init
     [Verb("init", HelpText = "Initialize migration structure to target folder")]
     public class InitOption
