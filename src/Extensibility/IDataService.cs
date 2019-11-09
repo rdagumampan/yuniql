@@ -36,5 +36,7 @@ namespace ArdiLabs.Yuniql
         List<string> BreakStatements(string sqlStatementRaw);
 
         public IDbConnection CreateConnection();
+
+        ConnectionInfo GetConnectionInfo();
     }
 };

@@ -1,11 +1,8 @@
-﻿using ArdiLabs.Yuniql.SqlServer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace ArdiLabs.Yuniql
 {
@@ -29,9 +26,9 @@ namespace ArdiLabs.Yuniql
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             bool verifyOnly = false)
         {
-            var connectionStringBuilder = new SqlConnectionStringBuilder(_connectionString);
-            var targetDatabaseName = connectionStringBuilder.InitialCatalog;
-            var targetDatabaseServer = connectionStringBuilder.DataSource;
+            var connectionInfo = _dataService.GetConnectionInfo();
+            var targetDatabaseName = connectionInfo.Database;
+            var targetDatabaseServer = connectionInfo.DataSource;
 
             //create the database, we need this to be outside of the transaction scope
             //in an event of failure, users have to manually drop the auto-created database
@@ -113,14 +110,6 @@ namespace ArdiLabs.Yuniql
                 TraceService.Info($"Target database runs the latest version already. No changes made at {targetDatabaseName} on {targetDatabaseServer}.");
             }
         }
-
-        //private bool IsTargetDatabaseExists(string targetDatabaseName)
-        //{
-        //}
-
-        //private bool IsTargetDatabaseConfigured()
-        //{
-        //}
 
         private bool IsTargetDatabaseLatest(string targetVersion)
         {
@@ -235,8 +224,8 @@ namespace ArdiLabs.Yuniql
             }
             else
             {
-                var connectionString = new SqlConnectionStringBuilder(connection.ConnectionString);
-                TraceService.Info($"Target database is updated. No migration step executed at {connection.Database} on {connectionString.DataSource}.");
+                var connectionInfo = _dataService.GetConnectionInfo();
+                TraceService.Info($"Target database is updated. No migration step executed at {connectionInfo.Database} on {connectionInfo.DataSource}.");
             }
         }
 

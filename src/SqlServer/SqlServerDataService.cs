@@ -295,5 +295,11 @@ namespace ArdiLabs.Yuniql.SqlServer
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
         }
+
+        public ConnectionInfo GetConnectionInfo()
+        {
+            var connectionStringBuilder = new SqlConnectionStringBuilder(_connectionString);
+            return new ConnectionInfo {DataSource = connectionStringBuilder.DataSource, Database = connectionStringBuilder.InitialCatalog };
+        }
     }
 }
