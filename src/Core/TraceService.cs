@@ -5,6 +5,14 @@ namespace ArdiLabs.Yuniql.Core
 {
     public class TraceService : ITraceService
     {
+        private string _traceSessionId;
+        public TraceService()
+        {
+            _traceSessionId = "yuniql-log-" + DateTime.Now.ToString("MMddyyyyHHmmss");
+        }
+
+        public bool IsDebugEnabled { get; set; } = false;
+
         public void Info(string message, object payload = null)
         {
             Console.WriteLine($"INF   {DateTime.UtcNow.ToString("o")}   {message}");
@@ -17,7 +25,10 @@ namespace ArdiLabs.Yuniql.Core
 
         public void Debug(string message, object payload = null)
         {
-            Console.WriteLine($"DBG   {DateTime.UtcNow.ToString("o")}   {message}");
+            if (IsDebugEnabled)
+            {
+                Console.WriteLine($"DBG   {DateTime.UtcNow.ToString("o")}   {message}");
+            }
         }
     }
 }

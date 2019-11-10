@@ -1,6 +1,5 @@
 ﻿using ArdiLabs.Yuniql.CLI;
 using ArdiLabs.Yuniql.Core;
-using ArdiLabs.Yuniqls.Core;
 using CommandLine;
 
 namespace ArdiLabs.Yuniql
@@ -27,45 +26,45 @@ namespace ArdiLabs.Yuniql
               .MapResult(
                 (InitOption opts) =>
                 {
-                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    traceService.IsDebugEnabled = opts.Debug;
                     return commandLineService.RunInitOption(opts);
                 },
                 (RunOption opts) =>
                 {
-                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    traceService.IsDebugEnabled = opts.Debug;
                     return commandLineService.RunMigration(opts);
                 },
                 (NextVersionOption opts) =>
                 {
-                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    traceService.IsDebugEnabled = opts.Debug;
                     return commandLineService.IncrementVersion(opts);
                 },
                 (InfoOption opts) =>
                 {
-                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    traceService.IsDebugEnabled = opts.Debug;
                     return commandLineService.RunInfoOption(opts);
                 },
                 (VerifyOption opts) =>
                 {
-                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    traceService.IsDebugEnabled = opts.Debug;
                     return commandLineService.RunVerify(opts);
                 },
                 (EraseOption opts) =>
                 {
-                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    traceService.IsDebugEnabled = opts.Debug;
                     return commandLineService.RunEraseOption(opts);
                 },
                 (BaselineOption opts) =>
                 {
-                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    traceService.IsDebugEnabled = opts.Debug;
                     return commandLineService.RunBaselineOption(opts);
                 },
                 (RebaseOption opts) =>
                 {
-                    TraceSettings.Instance.IsDebugEnabled = opts.Debug;
+                    traceService.IsDebugEnabled = opts.Debug;
                     return commandLineService.RunRebaseOption(opts);
                 },
                 errs => 1);
-        }       
+        }
     }
 }
