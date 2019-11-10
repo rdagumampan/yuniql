@@ -1,0 +1,1 @@
+SELECT 'This is a database clean-up tasks'
