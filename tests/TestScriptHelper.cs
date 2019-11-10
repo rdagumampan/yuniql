@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Yuniql.Tests
 {
-    public static class TestHelper
+    public static class TestScriptHelper
     {
         public static string GetConnectionString(string databaseName)
         {
