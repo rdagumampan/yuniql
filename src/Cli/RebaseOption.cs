@@ -7,7 +7,7 @@ namespace ArdiLabs.Yuniql
     public class RebaseOption : BaseOption
     {
         //yuniql info -c "<connectiong-string>"
-        [Option('c', "connection-string", Required = true, HelpText = "Connection string to target sql server instance")]
+        [Option('c', "connection-string", Required = false, HelpText = "Connection string to target sql server instance")]
         public string ConnectionString { get; set; }
 
         //yuniql run -d | --debug
