@@ -30,11 +30,23 @@ namespace Yuniql.Tests
 
             //assert
             Directory.Exists(Path.Combine(workingPath, "_init")).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(workingPath, "_init"), "README.md")).ShouldBe(true);
+
             Directory.Exists(Path.Combine(workingPath, "_pre")).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(workingPath, "_pre"), "README.md")).ShouldBe(true);
+
             Directory.Exists(Path.Combine(workingPath, "v0.00")).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(workingPath, "v0.00"), "README.md")).ShouldBe(true);
+
             Directory.Exists(Path.Combine(workingPath, "_draft")).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(workingPath, "_draft"), "README.md")).ShouldBe(true);
+
             Directory.Exists(Path.Combine(workingPath, "_post")).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(workingPath, "_post"), "README.md")).ShouldBe(true);
+
             Directory.Exists(Path.Combine(workingPath, "_erase")).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(workingPath, "_erase"), "README.md")).ShouldBe(true);
+
             File.Exists(Path.Combine(workingPath, "README.md")).ShouldBe(true);
             File.Exists(Path.Combine(workingPath, "Dockerfile")).ShouldBe(true);
             File.Exists(Path.Combine(workingPath, ".gitignore")).ShouldBe(true);
