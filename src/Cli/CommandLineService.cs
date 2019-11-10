@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using ArdiLabs.Yuniql.SqlServer;
 
 namespace ArdiLabs.Yuniql
 {
     public class CommandLineService : ICommandLineService
     {
 
+        private IMigrationServiceFactory migrationServiceFactory = new MigrationServiceFactory();
+ 
         public CommandLineService()
         {
         }
@@ -102,10 +103,9 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var csvImportService = new SqlServerCsvImportService();
-                var dataService = new SqlServerDataService(opts.ConnectionString);
+                var migrationService = migrationServiceFactory.Create("sqlserver");
+                migrationService.Initialize(opts.ConnectionString);
 
-                var migrationService = new MigrationService(opts.ConnectionString, dataService, csvImportService);
                 migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens);
             }
             catch (Exception ex)
@@ -148,10 +148,8 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var csvImportService = new SqlServerCsvImportService();
-                var dataService = new SqlServerDataService(opts.ConnectionString);
-
-                var migrationService = new MigrationService(opts.ConnectionString, dataService, csvImportService);
+                var migrationService = migrationServiceFactory.Create("sqlserver");
+                migrationService.Initialize(opts.ConnectionString);
                 migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verifyOnly: true);
 
                 TraceService.Info("Verification run successful.");
@@ -176,10 +174,8 @@ namespace ArdiLabs.Yuniql
                     opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
-                var csvImportService = new SqlServerCsvImportService();
-                var dataService = new SqlServerDataService(opts.ConnectionString);
-
-                var migrationService = new MigrationService(opts.ConnectionString, dataService, csvImportService);
+                var migrationService = migrationServiceFactory.Create("sqlserver");
+                migrationService.Initialize(opts.ConnectionString);
                 var versions = migrationService.GetAllVersions();
 
                 var results = new StringBuilder();
@@ -211,10 +207,8 @@ namespace ArdiLabs.Yuniql
                     opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
-                var csvImportService = new SqlServerCsvImportService();
-                var dataService = new SqlServerDataService(opts.ConnectionString);
-
-                var migrationService = new MigrationService(opts.ConnectionString, dataService, csvImportService);
+                var migrationService = migrationServiceFactory.Create("sqlserver");
+                migrationService.Initialize(opts.ConnectionString);
                 migrationService.Erase(opts.ConnectionString);
             }
             catch (Exception ex)

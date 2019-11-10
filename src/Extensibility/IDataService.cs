@@ -5,6 +5,9 @@ namespace ArdiLabs.Yuniql
 {
     public interface IDataService
     {
+
+        public void Initialize(string onnectionString);
+
         void ExecuteNonQuery(string connectionString, string sqlStatement);
 
         string QuerySingleString(string connectionString, string sqlStatement);

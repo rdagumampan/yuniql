@@ -8,15 +8,20 @@ namespace ArdiLabs.Yuniql
 {
     public class MigrationService : IMigrationService
     {
-        private readonly string _connectionString;
         private readonly IDataService _dataService;
         private readonly ICsvImportService _csvImportService;
 
-        public MigrationService(string connectionString, IDataService dataService, ICsvImportService csvImportService)
+        public MigrationService(IDataService dataService, ICsvImportService csvImportService)
         {
-            this._connectionString = connectionString;
             this._dataService = dataService;
             this._csvImportService = csvImportService;
+        }
+
+        public void Initialize(string connectionString)
+        {
+            //initialize dependencies
+            _dataService.Initialize(connectionString);
+            _csvImportService.Initialize(connectionString);
         }
 
         public void Run(

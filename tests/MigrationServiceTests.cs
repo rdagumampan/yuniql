@@ -6,13 +6,14 @@ using Shouldly;
 using System.Collections.Generic;
 using System;
 using System.Data;
-using ArdiLabs.Yuniql.SqlServer;
 
 namespace Yuniql.Tests
 {
     [TestClass]
     public class MigrationServiceTests
     {
+        private IMigrationServiceFactory migrationServiceFactory = new MigrationServiceFactory();
+
         [TestInitialize]
         public void Setup()
         {
@@ -37,9 +38,8 @@ namespace Yuniql.Tests
             //act and assert
             Assert.ThrowsException<SqlException>(() =>
             {
-                var csvImportService = new SqlServerCsvImportService();
-                var dataService = new SqlServerDataService(connectionString);
-                var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+                var migrationService = migrationServiceFactory.Create("sqlserver");
+                migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, null, autoCreateDatabase: false);
             }).Message.Contains($"Cannot open database \"{databaseName}\"").ShouldBeTrue();
         }
@@ -58,9 +58,8 @@ namespace Yuniql.Tests
             localVersionService.IncrementMinorVersion(workingPath, null);
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
@@ -87,9 +86,8 @@ namespace Yuniql.Tests
             localVersionService.IncrementMinorVersion(workingPath, null);
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
             var versions = GetAllDbVersions(connectionString);
 
@@ -123,9 +121,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, scriptFolder), $"test_{scriptFolder}.sql"), TestHelper.CreateScript($"test_{scriptFolder}"));
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -154,9 +151,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestHelper.CreateScript($"test_v1_02"));
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
 
             //assert
@@ -183,9 +179,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestHelper.CreateScript($"test_v1_01"));
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
@@ -231,9 +226,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v2.00"), $"test_v2_00.sql"), TestHelper.CreateScript($"test_v2_00"));
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
@@ -263,16 +257,15 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, versionFolder), $"test_{scriptName}.sql"), TestHelper.CreateTokenizedScript($"test_{scriptName}"));
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             List<KeyValuePair<string, string>> tokens = new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("Token1","Token1Value"),
                 new KeyValuePair<string, string>("Token2","Token2Value"),
                 new KeyValuePair<string, string>("Token3","Token3Value"),
             };
-            migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true,  tokenKeyPairs: tokens);
+            migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true, tokens: tokens);
 
             //assert
             TestDbHelper.QuerySingleString(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateSpHelpTextScript($"test_{scriptName}").TrimEnd()).Contains("Token1Value.Token2Value.Token3Value");
@@ -314,9 +307,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(v2level1SubDirectory, $"test_v2_00_level1_sublevel1.sql"), TestHelper.CreateScript($"test_v2_00_level1_sublevel1"));
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v2.00", autoCreateDatabase: true);
 
             //assert
@@ -347,9 +339,8 @@ namespace Yuniql.Tests
 
             //act
             Assert.ThrowsException<InvalidOperationException>(() => {
-                var csvImportService = new SqlServerCsvImportService();
-                var dataService = new SqlServerDataService(connectionString);
-                var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+                var migrationService = migrationServiceFactory.Create("sqlserver");
+                migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
             }).Message.ShouldContain("Cannot access destination table 'TestCsvDifferentName'");
 
@@ -374,16 +365,14 @@ namespace Yuniql.Tests
             localVersionService.IncrementMinorVersion(workingPath, null);
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestHelper.CreateScript($"test_v1_01"));
 
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             localVersionService.IncrementMinorVersion(workingPath, null);
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestHelper.CreateScript($"test_v1_02"));
 
             //act
-            migrationService = new MigrationService(connectionString, dataService, csvImportService);
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: false, verifyOnly: true);
 
             //assert
@@ -409,9 +398,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script3.sql"), TestHelper.CreateScript($"script3"));
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert

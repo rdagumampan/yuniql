@@ -11,6 +11,9 @@ namespace Yuniql.Tests
     [TestClass]
     public class MigrationScriptParseTests
     {
+
+        private IMigrationServiceFactory migrationServiceFactory = new MigrationServiceFactory();
+
         [TestInitialize]
         public void Setup()
         {
@@ -38,9 +41,8 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"Test_Single_Run_Empty.sql"), sqlStatement);
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -69,9 +71,8 @@ GO
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -98,9 +99,8 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -141,9 +141,8 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -190,9 +189,8 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
@@ -237,9 +235,8 @@ GO
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var csvImportService = new SqlServerCsvImportService();
-            var dataService = new SqlServerDataService(connectionString);
-            var migrationService = new MigrationService(connectionString, dataService, csvImportService);
+            var migrationService = migrationServiceFactory.Create("sqlserver");
+            migrationService.Initialize(connectionString);
             Assert.ThrowsException<SqlException>(() =>
             {
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);

@@ -9,9 +9,13 @@ namespace ArdiLabs.Yuniql.SqlServer
 {
     public class SqlServerDataService : IDataService
     {
-        private readonly string _connectionString;
+        private string _connectionString;
 
-        public SqlServerDataService(string connectionString)
+        public SqlServerDataService()
+        {
+        }
+
+        public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
         }

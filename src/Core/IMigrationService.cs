@@ -4,11 +4,14 @@ namespace ArdiLabs.Yuniql
 {
     public interface IMigrationService
     {
+
+        void Initialize(string connectionString);
+
         string GetCurrentVersion();
 
         List<DbVersion> GetAllVersions();
 
-        void Run(string workingPath, string targetVersion, bool autoCreateDatabase, List<KeyValuePair<string, string>> tokens = null, bool uncommitted = false);
+        void Run(string workingPath, string targetVersion, bool autoCreateDatabase, List<KeyValuePair<string, string>> tokens = null, bool verifyOnly = false);
 
         void Erase(string workingPath);
     }

@@ -9,9 +9,17 @@ namespace ArdiLabs.Yuniql.SqlServer
 {
     public class SqlServerCsvImportService : ICsvImportService
     {
+        private string _connectionString;
+
         public SqlServerCsvImportService()
         {
         }
+
+        public void Initialize(string connectionString)
+        {
+            this._connectionString = connectionString;
+        }
+
         public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath)
         {
             //read csv file and load into data table
