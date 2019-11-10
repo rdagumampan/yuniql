@@ -1,5 +1,6 @@
 ﻿using ArdiLabs.Yuniql.Extensibility;
 using System;
+using System.IO;
 
 namespace ArdiLabs.Yuniql.Core
 {
@@ -8,27 +9,45 @@ namespace ArdiLabs.Yuniql.Core
         private string _traceSessionId;
         public TraceService()
         {
-            _traceSessionId = "yuniql-log-" + DateTime.Now.ToString("MMddyyyyHHmmss");
+            _traceSessionId = DateTime.Now.ToString("MMddyyyyHHmmss");
         }
 
         public bool IsDebugEnabled { get; set; } = false;
 
         public void Info(string message, object payload = null)
         {
-            Console.WriteLine($"INF   {DateTime.UtcNow.ToString("o")}   {message}");
+            var traceFile = GetTraceSessionFilePath();
+            var traceMessage = $"INF   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+
+            File.AppendAllText(traceFile, traceMessage);
+            Console.WriteLine(traceMessage);
         }
 
         public void Error(string message, object payload = null)
         {
-            Console.WriteLine($"ERR   {DateTime.UtcNow.ToString("o")}   {message}");
+            var traceFile = GetTraceSessionFilePath();
+            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+
+            File.AppendAllText(traceFile, traceMessage);
+            Console.WriteLine(traceMessage);
         }
 
         public void Debug(string message, object payload = null)
         {
             if (IsDebugEnabled)
             {
-                Console.WriteLine($"DBG   {DateTime.UtcNow.ToString("o")}   {message}");
+                var traceFile = GetTraceSessionFilePath();
+                var traceMessage = $"DBG   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+
+                File.AppendAllText(traceFile, traceMessage);
+                Console.WriteLine(traceMessage);
             }
         }
+
+        private string GetTraceSessionFilePath()
+        {
+            return Path.Combine(Environment.CurrentDirectory, $"yuniql-log-{_traceSessionId}.txt");
+        }
+
     }
 }
