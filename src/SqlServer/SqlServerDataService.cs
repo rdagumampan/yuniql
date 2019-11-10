@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArdiLabs.Yuniql.Extensibility;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,9 +11,11 @@ namespace ArdiLabs.Yuniql.SqlServer
     public class SqlServerDataService : IDataService
     {
         private string _connectionString;
+        private readonly ITraceService _traceService;
 
-        public SqlServerDataService()
+        public SqlServerDataService(ITraceService traceService)
         {
+            this._traceService = traceService;
         }
 
         public void Initialize(string connectionString)
@@ -27,8 +30,8 @@ namespace ArdiLabs.Yuniql.SqlServer
 
         public void ExecuteNonQuery(string connectionString, string sqlStatement)
         {
-            TraceService.Info(connectionString);
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+            _traceService.Info(connectionString);
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -43,8 +46,8 @@ namespace ArdiLabs.Yuniql.SqlServer
 
         public bool QuerySingleBool(string connectionString, string sqlStatement)
         {
-            TraceService.Info(connectionString);
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+            _traceService.Info(connectionString);
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             bool result = false;
             using (var connection = new SqlConnection(connectionString))
@@ -94,8 +97,8 @@ namespace ArdiLabs.Yuniql.SqlServer
 
         public void ExecuteNonQuery(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null)
         {
-            TraceService.Info(activeConnection.ConnectionString);
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+            _traceService.Info(activeConnection.ConnectionString);
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             var command = activeConnection.CreateCommand();
             command.Transaction = transaction;
@@ -107,8 +110,8 @@ namespace ArdiLabs.Yuniql.SqlServer
 
         public int ExecuteScalar(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null)
         {
-            TraceService.Info(activeConnection.ConnectionString);
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+            _traceService.Info(activeConnection.ConnectionString);
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             var result = 0;
 
@@ -124,8 +127,8 @@ namespace ArdiLabs.Yuniql.SqlServer
 
         public bool QuerySingleBool(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null)
         {
-            TraceService.Info(activeConnection.ConnectionString);
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+            _traceService.Info(activeConnection.ConnectionString);
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             bool result = false;
             var command = activeConnection.CreateCommand();
@@ -147,8 +150,8 @@ namespace ArdiLabs.Yuniql.SqlServer
 
         public string QuerySingleString(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null)
         {
-            TraceService.Info(activeConnection.ConnectionString);
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+            _traceService.Info(activeConnection.ConnectionString);
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             string result = null;
 
@@ -226,7 +229,7 @@ namespace ArdiLabs.Yuniql.SqlServer
                     END                
             ";
 
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -253,7 +256,7 @@ namespace ArdiLabs.Yuniql.SqlServer
             var result = new List<DbVersion>();
 
             var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -283,7 +286,7 @@ namespace ArdiLabs.Yuniql.SqlServer
         public void UpdateVersion(IDbConnection activeConnection, IDbTransaction transaction, string version)
         {
             var incrementVersionSqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{version}');";
-            TraceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
 
             var command = activeConnection.CreateCommand();
             command.Transaction = transaction;

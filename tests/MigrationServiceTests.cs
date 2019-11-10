@@ -6,17 +6,23 @@ using Shouldly;
 using System.Collections.Generic;
 using System;
 using System.Data;
+using ArdiLabs.Yuniql.Core;
+using ArdiLabs.Yuniql.Extensibility;
 
 namespace Yuniql.Tests
 {
     [TestClass]
     public class MigrationServiceTests
     {
-        private IMigrationServiceFactory migrationServiceFactory = new MigrationServiceFactory();
+        private IMigrationServiceFactory _migrationServiceFactory;
+        private ITraceService _traceService;
 
         [TestInitialize]
         public void Setup()
         {
+            _traceService = new TraceService();
+            _migrationServiceFactory = new MigrationServiceFactory(_traceService);
+
             var workingPath = TestHelper.GetWorkingPath();
             if (!Directory.Exists(workingPath))
             {
@@ -32,13 +38,13 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             //act and assert
             Assert.ThrowsException<SqlException>(() =>
             {
-                var migrationService = migrationServiceFactory.Create("sqlserver");
+                var migrationService = _migrationServiceFactory.Create("sqlserver");
                 migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, null, autoCreateDatabase: false);
             }).Message.Contains($"Cannot open database \"{databaseName}\"").ShouldBeTrue();
@@ -52,13 +58,13 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
             localVersionService.IncrementMinorVersion(workingPath, null);
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
@@ -80,13 +86,13 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
             localVersionService.IncrementMinorVersion(workingPath, null);
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
             var versions = TestDbHelper.GetAllDbVersions(connectionString);
@@ -116,12 +122,12 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, scriptFolder), $"test_{scriptFolder}.sql"), TestHelper.CreateScript($"test_{scriptFolder}"));
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -138,7 +144,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
@@ -151,7 +157,7 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestHelper.CreateScript($"test_v1_02"));
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
 
@@ -169,7 +175,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
@@ -179,7 +185,7 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestHelper.CreateScript($"test_v1_01"));
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
@@ -210,7 +216,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
@@ -226,7 +232,7 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v2.00"), $"test_v2_00.sql"), TestHelper.CreateScript($"test_v2_00"));
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
@@ -250,14 +256,14 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, versionFolder), $"test_{scriptName}.sql"), TestHelper.CreateTokenizedScript($"test_{scriptName}"));
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             List<KeyValuePair<string, string>> tokens = new List<KeyValuePair<string, string>>
             {
@@ -279,7 +285,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
@@ -307,7 +313,7 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(v2level1SubDirectory, $"test_v2_00_level1_sublevel1.sql"), TestHelper.CreateScript($"test_v2_00_level1_sublevel1"));
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v2.00", autoCreateDatabase: true);
 
@@ -329,7 +335,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
@@ -339,7 +345,7 @@ namespace Yuniql.Tests
 
             //act
             Assert.ThrowsException<InvalidOperationException>(() => {
-                var migrationService = migrationServiceFactory.Create("sqlserver");
+                var migrationService = _migrationServiceFactory.Create("sqlserver");
                 migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
             }).Message.ShouldContain("Cannot access destination table 'TestCsvDifferentName'");
@@ -356,7 +362,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
@@ -365,7 +371,7 @@ namespace Yuniql.Tests
             localVersionService.IncrementMinorVersion(workingPath, null);
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestHelper.CreateScript($"test_v1_01"));
 
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
@@ -389,7 +395,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
@@ -398,7 +404,7 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script3.sql"), TestHelper.CreateScript($"script3"));
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -433,7 +439,7 @@ DROP PROCEDURE [dbo].[script3];
 
             //act
             Assert.ThrowsException<NotSupportedException>(() => {
-                var migrationService = migrationServiceFactory.Create("oracle");
+                var migrationService = _migrationServiceFactory.Create("oracle");
                 migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
             }).Message.ShouldContain($"The target database platform oracle is not yet supported");

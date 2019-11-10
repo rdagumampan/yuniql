@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 
 //https://github.com/22222/CsvTextFieldParser
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.SqlServer
 {
     /// <summary>
     /// Parses comma-delimited text files.

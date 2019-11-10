@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.CLI
 {
     //yuniql baseline
     [Verb("rebase", HelpText = "Consolidateds all existing versions, archive them and create a new v0.00 baseline")]

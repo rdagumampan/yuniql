@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.Core
 {
     public static class ObjectExtensions
     {

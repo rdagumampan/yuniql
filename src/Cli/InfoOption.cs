@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.CLI
 {
     //yuniql info
     [Verb("info", HelpText = "Shows the current version structure of target database")]

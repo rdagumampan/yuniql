@@ -1,12 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using ArdiLabs.Yuniql.Extensibility;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.Core
 {
     public class TokenReplacementService : ITokenReplacementService
     {
+        public TokenReplacementService(ITraceService traceService)
+        {
+            this._traceService = traceService;
+        }
+
         private const string tokenPattern = @"\${([^}]+)}";
+        private readonly ITraceService _traceService;
+
         public string Replace(List<KeyValuePair<string, string>> tokens, string sqlStatement)
         {
             if (null == tokens || !tokens.Any()) return sqlStatement;
@@ -15,7 +23,7 @@ namespace ArdiLabs.Yuniql
             tokens.ForEach(t =>
             {
                 procssedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
-                TraceService.Debug($"Replaced {t.Key} with {t.Value}");
+                _traceService.Debug($"Replaced {t.Key} with {t.Value}");
             });
 
             return procssedSqlStatement.ToString();

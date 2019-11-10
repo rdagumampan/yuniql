@@ -1,4 +1,4 @@
-﻿namespace ArdiLabs.Yuniql
+﻿namespace ArdiLabs.Yuniqls.Core
 {
     public sealed class TraceSettings
     {

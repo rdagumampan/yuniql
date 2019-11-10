@@ -4,6 +4,8 @@ using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
 using ArdiLabs.Yuniql.SqlServer;
+using ArdiLabs.Yuniql.Core;
+using ArdiLabs.Yuniql.Extensibility;
 
 namespace Yuniql.Tests
 {
@@ -11,12 +13,15 @@ namespace Yuniql.Tests
     [TestClass]
     public class MigrationScriptParseTests
     {
-
-        private IMigrationServiceFactory migrationServiceFactory = new MigrationServiceFactory();
+        private IMigrationServiceFactory _migrationServiceFactory;
+        private ITraceService _traceService;
 
         [TestInitialize]
         public void Setup()
         {
+            _traceService = new TraceService();
+            _migrationServiceFactory = new MigrationServiceFactory(_traceService);
+
             var workingPath = TestHelper.GetWorkingPath();
             if (!Directory.Exists(workingPath))
             {
@@ -32,7 +37,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
 
@@ -41,7 +46,7 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"Test_Single_Run_Empty.sql"), sqlStatement);
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -57,7 +62,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
 
@@ -71,7 +76,7 @@ GO
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -86,7 +91,7 @@ GO
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
 
@@ -99,7 +104,7 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -114,7 +119,7 @@ AS
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
 
@@ -141,7 +146,7 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -159,7 +164,7 @@ AS
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
 
@@ -189,7 +194,7 @@ AS
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -207,7 +212,7 @@ AS
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
 
@@ -235,7 +240,7 @@ GO
             TestHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             Assert.ThrowsException<SqlException>(() =>
             {

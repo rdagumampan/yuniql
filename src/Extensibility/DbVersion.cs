@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.Extensibility
 {
     public class DbVersion
     {

@@ -2,6 +2,8 @@ using ArdiLabs.Yuniql;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using Shouldly;
+using ArdiLabs.Yuniql.Core;
+using ArdiLabs.Yuniql.Extensibility;
 
 namespace Yuniql.Tests
 {
@@ -9,9 +11,15 @@ namespace Yuniql.Tests
     [TestClass]
     public class LocalVersionServiceTests
     {
+        private IMigrationServiceFactory _migrationServiceFactory;
+        private ITraceService _traceService;
+
         [TestInitialize]
         public void Setup()
         {
+            _traceService = new TraceService();
+            _migrationServiceFactory = new MigrationServiceFactory(_traceService);
+
             var workingPath = TestHelper.GetWorkingPath();
             if (!Directory.Exists(workingPath))
             {
@@ -25,7 +33,7 @@ namespace Yuniql.Tests
             //act
             var workingPath = TestHelper.GetWorkingPath();
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             //assert
@@ -58,7 +66,7 @@ namespace Yuniql.Tests
             //act
             var workingPath = TestHelper.GetWorkingPath();
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.Init(workingPath);
             localVersionService.Init(workingPath);
@@ -80,7 +88,7 @@ namespace Yuniql.Tests
             //act
             var workingPath = TestHelper.GetWorkingPath();
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
 
@@ -94,7 +102,7 @@ namespace Yuniql.Tests
             //act
             var workingPath = TestHelper.GetWorkingPath();
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, "Test.sql");
 
@@ -109,7 +117,7 @@ namespace Yuniql.Tests
             //act
             var workingPath = TestHelper.GetWorkingPath();
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMinorVersion(workingPath, null);
 
@@ -123,7 +131,7 @@ namespace Yuniql.Tests
             //act
             var workingPath = TestHelper.GetWorkingPath();
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMinorVersion(workingPath, "Test.sql");
 
@@ -138,7 +146,7 @@ namespace Yuniql.Tests
             //act
             var workingPath = TestHelper.GetWorkingPath();
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
             localVersionService.IncrementMinorVersion(workingPath, null);

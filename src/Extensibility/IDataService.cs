@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.Extensibility
 {
     public interface IDataService
     {

@@ -1,12 +1,20 @@
-﻿using System;
+﻿using ArdiLabs.Yuniql.Extensibility;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.Core
 {
     public class LocalVersionService : ILocalVersionService
     {
+        private readonly ITraceService _traceService;
+
+        public LocalVersionService(ITraceService traceService)
+        {
+            this._traceService = traceService;
+        }
+
         public void Init(string workingPath)
         {
             string initDirectoryPath = Path.Combine(workingPath, "_init");
@@ -15,7 +23,7 @@ namespace ArdiLabs.Yuniql
                 Directory.CreateDirectory(initDirectoryPath);
                 File.AppendAllText(Path.Combine(initDirectoryPath, "README.md"), @"# The `_init` directory
 Initialization scripts. Executed once. This is called the first time you do `yuniql run`.");
-                TraceService.Info($"Created script directory {initDirectoryPath}");
+                _traceService.Info($"Created script directory {initDirectoryPath}");
             }
 
             string preDirectoryPath = Path.Combine(workingPath, "_pre");
@@ -25,7 +33,7 @@ Initialization scripts. Executed once. This is called the first time you do `yun
                 File.AppendAllText(Path.Combine(preDirectoryPath, "README.md"), @"# The `_pre` directory
 Pre migration scripts. Executed every time before any version. 
 ");
-                TraceService.Info($"Created script directory {preDirectoryPath}");
+                _traceService.Info($"Created script directory {preDirectoryPath}");
             }
 
             string defaultVersionDirectoryPath = Path.Combine(workingPath, "v0.00");
@@ -34,7 +42,7 @@ Pre migration scripts. Executed every time before any version.
                 Directory.CreateDirectory(defaultVersionDirectoryPath);
                 File.AppendAllText(Path.Combine(defaultVersionDirectoryPath, "README.md"), @"# The `v0.00` directory
 Baseline scripts. Executed once. This is called when you do `yuniql run`.");
-                TraceService.Info($"Created script directory {defaultVersionDirectoryPath}");
+                _traceService.Info($"Created script directory {defaultVersionDirectoryPath}");
             }
 
             string draftDirectoryPath = Path.Combine(workingPath, "_draft");
@@ -43,7 +51,7 @@ Baseline scripts. Executed once. This is called when you do `yuniql run`.");
                 Directory.CreateDirectory(draftDirectoryPath);
                 File.AppendAllText(Path.Combine(draftDirectoryPath, "README.md"), @"# The `_draft` directory
 Scripts in progress. Scripts that you are currently working and have not moved to specific version directory yet. Executed every time after the latest version.");
-                TraceService.Info($"Created script directory {draftDirectoryPath}");
+                _traceService.Info($"Created script directory {draftDirectoryPath}");
             }
 
             string postDirectoryPath = Path.Combine(workingPath, "_post");
@@ -52,7 +60,7 @@ Scripts in progress. Scripts that you are currently working and have not moved t
                 Directory.CreateDirectory(postDirectoryPath);
                 File.AppendAllText(Path.Combine(postDirectoryPath, "README.md"), @"# The `_post` directory
 Post migration scripts. Executed every time and always the last batch to run.");
-                TraceService.Info($"Created script directory {postDirectoryPath}");
+                _traceService.Info($"Created script directory {postDirectoryPath}");
             }
 
             string eraseDirectoryPath = Path.Combine(workingPath, "_erase");
@@ -61,7 +69,7 @@ Post migration scripts. Executed every time and always the last batch to run.");
                 Directory.CreateDirectory(eraseDirectoryPath);
                 File.AppendAllText(Path.Combine(eraseDirectoryPath, "README.md"), @"# The `_erase` directory
 Database cleanup scripts. Executed once only when you do `yuniql erase`.");
-                TraceService.Info($"Created script directory {eraseDirectoryPath}");
+                _traceService.Info($"Created script directory {eraseDirectoryPath}");
             }
 
             var readMeFile = Path.Combine(workingPath, "README.md");
@@ -91,7 +99,7 @@ docker run your-project-name -c ""your-connection-string\"" -k \""VwColumnPrefix
 
 Help us improve further please [create an issue](https://github.com/rdagumampan/yuniql/issues/new).
 ");
-                TraceService.Info($"Created file {readMeFile}");
+                _traceService.Info($"Created file {readMeFile}");
             }
 
             var dockerFile = Path.Combine(workingPath, "Dockerfile");
@@ -101,7 +109,7 @@ Help us improve further please [create an issue](https://github.com/rdagumampan/
 FROM rdagumampan/yuniql:nightly
 COPY . ./db                
 ");
-                TraceService.Info($"Created file {dockerFile}");
+                _traceService.Info($"Created file {dockerFile}");
             }
 
             var gitIgnoreFile = Path.Combine(workingPath, ".gitignore");
@@ -112,7 +120,7 @@ yuniql.exe
 yuniql.pdb
 yuniqlx.exe
 ");
-                TraceService.Info($"Created file {gitIgnoreFile}");
+                _traceService.Info($"Created file {gitIgnoreFile}");
             }
 
         }
@@ -154,13 +162,13 @@ yuniqlx.exe
 
             string nextVersionPath = Path.Combine(workingPath, nextMajorVersion.SemVersion);
             Directory.CreateDirectory(nextVersionPath);
-            TraceService.Info($"Created script directory {nextVersionPath}");
+            _traceService.Info($"Created script directory {nextVersionPath}");
 
             if (!string.IsNullOrEmpty(sqlFileName))
             {
                 var sqlFilePath = Path.Combine(nextVersionPath, sqlFileName);
                 File.AppendAllText(sqlFilePath, @"");
-                TraceService.Info($"Created file {sqlFilePath}");
+                _traceService.Info($"Created file {sqlFilePath}");
             }
 
             return nextMajorVersion.SemVersion;
@@ -175,13 +183,13 @@ yuniqlx.exe
 
             string nextVersionPath = Path.Combine(workingPath, nextMinorVersion.SemVersion);
             Directory.CreateDirectory(nextVersionPath);
-            TraceService.Info($"Created script directory {nextVersionPath}");
+            _traceService.Info($"Created script directory {nextVersionPath}");
 
             if (!string.IsNullOrEmpty(sqlFileName))
             {
                 var sqlFilePath = Path.Combine(nextVersionPath, sqlFileName);
                 File.AppendAllText(sqlFilePath, @"");
-                TraceService.Info($"Created file {sqlFilePath}");
+                _traceService.Info($"Created file {sqlFilePath}");
             }
 
             return nextMinorVersion.SemVersion;

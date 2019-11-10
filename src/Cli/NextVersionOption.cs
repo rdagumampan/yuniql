@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.CLI
 {
     //yuniql vnext
     [Verb("vnext", HelpText = "Increment to next version")]

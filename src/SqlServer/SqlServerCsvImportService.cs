@@ -1,8 +1,7 @@
-﻿using System;
-using System.Data.SqlClient;
-using System.Collections;
+﻿using System.Data.SqlClient;
 using System.Data;
 using System.IO;
+using ArdiLabs.Yuniql.Extensibility;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace ArdiLabs.Yuniql.SqlServer
@@ -10,9 +9,11 @@ namespace ArdiLabs.Yuniql.SqlServer
     public class SqlServerCsvImportService : ICsvImportService
     {
         private string _connectionString;
+        private readonly ITraceService _traceService;
 
-        public SqlServerCsvImportService()
+        public SqlServerCsvImportService(ITraceService traceService)
         {
+            this._traceService = traceService;
         }
 
         public void Initialize(string connectionString)
@@ -85,7 +86,7 @@ namespace ArdiLabs.Yuniql.SqlServer
         
         private void SqlBulkCopy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e)
         {
-            TraceService.Info($"CsvImportService copied {e.RowsCopied} rows");
+            _traceService.Info($"CsvImportService copied {e.RowsCopied} rows");
         }
     }
 }

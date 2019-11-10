@@ -2,39 +2,44 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using ArdiLabs.Yuniql.Core;
+using ArdiLabs.Yuniql.Extensibility;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.CLI
 {
     public class CommandLineService : ICommandLineService
     {
 
-        private IMigrationServiceFactory migrationServiceFactory = new MigrationServiceFactory();
+        private IMigrationServiceFactory _migrationServiceFactory;
+        private ITraceService _traceService;
  
-        public CommandLineService()
+        public CommandLineService(ITraceService traceService)
         {
+            this._traceService = traceService;
+            this._migrationServiceFactory = new MigrationServiceFactory(this._traceService);
         }
 
         public object RunInitOption(InitOption opts)
         {
             try
             {
-                var versionService = new LocalVersionService();
+                var versionService = new LocalVersionService(_traceService);
 
                 if (string.IsNullOrEmpty(opts.Path))
                 {
                     var workingPath = Environment.CurrentDirectory;
                     versionService.Init(workingPath);
-                    TraceService.Info($"Initialized {workingPath}.");
+                    _traceService.Info($"Initialized {workingPath}.");
                 }
                 else
                 {
                     versionService.Init(opts.Path);
-                    TraceService.Info($"Initialized {opts.Path}.");
+                    _traceService.Info($"Initialized {opts.Path}.");
                 }
             }
             catch (Exception ex)
             {
-                TraceService.Error($"Failed to execute init function. {Environment.NewLine}{ex.ToString()}");
+                _traceService.Error($"Failed to execute init function. {Environment.NewLine}{ex.ToString()}");
                 throw;
             }
 
@@ -51,21 +56,21 @@ namespace ArdiLabs.Yuniql
                     opts.Path = workingPath;
                 }
 
-                var versionService = new LocalVersionService();
+                var versionService = new LocalVersionService(_traceService);
                 if (opts.IncrementMajorVersion)
                 {
                     var nextVersion = versionService.IncrementMajorVersion(opts.Path, opts.File);
-                    TraceService.Info($"New major version created {nextVersion} on {opts.Path}.");
+                    _traceService.Info($"New major version created {nextVersion} on {opts.Path}.");
                 }
                 else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
                 {
                     var nextVersion = versionService.IncrementMinorVersion(opts.Path, opts.File);
-                    TraceService.Info($"New minor version created {nextVersion} on {opts.Path}.");
+                    _traceService.Info($"New minor version created {nextVersion} on {opts.Path}.");
                 }
             }
             catch (Exception ex)
             {
-                TraceService.Error($"Failed to execute vnext function. {Environment.NewLine}{ex.ToString()}");
+                _traceService.Error($"Failed to execute vnext function. {Environment.NewLine}{ex.ToString()}");
                 throw;
             }
 
@@ -82,14 +87,14 @@ namespace ArdiLabs.Yuniql
                     opts.Path = workingPath;
                 }
 
-                TraceService.Info($"Started migration from {opts.Path}.");
+                _traceService.Info($"Started migration from {opts.Path}.");
 
                 //if no target version specified, capture the latest from local folder structure
                 if (string.IsNullOrEmpty(opts.TargetVersion))
                 {
-                    var localVersionService = new LocalVersionService();
+                    var localVersionService = new LocalVersionService(_traceService);
                     opts.TargetVersion = localVersionService.GetLatestVersion(opts.Path);
-                    TraceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
+                    _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
                 }
 
                 //if no connection string passed, use environment variable or throw exception
@@ -103,14 +108,14 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var migrationService = migrationServiceFactory.Create(opts.Platform);
+                var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
 
                 migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens);
             }
             catch (Exception ex)
             {
-                TraceService.Error($"Failed to execute run function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
+                _traceService.Error($"Failed to execute run function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
                 throw;
             }
 
@@ -127,14 +132,14 @@ namespace ArdiLabs.Yuniql
                     opts.Path = workingPath;
                 }
 
-                TraceService.Info($"Started verifcation from {opts.Path}.");
+                _traceService.Info($"Started verifcation from {opts.Path}.");
 
                 //if no target version specified, capture the latest from local folder structure
                 if (string.IsNullOrEmpty(opts.TargetVersion))
                 {
-                    var localVersionService = new LocalVersionService();
+                    var localVersionService = new LocalVersionService(_traceService);
                     opts.TargetVersion = localVersionService.GetLatestVersion(opts.Path);
-                    TraceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
+                    _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
                 }
 
                 //if no connection string passed, use environment variable or throw exception
@@ -148,15 +153,15 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var migrationService = migrationServiceFactory.Create(opts.Platform);
+                var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
                 migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verifyOnly: true);
 
-                TraceService.Info("Verification run successful.");
+                _traceService.Info("Verification run successful.");
             }
             catch (Exception ex)
             {
-                TraceService.Error($"Failed to execute verification function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
+                _traceService.Error($"Failed to execute verification function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
                 throw;
             }
 
@@ -174,7 +179,7 @@ namespace ArdiLabs.Yuniql
                     opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
-                var migrationService = migrationServiceFactory.Create(opts.Platform);
+                var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
                 var versions = migrationService.GetAllVersions();
 
@@ -189,7 +194,7 @@ namespace ArdiLabs.Yuniql
             }
             catch (Exception ex)
             {
-                TraceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
+                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
                 throw;
             }
 
@@ -207,13 +212,13 @@ namespace ArdiLabs.Yuniql
                     opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
-                var migrationService = migrationServiceFactory.Create(opts.Platform);
+                var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
                 migrationService.Erase(opts.ConnectionString);
             }
             catch (Exception ex)
             {
-                TraceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
+                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
                 throw;
             }
 

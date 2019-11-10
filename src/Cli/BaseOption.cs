@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.CLI
 {
     public class BaseOption
     {

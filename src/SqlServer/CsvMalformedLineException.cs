@@ -1,7 +1,7 @@
 ﻿using System;
 
 //https://github.com/22222/CsvTextFieldParser
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.SqlServer
 {
     /// <summary>
     /// An exception that is thrown when the <see cref="CsvTextFieldParser.ReadFields"/> method cannot parse a row using the specified format.

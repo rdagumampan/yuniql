@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.Core
 {
     public interface ITokenReplacementService
     {

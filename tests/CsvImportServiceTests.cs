@@ -4,17 +4,23 @@ using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
 using System;
+using ArdiLabs.Yuniql.Core;
+using ArdiLabs.Yuniql.Extensibility;
 
 namespace Yuniql.Tests
 {
     [TestClass]
     public class CsvImportServiceTests
     {
-        private IMigrationServiceFactory migrationServiceFactory = new MigrationServiceFactory();
+        private IMigrationServiceFactory _migrationServiceFactory;
+        private ITraceService _traceService;
 
         [TestInitialize]
         public void Setup()
         {
+            _traceService = new TraceService();
+            _migrationServiceFactory = new MigrationServiceFactory(_traceService);
+
             var workingPath = TestHelper.GetWorkingPath();
             if (!Directory.Exists(workingPath))
             {
@@ -30,7 +36,7 @@ namespace Yuniql.Tests
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestHelper.GetConnectionString(databaseName);
 
-            var localVersionService = new LocalVersionService();
+            var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
@@ -42,7 +48,7 @@ namespace Yuniql.Tests
             TestHelper.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_01.sql"), TestHelper.CreateScript($"test_v1_01"));
 
             //act
-            var migrationService = migrationServiceFactory.Create("sqlserver");
+            var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 

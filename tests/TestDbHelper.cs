@@ -1,4 +1,5 @@
 ﻿using ArdiLabs.Yuniql;
+using ArdiLabs.Yuniql.Extensibility;
 using System;
 using System.Collections.Generic;
 using System.Data;

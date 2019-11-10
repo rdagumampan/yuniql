@@ -1,7 +1,7 @@
 ﻿using CommandLine;
 using System.Collections;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.CLI
 {
     //yuniql init
     [Verb("init", HelpText = "Initialize migration structure to target folder")]

@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace ArdiLabs.Yuniql
+namespace ArdiLabs.Yuniql.CLI
 {
     //yuniql erase
     [Verb("erase", HelpText = "Discover all scripts in the _erase directory and executes them in single transaction")]

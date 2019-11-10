@@ -1,4 +1,7 @@
-﻿using CommandLine;
+﻿using ArdiLabs.Yuniql.CLI;
+using ArdiLabs.Yuniql.Core;
+using ArdiLabs.Yuniqls.Core;
+using CommandLine;
 
 namespace ArdiLabs.Yuniql
 {
@@ -9,7 +12,8 @@ namespace ArdiLabs.Yuniql
 
         public static void Main(string[] args)
         {
-            var commandLineService = new CommandLineService();
+            var traceService = new TraceService();
+            var commandLineService = new CommandLineService(traceService);
 
             Parser.Default.ParseArguments<
                 InitOption,
