@@ -5,7 +5,7 @@ namespace ArdiLabs.Yuniql
 {
     //yuniql run
     [Verb("run", HelpText = "Runs migration steps")]
-    public class RunOption
+    public class RunOption : BaseOption
     {
         //yuniql run -p c:\temp\demo | --path c:\temp\demo
         [Option('p', "path", Required = false, HelpText = "Path to run migration from")]

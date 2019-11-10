@@ -422,5 +422,21 @@ DROP PROCEDURE [dbo].[script3];
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script2")).ShouldBeFalse();
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script3")).ShouldBeFalse();
         }
+
+        [TestMethod]
+        public void Test_Run_Migration_Unsupported_Platform_Throws_Exception()
+        {
+            //arrange
+            var workingPath = TestHelper.GetWorkingPath();
+            var databaseName = new DirectoryInfo(workingPath).Name;
+            var connectionString = TestHelper.GetConnectionString(databaseName);
+
+            //act
+            Assert.ThrowsException<NotSupportedException>(() => {
+                var migrationService = migrationServiceFactory.Create("oracle");
+                migrationService.Initialize(connectionString);
+                migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
+            }).Message.ShouldContain($"The target database platform oracle is not yet supported");
+        }
     }
 }

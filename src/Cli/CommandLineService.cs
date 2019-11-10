@@ -103,7 +103,7 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var migrationService = migrationServiceFactory.Create("sqlserver");
+                var migrationService = migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
 
                 migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens);
@@ -148,7 +148,7 @@ namespace ArdiLabs.Yuniql
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var migrationService = migrationServiceFactory.Create("sqlserver");
+                var migrationService = migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
                 migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verifyOnly: true);
 
@@ -174,7 +174,7 @@ namespace ArdiLabs.Yuniql
                     opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
-                var migrationService = migrationServiceFactory.Create("sqlserver");
+                var migrationService = migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
                 var versions = migrationService.GetAllVersions();
 
@@ -207,7 +207,7 @@ namespace ArdiLabs.Yuniql
                     opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
-                var migrationService = migrationServiceFactory.Create("sqlserver");
+                var migrationService = migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
                 migrationService.Erase(opts.ConnectionString);
             }

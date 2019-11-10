@@ -15,8 +15,10 @@ namespace ArdiLabs.Yuniql
                 var migrationService = new MigrationService(dataService, csvImportService);
                 return migrationService;
             }
-
-            return null;
+            else
+            {
+                throw new System.NotSupportedException($"The target database platform {platform} is not yet supported. See WIKI for supported database platforms.");
+            }
         }
     }
 }
