@@ -89,7 +89,7 @@ namespace Yuniql.Tests
             var migrationService = migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
-            var versions = GetAllDbVersions(connectionString);
+            var versions = TestDbHelper.GetAllDbVersions(connectionString);
 
             versions.Count.ShouldBe(3);
             versions[0].Version.ShouldBe("v0.00");
@@ -109,7 +109,7 @@ namespace Yuniql.Tests
         [DataRow("_pre")]
         [DataRow("_post")]
         [DataRow("_draft")]
-        public void Test_Run_Database_Init_Scripts_Executed(string scriptFolder)
+        public void Test_Run_Init_Scripts_Executed(string scriptFolder)
         {
             //arrange
             var workingPath = TestHelper.GetWorkingPath();
@@ -131,7 +131,7 @@ namespace Yuniql.Tests
         }
 
         [TestMethod]
-        public void Test_Run_Database_Executed_All_Versions()
+        public void Test_Run_All_Version_Scripts_Executed()
         {
             //arrange
             var workingPath = TestHelper.GetWorkingPath();
@@ -162,7 +162,7 @@ namespace Yuniql.Tests
         }
 
         [TestMethod]
-        public void Test_Run_Database_Skipped_Versions_Lower_Or_Same_As_Latest()
+        public void Test_Run_Skipped_Versions_Lower_Or_Same_As_Latest()
         {
             //arrange
             var workingPath = TestHelper.GetWorkingPath();
@@ -203,7 +203,7 @@ namespace Yuniql.Tests
         }
 
         [TestMethod]
-        public void Test_Run_Database_Skipped_Versions_Higher_Than_Target_Version()
+        public void Test_Run_With_Target_Version_Skipped_Versions_Higher_Than_Target_Version()
         {
             //arrange
             var workingPath = TestHelper.GetWorkingPath();
@@ -272,7 +272,7 @@ namespace Yuniql.Tests
         }
 
         [TestMethod]
-        public void Test_Run_Database_Executed_All_Version_SubDirectories()
+        public void Test_Run_All_Version_SubDirectories_Executed()
         {
             //arrange
             var workingPath = TestHelper.GetWorkingPath();
@@ -322,7 +322,7 @@ namespace Yuniql.Tests
         }
         
         [TestMethod]
-        public void Test_Run_Database_Throws_Error_Must_Rollback()
+        public void Test_Run_Migration_Throws_Error_Must_Rollback_All_Changes()
         {
             //arrange
             var workingPath = TestHelper.GetWorkingPath();
@@ -349,7 +349,7 @@ namespace Yuniql.Tests
         }
 
         [TestMethod]
-        public void Test_Verify_UnCommitted()
+        public void Test_Verify()
         {
             //arrange
             var workingPath = TestHelper.GetWorkingPath();
@@ -421,36 +421,6 @@ DROP PROCEDURE [dbo].[script3];
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script1")).ShouldBeFalse();
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script2")).ShouldBeFalse();
             TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestHelper.CreateAssetScript("script3")).ShouldBeFalse();
-        }
-
-        private List<DbVersion> GetAllDbVersions(string sqlConnectionString)
-        {
-            var result = new List<DbVersion>();
-
-            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
-
-            using (var connection = new SqlConnection(sqlConnectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var dbVersion = new DbVersion
-                    {
-                        Id = reader.GetInt16(0),
-                        Version = reader.GetString(1),
-                        DateInsertedUtc = reader.GetDateTime(2),
-                        LastUserId = reader.GetString(3)
-                    };
-                    result.Add(dbVersion);
-                }
-            }
-            return result;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ArdiLabs.Yuniql;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -6,6 +8,36 @@ namespace Yuniql.Tests
 {
     public static class TestDbHelper
     {
+        public static List<DbVersion> GetAllDbVersions(string sqlConnectionString)
+        {
+            var result = new List<DbVersion>();
+
+            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
+
+            using (var connection = new SqlConnection(sqlConnectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = sqlStatement;
+                command.CommandTimeout = 0;
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var dbVersion = new DbVersion
+                    {
+                        Id = reader.GetInt16(0),
+                        Version = reader.GetString(1),
+                        DateInsertedUtc = reader.GetDateTime(2),
+                        LastUserId = reader.GetString(3)
+                    };
+                    result.Add(dbVersion);
+                }
+            }
+            return result;
+        }
+
         public static void ExecuteNonQuery(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
         {
             using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
@@ -68,7 +100,8 @@ namespace Yuniql.Tests
                 command.CommandTimeout = 0;
 
                 var reader = command.ExecuteReader();
-                if (reader.Read()) {
+                if (reader.Read())
+                {
                     result = reader.GetString(0);
                 }
             }
