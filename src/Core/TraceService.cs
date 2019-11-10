@@ -9,7 +9,7 @@ namespace ArdiLabs.Yuniql.Core
         private string _traceSessionId;
         public TraceService()
         {
-            _traceSessionId = DateTime.Now.ToString("MMddyyyyHHmmss");
+            _traceSessionId = DateTime.Now.ToString("MMddyyyy-HHmmss");
         }
 
         public bool IsDebugEnabled { get; set; } = false;
@@ -20,7 +20,7 @@ namespace ArdiLabs.Yuniql.Core
             var traceMessage = $"INF   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
 
             File.AppendAllText(traceFile, traceMessage);
-            Console.WriteLine(traceMessage);
+            Console.Write(traceMessage);
         }
 
         public void Error(string message, object payload = null)
@@ -29,7 +29,7 @@ namespace ArdiLabs.Yuniql.Core
             var traceMessage = $"ERR   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
 
             File.AppendAllText(traceFile, traceMessage);
-            Console.WriteLine(traceMessage);
+            Console.Write(traceMessage);
         }
 
         public void Debug(string message, object payload = null)
@@ -40,13 +40,13 @@ namespace ArdiLabs.Yuniql.Core
                 var traceMessage = $"DBG   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
 
                 File.AppendAllText(traceFile, traceMessage);
-                Console.WriteLine(traceMessage);
+                Console.Write(traceMessage);
             }
         }
 
         private string GetTraceSessionFilePath()
         {
-            return Path.Combine(Environment.CurrentDirectory, $"yuniql-log-{_traceSessionId}.txt");
+            return Path.Combine(Environment.CurrentDirectory, $"yuniql-migration-{_traceSessionId}.txt");
         }
 
     }
