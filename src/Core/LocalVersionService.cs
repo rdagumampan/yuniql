@@ -9,46 +9,59 @@ namespace ArdiLabs.Yuniql
     {
         public void Init(string workingPath)
         {
-            string initFolderLocation = Path.Combine(workingPath, "_init");
-            if (!Directory.Exists(initFolderLocation))
+            string initDirectoryPath = Path.Combine(workingPath, "_init");
+            if (!Directory.Exists(initDirectoryPath))
             {
-                Directory.CreateDirectory(initFolderLocation);
-                TraceService.Info($"Created script directory {initFolderLocation}");
+                Directory.CreateDirectory(initDirectoryPath);
+                File.AppendAllText(Path.Combine(initDirectoryPath, "README.md"), @"# The `_init` directory
+Initialization scripts. Executed once. This is called the first time you do `yuniql run`.");
+                TraceService.Info($"Created script directory {initDirectoryPath}");
             }
 
-            string preFolderLocation = Path.Combine(workingPath, "_pre");
-            if (!Directory.Exists(preFolderLocation))
+            string preDirectoryPath = Path.Combine(workingPath, "_pre");
+            if (!Directory.Exists(preDirectoryPath))
             {
-                Directory.CreateDirectory(preFolderLocation);
-                TraceService.Info($"Created script directory {preFolderLocation}");
+                Directory.CreateDirectory(preDirectoryPath);
+                File.AppendAllText(Path.Combine(preDirectoryPath, "README.md"), @"# The `_pre` directory
+Pre migration scripts. Executed every time before any version. 
+");
+                TraceService.Info($"Created script directory {preDirectoryPath}");
             }
 
-            string defaultVersion = Path.Combine(workingPath, "v0.00");
-            if (!Directory.Exists(defaultVersion))
+            string defaultVersionDirectoryPath = Path.Combine(workingPath, "v0.00");
+            if (!Directory.Exists(defaultVersionDirectoryPath))
             {
-                Directory.CreateDirectory(defaultVersion);
-                TraceService.Info($"Created script directory {defaultVersion}");
+                Directory.CreateDirectory(defaultVersionDirectoryPath);
+                File.AppendAllText(Path.Combine(defaultVersionDirectoryPath, "README.md"), @"# The `v0.00` directory
+Baseline scripts. Executed once. This is called when you do `yuniql run`.");
+                TraceService.Info($"Created script directory {defaultVersionDirectoryPath}");
             }
 
-            string draftFolderLocation = Path.Combine(workingPath, "_draft");
-            if (!Directory.Exists(draftFolderLocation))
+            string draftDirectoryPath = Path.Combine(workingPath, "_draft");
+            if (!Directory.Exists(draftDirectoryPath))
             {
-                Directory.CreateDirectory(draftFolderLocation);
-                TraceService.Info($"Created script directory {draftFolderLocation}");
+                Directory.CreateDirectory(draftDirectoryPath);
+                File.AppendAllText(Path.Combine(draftDirectoryPath, "README.md"), @"# The `_draft` directory
+Scripts in progress. Scripts that you are currently working and have not moved to specific version directory yet. Executed every time after the latest version.");
+                TraceService.Info($"Created script directory {draftDirectoryPath}");
             }
 
-            string postFolderLocation = Path.Combine(workingPath, "_post");
-            if (!Directory.Exists(postFolderLocation))
+            string postDirectoryPath = Path.Combine(workingPath, "_post");
+            if (!Directory.Exists(postDirectoryPath))
             {
-                Directory.CreateDirectory(postFolderLocation);
-                TraceService.Info($"Created script directory {postFolderLocation}");
+                Directory.CreateDirectory(postDirectoryPath);
+                File.AppendAllText(Path.Combine(postDirectoryPath, "README.md"), @"# The `_post` directory
+Post migration scripts. Executed every time and always the last batch to run.");
+                TraceService.Info($"Created script directory {postDirectoryPath}");
             }
 
-            string eraseFolderLocation = Path.Combine(workingPath, "_erase");
-            if (!Directory.Exists(eraseFolderLocation))
+            string eraseDirectoryPath = Path.Combine(workingPath, "_erase");
+            if (!Directory.Exists(eraseDirectoryPath))
             {
-                Directory.CreateDirectory(eraseFolderLocation);
-                TraceService.Info($"Created script directory {eraseFolderLocation}");
+                Directory.CreateDirectory(eraseDirectoryPath);
+                File.AppendAllText(Path.Combine(eraseDirectoryPath, "README.md"), @"# The `_erase` directory
+Database cleanup scripts. Executed once only when you do `yuniql erase`.");
+                TraceService.Info($"Created script directory {eraseDirectoryPath}");
             }
 
             var readMeFile = Path.Combine(workingPath, "README.md");
