@@ -1,8 +1,8 @@
 .vs
-*/.vs
 .git
-*/.git
 bin
 obj
+*/.vs
+*/.git
 **/bin/
 **/obj/
