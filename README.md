@@ -9,19 +9,19 @@
 
 **yuniql** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR) for Windows. Docker container images are also [available](https://cloud.docker.com/u/rdagumampan/repository/docker/rdagumampan/yuniql) for seamless continuous delivery of database changes in Linux environments.
 
-#### Quick start
+#### I. Quick start
 
 1. Clone sample project
 	```bash
 	git clone https://github.com/rdagumampan/yuniql c:\temp\yuniql
-	cd c:\temp\yuniql\sqlserver-examples\visitph-db
+	cd c:\temp\yuniql\sqlserver-samples\visitph-db
 	```
 
 2. Download latest `yuniql` build<br>
 
 	```bash
 	powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip -OutFile  "c:\temp\yuniql\yuniql-nightly.zip"
-	powershell Expand-Archive "c:\temp\yuniql\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql\sqlserver-examples\visitph-db"
+	powershell Expand-Archive "c:\temp\yuniql\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql\sqlserver-samples\visitph-db"
 	```
 
 	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) and extract to desired directory.
@@ -64,16 +64,17 @@ Query tables with SSMS or your preferred SQL client
 	<br>
 	<img align="center" src="assets/visitordb-screensot-ssms.png" width="700">
 
-#### Digging deeper
+#### II. Digging deeper
 
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
-* [Setting up new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
-* [Replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
-* [Bulk import data during migration](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-load-data-during-migration)
-* [Migrate via docker container](https://github.com/rdagumampan/yuniql/wiki/Run-migration-on-Docker-container)
+* [How to setup new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
+* [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
+* [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-load-data-during-migration)
+* [How to migrate via docker container](https://github.com/rdagumampan/yuniql/wiki/Run-migration-on-Docker-container)
+* [What are the known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
 * [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
 
-#### `yuniql` CLI commands
+#### III. `yuniql` CLI commands
 See how it works here https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works
 
 ```bash
@@ -98,25 +99,23 @@ yuniql -d | --debug
 
 *** planned or being evaluated/developer/tested
 
-#### `yuniqlx` CLI commands
+#### IV. `yuniqlx` CLI commands
 See how-to guide here https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database
 
 ```bash
 yuniqlx baseline -c "<connectiong-string>"
-yuniqlx rebase -c "<connectiong-string>" ***
-yuniqlx erase -c "<connectiong-string>" ***
 ```
 
 *** planned or being evaluated/developer/tested
 
-#### Build Status
+#### V. Build Status
 
 |Platform|Docker Build Status|
 |---|---|
 |![linux-x64](assets/linux_med.png) **windows x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|
 |![win-x64](assets/win_med.png) **linux x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|
 
-#### How to contribute or ask help
+#### VI. How to contribute or ask help
 - File a bug or feature as an [issue](https://github.com/rdagumampan/yuniql/issues/new)
 - Talk to us on [gitter chat](https://gitter.im/yuniql/community)
 - Comment on existing issues and suggest how they should be fixed/implemented
@@ -124,5 +123,5 @@ yuniqlx erase -c "<connectiong-string>" ***
 - Write more tests to increase our coverage
 - Tag [#yuniql](https://twitter.com/) on Twitter
 
-#### License
+#### VII. License
 TBA

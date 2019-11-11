@@ -25,6 +25,7 @@ namespace ArdiLabs.Yuniql.CLI
             {
                 var versionService = new LocalVersionService(_traceService);
 
+                //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
                     var workingPath = Environment.CurrentDirectory;
@@ -50,6 +51,7 @@ namespace ArdiLabs.Yuniql.CLI
         {
             try
             {
+                //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
                     var workingPath = Environment.CurrentDirectory;
@@ -81,6 +83,7 @@ namespace ArdiLabs.Yuniql.CLI
         {
             try
             {
+                //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
                     var workingPath = Environment.CurrentDirectory;
@@ -89,7 +92,7 @@ namespace ArdiLabs.Yuniql.CLI
 
                 _traceService.Info($"Started migration from {opts.Path}.");
 
-                //if no target version specified, capture the latest from local folder structure
+                //if no target version specified, we capture the latest from local folder structure
                 if (string.IsNullOrEmpty(opts.TargetVersion))
                 {
                     var localVersionService = new LocalVersionService(_traceService);
@@ -97,7 +100,7 @@ namespace ArdiLabs.Yuniql.CLI
                     _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
                 }
 
-                //if no connection string passed, use environment variable or throw exception
+                //if no connection string provided, we default into environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
                     var environmentService = new EnvironmentService();
@@ -126,6 +129,7 @@ namespace ArdiLabs.Yuniql.CLI
         {
             try
             {
+                //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
                     var workingPath = Environment.CurrentDirectory;
@@ -134,7 +138,7 @@ namespace ArdiLabs.Yuniql.CLI
 
                 _traceService.Info($"Started verifcation from {opts.Path}.");
 
-                //if no target version specified, capture the latest from local folder structure
+                //if no target version specified, we capture the latest from local folder structure
                 if (string.IsNullOrEmpty(opts.TargetVersion))
                 {
                     var localVersionService = new LocalVersionService(_traceService);
@@ -142,7 +146,7 @@ namespace ArdiLabs.Yuniql.CLI
                     _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
                 }
 
-                //if no connection string passed, use environment variable or throw exception
+                //if no connection string provided, we default into environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
                     var environmentService = new EnvironmentService();
@@ -172,7 +176,7 @@ namespace ArdiLabs.Yuniql.CLI
         {
             try
             {
-                //if no connection string passed, use environment variable or throw exception
+                //if no connection string provided, we default into environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
                     var environmentService = new EnvironmentService();
@@ -205,7 +209,14 @@ namespace ArdiLabs.Yuniql.CLI
         {
             try
             {
-                //if no connection string passed, use environment variable or throw exception
+                //if no path provided, we default into current directory
+                if (string.IsNullOrEmpty(opts.Path))
+                {
+                    var workingPath = Environment.CurrentDirectory;
+                    opts.Path = workingPath;
+                }
+
+                //if no connection string provided, we default into environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
                     var environmentService = new EnvironmentService();
@@ -214,7 +225,7 @@ namespace ArdiLabs.Yuniql.CLI
 
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
-                migrationService.Erase(opts.ConnectionString);
+                migrationService.Erase(opts.Path);
             }
             catch (Exception ex)
             {
