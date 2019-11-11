@@ -3,15 +3,19 @@
 WORKDIR /code
 
 #copy local files into app or clone github repo
-COPY ./src ./src/
-COPY ./tests ./tests/
+COPY ./yuniql-cli ./yuniql-cli
+COPY ./yuniql-core ./yuniql-core
+COPY ./yuniql-extensibility ./yuniql-extensibility
+COPY ./yuniql-sqlserver ./yuniql-sqlserver
+
+COPY ./yuniql-tests ./yuniql-tests
 
 #RUN git clone https://github.com/rdagumampan/yuniql.git /code
 
 #build and run integration tests
-WORKDIR /code/src
+WORKDIR /code/yuniql-cli
 RUN ls
-WORKDIR /code/tests
+WORKDIR /code/yuniql-tests
 RUN ls
 
 RUN dotnet restore
