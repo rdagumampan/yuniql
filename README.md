@@ -9,7 +9,7 @@
 
 **yuniql** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR) for Windows. Docker container images are also [available](https://cloud.docker.com/u/rdagumampan/repository/docker/rdagumampan/yuniql) for seamless continuous delivery of database changes in Linux environments.
 
-#### I. To start using **`yuniql`**
+## To start using **`yuniql`**
 
 1. Clone sample project
 	```bash
@@ -64,7 +64,7 @@ Query tables with SSMS or your preferred SQL client
 	<br>
 	<img align="center" src="assets/visitordb-screensot-ssms.png" width="700">
 
-#### II. To try other **`yuniql`** CLI commands
+## To start working with **`yuniql`** CLI
 See how it works here https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works
 
 ```bash
@@ -87,7 +87,7 @@ yuniql -h | --help
 yuniql -d | --debug
 ```
 
-#### III. To dig deeper for advanced use cases
+## To dig deeper for advanced use cases
 
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 * [How to setup new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
@@ -100,21 +100,21 @@ yuniql -d | --debug
 
 *** planned or being evaluated/developer/tested
 
-#### IV. To contribute or ask for help
+## To contribute or ask for help
 
 You may submit ideas for improvement or report a bug by [creating an issue](https://github.com/rdagumampan/yuniql/issues/new). <br>
 If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/community). Alternatively, tag [#yuniql](https://twitter.com/) on Twitter.
 
-#### V. Docker build status
+## To track docker build status
 
 |Platform|Docker Build Status|
 |---|---|
 |![linux-x64](assets/linux_med.png) **windows-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|
 |![win-x64](assets/win_med.png) **linux-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|
 
-#### VII. License
+## License
 
-Copyright [2019] [Rodel E. Dagumampan/rdagumampan]
+Copyright (C) 2019 Rodel E. Dagumampan
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
