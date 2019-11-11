@@ -1,10 +1,10 @@
-﻿using ArdiLabs.Yuniql.Extensibility;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ArdiLabs.Yuniql.Extensibility;
 
 namespace ArdiLabs.Yuniql.SqlServer
 {

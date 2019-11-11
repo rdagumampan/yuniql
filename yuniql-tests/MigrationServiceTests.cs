@@ -1,5 +1,4 @@
-﻿using ArdiLabs.Yuniql;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
@@ -9,7 +8,7 @@ using System.Data;
 using ArdiLabs.Yuniql.Core;
 using ArdiLabs.Yuniql.Extensibility;
 
-namespace Yuniql.Tests
+namespace ArdiLabs.Yuniql.SqlServer.Tests
 {
     [TestClass]
     public class MigrationServiceTests

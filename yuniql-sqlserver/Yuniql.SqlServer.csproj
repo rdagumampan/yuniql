@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <StartupObject></StartupObject>
+    <Company>Ardi Labs</Company>
+    <Version>0.1.0</Version>
+    <AssemblyName>ArdiLabs.Yuniql.SqlServer</AssemblyName>
+    <RootNamespace>ArdiLabs.Yuniql.SqlServer</RootNamespace>
+    <ApplicationIcon />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using System.IO;
 
-namespace Yuniql.Tests
+namespace ArdiLabs.Yuniql.SqlServer.Tests
 {
     public static class TestScriptHelper
     {

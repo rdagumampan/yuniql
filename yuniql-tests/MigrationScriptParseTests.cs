@@ -1,5 +1,4 @@
-﻿    using ArdiLabs.Yuniql;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
@@ -7,7 +6,7 @@ using ArdiLabs.Yuniql.SqlServer;
 using ArdiLabs.Yuniql.Core;
 using ArdiLabs.Yuniql.Extensibility;
 
-namespace Yuniql.Tests
+namespace ArdiLabs.Yuniql.SqlServer.Tests
 {
     [TestCategory("MockedTests")]
     [TestClass]

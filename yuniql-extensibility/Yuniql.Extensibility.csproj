@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <StartupObject></StartupObject>
+    <PackageId>yuniql</PackageId>
+    <Authors>yuniql</Authors>
+    <Product>yuniql</Product>
+    <Company>Ardi Labs</Company>
+    <Version>0.1.0</Version>
+    <AssemblyName>ArdiLabs.Yuniql.Extensibility</AssemblyName>
+    <RootNamespace>ArdiLabs.Yuniql.Extensibility</RootNamespace>
+    <ApplicationIcon />
+  </PropertyGroup>
+
+</Project>

@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Yuniql.csproj" />
+    <ProjectReference Include="..\yuniql-core\Yuniql.Core.csproj" />
+    <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
+    <ProjectReference Include="..\yuniql-sqlserver\Yuniql.SqlServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

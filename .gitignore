@@ -17,3 +17,14 @@ baseliner/Baseliner.csproj.user
 baseliner/Properties/PublishProfiles/FolderProfile.pubxml.user
 baseliner/Properties/launchSettings.json
 baseliner/Properties/PublishProfiles/FolderProfile.pubxml
+/yuniql-tests/obj
+/yuniql-tests/bin/Debug/netcoreapp3.0
+/yuniql-tests/.vs
+/yuniql-sqlserver/obj
+/yuniql-sqlserver/bin
+/yuniql-extensibility/obj
+/yuniql-extensibility/bin
+/yuniql-core/obj
+/yuniql-core/bin
+/yuniql-cli/obj
+/yuniql-cli/bin
