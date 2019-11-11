@@ -6,6 +6,7 @@ COPY ./yuniql-core ./yuniql-core
 COPY ./yuniql-extensibility ./yuniql-extensibility
 COPY ./yuniql-sqlserver ./yuniql-sqlserver
 
+WORKDIR /code/yuniql-cli
 RUN dotnet publish -c release -r win-x64 /p:publishtrimmed=true -o ./app
 
 #https://github.com/dotnet/dotnet-docker/issues/1332
