@@ -10,14 +10,14 @@ services:
     ports:
       - "1433:1433"
     healthcheck:
-      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd","-s", "yuniqldb.ardilabs.com", "-U", "sa", "-P", "P@ssw0rd!", "-Q", "SELECT 1" ]
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd","-s", "db.yuniql.org", "-U", "sa", "-P", "P@ssw0rd!", "-Q", "SELECT 1" ]
       interval: 1s
       retries: 20
     tty: true
     networks:
       testvnet:
         aliases:
-          - yuniqldb.ardilabs.com
+          - db.yuniql.org
 
   app:
     image: rdagumampan/yuniql-integration
@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      YUNIQL_CONNECTION_STRING: "Server=yuniqldb.ardilabs.com;Database=YuniqlTestDB;User Id=sa;Password=P@ssw0rd!"
+      YUNIQL_CONNECTION_STRING: "Server=db.yuniql.org;Database=YuniqlTestDB;User Id=sa;Password=P@ssw0rd!"
     entrypoint: /bin/bash -c "/bin/bash -c \"dotnet test\""
     tty: true
     depends_on:
@@ -36,7 +36,7 @@ services:
     networks:
       testvnet:
         aliases:
-          - yuniqltest.ardilabs.com
+          - tests.yuniql.org
 
 networks:
   testvnet:
