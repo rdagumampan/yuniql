@@ -7,7 +7,7 @@
     <PackageId>yuniql</PackageId>
     <Authors>yuniql</Authors>
     <Product>yuniql</Product>
-    <Company>Ardi Labs</Company>
+    <Company>Yuniql</Company>
     <Version>0.1.0</Version>
     <AssemblyName>Yuniql.Extensibility</AssemblyName>
     <RootNamespace>Yuniql.Extensibility</RootNamespace>

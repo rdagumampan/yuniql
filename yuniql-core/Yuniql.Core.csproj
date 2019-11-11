@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <StartupObject></StartupObject>
-    <Company>Ardi Labs</Company>
+    <Company>Yuniql</Company>
     <Version>0.1.0</Version>
     <AssemblyName>Yuniql.Core</AssemblyName>
     <RootNamespace>Yuniql.Core</RootNamespace>
