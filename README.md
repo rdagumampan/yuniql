@@ -14,14 +14,14 @@
 1. Clone sample project
 	```bash
 	git clone https://github.com/rdagumampan/yuniql c:\temp\yuniql
-	cd c:\temp\yuniql\examples\visitph-db
+	cd c:\temp\yuniql\sqlserver-examples\visitph-db
 	```
 
 2. Download latest `yuniql` build<br>
 
 	```bash
 	powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip -OutFile  "c:\temp\yuniql\yuniql-nightly.zip"
-	powershell Expand-Archive "c:\temp\yuniql\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql\examples\visitph-db"
+	powershell Expand-Archive "c:\temp\yuniql\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql\sqlserver-examples\visitph-db"
 	```
 
 	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) and extract to desired directory.
@@ -66,8 +66,8 @@ Query tables with SSMS or your preferred SQL client
 
 #### Digging deeper
 
-* [Setting up new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
+* [Setting up new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [Replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
 * [Bulk import data during migration](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-load-data-during-migration)
 * [Migrate via docker container](https://github.com/rdagumampan/yuniql/wiki/Run-migration-on-Docker-container)
@@ -83,7 +83,7 @@ yuniql vnext
 yuniql vnext -p c:\temp\demo | --path c:\temp\demo
 yuniql vnext -M | --major
 yuniql vnext -m | --minor
-yuniql vnext -f "Table1.sql"
+yuniql vnext -f "your-script-file.sql"
 yuniql verify
 yuniql run
 yuniql run -a true | --auto-create-db true
