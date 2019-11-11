@@ -1,7 +1,7 @@
-﻿using ArdiLabs.Yuniql.Extensibility;
+﻿using Yuniql.Extensibility;
 using System.Collections.Generic;
 
-namespace ArdiLabs.Yuniql.Core
+namespace Yuniql.Core
 {
     public interface IMigrationService
     {

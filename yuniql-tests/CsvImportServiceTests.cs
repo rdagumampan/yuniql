@@ -3,10 +3,10 @@ using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
 using System;
-using ArdiLabs.Yuniql.Core;
-using ArdiLabs.Yuniql.Extensibility;
+using Yuniql.Core;
+using Yuniql.Extensibility;
 
-namespace ArdiLabs.Yuniql.SqlServer.Tests
+namespace Yuniql.SqlServer.Tests
 {
     [TestClass]
     public class CsvImportServiceTests

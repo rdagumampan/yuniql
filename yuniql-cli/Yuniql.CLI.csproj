@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <StartupObject>ArdiLabs.Yuniql.Program</StartupObject>
+    <StartupObject>Yuniql.Program</StartupObject>
     <AssemblyName>yuniql</AssemblyName>
-    <PackageId>ArdiLabs.Yuniql.CLI</PackageId>
+    <PackageId>Yuniql.CLI</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

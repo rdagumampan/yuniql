@@ -1,11 +1,11 @@
-﻿using ArdiLabs.Yuniql.Extensibility;
+﻿using Yuniql.Extensibility;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 
-namespace ArdiLabs.Yuniql.Core
+namespace Yuniql.Core
 {
     public class MigrationService : IMigrationService
     {

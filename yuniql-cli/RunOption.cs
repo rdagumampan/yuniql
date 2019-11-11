@@ -1,7 +1,7 @@
 ﻿using CommandLine;
 using System.Collections.Generic;
 
-namespace ArdiLabs.Yuniql.CLI
+namespace Yuniql.CLI
 {
     //yuniql run
     [Verb("run", HelpText = "Runs migration steps")]

@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace ArdiLabs.Yuniql.Extensibility
+namespace Yuniql.Extensibility
 {
     public interface ICsvImportService
     {

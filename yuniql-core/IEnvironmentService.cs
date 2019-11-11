@@ -1,4 +1,4 @@
-﻿namespace ArdiLabs.Yuniql.Core
+﻿namespace Yuniql.Core
 {
     public interface IEnvironmentService
     {

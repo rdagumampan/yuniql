@@ -1,9 +1,9 @@
-﻿using ArdiLabs.Yuniql.Extensibility;
+﻿using Yuniql.Extensibility;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ArdiLabs.Yuniql.Core
+namespace Yuniql.Core
 {
     public class TokenReplacementService : ITokenReplacementService
     {

@@ -1,8 +1,8 @@
-﻿using ArdiLabs.Yuniql.Extensibility;
+﻿using Yuniql.Extensibility;
 using System;
 using System.IO;
 
-namespace ArdiLabs.Yuniql.Core
+namespace Yuniql.Core
 {
     public class TraceService : ITraceService
     {

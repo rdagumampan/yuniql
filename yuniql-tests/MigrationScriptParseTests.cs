@@ -2,11 +2,11 @@
 using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
-using ArdiLabs.Yuniql.SqlServer;
-using ArdiLabs.Yuniql.Core;
-using ArdiLabs.Yuniql.Extensibility;
+using Yuniql.SqlServer;
+using Yuniql.Core;
+using Yuniql.Extensibility;
 
-namespace ArdiLabs.Yuniql.SqlServer.Tests
+namespace Yuniql.SqlServer.Tests
 {
     [TestCategory("MockedTests")]
     [TestClass]

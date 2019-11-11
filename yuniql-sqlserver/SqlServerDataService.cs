@@ -4,9 +4,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ArdiLabs.Yuniql.Extensibility;
+using Yuniql.Extensibility;
 
-namespace ArdiLabs.Yuniql.SqlServer
+namespace Yuniql.SqlServer
 {
     public class SqlServerDataService : IDataService
     {

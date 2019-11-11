@@ -1,10 +1,10 @@
-﻿using ArdiLabs.Yuniql.Extensibility;
+﻿using Yuniql.Extensibility;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ArdiLabs.Yuniql.SqlServer.Tests
+namespace Yuniql.SqlServer.Tests
 {
     public static class TestDbHelper
     {

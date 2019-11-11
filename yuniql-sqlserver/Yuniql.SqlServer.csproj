@@ -6,8 +6,8 @@
     <StartupObject></StartupObject>
     <Company>Ardi Labs</Company>
     <Version>0.1.0</Version>
-    <AssemblyName>ArdiLabs.Yuniql.SqlServer</AssemblyName>
-    <RootNamespace>ArdiLabs.Yuniql.SqlServer</RootNamespace>
+    <AssemblyName>Yuniql.SqlServer</AssemblyName>
+    <RootNamespace>Yuniql.SqlServer</RootNamespace>
     <ApplicationIcon />
   </PropertyGroup>
 

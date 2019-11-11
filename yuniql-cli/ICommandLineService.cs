@@ -1,4 +1,4 @@
-﻿namespace ArdiLabs.Yuniql.CLI
+﻿namespace Yuniql.CLI
 {
     public interface ICommandLineService
     {

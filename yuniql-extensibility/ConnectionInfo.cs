@@ -1,4 +1,4 @@
-﻿namespace ArdiLabs.Yuniql.Extensibility
+﻿namespace Yuniql.Extensibility
 {
     public class ConnectionInfo {
  

@@ -1,7 +1,7 @@
-﻿using ArdiLabs.Yuniql.Extensibility;
-using ArdiLabs.Yuniql.SqlServer;
+﻿using Yuniql.Extensibility;
+using Yuniql.SqlServer;
 
-namespace ArdiLabs.Yuniql.Core
+namespace Yuniql.Core
 {
     public class MigrationServiceFactory : IMigrationServiceFactory
     {

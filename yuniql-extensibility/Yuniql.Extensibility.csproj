@@ -9,8 +9,8 @@
     <Product>yuniql</Product>
     <Company>Ardi Labs</Company>
     <Version>0.1.0</Version>
-    <AssemblyName>ArdiLabs.Yuniql.Extensibility</AssemblyName>
-    <RootNamespace>ArdiLabs.Yuniql.Extensibility</RootNamespace>
+    <AssemblyName>Yuniql.Extensibility</AssemblyName>
+    <RootNamespace>Yuniql.Extensibility</RootNamespace>
     <ApplicationIcon />
   </PropertyGroup>
 

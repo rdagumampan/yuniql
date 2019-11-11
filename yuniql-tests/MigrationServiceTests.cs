@@ -5,10 +5,10 @@ using Shouldly;
 using System.Collections.Generic;
 using System;
 using System.Data;
-using ArdiLabs.Yuniql.Core;
-using ArdiLabs.Yuniql.Extensibility;
+using Yuniql.Core;
+using Yuniql.Extensibility;
 
-namespace ArdiLabs.Yuniql.SqlServer.Tests
+namespace Yuniql.SqlServer.Tests
 {
     [TestClass]
     public class MigrationServiceTests

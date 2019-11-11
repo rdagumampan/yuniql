@@ -1,8 +1,8 @@
-﻿using ArdiLabs.Yuniql.CLI;
-using ArdiLabs.Yuniql.Core;
+﻿using Yuniql.CLI;
+using Yuniql.Core;
 using CommandLine;
 
-namespace ArdiLabs.Yuniql
+namespace Yuniql
 {
     public class Program
     {

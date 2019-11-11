@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using ArdiLabs.Yuniql.Core;
-using ArdiLabs.Yuniql.Extensibility;
+using Yuniql.Core;
+using Yuniql.Extensibility;
 
-namespace ArdiLabs.Yuniql.CLI
+namespace Yuniql.CLI
 {
     public class CommandLineService : ICommandLineService
     {

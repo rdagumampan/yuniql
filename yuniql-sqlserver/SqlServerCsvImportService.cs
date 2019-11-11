@@ -1,10 +1,10 @@
 ﻿using System.Data.SqlClient;
 using System.Data;
 using System.IO;
-using ArdiLabs.Yuniql.Extensibility;
+using Yuniql.Extensibility;
 
 //https://github.com/22222/CsvTextFieldParser
-namespace ArdiLabs.Yuniql.SqlServer
+namespace Yuniql.SqlServer
 {
     public class SqlServerCsvImportService : ICsvImportService
     {
