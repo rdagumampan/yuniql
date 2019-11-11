@@ -64,17 +64,7 @@ Query tables with SSMS or your preferred SQL client
 	<br>
 	<img align="center" src="assets/visitordb-screensot-ssms.png" width="700">
 
-#### II. Digging deeper
-
-* [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
-* [How to setup new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
-* [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
-* [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-load-data-during-migration)
-* [How to migrate via docker container](https://github.com/rdagumampan/yuniql/wiki/Run-migration-on-Docker-container)
-* [What are the known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
-* [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
-
-#### III. `yuniql` CLI commands
+#### II. `yuniql` CLI commands
 See how it works here https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works
 
 ```bash
@@ -97,31 +87,33 @@ yuniql -h | --help
 yuniql -d | --debug
 ```
 
+#### III. Digging deeper
+
+* [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
+* [How to setup new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
+* [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
+* [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-load-data-during-migration)
+* [How to migrate via docker container](https://github.com/rdagumampan/yuniql/wiki/Run-migration-on-Docker-container)
+* [What are the known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
+* [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
+
+
 *** planned or being evaluated/developer/tested
 
-#### IV. `yuniqlx` CLI commands
-See how-to guide here https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database
-
-```bash
-yuniqlx baseline -c "<connectiong-string>"
-```
-
-*** planned or being evaluated/developer/tested
-
-#### V. Build Status
+#### IV. Build Status
 
 |Platform|Docker Build Status|
 |---|---|
-|![linux-x64](assets/linux_med.png) **windows x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|
-|![win-x64](assets/win_med.png) **linux x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|
+|![linux-x64](assets/linux_med.png) **windows-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|
+|![win-x64](assets/win_med.png) **linux-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|
 
-#### VI. How to contribute or ask help
+#### V. How to contribute or ask help
 - File a bug or feature as an [issue](https://github.com/rdagumampan/yuniql/issues/new)
 - Talk to us on [gitter chat](https://gitter.im/yuniql/community)
+- Tag [#yuniql](https://twitter.com/) on Twitter
 - Comment on existing issues and suggest how they should be fixed/implemented
 - Fix a bug or implement feature by subimitting a PR
 - Write more tests to increase our coverage
-- Tag [#yuniql](https://twitter.com/) on Twitter
 
 #### VII. License
 TBA
