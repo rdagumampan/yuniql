@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ArdiLabs.Yuniql.Extensions
+namespace Yuniql.Extensions
 {
     public class EnvironmentService : IEnvironmentService
     {

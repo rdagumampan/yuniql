@@ -7,7 +7,7 @@ using Microsoft.SqlServer.Management.Sdk.Sfc;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace ArdiLabs.Yuniql.Extensions
+namespace Yuniql.Extensions
 {
     public class BaselineService
     {

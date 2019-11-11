@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ArdiLabs.Yuniql.Extensions
+namespace Yuniql.Extensions
 {
     public enum ObjectTypes
     {

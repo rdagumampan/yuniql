@@ -1,7 +1,7 @@
 ﻿using System;
 using CommandLine;
 
-namespace ArdiLabs.Yuniql.Extensions
+namespace Yuniql.Extensions
 {
     public class Program
     {
