@@ -97,7 +97,7 @@ yuniql -d | --debug
 * [Known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
 * [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
 
-## Supported platforms
+## Supported databases
 
 * SQL Server
 * Azure SQL Database
