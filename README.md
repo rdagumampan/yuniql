@@ -91,10 +91,10 @@ yuniql -d | --debug
 
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 * [How to setup new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
-* [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-use-yuniql-token-replacement)
-* [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-load-data-during-migration)
-* [How to migrate via docker container](https://github.com/rdagumampan/yuniql/wiki/Run-migration-on-Docker-container)
-* [What are the known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
+* [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
+* [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
+* [How to migrate from docker container](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-a-docker-container)
+* [Known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
 * [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
 
 
@@ -106,11 +106,12 @@ You may submit ideas for improvement or report a bug by [creating an issue](http
 If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/community). Alternatively, tag [#yuniql](https://twitter.com/) on Twitter.
 
 ## To track docker build status
+For running migration from docker container, [see instructions here](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-a-docker-container)
 
 |Platform|Build Status|Docker Images|
 |---|---|---|
-|![linux-x64](assets/linux_med.png) **windows-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|`docker pull rdagumampan/yuniql:win-x64-latest`|
 |![win-x64](assets/win_med.png) **linux-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
+|![linux-x64](assets/linux_med.png) **windows-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|`docker pull rdagumampan/yuniql:win-x64-latest`|
 
 ## License
 
