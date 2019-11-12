@@ -107,10 +107,10 @@ If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/comm
 
 ## To track docker build status
 
-|Platform|Docker Build Status|
-|---|---|
-|![linux-x64](assets/linux_med.png) **windows-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|
-|![win-x64](assets/win_med.png) **linux-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|
+|Platform|Build Status|Docker Images|
+|---|---|---|
+|![linux-x64](assets/linux_med.png) **windows-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|`docker pull rdagumampan/yuniql:win-x64-latest`|
+|![win-x64](assets/win_med.png) **linux-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
 
 ## License
 
@@ -120,3 +120,10 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
+## Maintainers
+
+[//]: contributor-faces
+
+<a href="https://github.com/rdagumampan"><img src="https://avatars.githubusercontent.com/u/5895952?v=3" title="rdagumampan" width="80" height="80"></a>
+
+[//]: contributor-faces
