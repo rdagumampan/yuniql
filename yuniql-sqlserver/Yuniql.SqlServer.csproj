@@ -4,11 +4,19 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <StartupObject></StartupObject>
-    <Company>Yuniql</Company>
+    <Company></Company>
     <Version>0.1.0</Version>
     <AssemblyName>Yuniql.SqlServer</AssemblyName>
     <RootNamespace>Yuniql.SqlServer</RootNamespace>
     <ApplicationIcon />
+    <Authors>Rodel E. Dagumampan</Authors>
+    <Product />
+    <PackageProjectUrl>https://github.com/rdagumampan/yuniql</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
+    <PackageIconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</PackageIconUrl>
+    <PackageTags>yuniql sqlserver-migration database-migration sql devops devops-tools database-versioning</PackageTags>
+    <Description>An SQL Server implementation of yuniql-based database migrations and schema versioning.</Description>
+    <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
