@@ -28,3 +28,6 @@ baseliner/Properties/PublishProfiles/FolderProfile.pubxml
 /yuniql-core/bin
 /yuniql-cli/obj
 /yuniql-cli/bin
+/yuniql-plugins/postgresql/src/.vs/Yuniql.PostgreSQL
+/yuniql-plugins/postgresql/src/bin
+/yuniql-plugins/postgresql/src/obj
