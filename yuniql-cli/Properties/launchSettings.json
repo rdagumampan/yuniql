@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Yuniql.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "run -a --platform pgsql -p \"C:\\play\\yuniql\\yuniql-plugins\\postgresql\\samples\" -c \"Host=localhost; Port=5432;Username=app;Password=app;Database=yuniqldb\""
+    }
+  }
+}

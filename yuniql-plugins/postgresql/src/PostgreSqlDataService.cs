@@ -169,8 +169,12 @@ namespace Yuniql.PostgreSql
 
         public bool IsTargetDatabaseExists()
         {
+            //use the target user database to migrate, this is part of orig connection string
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(_connectionString);
             var sqlStatement = $"SELECT 1 from pg_database WHERE datname ='{connectionStringBuilder.Database}';";
+
+            //switch database into master/system database where db catalogs are maintained
+            connectionStringBuilder.Database = "postgres";
             var result = QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
 
             return result;
@@ -178,8 +182,12 @@ namespace Yuniql.PostgreSql
 
         public void CreateDatabase()
         {
+            //use the target user database to migrate, this is part of orig connection string
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(_connectionString);
             var sqlStatement = $"CREATE DATABASE {connectionStringBuilder.Database};";
+
+            //switch database into master/system database where db catalogs are maintained
+            connectionStringBuilder.Database = "postgres";
             ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
         }
 
