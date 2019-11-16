@@ -63,14 +63,8 @@ namespace Yuniql.SqlServer.Tests
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
 
-            string sqlObjectName = "Test_Single_Run_Single_Standard";
-            string sqlStatement = $@"
-CREATE PROC [dbo].[{sqlObjectName}]
-AS
-    SELECT 1;
-GO
-";
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
+            string sqlObjectName = "Test_Object_1";
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), TestDbHelper.CreateSingleLineScript(sqlObjectName));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -92,13 +86,8 @@ GO
             localVersionService.Init(workingPath);
             localVersionService.IncrementMajorVersion(workingPath, null);
 
-            string sqlObjectName = "Test_Single_Run_Single_Standard";
-            string sqlStatement = $@"
-CREATE PROC [dbo].[{sqlObjectName}]
-AS
-    SELECT 1;
-";
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
+            string sqlObjectName = "Test_Object_1";
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), TestDbHelper.CreateSingleLineScriptWithoutTerminator(sqlObjectName));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -121,26 +110,11 @@ AS
             localVersionService.IncrementMajorVersion(workingPath, null);
 
             string sqlFileName = "Test_Single_Run_Single_Standard";
-            string sqlObjectName1 = "Test_Single_Run_Single_Standard_1";
-            string sqlObjectName2 = "Test_Single_Run_Single_Standard_2";
-            string sqlObjectName3 = "Test_Single_Run_Single_Standard_3";
+            string sqlObjectName1 = "Test_Object_1";
+            string sqlObjectName2 = "Test_Object_2";
+            string sqlObjectName3 = "Test_Object_3";
 
-            string sqlStatement = $@"
-CREATE PROC [dbo].[{sqlObjectName1}]
-AS
-    SELECT 1;
-GO
-
-CREATE PROC [dbo].[{sqlObjectName2}]
-AS
-    SELECT 1;
-GO
-
-CREATE PROC [dbo].[{sqlObjectName3}]
-AS
-    SELECT 1;
-";
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), TestDbHelper.CreateMultilineScriptWithoutTerminatorInLastLine(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -166,29 +140,11 @@ AS
             localVersionService.IncrementMajorVersion(workingPath, null);
 
             string sqlFileName = "Test_Single_Run_Single_Standard";
-            string sqlObjectName1 = "Test_Single_Run_Single_Standard_1";
-            string sqlObjectName2 = "Test_Single_Run_Single_Standard_2";
-            string sqlObjectName3 = "Test_Single_Run_Single_Standard_3";
+            string sqlObjectName1 = "Test_Object_1";
+            string sqlObjectName2 = "Test_Object_2";
+            string sqlObjectName3 = "Test_Object_3";
 
-            string sqlStatement = $@"
-CREATE PROC [dbo].[{sqlObjectName1}]
-AS
-    --this is a comment with GO as part of the sentence (ALL CAPS)
-    SELECT 1;
-GO
-
-CREATE PROC [dbo].[{sqlObjectName2}]
-AS
-    --this is a comment with go as part of the sentence (small caps)
-    SELECT 1;
-GO
-
-CREATE PROC [dbo].[{sqlObjectName3}]
-AS
-    --this is a comment with Go as part of the sentence (Pascal)
-    SELECT 1;
-";
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), TestDbHelper.CreateMultilineScriptWithTerminatorInsideStatements(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -214,27 +170,9 @@ AS
             localVersionService.IncrementMajorVersion(workingPath, null);
 
             string sqlFileName = "Test_Single_Run_Failed_Script_Must_Rollback";
-            string sqlStatement = $@"
-CREATE TABLE [dbo].[_TestTable](        
-    [TestId][INT] IDENTITY(1, 1) NOT NULL,        
-    [TestColumn] [DECIMAL] NOT NULL
-)
-GO
-
-CREATE PROC [dbo].[_TestStoredProcedure]
-AS
-    SELECT 1;
-GO
-
-INSERT INTO [dbo].[_TestTable] (TestColumn) VALUES (1);
-INSERT INTO [dbo].[_TestTable] (TestColumn) VALUES (2);
-GO
-
---throws divide by zero error
-INSERT INTO [dbo].[_TestTable] (TestColumn) VALUES (3/0);
-GO
-";
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
+            string sqlObjectName1 = "Test_Object_1";
+            string sqlObjectName2 = "Test_Object_2";
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), TestDbHelper.CreateMultilineScriptWithError(sqlObjectName1, sqlObjectName2));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");

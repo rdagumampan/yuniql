@@ -186,5 +186,88 @@ DROP PROCEDURE [dbo].[script2];
 DROP PROCEDURE [dbo].[script3];
 ";
         }
+
+        public static string CreateSingleLineScript(string objectName)
+        {
+            return $@"
+CREATE PROC [dbo].[{objectName}]
+AS
+    SELECT 1;
+GO
+";
+        }
+
+        public static string CreateSingleLineScriptWithoutTerminator(string objectName)
+        {
+            return $@"
+CREATE PROC [dbo].[{objectName}]
+AS
+    SELECT 1;
+";
+        }
+
+        public static string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
+        {
+            return $@"
+CREATE PROC [dbo].[{objectName1}]
+AS
+    SELECT 1;
+GO
+
+CREATE PROC [dbo].[{objectName2}]
+AS
+    SELECT 1;
+GO
+
+CREATE PROC [dbo].[{objectName3}]
+AS
+    SELECT 1;
+";
+        }
+        public static string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
+        {
+            return $@"
+CREATE PROC [dbo].[{objectName1}]
+AS
+    --this is a comment with GO as part of the sentence (ALL CAPS)
+    SELECT 1;
+GO
+
+CREATE PROC [dbo].[{objectName2}]
+AS
+    --this is a comment with go as part of the sentence (small caps)
+    SELECT 1;
+GO
+
+CREATE PROC [dbo].[{objectName3}]
+AS
+    --this is a comment with Go as part of the sentence (Pascal)
+    SELECT 1;
+";
+        }
+
+        public static string CreateMultilineScriptWithError(string objectName1, string objectName2)
+        {
+            return $@"
+CREATE TABLE [dbo].[{objectName1}](        
+    [TestId][INT] IDENTITY(1, 1) NOT NULL,        
+    [TestColumn] [DECIMAL] NOT NULL
+)
+GO
+
+CREATE PROC [dbo].[{objectName2}]
+AS
+    SELECT 1;
+GO
+
+--throws divide by zero error
+INSERT INTO [dbo].[{objectName1}] (TestColumn) VALUES (3/0);
+GO
+
+INSERT INTO [dbo].[{objectName1}] (TestColumn) VALUES (1);
+INSERT INTO [dbo].[{objectName1}] (TestColumn) VALUES (2);
+GO
+";
+        }
+        }
     }
-}
