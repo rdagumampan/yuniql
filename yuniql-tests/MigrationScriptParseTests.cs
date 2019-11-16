@@ -21,7 +21,7 @@ namespace Yuniql.SqlServer.Tests
             _traceService = new TraceService();
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
 
-            var workingPath = TestScriptHelper.GetWorkingPath();
+            var workingPath = TestDbHelper.GetWorkingPath();
             if (!Directory.Exists(workingPath))
             {
                 Directory.CreateDirectory(workingPath);
@@ -32,9 +32,9 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Single_Run_Empty()
         {
             //arrange
-            var workingPath = TestScriptHelper.GetWorkingPath();
+            var workingPath = TestDbHelper.GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
-            var connectionString = TestScriptHelper.GetConnectionString(databaseName);
+            var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -42,7 +42,7 @@ namespace Yuniql.SqlServer.Tests
 
             string sqlStatement = $@"
 ";
-            TestScriptHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"Test_Single_Run_Empty.sql"), sqlStatement);
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"Test_Single_Run_Empty.sql"), sqlStatement);
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -50,16 +50,16 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript("Test_Single_Run_Empty")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("Test_Single_Run_Empty")).ShouldBeFalse();
         }
 
         [TestMethod]
         public void Test_Single_Run_Single_Standard()
         {
             //arrange
-            var workingPath = TestScriptHelper.GetWorkingPath();
+            var workingPath = TestDbHelper.GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
-            var connectionString = TestScriptHelper.GetConnectionString(databaseName);
+            var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -72,7 +72,7 @@ AS
     SELECT 1;
 GO
 ";
-            TestScriptHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -80,15 +80,15 @@ GO
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"{sqlObjectName}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName}")).ShouldBeTrue();
         }
         [TestMethod]
         public void Test_Run_Single_Without_GO()
         {
             //arrange
-            var workingPath = TestScriptHelper.GetWorkingPath();
+            var workingPath = TestDbHelper.GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
-            var connectionString = TestScriptHelper.GetConnectionString(databaseName);
+            var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -100,7 +100,7 @@ CREATE PROC [dbo].[{sqlObjectName}]
 AS
     SELECT 1;
 ";
-            TestScriptHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), sqlStatement);
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -108,15 +108,15 @@ AS
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"{sqlObjectName}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName}")).ShouldBeTrue();
         }
         [TestMethod]
         public void Test_Run_Multiple_Without_GO_In_Last_Line()
         {
             //arrange
-            var workingPath = TestScriptHelper.GetWorkingPath();
+            var workingPath = TestDbHelper.GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
-            var connectionString = TestScriptHelper.GetConnectionString(databaseName);
+            var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -142,7 +142,7 @@ CREATE PROC [dbo].[{sqlObjectName3}]
 AS
     SELECT 1;
 ";
-            TestScriptHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -150,18 +150,18 @@ AS
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"{sqlObjectName1}")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"{sqlObjectName2}")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"{sqlObjectName3}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName1}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName2}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName3}")).ShouldBeTrue();
         }
 
         [TestMethod]
         public void Test_Run_Multiple_With_GO_In_The_Sql_Statement()
         {
             //arrange
-            var workingPath = TestScriptHelper.GetWorkingPath();
+            var workingPath = TestDbHelper.GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
-            var connectionString = TestScriptHelper.GetConnectionString(databaseName);
+            var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -190,7 +190,7 @@ AS
     --this is a comment with Go as part of the sentence (Pascal)
     SELECT 1;
 ";
-            TestScriptHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -198,18 +198,18 @@ AS
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"{sqlObjectName1}")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"{sqlObjectName2}")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"{sqlObjectName3}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName1}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName2}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName3}")).ShouldBeTrue();
         }
 
         [TestMethod]
         public void Test_Single_Run_Failed_Script_Must_Rollback()
         {
             //arrange
-            var workingPath = TestScriptHelper.GetWorkingPath();
+            var workingPath = TestDbHelper.GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
-            var connectionString = TestScriptHelper.GetConnectionString(databaseName);
+            var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -236,7 +236,7 @@ GO
 INSERT INTO [dbo].[_TestTable] (TestColumn) VALUES (3/0);
 GO
 ";
-            TestScriptHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), sqlStatement);
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -248,8 +248,8 @@ GO
 
             //assert
             GetCurrentVersion(connectionString).ShouldBeNull();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"TestTable")).ShouldBeFalse();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript($"TestStoredProcedure")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"TestTable")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"TestStoredProcedure")).ShouldBeFalse();
         }
 
         private string GetCurrentVersion(string sqlConnectionString)

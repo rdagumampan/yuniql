@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace Yuniql.SqlServer.Tests
 {
@@ -35,35 +36,6 @@ namespace Yuniql.SqlServer.Tests
                     result.Add(dbVersion);
                 }
             }
-            return result;
-        }
-
-        public static void ExecuteNonQuery(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
-        {
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-                command.ExecuteNonQuery();
-            }
-        }
-
-        public static int ExecuteScalar(SqlConnectionStringBuilder sqlConnectionString, string sqlStatement)
-        {
-            var result = 0;
-            using (var connection = new SqlConnection(sqlConnectionString.ConnectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-                result = command.ExecuteNonQuery();
-            }
-
             return result;
         }
 
@@ -109,58 +81,92 @@ namespace Yuniql.SqlServer.Tests
             return result;
         }
 
-        public static void ExecuteNonQuery(IDbConnection connection, string sqlStatement)
+        public static string GetConnectionString(string databaseName)
         {
-            connection.Open();
-            var command = connection.CreateCommand();
-            command.CommandType = CommandType.Text;
-            command.CommandText = sqlStatement;
-            command.CommandTimeout = 0;
-            command.ExecuteNonQuery();
+            var connectionString = Environment.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                //use this when running against local instance of sql server with integrated security
+                //return $"Data Source=.;Integrated Security=SSPI;Initial Catalog={databaseName}";
+
+                //use this when running against sql server container with published port 1400
+                return $"Server=localhost,1400;Database={databaseName};User Id=SA;Password=P@ssw0rd!";
+            }
+
+            var result = new SqlConnectionStringBuilder(connectionString);
+            result.InitialCatalog = databaseName;
+
+            return result.ConnectionString;
         }
 
-        public static int ExecuteScalar(IDbConnection connection, string sqlStatement)
+        public static string GetWorkingPath()
         {
-            var result = 0;
-
-            var command = connection.CreateCommand();
-            command.CommandType = CommandType.Text;
-            command.CommandText = sqlStatement;
-            command.CommandTimeout = 0;
-            result = command.ExecuteNonQuery();
-
-            return result;
+            return Path.Combine(Environment.CurrentDirectory, @$"yuniql_testdb_{Guid.NewGuid().ToString().Substring(0, 4)}");
         }
 
-        public static bool QuerySingleBool(IDbConnection connection, string sqlStatement)
+        public static void CleanUp(string workingPath)
         {
-            bool result;
-            var command = connection.CreateCommand();
-            command.CommandType = CommandType.Text;
-            command.CommandText = sqlStatement;
-            command.CommandTimeout = 0;
-
-            var reader = command.ExecuteReader();
-            reader.Read();
-            result = Convert.ToBoolean(reader.GetValue(0));
-
-            return result;
+            if (Directory.Exists(workingPath))
+            {
+                Directory.Delete(workingPath, true);
+            }
+        }
+        public static string CreateScript(string scriptName)
+        {
+            return $@"
+CREATE PROC [dbo].[{scriptName}]
+AS
+    SELECT 1;
+GO
+                ";
         }
 
-        public static string QuerySingleString(IDbConnection connection, string sqlStatement)
+        public static void CreateScriptFile(string sqlFilePath, string sqlStatement)
         {
-            string result;
+            using (var sw = File.CreateText(sqlFilePath))
+            {
+                sw.WriteLine(sqlStatement);
+            }
+        }
 
-            var command = connection.CreateCommand();
-            command.CommandType = CommandType.Text;
-            command.CommandText = sqlStatement;
-            command.CommandTimeout = 0;
+        public static string CreateCheckObjectExistScript(string objectName)
+        {
+            return $"SELECT ISNULL(OBJECT_ID('[dbo].[{objectName}]'), 0) AS ObjectID";
+        }
 
-            var reader = command.ExecuteReader();
-            reader.Read();
-            result = reader.GetString(0);
+        public static string CreateCsvTableScript(string tableName)
+        {
+            return $@"
+IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = '{tableName}'))
+BEGIN
+    CREATE TABLE [dbo].[{tableName}](
+	    [FirstName] [nvarchar](50) NULL,
+	    [LastName] [nvarchar](50) NULL,
+	    [BirthDate] [datetime] NULL
+    );
+END
+            ";
+        }
 
-            return result;
+        public static string CreateTokenizedScript(string scriptName)
+        {
+            return $@"
+CREATE PROC [dbo].[{scriptName}]
+AS
+    SELECT '${{Token1}}.${{Token2}}.${{Token3}}' AS ReplacedStatement;
+";
+        }
+
+
+        public static string CreateSpHelpTextScript(string scriptName)
+        {
+            return $@"
+DECLARE @temp TABLE(SqlLine NVARCHAR(MAX));
+INSERT INTO @temp EXEC sp_helptext '{scriptName}';
+DECLARE @result NVARCHAR(MAX);
+SELECT @result = COALESCE(@result + SqlLine, SqlLine) FROM @temp;
+SELECT @result;
+";
         }
 
     }

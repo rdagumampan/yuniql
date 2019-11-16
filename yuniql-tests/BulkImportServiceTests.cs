@@ -20,7 +20,7 @@ namespace Yuniql.SqlServer.Tests
             _traceService = new TraceService();
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
 
-            var workingPath = TestScriptHelper.GetWorkingPath();
+            var workingPath = TestDbHelper.GetWorkingPath();
             if (!Directory.Exists(workingPath))
             {
                 Directory.CreateDirectory(workingPath);
@@ -31,20 +31,20 @@ namespace Yuniql.SqlServer.Tests
         public void TestImport()
         {
             //arrange
-            var workingPath = TestScriptHelper.GetWorkingPath();
+            var workingPath = TestDbHelper.GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
-            var connectionString = TestScriptHelper.GetConnectionString(databaseName);
+            var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
             string v100Directory = Path.Combine(workingPath, "v1.00");
-            TestScriptHelper.CreateScriptFile(Path.Combine(v100Directory, $"test_v1_00.sql"), TestScriptHelper.CreateScript($"test_v1_00"));
+            TestDbHelper.CreateScriptFile(Path.Combine(v100Directory, $"test_v1_00.sql"), TestDbHelper.CreateScript($"test_v1_00"));
 
             localVersionService.IncrementMinorVersion(workingPath, null);
             string v101Directory = Path.Combine(workingPath, "v1.01");
-            TestScriptHelper.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_01.sql"), TestScriptHelper.CreateScript($"test_v1_01"));
+            TestDbHelper.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_01.sql"), TestDbHelper.CreateScript($"test_v1_01"));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -52,23 +52,23 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript("test_v1_00")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript("test_v1_01")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_01")).ShouldBeTrue();
 
             //arrange - add new version with csv files
             localVersionService.IncrementMinorVersion(workingPath, null);
             string v102Directory = Path.Combine(workingPath, "v1.02");
-            TestScriptHelper.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02.sql"), TestScriptHelper.CreateScript($"test_v1_02"));
+            TestDbHelper.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02.sql"), TestDbHelper.CreateScript($"test_v1_02"));
 
-            TestScriptHelper.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02_TestCsv.sql"), TestScriptHelper.CreateCsvTableScript("TestCsv"));
+            TestDbHelper.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02_TestCsv.sql"), TestDbHelper.CreateCsvTableScript("TestCsv"));
             File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.csv"), Path.Combine(v102Directory, "TestCsv.csv"));
 
             //act - bulk load csv files
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript("test_v1_02")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestScriptHelper.CreateAssetScript("TestCsv")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_02")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("TestCsv")).ShouldBeTrue();
         }
     }
 }

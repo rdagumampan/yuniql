@@ -86,7 +86,7 @@ namespace Yuniql.SqlServer
         
         private void SqlBulkCopy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e)
         {
-            _traceService.Info($"CsvImportService copied {e.RowsCopied} rows");
+            _traceService.Info($"SqlServerBulkImportService copied {e.RowsCopied} rows");
         }
     }
 }
