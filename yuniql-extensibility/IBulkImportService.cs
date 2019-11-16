@@ -2,7 +2,7 @@
 
 namespace Yuniql.Extensibility
 {
-    public interface ICsvImportService
+    public interface IBulkImportService
     {
         void Initialize(string connectionString);
 

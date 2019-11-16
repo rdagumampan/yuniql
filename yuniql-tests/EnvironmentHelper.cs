@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Yuniql.Core
+namespace Yuniql.Tests
 {
-    public class EnvironmentService: IEnvironmentService
+    public static class EnvironmentHelper
     {
-        //extracts the environment variable with special consideration when its running on windows
-        //https://docs.microsoft.com/en-us/dotnet/api/system.environment.getenvironmentvariable?view=netcore-3.0
-        public string GetEnvironmentVariable(string name)
+        public static string GetEnvironmentVariable(string name)
         {
             string result = Environment.GetEnvironmentVariable(name);
             if (string.IsNullOrEmpty(result) && Environment.OSVersion.Platform == PlatformID.Win32NT)

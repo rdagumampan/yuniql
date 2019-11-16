@@ -10,10 +10,10 @@ namespace Yuniql.Core
     public class MigrationService : IMigrationService
     {
         private readonly IDataService _dataService;
-        private readonly ICsvImportService _csvImportService;
+        private readonly IBulkImportService _csvImportService;
         private readonly ITraceService _traceService;
 
-        public MigrationService(IDataService dataService, ICsvImportService csvImportService, ITraceService traceService)
+        public MigrationService(IDataService dataService, IBulkImportService csvImportService, ITraceService traceService)
         {
             this._dataService = dataService;
             this._csvImportService = csvImportService;

@@ -6,12 +6,12 @@ using Yuniql.Extensibility;
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.PostgreSql
 {
-    public class PostgreSqlCsvImportService : ICsvImportService
+    public class PostgreSqlBulkImportService : IBulkImportService
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
-        public PostgreSqlCsvImportService(ITraceService traceService)
+        public PostgreSqlBulkImportService(ITraceService traceService)
         {
             this._traceService = traceService;
         }

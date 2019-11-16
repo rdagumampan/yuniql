@@ -72,52 +72,6 @@ BEGIN
 END
             ";
         }
-        public static string CreateCsvTableScript2()
-        {
-            var sqlStatement = @"
-IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = 'CompleteTable'))
-BEGIN
-	CREATE TABLE [dbo].[CompleteTable]
-	(
-		[ColumnBigInt] BIGINT NULL,
-		[ColumnBinary] BINARY(4000) NULL,
-		[ColumnBit] BIT NULL,
-		[ColumnChar] CHAR(32) NULL,
-		[ColumnDate] DATE NULL,
-		[ColumnDateTime] DATETIME NULL,
-		[ColumnDateTime2] DATETIME2(7) NULL,
-		[ColumnDateTimeOffset] DATETIMEOFFSET(7) NULL,
-		[ColumnDecimal] DECIMAL(18, 2) NULL,
-		[ColumnFloat] FLOAT NULL,
-		[ColumnGeography] GEOGRAPHY NULL,
-		[ColumnGeometry] GEOMETRY NULL,
-		[ColumnHierarchyId] HIERARCHYID NULL,
-		[ColumnImage] IMAGE NULL,
-		[ColumnInt] INT NULL,
-		[ColumnMoney] MONEY NULL,
-		[ColumnNChar] NCHAR(32) NULL,
-		[ColumnNText] NTEXT NULL,
-		[ColumnNumeric] NUMERIC(18, 2) NULL,
-		[ColumnNVarChar] NVARCHAR(MAX) NULL,
-		[ColumnReal] REAL NULL,
-		[ColumnSmallDateTime] SMALLDATETIME NULL,
-		[ColumnSmallInt] SMALLINT NULL,
-		[ColumnSmallMoney] SMALLMONEY NULL,
-		[ColumnSqlVariant] SQL_VARIANT NULL,
-		[ColumnText] TEXT NULL,
-		[ColumnTime] TIME(7) NULL,
-		[ColumnTimestamp] TIMESTAMP NULL,
-		[ColumnTinyInt] TINYINT NULL,
-		[ColumnUniqueIdentifier] UNIQUEIDENTIFIER NULL,
-		[ColumnVarBinary] VARBINARY(MAX) NULL,
-		[ColumnVarChar] VARCHAR(MAX) NULL,
-		[ColumnXml] XML NULL,
-	);
-END
-";
-
-            return sqlStatement;
-        }
 
         public static string CreateTokenizedScript(string scriptName)
         {

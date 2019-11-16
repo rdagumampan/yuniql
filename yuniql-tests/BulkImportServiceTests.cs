@@ -9,7 +9,7 @@ using Yuniql.Extensibility;
 namespace Yuniql.SqlServer.Tests
 {
     [TestClass]
-    public class CsvImportServiceTests
+    public class BulkImportServiceTests
     {
         private IMigrationServiceFactory _migrationServiceFactory;
         private ITraceService _traceService;

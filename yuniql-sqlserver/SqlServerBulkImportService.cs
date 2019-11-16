@@ -6,12 +6,12 @@ using Yuniql.Extensibility;
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.SqlServer
 {
-    public class SqlServerCsvImportService : ICsvImportService
+    public class SqlServerBulkImportService : IBulkImportService
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
-        public SqlServerCsvImportService(ITraceService traceService)
+        public SqlServerBulkImportService(ITraceService traceService)
         {
             this._traceService = traceService;
         }

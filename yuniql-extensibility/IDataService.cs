@@ -32,7 +32,6 @@ namespace Yuniql.Extensibility
 
         string GetCurrentVersion();
 
-        //TODO: return List<string>, type convert in the Core
         List<DbVersion> GetAllVersions();
 
         void UpdateVersion(IDbConnection activeConnection, IDbTransaction transaction, string version);

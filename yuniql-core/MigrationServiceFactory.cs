@@ -23,7 +23,7 @@ namespace Yuniql.Core
             if (platform.Equals("sqlserver"))
             {
                 var dataService = new SqlServerDataService(_traceService);
-                var csvImportService = new SqlServerCsvImportService(_traceService);
+                var csvImportService = new SqlServerBulkImportService(_traceService);
 
                 var migrationService = new MigrationService(dataService, csvImportService, _traceService);
                 return migrationService;
@@ -42,7 +42,7 @@ namespace Yuniql.Core
                 var csvImportService = assembly.GetTypes()
                     .Where(t => t.Name.Contains("PostgreSqlCsvImportService"))
                     .Select(t => Activator.CreateInstance(t, _traceService))
-                    .Cast<ICsvImportService>()
+                    .Cast<IBulkImportService>()
                     .First();
 
                 var migrationService = new MigrationService(dataService, csvImportService, _traceService);
