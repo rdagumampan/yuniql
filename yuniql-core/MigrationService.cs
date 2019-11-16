@@ -216,7 +216,7 @@ namespace Yuniql.Core
                         RunMigrationScriptsInternal(connection, transaction, versionDirectory, tokens);
 
                         //import csv files into tables of the the same filename as the csv
-                        RunCsvImport(connection, transaction, versionDirectory);
+                        RunBulkImport(connection, transaction, versionDirectory);
 
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
@@ -237,7 +237,7 @@ namespace Yuniql.Core
             }
         }
 
-        private void RunCsvImport(
+        private void RunBulkImport(
             IDbConnection connection,
             IDbTransaction transaction,
             string versionFullPath)
@@ -246,13 +246,13 @@ namespace Yuniql.Core
             var csvFiles = Directory.GetFiles(versionFullPath, "*.csv").ToList();
             csvFiles.Sort();
 
-            _traceService.Info($"Found the {csvFiles.Count} csv files on {versionFullPath}");
+            _traceService.Info($"Found the {csvFiles.Count} bulk files on {versionFullPath}");
             _traceService.Info($"{string.Join(@"\r\n\t", csvFiles.Select(s => new FileInfo(s).Name))}");
 
             csvFiles.ForEach(csvFile =>
             {
                 _csvImportService.Run(connection, transaction, csvFile);
-                _traceService.Info($"Imported csv file {csvFile}.");
+                _traceService.Info($"Imported bulk file {csvFile}.");
             });
         }
 

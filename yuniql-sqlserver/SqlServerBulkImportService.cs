@@ -21,10 +21,10 @@ namespace Yuniql.SqlServer
             this._connectionString = connectionString;
         }
 
-        public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath)
+        public void Run(IDbConnection connection, IDbTransaction transaction, string fileFullPath)
         {
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(csvFileFullPath);
+            var dataTable = ParseCsvFile(fileFullPath);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(connection, transaction, dataTable);
