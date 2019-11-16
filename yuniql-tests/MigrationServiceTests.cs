@@ -125,8 +125,7 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            string sqlAssertStatement = $"SELECT ISNULL(OBJECT_ID('[dbo].[test_{scriptFolder}]'), 0) AS ObjectID";
-            TestDbHelper.QuerySingleBool(connectionString, sqlAssertStatement).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript(@$"test_{scriptFolder}")).ShouldBeTrue();
         }
 
         [TestMethod]

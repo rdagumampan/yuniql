@@ -184,8 +184,8 @@ namespace Yuniql.SqlServer.Tests
 
             //assert
             TestDbHelper.GetCurrentVersion(connectionString).ShouldBeNull();
-            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"TestTable")).ShouldBeFalse();
-            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"TestStoredProcedure")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName1}")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName2}")).ShouldBeFalse();
         }
 
     }
