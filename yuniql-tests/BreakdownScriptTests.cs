@@ -2,15 +2,13 @@
 using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
-using Yuniql.SqlServer;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
 namespace Yuniql.SqlServer.Tests
 {
-    [TestCategory("MockedTests")]
     [TestClass]
-    public class MigrationScriptParseTests
+    public class BreakdownScriptTests
     {
         private IMigrationServiceFactory _migrationServiceFactory;
         private ITraceService _traceService;
@@ -50,7 +48,7 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("Test_Single_Run_Empty")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("Test_Single_Run_Empty")).ShouldBeFalse();
         }
 
         [TestMethod]
@@ -80,7 +78,7 @@ GO
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName}")).ShouldBeTrue();
         }
         [TestMethod]
         public void Test_Run_Single_Without_GO()
@@ -108,7 +106,7 @@ AS
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName}")).ShouldBeTrue();
         }
         [TestMethod]
         public void Test_Run_Multiple_Without_GO_In_Last_Line()
@@ -150,9 +148,9 @@ AS
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName1}")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName2}")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName3}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName1}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName2}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName3}")).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -198,9 +196,9 @@ AS
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName1}")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName2}")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"{sqlObjectName3}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName1}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName2}")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"{sqlObjectName3}")).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -247,17 +245,9 @@ GO
             }).Message.ShouldContain("Divide by zero error encountered");
 
             //assert
-            GetCurrentVersion(connectionString).ShouldBeNull();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"TestTable")).ShouldBeFalse();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript($"TestStoredProcedure")).ShouldBeFalse();
-        }
-
-        private string GetCurrentVersion(string sqlConnectionString)
-        {
-            var sqlStatement = $"SELECT TOP 1 Version FROM dbo.__YuniqlDbVersion ORDER BY Id DESC";
-            var result = TestDbHelper.QuerySingleString(new SqlConnectionStringBuilder(sqlConnectionString), sqlStatement);
-
-            return result;
+            TestDbHelper.GetCurrentVersion(connectionString).ShouldBeNull();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"TestTable")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"TestStoredProcedure")).ShouldBeFalse();
         }
 
     }

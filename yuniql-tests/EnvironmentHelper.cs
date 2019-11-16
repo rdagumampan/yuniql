@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Yuniql.Tests
+namespace Yuniql.SqlServer.Tests
 {
     public static class EnvironmentHelper
     {

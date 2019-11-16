@@ -68,13 +68,7 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
-            var sqlStatement = $"SELECT ISNULL(DB_ID (N'{databaseName}'),0);";
-
-            //check if database exists and auto-create when its not
-            var masterSqlDbConnectionString = new SqlConnectionStringBuilder(connectionString);
-            masterSqlDbConnectionString.InitialCatalog = "master";
-
-            TestDbHelper.QuerySingleBool(masterSqlDbConnectionString, sqlStatement).ShouldBeTrue();
+            TestDbHelper.CheckDbExist(connectionString).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -123,7 +117,7 @@ namespace Yuniql.SqlServer.Tests
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, scriptFolder), $"test_{scriptFolder}.sql"), TestDbHelper.CreateScript($"test_{scriptFolder}"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, scriptFolder), $"test_{scriptFolder}.sql"), TestDbHelper.CreateDbObjectScript($"test_{scriptFolder}"));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -132,7 +126,7 @@ namespace Yuniql.SqlServer.Tests
 
             //assert
             string sqlAssertStatement = $"SELECT ISNULL(OBJECT_ID('[dbo].[test_{scriptFolder}]'), 0) AS ObjectID";
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), sqlAssertStatement).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, sqlAssertStatement).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -147,13 +141,13 @@ namespace Yuniql.SqlServer.Tests
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateScript($"test_v1_00"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_00"));
 
             localVersionService.IncrementMinorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestDbHelper.CreateScript($"test_v1_01"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_01"));
 
             localVersionService.IncrementMinorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestDbHelper.CreateScript($"test_v1_02"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_02"));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -161,9 +155,9 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_01")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_02")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_01")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_02")).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -178,10 +172,10 @@ namespace Yuniql.SqlServer.Tests
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateScript($"test_v1_00"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_00"));
 
             localVersionService.IncrementMinorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestDbHelper.CreateScript($"test_v1_01"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_01"));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -189,22 +183,22 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_01")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_01")).ShouldBeTrue();
 
             //act
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00_added_later.sql"), TestDbHelper.CreateScript($"test_v1_00_added_later"));
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01_added_later.sql"), TestDbHelper.CreateScript($"test_v1_01_added_later"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00_added_later.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_00_added_later"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01_added_later.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_01_added_later"));
 
             localVersionService.IncrementMinorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestDbHelper.CreateScript($"test_v1_02"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_02"));
 
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
 
             //assert again
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00_added_later")).ShouldBeFalse();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_01_added_later")).ShouldBeFalse();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_02")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_00_added_later")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_01_added_later")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_02")).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -219,16 +213,16 @@ namespace Yuniql.SqlServer.Tests
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateScript($"test_v1_00"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_00"));
 
             localVersionService.IncrementMinorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestDbHelper.CreateScript($"test_v1_01"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_01"));
 
             localVersionService.IncrementMinorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestDbHelper.CreateScript($"test_v1_02"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_02"));
 
             localVersionService.IncrementMajorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v2.00"), $"test_v2_00.sql"), TestDbHelper.CreateScript($"test_v2_00"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v2.00"), $"test_v2_00.sql"), TestDbHelper.CreateDbObjectScript($"test_v2_00"));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -236,10 +230,10 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_01")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_02")).ShouldBeFalse();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_03")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_01")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_02")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_03")).ShouldBeFalse();
         }
 
         [DataTestMethod()]
@@ -259,7 +253,7 @@ namespace Yuniql.SqlServer.Tests
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, versionFolder), $"test_{scriptName}.sql"), TestDbHelper.CreateTokenizedScript($"test_{scriptName}"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, versionFolder), $"test_{scriptName}.sql"), TestDbHelper.CreateTokenizedDbObjectScript($"test_{scriptName}"));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -273,7 +267,7 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true, tokens: tokens);
 
             //assert
-            TestDbHelper.QuerySingleString(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateSpHelpTextScript($"test_{scriptName}").TrimEnd()).Contains("Token1Value.Token2Value.Token3Value");
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript($"test_{scriptName}_Token1Value_Token2Value_Token3Value")).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -289,27 +283,27 @@ namespace Yuniql.SqlServer.Tests
 
             localVersionService.IncrementMajorVersion(workingPath, null);
             string v1rootDirectory = Path.Combine(Path.Combine(workingPath, "v1.00"));
-            TestDbHelper.CreateScriptFile(Path.Combine(v1rootDirectory, $"test_v1_00.sql"), TestDbHelper.CreateScript($"test_v1_00")); ;
+            TestDbHelper.CreateScriptFile(Path.Combine(v1rootDirectory, $"test_v1_00.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_00")); ;
 
             string v1level1Directory = Path.Combine(v1rootDirectory, "v1.00-level1");
             Directory.CreateDirectory(v1level1Directory);
-            TestDbHelper.CreateScriptFile(Path.Combine(v1level1Directory, $"test_v1_00_level1.sql"), TestDbHelper.CreateScript($"test_v1_00_level1"));
+            TestDbHelper.CreateScriptFile(Path.Combine(v1level1Directory, $"test_v1_00_level1.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_00_level1"));
 
             string v1level1SubDirectory = Path.Combine(v1level1Directory, "v1.00-level1-sublevel1");
             Directory.CreateDirectory(v1level1SubDirectory);
-            TestDbHelper.CreateScriptFile(Path.Combine(v1level1SubDirectory, $"test_v1_00_level1_sublevel1.sql"), TestDbHelper.CreateScript($"test_v1_00_level1_sublevel1"));
+            TestDbHelper.CreateScriptFile(Path.Combine(v1level1SubDirectory, $"test_v1_00_level1_sublevel1.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_00_level1_sublevel1"));
 
             localVersionService.IncrementMajorVersion(workingPath, null);
             string v2rootDirectory = Path.Combine(Path.Combine(workingPath, "v2.00"));
-            TestDbHelper.CreateScriptFile(Path.Combine(v2rootDirectory, $"test_v2_00.sql"), TestDbHelper.CreateScript($"test_v2_00")); ;
+            TestDbHelper.CreateScriptFile(Path.Combine(v2rootDirectory, $"test_v2_00.sql"), TestDbHelper.CreateDbObjectScript($"test_v2_00")); ;
 
             string v2level1Directory = Path.Combine(v2rootDirectory, "v2.00-level1");
             Directory.CreateDirectory(v2level1Directory);
-            TestDbHelper.CreateScriptFile(Path.Combine(v2level1Directory, $"test_v2_00_level1.sql"), TestDbHelper.CreateScript($"test_v2_00_level1"));
+            TestDbHelper.CreateScriptFile(Path.Combine(v2level1Directory, $"test_v2_00_level1.sql"), TestDbHelper.CreateDbObjectScript($"test_v2_00_level1"));
 
             string v2level1SubDirectory = Path.Combine(v2level1Directory, "v2.00-level1-sublevel1");
             Directory.CreateDirectory(v2level1SubDirectory);
-            TestDbHelper.CreateScriptFile(Path.Combine(v2level1SubDirectory, $"test_v2_00_level1_sublevel1.sql"), TestDbHelper.CreateScript($"test_v2_00_level1_sublevel1"));
+            TestDbHelper.CreateScriptFile(Path.Combine(v2level1SubDirectory, $"test_v2_00_level1_sublevel1.sql"), TestDbHelper.CreateDbObjectScript($"test_v2_00_level1_sublevel1"));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -317,13 +311,13 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v2.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00_level1")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00_level1_sublevel1")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_00_level1")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_00_level1_sublevel1")).ShouldBeTrue();
 
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v2_00")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v2_00_level1")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v2_00_level1_sublevel1")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v2_00")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v2_00_level1")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v2_00_level1_sublevel1")).ShouldBeTrue();
         }
         
         [TestMethod]
@@ -338,8 +332,8 @@ namespace Yuniql.SqlServer.Tests
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateScript($"test_v1_00"));
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00_TestCsv.sql"), TestDbHelper.CreateCsvTableScript("TestCsv"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_00"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00_TestCsv.sql"), TestDbHelper.CreateBulkTableScript("TestCsv"));
             File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.csv"), Path.Combine(Path.Combine(workingPath, "v1.00"), "TestCsvDifferentName.csv"));
 
             //act
@@ -350,7 +344,7 @@ namespace Yuniql.SqlServer.Tests
             }).Message.ShouldContain("Cannot access destination table 'TestCsvDifferentName'");
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeFalse();
         }
 
         [TestMethod]
@@ -365,25 +359,25 @@ namespace Yuniql.SqlServer.Tests
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateScript($"test_v1_00"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_00"));
 
             localVersionService.IncrementMinorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestDbHelper.CreateScript($"test_v1_01"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.01"), $"test_v1_01.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_01"));
 
             var migrationService = _migrationServiceFactory.Create("sqlserver");
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             localVersionService.IncrementMinorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestDbHelper.CreateScript($"test_v1_02"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.02"), $"test_v1_02.sql"), TestDbHelper.CreateDbObjectScript($"test_v1_02"));
 
             //act
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: false, verifyOnly: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_00")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_01")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("test_v1_02")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_01")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v1_02")).ShouldBeFalse();
         }
 
         [TestMethod]
@@ -398,9 +392,9 @@ namespace Yuniql.SqlServer.Tests
             localVersionService.Init(workingPath);
 
             localVersionService.IncrementMajorVersion(workingPath, null);
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script1.sql"), TestDbHelper.CreateScript($"script1"));
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script2.sql"), TestDbHelper.CreateScript($"script2"));
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script3.sql"), TestDbHelper.CreateScript($"script3"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script1.sql"), TestDbHelper.CreateDbObjectScript($"script1"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script2.sql"), TestDbHelper.CreateDbObjectScript($"script2"));
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"script3.sql"), TestDbHelper.CreateDbObjectScript($"script3"));
 
             //act
             var migrationService = _migrationServiceFactory.Create("sqlserver");
@@ -408,24 +402,20 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("script1")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("script2")).ShouldBeTrue();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("script3")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("script1")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("script2")).ShouldBeTrue();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("script3")).ShouldBeTrue();
 
             //arrange
-            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "_erase"), $"erase.sql"), @"
-DROP PROCEDURE [dbo].[script1];
-DROP PROCEDURE [dbo].[script2];
-DROP PROCEDURE [dbo].[script3];
-");
+            TestDbHelper.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "_erase"), $"erase.sql"), TestDbHelper.CreateCleanupScript());
 
             //act
             migrationService.Erase(workingPath);
 
             //assert
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("script1")).ShouldBeFalse();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("script2")).ShouldBeFalse();
-            TestDbHelper.QuerySingleBool(new SqlConnectionStringBuilder(connectionString), TestDbHelper.CreateCheckObjectExistScript("script3")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("script1")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("script2")).ShouldBeFalse();
+            TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("script3")).ShouldBeFalse();
         }
 
         [TestMethod]
