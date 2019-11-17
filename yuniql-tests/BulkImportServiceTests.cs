@@ -60,8 +60,8 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_01")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_01").ShouldBeTrue();
 
             //arrange - add new version with csv files
             localVersionService.IncrementMinorVersion(workingPath, null);
@@ -75,8 +75,8 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_02")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("TestCsv")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_02").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "TestCsv").ShouldBeTrue();
         }
     }
 }

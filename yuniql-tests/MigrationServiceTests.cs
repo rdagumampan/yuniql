@@ -77,7 +77,7 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
-            _testDataService.CheckDbExist(connectionString).ShouldBeTrue();
+            _testDataService.CheckIfDbExist(connectionString).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -134,7 +134,7 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript(@$"test_{scriptFolder}")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, @$"test_{scriptFolder}").ShouldBeTrue();
         }
 
         [TestMethod]
@@ -163,9 +163,9 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_01")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_02")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_02").ShouldBeTrue();
         }
 
         [TestMethod]
@@ -191,8 +191,8 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_01")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_01").ShouldBeTrue();
 
             //act
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00_added_later.sql"), _testDataService.CreateDbObjectScript($"test_v1_00_added_later"));
@@ -204,9 +204,9 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
 
             //assert again
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00_added_later")).ShouldBeFalse();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_01_added_later")).ShouldBeFalse();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_02")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00_added_later").ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_01_added_later").ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_02").ShouldBeTrue();
         }
 
         [TestMethod]
@@ -238,10 +238,10 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_01")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_02")).ShouldBeFalse();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_03")).ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_02").ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_03").ShouldBeFalse();
         }
 
         [DataTestMethod()]
@@ -275,7 +275,7 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true, tokens: tokens);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript($"test_{scriptName}_Token1Value_Token2Value_Token3Value")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, $"test_{scriptName}_Token1Value_Token2Value_Token3Value").ShouldBeTrue();
         }
 
         [TestMethod]
@@ -319,13 +319,13 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v2.00", autoCreateDatabase: true);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00_level1")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00_level1_sublevel1")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00_level1").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00_level1_sublevel1").ShouldBeTrue();
 
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v2_00")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v2_00_level1")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v2_00_level1_sublevel1")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v2_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v2_00_level1").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v2_00_level1_sublevel1").ShouldBeTrue();
         }
 
         [TestMethod]
@@ -353,7 +353,7 @@ namespace Yuniql.SqlServer.Tests
             }).Message.ShouldContain("Cannot access destination table 'TestCsvDifferentName'");
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeFalse();
         }
 
         [TestMethod]
@@ -384,9 +384,9 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: false, verifyOnly: true);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_00")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_01")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("test_v1_02")).ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_02").ShouldBeFalse();
         }
 
         [TestMethod]
@@ -411,9 +411,9 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("script1")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("script2")).ShouldBeTrue();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("script3")).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "script1").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "script2").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "script3").ShouldBeTrue();
 
             //arrange
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "_erase"), $"erase.sql"), _testDataService.CreateCleanupScript());
@@ -422,9 +422,9 @@ namespace Yuniql.SqlServer.Tests
             migrationService.Erase(workingPath);
 
             //assert
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("script1")).ShouldBeFalse();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("script2")).ShouldBeFalse();
-            _testDataService.QuerySingleBool(connectionString, _testDataService.CreateCheckDbObjectExistScript("script3")).ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(connectionString, "script1").ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(connectionString, "script2").ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(connectionString, "script3").ShouldBeFalse();
         }
 
         [TestMethod]

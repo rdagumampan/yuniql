@@ -74,14 +74,13 @@ namespace Yuniql.SqlServer
             var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             masterConnectionStringBuilder.InitialCatalog = "master";
 
-            var result = QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
-
-            return result;
+            return QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
 
-        public string CreateCheckDbObjectExistScript(string objectName)
+        public bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
-            return $"SELECT ISNULL(OBJECT_ID('[dbo].[{objectName}]'), 0) AS ObjectID";
+            var sqlStatement = $"SELECT ISNULL(OBJECT_ID('[dbo].[{objectName}]'), 0) AS ObjectID";
+            return QuerySingleBool(connectionString, sqlStatement);
         }
 
         public bool QuerySingleBool(string connectionString, string sqlStatement)
