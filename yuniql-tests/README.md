@@ -9,13 +9,14 @@
 2. Configure your connection string
 
 	```bash
-	SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=HelloYuniqlDb;User Id=SA;Password=P@ssw0rd!"
+	SETX YUNIQL_TEST_TARGET_PLATFORM "sqlserver"
+	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=HelloYuniqlDb;User Id=SA;Password=P@ssw0rd!"
 	```
 
 3. Run the tests
 	
 	```console
-	cd tests
+	cd yuniql-tests
 	dotnet build
 	dotnet test
 	```

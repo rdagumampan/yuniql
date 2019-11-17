@@ -10,27 +10,36 @@ namespace Yuniql.SqlServer.Tests
     [TestClass]
     public class LocalVersionServiceTests : TestBase
     {
+        private string _targetPlatform;
+        private ITestDataService _testDataService;
+
         private IMigrationServiceFactory _migrationServiceFactory;
         private ITraceService _traceService;
 
         [TestInitialize]
         public void Setup()
         {
+            //get target platform to tests from environment variable
+            _targetPlatform = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_TARGET_PLATFORM");
+            if (string.IsNullOrEmpty(_targetPlatform))
+            {
+                _targetPlatform = "sqlserver";
+            }
+
+            //create test data service provider
+            var testDataServiceFactory = new TestDataServiceFactory();
+            _testDataService = testDataServiceFactory.Create(_targetPlatform);
+
+            //create data service factory for migration proper
             _traceService = new TraceService();
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
-
-            var workingPath = GetWorkingPath();
-            if (!Directory.Exists(workingPath))
-            {
-                Directory.CreateDirectory(workingPath);
-            }
         }
 
         [TestMethod]
         public void Test_Init()
         {
             //act
-            var workingPath = GetWorkingPath();
+            var workingPath = GetOrCreateWorkingPath();
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -63,7 +72,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Init_Called_Multiple_Is_Handled()
         {
             //act
-            var workingPath = GetWorkingPath();
+            var workingPath = GetOrCreateWorkingPath();
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -85,7 +94,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Increment_Major_Version()
         {
             //act
-            var workingPath = GetWorkingPath();
+            var workingPath = GetOrCreateWorkingPath();
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -99,7 +108,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Increment_Major_Version_With_Template_File()
         {
             //act
-            var workingPath = GetWorkingPath();
+            var workingPath = GetOrCreateWorkingPath();
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -114,7 +123,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Increment_Minor_Version()
         {
             //act
-            var workingPath = GetWorkingPath();
+            var workingPath = GetOrCreateWorkingPath();
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -128,7 +137,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Increment_Minor_Version_With_Template_File()
         {
             //act
-            var workingPath = GetWorkingPath();
+            var workingPath = GetOrCreateWorkingPath();
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);
@@ -143,7 +152,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Get_Latest_Version()
         {
             //act
-            var workingPath = GetWorkingPath();
+            var workingPath = GetOrCreateWorkingPath();
 
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(workingPath);

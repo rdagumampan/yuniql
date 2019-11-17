@@ -7,9 +7,15 @@ namespace Yuniql.SqlServer.Tests
     [TestClass]
     public class TestBase
     {
-        public static string GetWorkingPath()
+        public static string GetOrCreateWorkingPath()
         {
-            return Path.Combine(Environment.CurrentDirectory, @$"yuniql_testdb_{Guid.NewGuid().ToString().Substring(0, 4)}");
+            var workingPath = Path.Combine(Environment.CurrentDirectory, @$"yuniql_testdb_{Guid.NewGuid().ToString().Substring(0, 4)}"); ;
+            if (!Directory.Exists(workingPath))
+            {
+                Directory.CreateDirectory(workingPath);
+            }
+
+            return workingPath;
         }
 
         public static void CleanUp(string workingPath)
