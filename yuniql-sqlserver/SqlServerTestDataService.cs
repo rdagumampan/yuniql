@@ -27,20 +27,7 @@ namespace Yuniql.SqlServer
             return result.ConnectionString;
         }
 
-        public bool CheckDbExist(string connectionString)
-        {
-            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            var sqlStatement = $"SELECT ISNULL(database_id, 0) FROM [sys].[databases] WHERE name = '{connectionStringBuilder.InitialCatalog}'";
-
-            //check if database exists and auto-create when its not
-            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            masterConnectionStringBuilder.InitialCatalog = "master";
-
-            var result = QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
-
-            return result;
-        }
-        public string GetCurrentVersion(string connectionString)
+        public string GetCurrentDbVersion(string connectionString)
         {
             var sqlStatement = $"SELECT TOP 1 Version FROM dbo.__YuniqlDbVersion ORDER BY Id DESC";
             var result = QuerySingleString(connectionString, sqlStatement);
@@ -76,6 +63,25 @@ namespace Yuniql.SqlServer
                 }
             }
             return result;
+        }
+
+        public bool CheckIfDbExist(string connectionString)
+        {
+            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            var sqlStatement = $"SELECT ISNULL(database_id, 0) FROM [sys].[databases] WHERE name = '{connectionStringBuilder.InitialCatalog}'";
+
+            //check if database exists and auto-create when its not
+            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            masterConnectionStringBuilder.InitialCatalog = "master";
+
+            var result = QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
+
+            return result;
+        }
+
+        public string CreateCheckDbObjectExistScript(string objectName)
+        {
+            return $"SELECT ISNULL(OBJECT_ID('[dbo].[{objectName}]'), 0) AS ObjectID";
         }
 
         public bool QuerySingleBool(string connectionString, string sqlStatement)
@@ -120,12 +126,6 @@ namespace Yuniql.SqlServer
             return result;
         }
 
-        public void CreateScriptFile(string sqlFilePath, string sqlStatement)
-        {
-            using var sw = File.CreateText(sqlFilePath);
-            sw.WriteLine(sqlStatement);
-        }
-
         public string CreateDbObjectScript(string scriptName)
         {
             return $@"
@@ -145,12 +145,6 @@ AS
 ";
         }
 
-
-        public string CreateCheckDbObjectExistScript(string objectName)
-        {
-            return $"SELECT ISNULL(OBJECT_ID('[dbo].[{objectName}]'), 0) AS ObjectID";
-        }
-
         public string CreateBulkTableScript(string tableName)
         {
             return $@"
@@ -163,15 +157,6 @@ BEGIN
     );
 END
             ";
-        }
-
-        public string CreateCleanupScript()
-        {
-            return @"
-DROP PROCEDURE [dbo].[script1];
-DROP PROCEDURE [dbo].[script2];
-DROP PROCEDURE [dbo].[script3];
-";
         }
 
         public string CreateSingleLineScript(string objectName)
@@ -211,6 +196,7 @@ AS
     SELECT 1;
 ";
         }
+
         public string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
@@ -254,6 +240,21 @@ GO
 INSERT INTO [dbo].[{objectName1}] (TestColumn) VALUES (1);
 INSERT INTO [dbo].[{objectName1}] (TestColumn) VALUES (2);
 GO
+";
+        }
+
+        public void CreateScriptFile(string sqlFilePath, string sqlStatement)
+        {
+            using var sw = File.CreateText(sqlFilePath);
+            sw.WriteLine(sqlStatement);
+        }
+
+        public string CreateCleanupScript()
+        {
+            return @"
+DROP PROCEDURE [dbo].[script1];
+DROP PROCEDURE [dbo].[script2];
+DROP PROCEDURE [dbo].[script3];
 ";
         }
     }

@@ -1,42 +1,41 @@
 ﻿using System.Collections.Generic;
-using Yuniql.Extensibility;
 
 namespace Yuniql.Extensibility
 {
     public interface ITestDataService
     {
-        bool CheckDbExist(string connectionString);
+        string GetConnectionString(string databaseName);
 
-        string CreateBulkTableScript(string tableName);
+        string GetCurrentDbVersion(string connectionString);
 
-        string CreateDbObjectScript(string scriptName);
+        List<DbVersion> GetAllDbVersions(string connectionString);
+
+        bool QuerySingleBool(string connectionString, string sqlStatement);
+
+        string QuerySingleString(string connectionString, string sqlStatement);
+
+        bool CheckIfDbExist(string connectionString);
 
         string CreateCheckDbObjectExistScript(string objectName);
 
-        string CreateCleanupScript();
+        string CreateDbObjectScript(string scriptName);
 
-        string CreateMultilineScriptWithError(string objectName1, string objectName2);
+        string CreateTokenizedDbObjectScript(string objectName);
 
-        string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3);
-
-        string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3);
-
-        void CreateScriptFile(string sqlFilePath, string sqlStatement);
+        string CreateBulkTableScript(string tableName);
 
         string CreateSingleLineScript(string objectName);
 
         string CreateSingleLineScriptWithoutTerminator(string objectName);
 
-        string CreateTokenizedDbObjectScript(string objectName);
+        string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3);
 
-        List<DbVersion> GetAllDbVersions(string connectionString);
+        string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3);
 
-        string GetConnectionString(string databaseName);
+        string CreateMultilineScriptWithError(string objectName1, string objectName2);
 
-        string GetCurrentVersion(string connectionString);
+        void CreateScriptFile(string sqlFilePath, string sqlStatement);
 
-        bool QuerySingleBool(string connectionString, string sqlStatement);
-
-        string QuerySingleString(string connectionString, string sqlStatement);
+        string CreateCleanupScript();
     }
 }
