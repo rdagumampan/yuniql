@@ -11,7 +11,7 @@ using Yuniql.Extensibility;
 namespace Yuniql.SqlServer.Tests
 {
     [TestClass]
-    public class MigrationServiceTests
+    public class MigrationServiceTests : TestBase
     {
         private IMigrationServiceFactory _migrationServiceFactory;
         private ITraceService _traceService;
@@ -22,7 +22,7 @@ namespace Yuniql.SqlServer.Tests
             _traceService = new TraceService();
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
 
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             if (!Directory.Exists(workingPath))
             {
                 Directory.CreateDirectory(workingPath);
@@ -33,7 +33,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_Without_AutocreateDB_Throws_Exception()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -53,7 +53,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_With_AutocreateDB()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -75,7 +75,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_Database_Already_Updated()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -111,7 +111,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_Init_Scripts_Executed(string scriptFolder)
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -132,7 +132,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_All_Version_Scripts_Executed()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -163,7 +163,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_Skipped_Versions_Lower_Or_Same_As_Latest()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -204,7 +204,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_With_Target_Version_Skipped_Versions_Higher_Than_Target_Version()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -244,7 +244,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_With_Parameterized_Tokens(string versionFolder, string scriptName)
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -273,7 +273,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_All_Version_SubDirectories_Executed()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -318,12 +318,12 @@ namespace Yuniql.SqlServer.Tests
             TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v2_00_level1")).ShouldBeTrue();
             TestDbHelper.QuerySingleBool(connectionString, TestDbHelper.CreateCheckDbObjectExistScript("test_v2_00_level1_sublevel1")).ShouldBeTrue();
         }
-        
+
         [TestMethod]
         public void Test_Run_Migration_Throws_Error_Must_Rollback_All_Changes()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -336,7 +336,8 @@ namespace Yuniql.SqlServer.Tests
             File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.csv"), Path.Combine(Path.Combine(workingPath, "v1.00"), "TestCsvDifferentName.csv"));
 
             //act
-            Assert.ThrowsException<InvalidOperationException>(() => {
+            Assert.ThrowsException<InvalidOperationException>(() =>
+            {
                 var migrationService = _migrationServiceFactory.Create("sqlserver");
                 migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
@@ -350,7 +351,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Verify()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -383,7 +384,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Erase()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -421,12 +422,13 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_Migration_Unsupported_Platform_Throws_Exception()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
             //act
-            Assert.ThrowsException<NotSupportedException>(() => {
+            Assert.ThrowsException<NotSupportedException>(() =>
+            {
                 var migrationService = _migrationServiceFactory.Create("oracle");
                 migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);

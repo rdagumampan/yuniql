@@ -8,7 +8,7 @@ using Yuniql.Extensibility;
 namespace Yuniql.SqlServer.Tests
 {
     [TestClass]
-    public class BulkImportServiceTests
+    public class BulkImportServiceTests : TestBase
     {
         private IMigrationServiceFactory _migrationServiceFactory;
         private ITraceService _traceService;
@@ -19,7 +19,7 @@ namespace Yuniql.SqlServer.Tests
             _traceService = new TraceService();
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
 
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             if (!Directory.Exists(workingPath))
             {
                 Directory.CreateDirectory(workingPath);
@@ -30,7 +30,7 @@ namespace Yuniql.SqlServer.Tests
         public void TestImport()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 

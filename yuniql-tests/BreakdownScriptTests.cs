@@ -7,8 +7,9 @@ using Yuniql.Extensibility;
 
 namespace Yuniql.SqlServer.Tests
 {
+
     [TestClass]
-    public class BreakdownScriptTests
+    public class BreakdownScriptTests: TestBase
     {
         private IMigrationServiceFactory _migrationServiceFactory;
         private ITraceService _traceService;
@@ -19,7 +20,7 @@ namespace Yuniql.SqlServer.Tests
             _traceService = new TraceService();
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
 
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             if (!Directory.Exists(workingPath))
             {
                 Directory.CreateDirectory(workingPath);
@@ -30,7 +31,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Single_Run_Empty()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -55,7 +56,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Single_Run_Single_Standard()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -78,7 +79,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_Single_Without_GO()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -101,7 +102,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_Multiple_Without_GO_In_Last_Line()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -131,7 +132,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Run_Multiple_With_GO_In_The_Sql_Statement()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 
@@ -161,7 +162,7 @@ namespace Yuniql.SqlServer.Tests
         public void Test_Single_Run_Failed_Script_Must_Rollback()
         {
             //arrange
-            var workingPath = TestDbHelper.GetWorkingPath();
+            var workingPath = GetWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
             var connectionString = TestDbHelper.GetConnectionString(databaseName);
 

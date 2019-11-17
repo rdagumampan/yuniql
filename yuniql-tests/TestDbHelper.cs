@@ -9,19 +9,6 @@ namespace Yuniql.SqlServer.Tests
 {
     public static class TestDbHelper
     {
-        public static string GetWorkingPath()
-        {
-            return Path.Combine(Environment.CurrentDirectory, @$"yuniql_testdb_{Guid.NewGuid().ToString().Substring(0, 4)}");
-        }
-
-        public static void CleanUp(string workingPath)
-        {
-            if (Directory.Exists(workingPath))
-            {
-                Directory.Delete(workingPath, true);
-            }
-        }
-
         public static string GetConnectionString(string databaseName)
         {
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
@@ -49,7 +36,7 @@ namespace Yuniql.SqlServer.Tests
             var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             masterConnectionStringBuilder.InitialCatalog = "master";
 
-            var result = QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
+            var result = TestDbHelper.QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
 
             return result;
         }
