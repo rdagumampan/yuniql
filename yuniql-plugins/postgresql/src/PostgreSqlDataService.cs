@@ -189,7 +189,7 @@ namespace Yuniql.PostgreSql
 
         public bool IsTargetDatabaseConfigured()
         {
-            var sqlStatement = $"SELECT 1 FROM pg_tables WHERE  tablename = '__YuniqlDbVersion'";
+            var sqlStatement = $"SELECT 1 FROM pg_tables WHERE  tablename = '__yuniqldbversion'";
             var result = QuerySingleBool(_connectionString, sqlStatement);
 
             return result;
@@ -226,7 +226,7 @@ namespace Yuniql.PostgreSql
 
         public string GetCurrentVersion()
         {
-            var sqlStatement = $"SELECT Version FROM __YuniqlDbVersion ORDER BY Id DESC LIMIT 1;";
+            var sqlStatement = $"SELECT Version FROM __yuniqldbversion ORDER BY Id DESC LIMIT 1;";
             return QuerySingleString(_connectionString, sqlStatement);
         }
 
@@ -234,7 +234,7 @@ namespace Yuniql.PostgreSql
         {
             var result = new List<DbVersion>();
 
-            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM __YuniqlDbVersion ORDER BY Version ASC;";
+            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM __yuniqldbversion ORDER BY Version ASC;";
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -264,7 +264,7 @@ namespace Yuniql.PostgreSql
 
         public void UpdateVersion(IDbConnection activeConnection, IDbTransaction transaction, string version)
         {
-            var incrementVersionSqlStatement = $"INSERT INTO __YuniqlDbVersion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{version}', NOW(), NOW(), user);";
+            var incrementVersionSqlStatement = $"INSERT INTO __yuniqldbversion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{version}', NOW(), NOW(), user);";
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
 
             var command = activeConnection.CreateCommand();

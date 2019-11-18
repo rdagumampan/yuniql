@@ -73,14 +73,14 @@ namespace Yuniql.PostgreSql
 
         public bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
-            var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName}'";
+            var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName.ToLower()}'";
             //var sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName}'";
             return QuerySingleBool(connectionString, sqlStatement);
         }
 
         public bool QuerySingleBool(string connectionString, string sqlStatement)
         {
-            bool result;
+            bool result = false;
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
@@ -91,8 +91,8 @@ namespace Yuniql.PostgreSql
                 command.CommandTimeout = 0;
 
                 var reader = command.ExecuteReader();
-                reader.Read();
-                result = Convert.ToBoolean(reader.GetValue(0));
+                if (reader.Read())
+                    result = Convert.ToBoolean(reader.GetValue(0));
             }
 
             return result;
@@ -127,6 +127,17 @@ CREATE PROCEDURE {objectName}()
 LANGUAGE SQL
 AS $$
 SELECT 1
+$$;
+";
+        }
+
+        public string CreateDbObjectScriptWithError(string objectName)
+        {
+            return $@"
+CREATE PROCEDURE {objectName}()
+LANGUAGE SQL
+AS $$
+SELECT 1/0 WITH SYNTAX ERROR
 $$;
 ";
         }

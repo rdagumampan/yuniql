@@ -20,6 +20,8 @@ namespace Yuniql.Extensibility
 
         string CreateDbObjectScript(string scriptName);
 
+        string CreateDbObjectScriptWithError(string objectName);
+
         string CreateTokenizedDbObjectScript(string objectName);
 
         string CreateBulkTableScript(string tableName);

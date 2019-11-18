@@ -132,6 +132,15 @@ GO
                 ";
         }
 
+        public string CreateDbObjectScriptWithError(string scriptName)
+        {
+            return $@"
+CREATE PROC [dbo].[{scriptName}]
+AS
+    SELECT 1/0;
+GO
+                ";
+        }
         public string CreateTokenizedDbObjectScript(string objectName)
         {
             return $@"
