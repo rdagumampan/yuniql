@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Yuniql.Extensibility;
 using Npgsql;
 
@@ -175,9 +173,7 @@ namespace Yuniql.PostgreSql
 
             //switch database into master/system database where db catalogs are maintained
             connectionStringBuilder.Database = "postgres";
-            var result = QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
-
-            return result;
+            return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
         }
 
         public void CreateDatabase()
@@ -231,9 +227,7 @@ namespace Yuniql.PostgreSql
         public string GetCurrentVersion()
         {
             var sqlStatement = $"SELECT Version FROM __YuniqlDbVersion ORDER BY Id DESC LIMIT 1;";
-            var result = QuerySingleString(_connectionString, sqlStatement);
-
-            return result;
+            return QuerySingleString(_connectionString, sqlStatement);
         }
 
         public List<DbVersion> GetAllVersions()
