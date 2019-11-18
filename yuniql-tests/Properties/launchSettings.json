@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Yuniql.SqlServer.Tests": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "YUNIQL_TEST_CONNECTION_STRING": "pqsql",
+        "YUNIQL_TEST_TARGET_PLATFORM": "Host=localhost;Port=5432;Username=app;Password=app;Database=mydbname"
+      }
+    }
+  }
+}

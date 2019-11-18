@@ -40,7 +40,7 @@ namespace Yuniql.Core
                     .First();
 
                 var csvImportService = assembly.GetTypes()
-                    .Where(t => t.Name.Contains("PostgreSqlCsvImportService"))
+                    .Where(t => t.Name.Contains("PostgreSqlBulkImportService"))
                     .Select(t => Activator.CreateInstance(t, _traceService))
                     .Cast<IBulkImportService>()
                     .First();

@@ -73,7 +73,8 @@ namespace Yuniql.PostgreSql
 
         public bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
-            var sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName}'";
+            var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName}'";
+            //var sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName}'";
             return QuerySingleBool(connectionString, sqlStatement);
         }
 
@@ -119,120 +120,126 @@ namespace Yuniql.PostgreSql
             return result;
         }
 
-        public string CreateDbObjectScript(string scriptName)
+        public string CreateDbObjectScript(string objectName)
         {
             return $@"
-CREATE PROC [dbo].[{scriptName}]
-AS
-    SELECT 1;
-GO
-                ";
+CREATE PROCEDURE {objectName}()
+LANGUAGE SQL
+AS $$
+SELECT 1
+$$;
+";
         }
 
         public string CreateTokenizedDbObjectScript(string objectName)
         {
             return $@"
-CREATE PROC [dbo].[{objectName}_${{Token1}}_${{Token2}}_${{Token3}}]
-AS
-    SELECT '${{Token1}}.${{Token2}}.${{Token3}}' AS ReplacedStatement;
+CREATE PROCEDURE {objectName}_${{Token1}}_${{Token2}}_${{Token3}}()
+LANGUAGE SQL
+AS $$
+SELECT 1
+$$;
 ";
         }
 
         public string CreateBulkTableScript(string tableName)
         {
             return $@"
-IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = '{tableName}'))
-BEGIN
-    CREATE TABLE [dbo].[{tableName}](
-	    [FirstName] [nvarchar](50) NULL,
-	    [LastName] [nvarchar](50) NULL,
-	    [BirthDate] [datetime] NULL
-    );
-END
-            ";
+CREATE TABLE {tableName}(
+	FirstName VARCHAR(50) NULL,
+	LastName VARCHAR(50) NULL,
+	BirthDate TIMESTAMP NULL
+);
+";
         }
 
         public string CreateSingleLineScript(string objectName)
         {
             return $@"
-CREATE PROC [dbo].[{objectName}]
-AS
-    SELECT 1;
-GO
+CREATE PROCEDURE {objectName}()
+LANGUAGE SQL
+AS $$
+SELECT 1
+$$;
 ";
         }
 
         public string CreateSingleLineScriptWithoutTerminator(string objectName)
         {
             return $@"
-CREATE PROC [dbo].[{objectName}]
-AS
-    SELECT 1;
+CREATE PROCEDURE {objectName}()
+LANGUAGE SQL
+AS $$
+SELECT 1
+$$;
 ";
         }
 
         public string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-CREATE PROC [dbo].[{objectName1}]
-AS
-    SELECT 1;
-GO
+CREATE PROCEDURE {objectName1}()
+LANGUAGE SQL
+AS $$
+SELECT 1
+$$;
 
-CREATE PROC [dbo].[{objectName2}]
-AS
-    SELECT 1;
-GO
+CREATE PROCEDURE {objectName2}()
+LANGUAGE SQL
+AS $$
+SELECT 1
+$$;
 
-CREATE PROC [dbo].[{objectName3}]
-AS
-    SELECT 1;
+CREATE PROCEDURE {objectName3}()
+LANGUAGE SQL
+AS $$
+SELECT 1
+$$;
 ";
         }
 
         public string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-CREATE PROC [dbo].[{objectName1}]
-AS
+CREATE PROCEDURE {objectName1}()
+LANGUAGE SQL
+AS $$
     --this is a comment with GO as part of the sentence (ALL CAPS)
-    SELECT 1;
-GO
+    SELECT 1
+$$;
 
-CREATE PROC [dbo].[{objectName2}]
-AS
+CREATE PROCEDURE {objectName2}()
+LANGUAGE SQL
+AS $$
     --this is a comment with go as part of the sentence (small caps)
-    SELECT 1;
-GO
+    SELECT 1
+$$;
 
-CREATE PROC [dbo].[{objectName3}]
-AS
+CREATE PROCEDURE {objectName3}()
+LANGUAGE SQL
+AS $$
     --this is a comment with Go as part of the sentence (Pascal)
-    SELECT 1;
+    SELECT 1
+$$;
 ";
         }
 
         public string CreateMultilineScriptWithError(string objectName1, string objectName2)
         {
             return $@"
-CREATE TABLE [dbo].[{objectName1}](        
-    [TestId][INT] IDENTITY(1, 1) NOT NULL,        
-    [TestColumn] [DECIMAL] NOT NULL
-)
-GO
+CREATE PROCEDURE {objectName1}()
+LANGUAGE SQL
+AS $$
+    SELECT 1
+$$;
 
-CREATE PROC [dbo].[{objectName2}]
-AS
-    SELECT 1;
-GO
+CREATE PROCEDURE {objectName2}()
+LANGUAGE SQL
+AS $$
+    SELECT 1
+$$;
 
---throws divide by zero error
-INSERT INTO [dbo].[{objectName1}] (TestColumn) VALUES (3/0);
-GO
-
-INSERT INTO [dbo].[{objectName1}] (TestColumn) VALUES (1);
-INSERT INTO [dbo].[{objectName1}] (TestColumn) VALUES (2);
-GO
+SELECT 1/0;
 ";
         }
 
@@ -245,9 +252,9 @@ GO
         public string CreateCleanupScript()
         {
             return @"
-DROP PROCEDURE [dbo].[script1];
-DROP PROCEDURE [dbo].[script2];
-DROP PROCEDURE [dbo].[script3];
+DROP PROCEDURE script1();
+DROP PROCEDURE script2();
+DROP PROCEDURE script3();
 ";
         }
     }
