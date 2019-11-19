@@ -91,7 +91,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Increment_Major_Version()
+        public void Test_Vnext_Major_Version()
         {
             //act
             var workingPath = GetOrCreateWorkingPath();
@@ -105,7 +105,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Increment_Major_Version_With_Template_File()
+        public void Test_Vnext_Major_Version_With_Template_File()
         {
             //act
             var workingPath = GetOrCreateWorkingPath();
@@ -120,7 +120,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Increment_Minor_Version()
+        public void Test_Vnext_Minor_Version()
         {
             //act
             var workingPath = GetOrCreateWorkingPath();
@@ -134,7 +134,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Increment_Minor_Version_With_Template_File()
+        public void Test_Vnext_Minor_Version_With_Template_File()
         {
             //act
             var workingPath = GetOrCreateWorkingPath();

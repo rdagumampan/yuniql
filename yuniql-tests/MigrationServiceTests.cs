@@ -60,7 +60,7 @@ namespace Yuniql.SqlServer.Tests
             {
                 //used try/catch this instead of Assert.ThrowsException because different vendors
                 //throws different exception type and message content
-                ex.Message.ShouldNotBeNull();
+                ex.Message.ShouldNotBeNullOrEmpty();
             }
         }
 
@@ -123,7 +123,7 @@ namespace Yuniql.SqlServer.Tests
         [DataRow("_pre")]
         [DataRow("_post")]
         [DataRow("_draft")]
-        public void Test_Run_Init_Scripts_Executed(string scriptFolder)
+        public void Test_Run_All_NonVersion_Scripts_Executed(string scriptFolder)
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
@@ -335,7 +335,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Run_Migration_Throws_Error_Must_Rollback_All_Changes()
+        public void Test_Run_With_Faulty_Script_Throws_Error_Must_Rollback_All_Changes()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
@@ -358,7 +358,11 @@ namespace Yuniql.SqlServer.Tests
                 migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
             }
-            catch (Exception){/*swallow exception, because diff platforms emits different kind of exception*/}
+            catch (Exception ex){
+                //used try/catch this instead of Assert.ThrowsException because different vendors
+                //throws different exception type and message content
+                ex.Message.ShouldNotBeNullOrEmpty();
+            }
 
             //assert
             _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeFalse();
@@ -438,7 +442,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Run_Migration_Unsupported_Platform_Throws_Exception()
+        public void Test_Run_With_Unsupported_Platform_Throws_Exception()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();

@@ -4,6 +4,7 @@ using System.IO;
 using Shouldly;
 using Yuniql.Core;
 using Yuniql.Extensibility;
+using System;
 
 namespace Yuniql.SqlServer.Tests
 {
@@ -36,7 +37,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Single_Run_Empty()
+        public void Test_SingleLine_Run_Empty_Script()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
@@ -61,7 +62,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Single_Run_Single_Standard()
+        public void Test_Create_SingleLine_Script()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
@@ -84,7 +85,7 @@ namespace Yuniql.SqlServer.Tests
             _testDataService.CheckIfDbObjectExist(connectionString, $"{sqlObjectName}").ShouldBeTrue();
         }
         [TestMethod]
-        public void Test_Run_Single_Without_GO()
+        public void Test_Create_SingleLine_Script_Without_Terminator()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
@@ -107,7 +108,7 @@ namespace Yuniql.SqlServer.Tests
             _testDataService.CheckIfDbObjectExist(connectionString, $"{sqlObjectName}").ShouldBeTrue();
         }
         [TestMethod]
-        public void Test_Run_Multiple_Without_GO_In_Last_Line()
+        public void Test_Create_Multiline_Script_Without_Terminator_In_LastLine()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
@@ -137,7 +138,8 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Run_Multiple_With_GO_In_The_Sql_Statement()
+
+        public void Test_Create_Multiline_Script_With_Terminator_Inside_Statements()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
@@ -167,7 +169,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void Test_Single_Run_Failed_Script_Must_Rollback()
+        public void Test_Create_Multiline_Script_With_Error_Must_Rollback()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
@@ -184,12 +186,18 @@ namespace Yuniql.SqlServer.Tests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.CreateMultilineScriptWithError(sqlObjectName1, sqlObjectName2));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_targetPlatform);
-            migrationService.Initialize(connectionString);
-            Assert.ThrowsException<SqlException>(() =>
+            try
             {
+                var migrationService = _migrationServiceFactory.Create(_targetPlatform);
+                migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
-            }).Message.ShouldContain("Divide by zero error encountered");
+            }
+            catch (Exception ex)
+            {
+                //used try/catch this instead of Assert.ThrowsException because different vendors
+                //throws different exception type and message content
+                ex.Message.ShouldNotBeNullOrEmpty();
+            }
 
             //assert
             _testDataService.GetCurrentDbVersion(connectionString).ShouldBeNull();
