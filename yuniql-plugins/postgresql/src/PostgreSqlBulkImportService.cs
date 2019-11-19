@@ -1,7 +1,10 @@
-﻿using System.Data.SqlClient;
-using System.Data;
+﻿using System.Data;
 using System.IO;
 using Yuniql.Extensibility;
+using NpgsqlTypes;
+using System.Collections.Generic;
+using Npgsql;
+using System;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.PostgreSql
@@ -68,12 +71,82 @@ namespace Yuniql.PostgreSql
             return csvDatatable;
         }
 
-        private void BulkCopyWithDataTable(IDbConnection connection, IDbTransaction transaction, DataTable csvFileDatatTable)
+        //NOTE: This is not the most typesafe and performant way to do this and this is just to demonstrate
+        //possibility to bulk import data in custom means during migration execution
+        //https://www.npgsql.org/doc/copy.html
+        private void BulkCopyWithDataTable(IDbConnection connection, IDbTransaction transaction, DataTable dataTable)
         {
-            //var uploader = new NpgsqlBulkUploader(context);
-            //var data = GetALotOfData();
-            //uploader.Insert(data);
+            //remove the first row as its the column names
+            dataTable.Rows[0].Delete();
+
+            //prepare list of columns in the target table
+            var columnNames = new List<string>();
+            foreach (DataColumn dataColumn in dataTable.Columns)
+            {
+                columnNames.Add(dataColumn.ColumnName);
+            }
+
+            var sqlStatement = $"COPY {dataTable.TableName} ({string.Join(',', columnNames.ToArray())}) FROM STDIN (FORMAT BINARY)";
+            _traceService.Info("PostgreSqlBulkImportService: " + sqlStatement);
+
+            var pgsqlConnection = connection as Npgsql.NpgsqlConnection;
+            using (var writer = pgsqlConnection.BeginBinaryImport(sqlStatement))
+            {
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    writer.StartRow();
+                    foreach (DataColumn dataColumn in dataTable.Columns)
+                    {
+                        _traceService.Info(dataRow[dataColumn.ColumnName].ToString());
+
+                        if (dataColumn.ColumnName != "BirthDate")
+                        {
+                            writer.Write(dataRow[dataColumn.ColumnName].ToString());
+                        }
+                        else
+                        {
+                            writer.Write(DateTime.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Timestamp);
+                        }
+                    }
+                }
+
+                writer.Complete();
+            }
         }
+        private List<ColumnDefinition> GetDestinationSchema(string tableName)
+        {
+            var result = new List<ColumnDefinition>();
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = $"SELECT column_name, data_type FROM information_schema.COLUMNS WHERE TABLE_NAME = '{tableName}'";
+                command.CommandTimeout = 0;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        result.Add(new ColumnDefinition
+                        {
+                            DbColumnName = reader.GetString(0),
+                            DbDataType = reader.GetString(1)
+                        });
+                    }
+                }
+            }
+
+            return result;
+        }
+    }
+
+    public class ColumnDefinition
+    {
+        public string DbColumnName { get; set; }
+        public string DbDataType { get; set; }
     }
 }
 

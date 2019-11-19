@@ -73,9 +73,18 @@ namespace Yuniql.PostgreSql
 
         public bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
+            //check from procedures, im just lazy to figure out join in pgsql :)
             var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName.ToLower()}'";
-            //var sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName}'";
-            return QuerySingleBool(connectionString, sqlStatement);
+            bool result = QuerySingleBool(connectionString, sqlStatement);
+
+            //check from tables, im just lazy to figure out join in pgsql :)
+            if (!result)
+            {
+                sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName.ToLower()}'";
+                result = QuerySingleBool(connectionString, sqlStatement);
+            }
+
+            return result;
         }
 
         public bool QuerySingleBool(string connectionString, string sqlStatement)

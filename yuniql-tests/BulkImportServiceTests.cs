@@ -36,7 +36,7 @@ namespace Yuniql.SqlServer.Tests
         }
 
         [TestMethod]
-        public void TestImport()
+        public void Test_Bulk_Import()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
