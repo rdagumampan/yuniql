@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Data;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
-namespace Yuniql.SqlServer.Tests
+namespace Yuniql.Tests
 {
     [TestClass]
     public class MigrationServiceTests : TestBase

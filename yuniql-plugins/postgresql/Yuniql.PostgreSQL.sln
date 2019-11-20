@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.PostgreSQL", "Yuniql.PostgreSQL.csproj", "{2B5F4527-7D07-4E7F-934F-FE76E168EF23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.PostgreSQL", "src\Yuniql.PostgreSQL.csproj", "{2B5F4527-7D07-4E7F-934F-FE76E168EF23}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Extensibility", "..\..\..\yuniql-extensibility\Yuniql.Extensibility.csproj", "{42E3C079-926F-4EEA-BE47-69DACD3D3E09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Extensibility", "..\..\yuniql-extensibility\Yuniql.Extensibility.csproj", "{42E3C079-926F-4EEA-BE47-69DACD3D3E09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuniql.PosgreSQL.Tests", "..\Yuniql.PosgreSQL.Tests\Yuniql.PosgreSQL.Tests.csproj", "{36D9BD51-1D65-47E9-B074-7B865C45D2A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yuniql.PosgreSQL.Tests", "tests\Yuniql.PosgreSQL.Tests\Yuniql.PosgreSQL.Tests.csproj", "{36D9BD51-1D65-47E9-B074-7B865C45D2A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

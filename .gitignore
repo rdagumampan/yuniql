@@ -33,3 +33,6 @@ baseliner/Properties/PublishProfiles/FolderProfile.pubxml
 /yuniql-plugins/postgresql/src/obj
 /yuniql-plugins/postgresql/Yuniql.PosgreSQL.Tests/bin
 /yuniql-plugins/postgresql/Yuniql.PosgreSQL.Tests/obj
+/yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQL
+/yuniql-plugins/postgresql/tests/bin
+/yuniql-plugins/postgresql/tests/obj

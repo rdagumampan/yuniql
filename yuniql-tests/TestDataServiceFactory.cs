@@ -3,9 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Yuniql.Extensibility;
 using Yuniql.SqlServer;
-using Yuniql.Tests;
 
-namespace Yuniql.Core
+namespace Yuniql.Tests
 {
     public class TestDataServiceFactory : ITestDataServiceFactory
     {

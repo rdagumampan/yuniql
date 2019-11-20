@@ -4,7 +4,7 @@ using Shouldly;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
-namespace Yuniql.SqlServer.Tests
+namespace Yuniql.Tests
 {
 
     [TestClass]

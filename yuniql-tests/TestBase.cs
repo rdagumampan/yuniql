@@ -2,7 +2,7 @@
 using System.IO;
 using System;
 
-namespace Yuniql.SqlServer.Tests
+namespace Yuniql.Tests
 {
     [TestClass]
     public class TestBase

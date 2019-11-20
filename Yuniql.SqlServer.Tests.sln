@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.SqlServer.Tests", "yuniql-tests\Yuniql.SqlServer.Tests.csproj", "{45E58905-3C50-43DE-B0E4-BCD51FFF9E5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Tests", "yuniql-tests\Yuniql.Tests.csproj", "{45E58905-3C50-43DE-B0E4-BCD51FFF9E5C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Extensibility", "yuniql-extensibility\Yuniql.Extensibility.csproj", "{041849B8-E043-408F-BAB0-759AFA45C14A}"
 EndProject

@@ -1,12 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data.SqlClient;
 using System.IO;
 using Shouldly;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 using System;
 
-namespace Yuniql.SqlServer.Tests
+namespace Yuniql.Tests
 {
     [TestClass]
     public class BreakdownScriptTests: TestBase

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Yuniql.SqlServer.Tests
+namespace Yuniql.Tests
 {
     public static class EnvironmentHelper
     {
