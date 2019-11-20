@@ -5,6 +5,7 @@ using NpgsqlTypes;
 using System.Collections.Generic;
 using Npgsql;
 using System;
+using System.Linq;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.PostgreSql
@@ -74,21 +75,14 @@ namespace Yuniql.PostgreSql
         {
             _traceService.Info($"PostgreSqlBulkImportService: Started copying data into destination table {dataTable.TableName}");
 
-            //get destination table schema
-            var destinationSchema = GetDestinationSchema(dataTable.TableName);
-
             //remove the first row as its the column names
             dataTable.Rows[0].Delete();
 
-            //prepare list of columns in the target table
-            var columnNames = new List<string>();
-            foreach (DataColumn dataColumn in dataTable.Columns)
-            {
-                columnNames.Add(dataColumn.ColumnName);
-            }
+            //get destination table schema
+            var destinationSchema = GetDestinationSchema(dataTable.TableName);
 
             //prepare statement for binary import
-            var sqlStatement = $"COPY {dataTable.TableName} ({string.Join(',', columnNames.ToArray())}) FROM STDIN (FORMAT BINARY)";
+            var sqlStatement = $"COPY {dataTable.TableName} ({string.Join(',', destinationSchema.ToList().Select(k => k.Key).ToArray())}) FROM STDIN (FORMAT BINARY)";
             _traceService.Info("PostgreSqlBulkImportService: " + sqlStatement);
 
             var pgsqlConnection = connection as NpgsqlConnection;
@@ -101,10 +95,12 @@ namespace Yuniql.PostgreSql
                     foreach (DataColumn dataColumn in dataTable.Columns)
                     {
                         var dataType = destinationSchema[dataColumn.ColumnName.ToLower()].DataType;
-                        if(dataType == "boolean" || dataType == "bit" || dataType == "bit varying") {
+                        if (dataType == "boolean" || dataType == "bit" || dataType == "bit varying")
+                        {
                             writer.Write(bool.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Boolean);
                             continue;
-                        } else if (dataType == "smallint" || dataType == "int2")
+                        }
+                        else if (dataType == "smallint" || dataType == "int2")
                         {
                             writer.Write(short.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Smallint);
                             continue;
@@ -179,9 +175,9 @@ namespace Yuniql.PostgreSql
                             writer.Write(byte.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.InternalChar);
                             continue;
                         }
-                        else if (dataType == "text" 
-                            || dataType == "character varying" 
-                            || dataType == "character" 
+                        else if (dataType == "text"
+                            || dataType == "character varying"
+                            || dataType == "character"
                             || dataType == "citext"
                             || dataType == "json"
                             || dataType == "jsonb"
