@@ -53,6 +53,7 @@ namespace Yuniql.SqlServer.Tests
             localVersionService.IncrementMinorVersion(workingPath, null);
             string v101Directory = Path.Combine(workingPath, "v1.01");
             _testDataService.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_01.sql"), _testDataService.CreateDbObjectScript($"test_v1_01"));
+            _testDataService.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_02_TestCsv.sql"), _testDataService.CreateBulkTableScript("TestCsv"));
 
             //act
             var migrationService = _migrationServiceFactory.Create(_targetPlatform);
@@ -62,13 +63,12 @@ namespace Yuniql.SqlServer.Tests
             //assert
             _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeTrue();
             _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "TestCsv").ShouldBeTrue();
 
             //arrange - add new version with csv files
             localVersionService.IncrementMinorVersion(workingPath, null);
             string v102Directory = Path.Combine(workingPath, "v1.02");
             _testDataService.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02.sql"), _testDataService.CreateDbObjectScript($"test_v1_02"));
-
-            _testDataService.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02_TestCsv.sql"), _testDataService.CreateBulkTableScript("TestCsv"));
             File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.csv"), Path.Combine(v102Directory, "TestCsv.csv"));
 
             //act - bulk load csv files
@@ -78,5 +78,20 @@ namespace Yuniql.SqlServer.Tests
             _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_02").ShouldBeTrue();
             _testDataService.CheckIfDbObjectExist(connectionString, "TestCsv").ShouldBeTrue();
         }
+
+        [Ignore]
+        [TestMethod]
+        public void Test_Bulk_Import_Destination_Table_Does_Not_Exist_Throws_Error()
+        {
+            throw new NotImplementedException();
+        }
+
+        [Ignore]
+        [TestMethod]
+        public void Test_Bulk_Import_Mismatch_Columns_Throws_Error()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

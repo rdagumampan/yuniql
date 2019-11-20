@@ -31,10 +31,6 @@ namespace Yuniql.PostgreSql
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(connection, transaction, dataTable);
-
-            //TODO: validate staging data against destination table schema defs
-
-            //TODO: transport staging data into destination table
         }
 
         private DataTable ParseCsvFile(string csvFileFullPath)
@@ -76,6 +72,11 @@ namespace Yuniql.PostgreSql
         //https://www.npgsql.org/doc/copy.html
         private void BulkCopyWithDataTable(IDbConnection connection, IDbTransaction transaction, DataTable dataTable)
         {
+            _traceService.Info($"PostgreSqlBulkImportService: Started copying data into destination table {dataTable.TableName}");
+
+            //get destination table schema
+            var destinationSchema = GetDestinationSchema(dataTable.TableName);
+
             //remove the first row as its the column names
             dataTable.Rows[0].Delete();
 
@@ -86,54 +87,145 @@ namespace Yuniql.PostgreSql
                 columnNames.Add(dataColumn.ColumnName);
             }
 
+            //prepare statement for binary import
             var sqlStatement = $"COPY {dataTable.TableName} ({string.Join(',', columnNames.ToArray())}) FROM STDIN (FORMAT BINARY)";
             _traceService.Info("PostgreSqlBulkImportService: " + sqlStatement);
 
-            var pgsqlConnection = connection as Npgsql.NpgsqlConnection;
+            var pgsqlConnection = connection as NpgsqlConnection;
             using (var writer = pgsqlConnection.BeginBinaryImport(sqlStatement))
             {
+                //writes each data row as datastream into pgsql database
                 foreach (DataRow dataRow in dataTable.Rows)
                 {
                     writer.StartRow();
                     foreach (DataColumn dataColumn in dataTable.Columns)
                     {
-                        _traceService.Info(dataRow[dataColumn.ColumnName].ToString());
-
-                        if (dataColumn.ColumnName != "BirthDate")
+                        var dataType = destinationSchema[dataColumn.ColumnName.ToLower()].DataType;
+                        if(dataType == "boolean" || dataType == "bit" || dataType == "bit varying") {
+                            writer.Write(bool.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Boolean);
+                            continue;
+                        } else if (dataType == "smallint" || dataType == "int2")
+                        {
+                            writer.Write(short.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Smallint);
+                            continue;
+                        }
+                        else if (dataType == "integer" || dataType == "int4")
+                        {
+                            writer.Write(int.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Integer);
+                            continue;
+                        }
+                        else if (dataType == "bigint" || dataType == "int8")
+                        {
+                            writer.Write(long.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Bigint);
+                            continue;
+                        }
+                        else if (dataType == "real")
+                        {
+                            writer.Write(float.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Real);
+                            continue;
+                        }
+                        else if (dataType == "double precision")
+                        {
+                            writer.Write(double.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Double);
+                            continue;
+                        }
+                        else if (dataType == "numeric" || dataType == "money")
+                        {
+                            writer.Write(decimal.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Numeric);
+                            continue;
+                        }
+                        else if (dataType == "uuid")
+                        {
+                            writer.Write(Guid.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Uuid);
+                            continue;
+                        }
+                        else if (dataType == "date")
+                        {
+                            writer.Write(DateTime.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Date);
+                            continue;
+                        }
+                        else if (dataType == "interval")
+                        {
+                            writer.Write(TimeSpan.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Interval);
+                            continue;
+                        }
+                        else if (dataType == "timestamp" || dataType == "timestamp without time zone")
+                        {
+                            writer.Write(DateTime.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Timestamp);
+                            continue;
+                        }
+                        else if (dataType == "timestamp with time zone")
+                        {
+                            writer.Write(DateTimeOffset.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.TimestampTz);
+                            continue;
+                        }
+                        else if (dataType == "time" || dataType == "time without time zone")
+                        {
+                            writer.Write(DateTime.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Time);
+                            continue;
+                        }
+                        else if (dataType == "time with time zone")
+                        {
+                            writer.Write(DateTime.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.TimeTz);
+                            continue;
+                        }
+                        else if (dataType == "name")
+                        {
+                            writer.Write(dataRow[dataColumn.ColumnName].ToString(), NpgsqlDbType.Name);
+                            continue;
+                        }
+                        else if (dataType == "(internal) char")
+                        {
+                            writer.Write(byte.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.InternalChar);
+                            continue;
+                        }
+                        else if (dataType == "text" 
+                            || dataType == "character varying" 
+                            || dataType == "character" 
+                            || dataType == "citext"
+                            || dataType == "json"
+                            || dataType == "jsonb"
+                            || dataType == "xml")
                         {
                             writer.Write(dataRow[dataColumn.ColumnName].ToString());
+                            continue;
                         }
                         else
                         {
-                            writer.Write(DateTime.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Timestamp);
+                            //not supported types: lseg,path,polygon,line,circle,box,hstore,cidr,inet,macaddr,tsquery,tsvector,bytea,oid,xid,cid,oidvector,composite types,range types,enum types,array types
+                            throw new NotSupportedException($"PostgreSqlBulkImportService: Data type '{dataType}' on destination table {dataTable.TableName} is not support for bulk import operations.");
                         }
                     }
                 }
 
+                //wraps up everything, closes the stream
                 writer.Complete();
             }
-        }
-        private List<ColumnDefinition> GetDestinationSchema(string tableName)
-        {
-            var result = new List<ColumnDefinition>();
 
+            _traceService.Info($"PostgreSqlBulkImportService: Finished copying data into destination table {dataTable.TableName}");
+        }
+
+        //https://www.npgsql.org/doc/types/basic.html
+        private IDictionary<string, ColumnDefinition> GetDestinationSchema(string tableName)
+        {
+            var result = new Dictionary<string, ColumnDefinition>();
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
 
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = $"SELECT column_name, data_type FROM information_schema.COLUMNS WHERE TABLE_NAME = '{tableName}'";
+                command.CommandText = $"SELECT column_name, data_type FROM information_schema.COLUMNS WHERE TABLE_NAME = '{tableName.ToLower()}'";
                 command.CommandTimeout = 0;
 
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        result.Add(new ColumnDefinition
+                        result.Add(reader.GetString(0), new ColumnDefinition
                         {
-                            DbColumnName = reader.GetString(0),
-                            DbDataType = reader.GetString(1)
+                            ColumnName = reader.GetString(0),
+                            DataType = reader.GetString(1)
                         });
                     }
                 }
@@ -145,8 +237,8 @@ namespace Yuniql.PostgreSql
 
     public class ColumnDefinition
     {
-        public string DbColumnName { get; set; }
-        public string DbDataType { get; set; }
+        public string ColumnName { get; set; }
+        public string DataType { get; set; }
     }
 }
 
