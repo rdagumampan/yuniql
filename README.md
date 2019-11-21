@@ -7,7 +7,7 @@
 
 **yuniql** is a schema versioning and database migration tool for sql server. All versions are organized as series of ordinary directories and scripts are stored transparently as `.sql` files. yuniql simply automates what you would normally do by hand and executes all scripts in an orderly and transactional fashion.
 
-**yuniql** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR) for Windows. Docker container images are also [available](https://cloud.docker.com/u/rdagumampan/repository/docker/rdagumampan/yuniql) for seamless continuous delivery of database changes in Linux environments.
+**yuniql** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR). Docker container images are also [available](https://cloud.docker.com/u/rdagumampan/repository/docker/rdagumampan/yuniql) for seamless continuous delivery of database changes in Linux environments.
 
 ## To start using **`yuniql`**
 
@@ -115,8 +115,8 @@ For running migration from docker container, [see instructions here](https://git
 
 |Platform|Build Status|Docker Images|
 |---|---|---|
-|![win-x64](assets/win_med.png) **linux-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
-|![linux-x64](assets/linux_med.png) **windows-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|`docker pull rdagumampan/yuniql:win-x64-latest`|
+|![win-x64](assets/linux_med.png) **linux-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/cje10k5mqx4v4emd?svg=true)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
+|![linux-x64](assets/win_med.png) **windows-x64**|![yuniql-build-status](https://ci.appveyor.com/api/projects/status/jn7f7r64rx6a2ujk?svg=true)|`docker pull rdagumampan/yuniql:win-x64-latest`|
 
 ## License
 
