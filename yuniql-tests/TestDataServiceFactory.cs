@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Yuniql.Extensibility;
@@ -19,21 +20,24 @@ namespace Yuniql.Tests
                 var dataService = new SqlServerTestDataService();
                 return dataService;
             }
-            else if (platform.Equals("pgsql"))
+            else
             {
-                var type = typeof(IDataService);
-                var assembly = Assembly.LoadFrom(@"C:\play\yuniql\yuniql-plugins\postgresql\src\bin\Release\netcoreapp3.0\win-x64\publish\Yuniql.PostgreSql.dll");
-
-                var dataService = assembly.GetTypes()
-                    .Where(t=> t.Name.Contains("PostgreSqlTestDataService"))
+                //extracts plugins and creates required services
+                var assemblyFile = Path.Combine(Environment.CurrentDirectory, ".plugins", platform, $"Yuniql.{platform}.dll");
+                if (File.Exists(assemblyFile))
+                {
+                    var assembly = Assembly.LoadFrom(assemblyFile);
+                    var dataService = assembly.GetTypes()
+                    .Where(t => t.Name.ToLower().Contains($"{platform}testdataservice"))
                     .Select(t => Activator.CreateInstance(t))
                     .Cast<ITestDataService>()
                     .First();
-                return dataService;
-            }
-            else
-            {
-                throw new NotSupportedException($"The target database platform {platform} is not yet supported. See WIKI for supported database platforms.");
+                    return dataService;
+                }
+                else
+                {
+                    throw new NotSupportedException($"The target database platform {platform} is not yet supported. See WIKI for supported database platforms.");
+                }
             }
         }
     }

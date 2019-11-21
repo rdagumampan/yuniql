@@ -27,6 +27,8 @@ services:
       dockerfile: Dockerfile
     environment:
       YUNIQL_CONNECTION_STRING: "Server=db.yuniql.org;Database=YuniqlTestDB;User Id=sa;Password=P@ssw0rd!"
+      YUNIQL_TEST_CONNECTION_STRING: "Server=db.yuniql.org;Database=YuniqlTestDB;User Id=sa;Password=P@ssw0rd!"
+      YUNIQL_TEST_TARGET_PLATFORM: "sqlserver"
     entrypoint: /bin/bash -c "/bin/bash -c \"dotnet test\""
     tty: true
     depends_on:

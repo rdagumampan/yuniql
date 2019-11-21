@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using Yuniql.Extensibility;
 using Yuniql.SqlServer;
 
@@ -28,29 +26,31 @@ namespace Yuniql.Core
                 var migrationService = new MigrationService(dataService, csvImportService, _traceService);
                 return migrationService;
             }
-            else if (platform.Equals("pgsql"))
             {
-                var type = typeof(IDataService);
-                var assembly = Assembly.LoadFrom(@"C:\play\yuniql\yuniql-plugins\postgresql\src\bin\Release\netcoreapp3.0\win-x64\publish\Yuniql.PostgreSql.dll");
+                //extracts plugins and creates required services
+                var assemblyFile = Path.Combine(Environment.CurrentDirectory, ".plugins", platform, $"Yuniql.{platform}.dll");
+                if (File.Exists(assemblyFile))
+                {
+                    var assembly = Assembly.LoadFrom(assemblyFile);
+                    var dataService = assembly.GetTypes()
+                        .Where(t => t.Name.ToLower().Contains($"{platform}dataservice"))
+                        .Select(t => Activator.CreateInstance(t, _traceService))
+                        .Cast<IDataService>()
+                        .First();
 
-                var dataService = assembly.GetTypes()
-                    .Where(t=> t.Name.Contains("PostgreSqlDataService"))
-                    .Select(t => Activator.CreateInstance(t, _traceService))
-                    .Cast<IDataService>()
-                    .First();
+                    var csvImportService = assembly.GetTypes()
+                        .Where(t => t.Name.ToLower().Contains($"{platform}bulkimportservice"))
+                        .Select(t => Activator.CreateInstance(t, _traceService))
+                        .Cast<IBulkImportService>()
+                        .First();
 
-                var csvImportService = assembly.GetTypes()
-                    .Where(t => t.Name.Contains("PostgreSqlBulkImportService"))
-                    .Select(t => Activator.CreateInstance(t, _traceService))
-                    .Cast<IBulkImportService>()
-                    .First();
-
-                var migrationService = new MigrationService(dataService, csvImportService, _traceService);
-                return migrationService;
-            }
-            else
-            {
-                throw new NotSupportedException($"The target database platform {platform} is not yet supported. See WIKI for supported database platforms.");
+                    var migrationService = new MigrationService(dataService, csvImportService, _traceService);
+                    return migrationService;
+                }
+                else
+                {
+                    throw new NotSupportedException($"The target database platform {platform} is not yet supported. See WIKI for supported database platforms.");
+                }
             }
         }
     }
