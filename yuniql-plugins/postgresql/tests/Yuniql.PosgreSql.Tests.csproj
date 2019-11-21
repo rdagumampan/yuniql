@@ -4,6 +4,12 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <ApplicationIcon />
+
+    <OutputType>Library</OutputType>
+
+    <StartupObject />
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Yuniql.PostgreSQLx.csproj" />
+    <ProjectReference Include="..\src\Yuniql.PostgreSql.csproj" />
   </ItemGroup>
 
   <ItemGroup>
