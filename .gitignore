@@ -36,3 +36,8 @@ baseliner/Properties/PublishProfiles/FolderProfile.pubxml
 /yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQL
 /yuniql-plugins/postgresql/tests/bin
 /yuniql-plugins/postgresql/tests/obj
+yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/.suo
+yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/db.lock
+yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide
+yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-shm
+yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-wal

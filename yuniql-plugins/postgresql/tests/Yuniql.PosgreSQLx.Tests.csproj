@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Yuniql.PostgreSQL.csproj" />
+    <ProjectReference Include="..\src\Yuniql.PostgreSQLx.csproj" />
   </ItemGroup>
 
   <ItemGroup>
