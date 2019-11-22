@@ -5,7 +5,7 @@ using System;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
-namespace Yuniql.Tests
+namespace Yuniql.PlatformTests
 {
     [TestClass]
     public class BulkImportServiceTests : TestBase

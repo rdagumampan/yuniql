@@ -6,7 +6,7 @@ using Yuniql.Core;
 using Yuniql.Extensibility;
 using Yuniql.SqlServer;
 
-namespace Yuniql.Tests
+namespace Yuniql.PlatformTests
 {
     public class TestDataServiceFactory : ITestDataServiceFactory
     {

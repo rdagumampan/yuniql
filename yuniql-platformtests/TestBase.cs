@@ -2,7 +2,7 @@
 using System.IO;
 using System;
 
-namespace Yuniql.Tests
+namespace Yuniql.PlatformTests
 {
     [TestClass]
     public class TestBase

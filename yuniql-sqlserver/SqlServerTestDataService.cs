@@ -42,11 +42,13 @@ namespace Yuniql.SqlServer
 
         public string GetCurrentDbVersion(string connectionString)
         {
+            _dataService.Initialize(connectionString);
             return _dataService.GetCurrentVersion();
         }
 
         public List<DbVersion> GetAllDbVersions(string connectionString)
         {
+            _dataService.Initialize(connectionString);
             return _dataService.GetAllVersions();
         }
 
@@ -81,7 +83,7 @@ GO
         public string CreateDbObjectScriptWithError(string scriptName)
         {
             return $@"
-CREATE PROC [dbo].[{scriptName}]
+CREATE PROC [NONEXISTINGDB].[dbo].[{scriptName}]
 AS
     SELECT 1/0;
 GO

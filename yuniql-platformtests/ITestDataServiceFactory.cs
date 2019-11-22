@@ -1,6 +1,6 @@
 ﻿using Yuniql.Extensibility;
 
-namespace Yuniql.Tests
+namespace Yuniql.PlatformTests
 {
     public interface ITestDataServiceFactory
     {

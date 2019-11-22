@@ -43,3 +43,6 @@ yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-
 yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-wal
 /yuniql-unittests/bin/Debug/netcoreapp3.0
 /yuniql-unittests/obj
+/yuniql-platformtests/.vs
+/yuniql-platformtests/bin/Debug/netcoreapp3.0
+/yuniql-platformtests/obj

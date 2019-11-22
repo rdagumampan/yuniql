@@ -7,7 +7,7 @@ using System.Data;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
-namespace Yuniql.Tests
+namespace Yuniql.PlatformTests
 {
     [TestClass]
     public class MigrationServiceTests : TestBase

@@ -5,7 +5,7 @@ using Yuniql.Core;
 using Yuniql.Extensibility;
 using System;
 
-namespace Yuniql.Tests
+namespace Yuniql.PlatformTests
 {
     [TestClass]
     public class BreakdownScriptTests: TestBase

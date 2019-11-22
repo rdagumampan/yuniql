@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Yuniql.Tests
+namespace Yuniql.PlatformTests
 {
     public static class EnvironmentHelper
     {
