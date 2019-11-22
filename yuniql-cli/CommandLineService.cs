@@ -15,14 +15,15 @@ namespace Yuniql.CLI
         private ITraceService _traceService;
 
         public CommandLineService(
-            ILocalVersionService localVersionService, 
+            IMigrationServiceFactory migrationServiceFactory,
+            ILocalVersionService localVersionService,
             IEnvironmentService environmentService,
             ITraceService traceService)
         {
             this._localVersionService = localVersionService;
             this._environmentService = environmentService;
             this._traceService = traceService;
-            this._migrationServiceFactory = new MigrationServiceFactory(this._traceService);
+            this._migrationServiceFactory = migrationServiceFactory;
         }
 
         public object RunInitOption(InitOption opts)
@@ -93,6 +94,12 @@ namespace Yuniql.CLI
                     opts.Path = workingPath;
                 }
 
+                //if no target platform provided, we default into sqlserver
+                if (string.IsNullOrEmpty(opts.Platform))
+                {
+                    opts.Platform = "sqlserver";
+                }
+
                 _traceService.Info($"Started migration from {opts.Path}.");
 
                 //if no target version specified, we capture the latest from local folder structure
@@ -115,7 +122,7 @@ namespace Yuniql.CLI
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
 
-                migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens);
+                migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens: tokens, verifyOnly: false);
             }
             catch (Exception ex)
             {
@@ -135,6 +142,12 @@ namespace Yuniql.CLI
                 {
                     var workingPath = _environmentService.GetCurrentDirectory();
                     opts.Path = workingPath;
+                }
+
+                //if no target platform provided, we default into sqlserver
+                if (string.IsNullOrEmpty(opts.Platform))
+                {
+                    opts.Platform = "sqlserver";
                 }
 
                 _traceService.Info($"Started verifcation from {opts.Path}.");
@@ -181,6 +194,12 @@ namespace Yuniql.CLI
                     opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
+                //if no target platform provided, we default into sqlserver
+                if (string.IsNullOrEmpty(opts.Platform))
+                {
+                    opts.Platform = "sqlserver";
+                }
+
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
                 var versions = migrationService.GetAllVersions();
@@ -212,6 +231,12 @@ namespace Yuniql.CLI
                 {
                     var workingPath = _environmentService.GetCurrentDirectory();
                     opts.Path = workingPath;
+                }
+
+                //if no target platform provided, we default into sqlserver
+                if (string.IsNullOrEmpty(opts.Platform))
+                {
+                    opts.Platform = "sqlserver";
                 }
 
                 //if no connection string provided, we default into environment variable or throw exception

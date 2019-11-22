@@ -18,7 +18,7 @@ namespace Yuniql.Core
 
         public IMigrationService Create(string platform)
         {
-            if (platform.Equals("sqlserver"))
+            if (string.IsNullOrEmpty(platform) || platform.Equals("sqlserver"))
             {
                 var sqlDataService = new SqlServerDataService(_traceService);
                 var bulkImportService = new SqlServerBulkImportService(_traceService);
