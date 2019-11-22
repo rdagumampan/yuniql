@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>Yuniql.Tests</RootNamespace>
+    <RootNamespace>Yuniql.UnitTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

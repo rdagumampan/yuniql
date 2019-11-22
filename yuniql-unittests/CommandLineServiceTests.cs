@@ -8,7 +8,7 @@ using Moq;
 using Yuniql.Extensibility;
 using Yuniql.Core;
 
-namespace Yuniql.Tests
+namespace Yuniql.UnitTests
 {
     [TestClass]
     public class CommandLineServiceTests
