@@ -20,10 +20,10 @@ namespace Yuniql.Core
         {
             if (platform.Equals("sqlserver"))
             {
-                var dataService = new SqlServerDataService(_traceService);
-                var csvImportService = new SqlServerBulkImportService(_traceService);
+                var sqlDataService = new SqlServerDataService(_traceService);
+                var bulkImportService = new SqlServerBulkImportService(_traceService);
 
-                var migrationService = new MigrationService(dataService, csvImportService, _traceService);
+                var migrationService = new MigrationService(sqlDataService, bulkImportService, _traceService);
                 return migrationService;
             }
             {
@@ -32,24 +32,24 @@ namespace Yuniql.Core
                 if (File.Exists(assemblyFile))
                 {
                     var assembly = Assembly.LoadFrom(assemblyFile);
-                    var dataService = assembly.GetTypes()
+                    var sqlDataService = assembly.GetTypes()
                         .Where(t => t.Name.ToLower().Contains($"{platform}dataservice"))
                         .Select(t => Activator.CreateInstance(t, _traceService))
                         .Cast<IDataService>()
                         .First();
 
-                    var csvImportService = assembly.GetTypes()
+                    var bulkImportService = assembly.GetTypes()
                         .Where(t => t.Name.ToLower().Contains($"{platform}bulkimportservice"))
                         .Select(t => Activator.CreateInstance(t, _traceService))
                         .Cast<IBulkImportService>()
                         .First();
 
-                    var migrationService = new MigrationService(dataService, csvImportService, _traceService);
+                    var migrationService = new MigrationService(sqlDataService, bulkImportService, _traceService);
                     return migrationService;
                 }
                 else
                 {
-                    throw new NotSupportedException($"The target database platform {platform} is not yet supported. See WIKI for supported database platforms.");
+                    throw new NotSupportedException($"The target database platform {platform} is not yet supported. See WIKI for supported database platforms and how to configure plugins for non-sqlserver databases.");
                 }
             }
         }

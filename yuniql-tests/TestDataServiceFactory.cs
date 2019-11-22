@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Yuniql.Core;
 using Yuniql.Extensibility;
 using Yuniql.SqlServer;
 
@@ -15,10 +16,12 @@ namespace Yuniql.Tests
 
         public ITestDataService Create(string platform)
         {
+            var traceService = new TraceService();
             if (platform.Equals("sqlserver"))
             {
-                var dataService = new SqlServerTestDataService();
-                return dataService;
+                var sqlataService = new SqlServerDataService(traceService);
+                var testDataService = new SqlServerTestDataService(sqlataService);
+                return testDataService;
             }
             else
             {
@@ -27,12 +30,19 @@ namespace Yuniql.Tests
                 if (File.Exists(assemblyFile))
                 {
                     var assembly = Assembly.LoadFrom(assemblyFile);
-                    var dataService = assembly.GetTypes()
+
+                    var sqlDataService = assembly.GetTypes()
+                        .Where(t => t.Name.ToLower().Contains($"{platform}dataservice"))
+                        .Select(t => Activator.CreateInstance(t, traceService))
+                        .Cast<IDataService>()
+                        .First();
+
+                    var testDataService = assembly.GetTypes()
                     .Where(t => t.Name.ToLower().Contains($"{platform}testdataservice"))
-                    .Select(t => Activator.CreateInstance(t))
+                    .Select(t => Activator.CreateInstance(t, sqlDataService))
                     .Cast<ITestDataService>()
                     .First();
-                    return dataService;
+                    return testDataService;
                 }
                 else
                 {

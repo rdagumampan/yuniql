@@ -9,6 +9,12 @@ namespace Yuniql.SqlServer
 {
     public class SqlServerTestDataService : ITestDataService
     {
+        private readonly IDataService _dataService;
+
+        public SqlServerTestDataService(IDataService dataService)
+        {
+            this._dataService = dataService;
+        }
         public string GetConnectionString(string databaseName)
         {
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");
@@ -24,42 +30,24 @@ namespace Yuniql.SqlServer
             return result.ConnectionString;
         }
 
+        public bool QuerySingleBool(string connectionString, string sqlStatement)
+        {
+            return _dataService.QuerySingleBool(connectionString, sqlStatement);
+        }
+
+        public string QuerySingleString(string connectionString, string sqlStatement)
+        {
+            return _dataService.QuerySingleString(connectionString, sqlStatement);
+        }
+
         public string GetCurrentDbVersion(string connectionString)
         {
-            var sqlStatement = $"SELECT TOP 1 Version FROM dbo.__YuniqlDbVersion ORDER BY Id DESC";
-            var result = QuerySingleString(connectionString, sqlStatement);
-
-            return result;
+            return _dataService.GetCurrentVersion();
         }
 
         public List<DbVersion> GetAllDbVersions(string connectionString)
         {
-            var result = new List<DbVersion>();
-
-            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
-
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var dbVersion = new DbVersion
-                    {
-                        Id = reader.GetInt16(0),
-                        Version = reader.GetString(1),
-                        DateInsertedUtc = reader.GetDateTime(2),
-                        LastUserId = reader.GetString(3)
-                    };
-                    result.Add(dbVersion);
-                }
-            }
-            return result;
+            return _dataService.GetAllVersions();
         }
 
         public bool CheckIfDbExist(string connectionString)
@@ -78,48 +66,6 @@ namespace Yuniql.SqlServer
         {
             var sqlStatement = $"SELECT ISNULL(OBJECT_ID('[dbo].[{objectName}]'), 0) AS ObjectID";
             return QuerySingleBool(connectionString, sqlStatement);
-        }
-
-        public bool QuerySingleBool(string connectionString, string sqlStatement)
-        {
-            bool result;
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                var reader = command.ExecuteReader();
-                reader.Read();
-                result = Convert.ToBoolean(reader.GetValue(0));
-            }
-
-            return result;
-        }
-
-        public string QuerySingleString(string connectionString, string sqlStatement)
-        {
-            string result = null;
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                var reader = command.ExecuteReader();
-                if (reader.Read())
-                {
-                    result = reader.GetString(0);
-                }
-            }
-
-            return result;
         }
 
         public string CreateDbObjectScript(string scriptName)

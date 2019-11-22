@@ -9,6 +9,13 @@ namespace Yuniql.PostgreSql
 {
     public class PostgreSqlTestDataService : ITestDataService
     {
+        private readonly IDataService _dataService;
+
+        public PostgreSqlTestDataService(IDataService dataService)
+        {
+            this._dataService = dataService;
+        }
+
         public string GetConnectionString(string databaseName)
         {
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");
@@ -24,40 +31,24 @@ namespace Yuniql.PostgreSql
             return result.ConnectionString;
         }
 
+        public bool QuerySingleBool(string connectionString, string sqlStatement)
+        {
+            return _dataService.QuerySingleBool(connectionString, sqlStatement);
+        }
+
+        public string QuerySingleString(string connectionString, string sqlStatement)
+        {
+            return _dataService.QuerySingleString(connectionString, sqlStatement);
+        }
+
         public string GetCurrentDbVersion(string connectionString)
         {
-            var sqlStatement = $"SELECT Version FROM __YuniqlDbVersion ORDER BY Id DESC LIMIT 1;";
-            return QuerySingleString(connectionString, sqlStatement);
+            return _dataService.GetCurrentVersion();
         }
 
         public List<DbVersion> GetAllDbVersions(string connectionString)
         {
-            var result = new List<DbVersion>();
-
-            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM __YuniqlDbVersion ORDER BY Version ASC;";
-            using (var connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var dbVersion = new DbVersion
-                    {
-                        Id = reader.GetInt16(0),
-                        Version = reader.GetString(1),
-                        DateInsertedUtc = reader.GetDateTime(2),
-                        LastUserId = reader.GetString(3)
-                    };
-                    result.Add(dbVersion);
-                }
-            }
-
-            return result;
+            return _dataService.GetAllVersions();
         }
 
         public bool CheckIfDbExist(string connectionString)
@@ -82,48 +73,6 @@ namespace Yuniql.PostgreSql
             {
                 sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName.ToLower()}'";
                 result = QuerySingleBool(connectionString, sqlStatement);
-            }
-
-            return result;
-        }
-
-        public bool QuerySingleBool(string connectionString, string sqlStatement)
-        {
-            bool result = false;
-            using (var connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                var reader = command.ExecuteReader();
-                if (reader.Read())
-                    result = Convert.ToBoolean(reader.GetValue(0));
-            }
-
-            return result;
-        }
-
-        public string QuerySingleString(string connectionString, string sqlStatement)
-        {
-            string result = null;
-            using (var connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                var reader = command.ExecuteReader();
-                if (reader.Read())
-                {
-                    result = reader.GetString(0);
-                }
             }
 
             return result;
