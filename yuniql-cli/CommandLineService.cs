@@ -9,12 +9,18 @@ namespace Yuniql.CLI
 {
     public class CommandLineService : ICommandLineService
     {
-
         private IMigrationServiceFactory _migrationServiceFactory;
+        private readonly ILocalVersionService _localVersionService;
+        private readonly IEnvironmentService _environmentService;
         private ITraceService _traceService;
- 
-        public CommandLineService(ITraceService traceService)
+
+        public CommandLineService(
+            ILocalVersionService localVersionService, 
+            IEnvironmentService environmentService,
+            ITraceService traceService)
         {
+            this._localVersionService = localVersionService;
+            this._environmentService = environmentService;
             this._traceService = traceService;
             this._migrationServiceFactory = new MigrationServiceFactory(this._traceService);
         }
@@ -23,18 +29,16 @@ namespace Yuniql.CLI
         {
             try
             {
-                var versionService = new LocalVersionService(_traceService);
-
                 //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
-                    var workingPath = Environment.CurrentDirectory;
-                    versionService.Init(workingPath);
+                    var workingPath = _environmentService.GetCurrentDirectory();
+                    _localVersionService.Init(workingPath);
                     _traceService.Info($"Initialized {workingPath}.");
                 }
                 else
                 {
-                    versionService.Init(opts.Path);
+                    _localVersionService.Init(opts.Path);
                     _traceService.Info($"Initialized {opts.Path}.");
                 }
             }
@@ -54,19 +58,18 @@ namespace Yuniql.CLI
                 //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
-                    var workingPath = Environment.CurrentDirectory;
+                    var workingPath = _environmentService.GetCurrentDirectory();
                     opts.Path = workingPath;
                 }
 
-                var versionService = new LocalVersionService(_traceService);
                 if (opts.IncrementMajorVersion)
                 {
-                    var nextVersion = versionService.IncrementMajorVersion(opts.Path, opts.File);
+                    var nextVersion = _localVersionService.IncrementMajorVersion(opts.Path, opts.File);
                     _traceService.Info($"New major version created {nextVersion} on {opts.Path}.");
                 }
                 else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
                 {
-                    var nextVersion = versionService.IncrementMinorVersion(opts.Path, opts.File);
+                    var nextVersion = _localVersionService.IncrementMinorVersion(opts.Path, opts.File);
                     _traceService.Info($"New minor version created {nextVersion} on {opts.Path}.");
                 }
             }
@@ -86,7 +89,7 @@ namespace Yuniql.CLI
                 //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
-                    var workingPath = Environment.CurrentDirectory;
+                    var workingPath = _environmentService.GetCurrentDirectory();
                     opts.Path = workingPath;
                 }
 
@@ -95,16 +98,14 @@ namespace Yuniql.CLI
                 //if no target version specified, we capture the latest from local folder structure
                 if (string.IsNullOrEmpty(opts.TargetVersion))
                 {
-                    var localVersionService = new LocalVersionService(_traceService);
-                    opts.TargetVersion = localVersionService.GetLatestVersion(opts.Path);
+                    opts.TargetVersion = _localVersionService.GetLatestVersion(opts.Path);
                     _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
                 }
 
                 //if no connection string provided, we default into environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
-                    var environmentService = new EnvironmentService();
-                    opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
                 //parse tokens
@@ -132,7 +133,7 @@ namespace Yuniql.CLI
                 //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
-                    var workingPath = Environment.CurrentDirectory;
+                    var workingPath = _environmentService.GetCurrentDirectory();
                     opts.Path = workingPath;
                 }
 
@@ -141,16 +142,14 @@ namespace Yuniql.CLI
                 //if no target version specified, we capture the latest from local folder structure
                 if (string.IsNullOrEmpty(opts.TargetVersion))
                 {
-                    var localVersionService = new LocalVersionService(_traceService);
-                    opts.TargetVersion = localVersionService.GetLatestVersion(opts.Path);
+                    opts.TargetVersion = _localVersionService.GetLatestVersion(opts.Path);
                     _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
                 }
 
                 //if no connection string provided, we default into environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
-                    var environmentService = new EnvironmentService();
-                    opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
                 //parse tokens
@@ -179,8 +178,7 @@ namespace Yuniql.CLI
                 //if no connection string provided, we default into environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
-                    var environmentService = new EnvironmentService();
-                    opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
@@ -212,15 +210,14 @@ namespace Yuniql.CLI
                 //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
-                    var workingPath = Environment.CurrentDirectory;
+                    var workingPath = _environmentService.GetCurrentDirectory();
                     opts.Path = workingPath;
                 }
 
                 //if no connection string provided, we default into environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
-                    var environmentService = new EnvironmentService();
-                    opts.ConnectionString = environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);

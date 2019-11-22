@@ -11,8 +11,10 @@ namespace Yuniql
 
         public static void Main(string[] args)
         {
+            var environmentService = new EnvironmentService();
             var traceService = new TraceService();
-            var commandLineService = new CommandLineService(traceService);
+            var localVersionService = new LocalVersionService(traceService);
+            var commandLineService = new CommandLineService(localVersionService, environmentService, traceService);
 
             Parser.Default.ParseArguments<
                 InitOption,

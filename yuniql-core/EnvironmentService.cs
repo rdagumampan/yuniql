@@ -4,6 +4,11 @@ namespace Yuniql.Core
 {
     public class EnvironmentService: IEnvironmentService
     {
+        public string GetCurrentDirectory()
+        {
+            return Environment.CurrentDirectory;
+        }
+
         //extracts the environment variable with special consideration when its running on windows
         //https://docs.microsoft.com/en-us/dotnet/api/system.environment.getenvironmentvariable?view=netcore-3.0
         public string GetEnvironmentVariable(string name)
