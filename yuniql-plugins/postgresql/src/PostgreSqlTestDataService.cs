@@ -33,21 +33,25 @@ namespace Yuniql.PostgreSql
 
         public bool QuerySingleBool(string connectionString, string sqlStatement)
         {
+            _dataService.Initialize(connectionString);
             return _dataService.QuerySingleBool(connectionString, sqlStatement);
         }
 
         public string QuerySingleString(string connectionString, string sqlStatement)
         {
+            _dataService.Initialize(connectionString);
             return _dataService.QuerySingleString(connectionString, sqlStatement);
         }
 
         public string GetCurrentDbVersion(string connectionString)
         {
+            _dataService.Initialize(connectionString);
             return _dataService.GetCurrentVersion();
         }
 
         public List<DbVersion> GetAllDbVersions(string connectionString)
         {
+            _dataService.Initialize(connectionString);
             return _dataService.GetAllVersions();
         }
 
