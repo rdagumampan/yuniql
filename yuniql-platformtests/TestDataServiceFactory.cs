@@ -8,6 +8,7 @@ using Yuniql.SqlServer;
 
 namespace Yuniql.PlatformTests
 {
+    //https://github.com/dotnet/samples/tree/master/core/tutorials/Unloading
     public class TestDataServiceFactory : ITestDataServiceFactory
     {
         public TestDataServiceFactory()
@@ -27,7 +28,7 @@ namespace Yuniql.PlatformTests
             {
                 //extracts plugins and creates required services
                 var assemblyFile = Path.Combine(Environment.CurrentDirectory, ".plugins", platform, $"Yuniql.{platform}.dll");
-                var assemblyBasePath = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_PLUGINS");
+                var assemblyBasePath = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_PLUGINS");
                 if (!string.IsNullOrEmpty(assemblyBasePath))
                 {
                     assemblyFile = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");

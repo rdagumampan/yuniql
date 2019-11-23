@@ -24,7 +24,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	dotnet test
 	```
 
-## Running platform tests for PostgreSql
+## Running platform tests for PostgreSql plugin
 
 1. Deploy a sql server linux container
 	
@@ -35,7 +35,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 2. Configure your connection string
 
 	```bash
-	SETX YUNIQL_TEST_PLUGINS "C:\play\yuniql\yuniql-plugins\postgresql\src\bin\Release\netcoreapp3.0\win-x64\publish"
+	SETX YUNIQL_PLUGINS "C:\play\yuniql\yuniql-plugins\postgresql\src\bin\Release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=app;Password=app;Database=yuniqldb"
 	```
