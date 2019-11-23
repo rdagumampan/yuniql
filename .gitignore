@@ -6,7 +6,7 @@ src/Yuniql.csproj.user
 src/Properties/PublishProfiles/FolderProfile.pubxml.user
 src/Properties/launchSettings.json
 src/Properties/PublishProfiles/FolderProfile.pubxml
-/tests/bin
+/tests/binnupkl
 /tests/obj
 /tests/.vs
 
@@ -48,3 +48,5 @@ yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-
 /yuniql-platformtests/obj
 /yuniql-core/nupkgs
 /yuniql-extensibility/nupkgs
+
+**/nupkgs
