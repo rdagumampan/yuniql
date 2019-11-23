@@ -15,10 +15,22 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/rdagumampan/yuniql</PackageProjectUrl>
     <PackageIconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</PackageIconUrl>
+    <IconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</IconUrl>
+    <PackageIcon>favicon.png</PackageIcon>
     <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
     <PackageTags>yuniql sqlserver-migration database-migration sql devops devops-tools database-versioning</PackageTags>
     <Description>Interfaces to be implemented for supporting database migration and schema versioning with yuniql</Description>
     <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="nupkgs\**" />
+    <EmbeddedResource Remove="nupkgs\**" />
+    <None Remove="nupkgs\**" />
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="favicon.png" Pack="true" Visible="false" PackagePath="" />  </ItemGroup>
 </Project>
