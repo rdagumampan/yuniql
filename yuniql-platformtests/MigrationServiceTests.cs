@@ -9,6 +9,8 @@ using Yuniql.Extensibility;
 
 namespace Yuniql.PlatformTests
 {
+    //https://docs.microsoft.com/en-gb/dotnet/standard/assembly/unloadability
+    //https://github.com/dotnet/samples/blob/master/core/extensions/AppWithPlugin/AppWithPlugin/Program.cs
     [TestClass]
     public class MigrationServiceTests : TestBase
     {
@@ -17,6 +19,7 @@ namespace Yuniql.PlatformTests
 
         private IMigrationServiceFactory _migrationServiceFactory;
         private ITraceService _traceService;
+        private IEnvironmentService _environmentService;
 
         [TestInitialize]
         public void Setup()
@@ -33,8 +36,9 @@ namespace Yuniql.PlatformTests
             _testDataService = testDataServiceFactory.Create(_targetPlatform);
 
             //create data service factory for migration proper
+            _environmentService = new EnvironmentService();
             _traceService = new TraceService();
-            _migrationServiceFactory = new MigrationServiceFactory(_traceService);
+            _migrationServiceFactory = new MigrationServiceFactory(_environmentService, _traceService);
         }
 
         [TestMethod]

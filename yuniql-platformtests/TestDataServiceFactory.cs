@@ -27,6 +27,12 @@ namespace Yuniql.PlatformTests
             {
                 //extracts plugins and creates required services
                 var assemblyFile = Path.Combine(Environment.CurrentDirectory, ".plugins", platform, $"Yuniql.{platform}.dll");
+                var assemblyBasePath = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_PLUGINS");
+                if (!string.IsNullOrEmpty(assemblyBasePath))
+                {
+                    assemblyFile = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");
+                }
+
                 if (File.Exists(assemblyFile))
                 {
                     var assembly = Assembly.LoadFrom(assemblyFile);

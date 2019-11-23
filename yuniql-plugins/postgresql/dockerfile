@@ -3,7 +3,6 @@
 WORKDIR /code
 
 #copy local files into app or clone github repo
-COPY ../../yuniql-extensibility ./yuniql-extensibility
 COPY ./src ./yuniql-plugins/postgresql/src
 COPY ../../yuniql-core ./yuniql-core
 COPY ../../yuniql-platformtests ./yuniql-platformtests

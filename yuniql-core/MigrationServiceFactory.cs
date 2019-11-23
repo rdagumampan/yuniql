@@ -9,10 +9,14 @@ namespace Yuniql.Core
 {
     public class MigrationServiceFactory : IMigrationServiceFactory
     {
+        private readonly IEnvironmentService _environmentService;
         private readonly ITraceService _traceService;
 
-        public MigrationServiceFactory(ITraceService traceService)
+        public MigrationServiceFactory(
+            IEnvironmentService environmentService,
+            ITraceService traceService)
         {
+            this._environmentService = environmentService;
             this._traceService = traceService;
         }
 
@@ -29,6 +33,12 @@ namespace Yuniql.Core
             {
                 //extracts plugins and creates required services
                 var assemblyFile = Path.Combine(Environment.CurrentDirectory, ".plugins", platform, $"Yuniql.{platform}.dll");
+                var assemblyBasePath = _environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
+                if (!string.IsNullOrEmpty(assemblyBasePath))
+                {
+                    assemblyFile = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");
+                }
+
                 if (File.Exists(assemblyFile))
                 {
                     var assembly = Assembly.LoadFrom(assemblyFile);
