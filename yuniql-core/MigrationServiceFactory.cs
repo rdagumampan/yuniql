@@ -31,21 +31,16 @@ namespace Yuniql.Core
             }
             {
                 //extracts plugins and creates required services
-                var assemblyFile = Path.Combine(Environment.CurrentDirectory, ".plugins", platform, $"Yuniql.{platform}.dll");
-                var assemblyBasePath = _environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
-                if (!string.IsNullOrEmpty(assemblyBasePath))
-                {
-                    assemblyFile = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");
-                }
-                else
-                {
-                    assemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", platform);
-                }
+                var defaultAssemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", platform);
+                var environmentVariableAssemblyBasePath = _environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
 
-                if (File.Exists(assemblyFile))
+                var assemblyBasePath = string.IsNullOrEmpty(environmentVariableAssemblyBasePath) ? defaultAssemblyBasePath : environmentVariableAssemblyBasePath;
+                var assemblyFilePath = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");
+
+                if (File.Exists(assemblyFilePath))
                 {
-                    var assemblyContext = new PluginAssemblyLoadContext(assemblyBasePath);
-                    var assembly = assemblyContext.LoadFromAssemblyPath(assemblyFile);
+                    var assemblyContext = new PluginAssemblyLoadContext(environmentVariableAssemblyBasePath);
+                    var assembly = assemblyContext.LoadFromAssemblyPath(assemblyFilePath);
 
                     var sqlDataService = assembly.GetTypes()
                         .Where(t => t.Name.ToLower().Contains($"{platform}dataservice"))

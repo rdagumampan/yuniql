@@ -27,16 +27,16 @@ namespace Yuniql.PlatformTests
             else
             {
                 //extracts plugins and creates required services
-                var assemblyFile = Path.Combine(Environment.CurrentDirectory, ".plugins", platform, $"Yuniql.{platform}.dll");
-                var assemblyBasePath = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_PLUGINS");
-                if (!string.IsNullOrEmpty(assemblyBasePath))
-                {
-                    assemblyFile = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");
-                }
+                //extracts plugins and creates required services
+                var defaultAssemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", platform);
+                var environmentVariableAssemblyBasePath = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_PLUGINS");
 
-                if (File.Exists(assemblyFile))
+                var assemblyBasePath = string.IsNullOrEmpty(environmentVariableAssemblyBasePath) ? defaultAssemblyBasePath : environmentVariableAssemblyBasePath;
+                var assemblyFilePath = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");
+
+                if (File.Exists(assemblyFilePath))
                 {
-                    var assembly = Assembly.LoadFrom(assemblyFile);
+                    var assembly = Assembly.LoadFrom(assemblyFilePath);
 
                     var sqlDataService = assembly.GetTypes()
                         .Where(t => t.Name.ToLower().Contains($"{platform}dataservice"))

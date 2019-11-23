@@ -458,7 +458,7 @@ namespace Yuniql.PlatformTests
                 var migrationService = _migrationServiceFactory.Create("oracle");
                 migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
-            }).Message.ShouldContain($"The target database platform oracle is not yet supported");
+            }).Message.ShouldContain($"The target database platform oracle is not supported.");
         }
     }
 }
