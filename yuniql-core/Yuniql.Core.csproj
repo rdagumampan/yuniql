@@ -19,6 +19,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="nupkgs\**" />
+    <EmbeddedResource Remove="nupkgs\**" />
+    <None Remove="nupkgs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
     <ProjectReference Include="..\yuniql-sqlserver\Yuniql.SqlServer.csproj" />
   </ItemGroup>

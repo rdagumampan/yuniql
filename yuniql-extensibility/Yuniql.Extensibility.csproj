@@ -32,5 +32,6 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="favicon.png" Pack="true" Visible="false" PackagePath="" />  </ItemGroup>
+    <None Include="favicon.png" Pack="true" Visible="false" PackagePath="" />  
+  </ItemGroup>
 </Project>
