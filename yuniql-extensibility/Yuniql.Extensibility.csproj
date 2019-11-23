@@ -19,7 +19,7 @@
     <PackageIcon>favicon.png</PackageIcon>
     <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
     <PackageTags>yuniql sqlserver-migration database-migration sql devops devops-tools database-versioning</PackageTags>
-    <Description>Interfaces to be implemented for supporting database migration and schema versioning with yuniql</Description>
+    <Description>The interfaces to be implemented to build plugins for yuniql-based database migration. See WIKI for how-to instructions.</Description>
     <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
