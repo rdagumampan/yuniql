@@ -46,3 +46,5 @@ yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-
 /yuniql-platformtests/.vs
 /yuniql-platformtests/bin/Debug/netcoreapp3.0
 /yuniql-platformtests/obj
+/yuniql-core/nupkgs
+/yuniql-extensibility/nupkgs

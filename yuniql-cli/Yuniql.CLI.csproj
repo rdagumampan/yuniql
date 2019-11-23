@@ -6,6 +6,7 @@
     <StartupObject>Yuniql.Program</StartupObject>
     <AssemblyName>yuniql</AssemblyName>
     <PackageId>Yuniql.CLI</PackageId>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

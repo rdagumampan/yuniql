@@ -8,11 +8,11 @@
     <Authors>Rodel E. Dagumampan</Authors>
     <Product></Product>
     <Company></Company>
-    <Version>0.1.0</Version>
+    <Version>1.0.0</Version>
     <AssemblyName>Yuniql.Extensibility</AssemblyName>
     <RootNamespace>Yuniql.Extensibility</RootNamespace>
     <ApplicationIcon />
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/rdagumampan/yuniql</PackageProjectUrl>
     <PackageIconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
