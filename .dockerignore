@@ -7,4 +7,6 @@ obj
 **/bin/
 **/obj/
 **/.vs
+
+nupkgs
 **/nupkgs

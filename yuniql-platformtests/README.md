@@ -26,7 +26,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 
 ## Running platform tests for PostgreSql plugin
 
-1. Deploy a sql server linux container
+1. Deploy a postgresql linux container
 	
 	```console
 	docker run -e POSTGRES_USER=app -e POSTGRES_PASSWORD=app -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres

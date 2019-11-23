@@ -49,4 +49,6 @@ yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-
 /yuniql-core/nupkgs
 /yuniql-extensibility/nupkgs
 
+nupkgs
 **/nupkgs
+
