@@ -9,18 +9,18 @@ services:
     environment:
       - POSTGRES_USER=app
       - POSTGRES_PASSWORD=app
-      - POSTGRES_DB=mydbname
+      - POSTGRES_DB=yuniqldb
     volumes:
       - ./volumes/data/db:/var/lib/postgresql/data
     ports:
        - 5432:5432
 
-	   docker run -e POSTGRES_USER=app -e POSTGRES_PASSWORD=app -e POSTGRES_DB=mydbname -p 5432:5432 postgres
+	   docker run -e POSTGRES_USER=app -e POSTGRES_PASSWORD=app -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
 ```
 
 ```bash
-SETX YUNIQL_TEST_TARGET_PLATFORM "pqsql"
-SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=app;Password=app;Database=mydbname"
+SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
+SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=app;Password=app;Database=yuniqldb"
 ```
 
 http://www.postgresqltutorial.com/connect-to-postgresql-database/

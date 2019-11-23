@@ -2,7 +2,7 @@
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2017-latest
-    hostname: "yuniql-integration-db"
+    hostname: "yuniql-platformtest-db"
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "P@ssw0rd!"
@@ -10,24 +10,24 @@ services:
     ports:
       - "1433:1433"
     healthcheck:
-      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd","-s", "db.yuniql.org", "-U", "sa", "-P", "P@ssw0rd!", "-Q", "SELECT 1" ]
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd","-s", "platformtest-db.yuniql.org", "-U", "sa", "-P", "P@ssw0rd!", "-Q", "SELECT 1" ]
       interval: 1s
       retries: 20
     tty: true
     networks:
       testvnet:
         aliases:
-          - db.yuniql.org
+          - platformtest-db.yuniql.org
 
   app:
-    image: rdagumampan/yuniql-integration
-    hostname: "yuniql-integration-app"
+    image: rdagumampan/yuniql-platformtest:sqlserver
+    hostname: "yuniql-platformtest-app"
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      YUNIQL_CONNECTION_STRING: "Server=db.yuniql.org;Database=YuniqlTestDB;User Id=sa;Password=P@ssw0rd!"
-      YUNIQL_TEST_CONNECTION_STRING: "Server=db.yuniql.org;Database=YuniqlTestDB;User Id=sa;Password=P@ssw0rd!"
+      YUNIQL_CONNECTION_STRING: "Server=platformtest-db.yuniql.org;Database=yuniqldb;User Id=sa;Password=P@ssw0rd!"
+      YUNIQL_TEST_CONNECTION_STRING: "Server=platformtest-db.yuniql.org;Database=yuniqldb;User Id=sa;Password=P@ssw0rd!"
       YUNIQL_TEST_TARGET_PLATFORM: "sqlserver"
     entrypoint: /bin/bash -c "/bin/bash -c \"dotnet test\""
     tty: true
@@ -38,7 +38,7 @@ services:
     networks:
       testvnet:
         aliases:
-          - tests.yuniql.org
+          - platformtest-app.yuniql.org
 
 networks:
   testvnet:

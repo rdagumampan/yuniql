@@ -6,3 +6,4 @@ obj
 */.git
 **/bin/
 **/obj/
+**/.vs
