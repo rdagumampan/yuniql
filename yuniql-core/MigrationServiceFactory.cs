@@ -26,8 +26,10 @@ namespace Yuniql.Core
                 var sqlDataService = new SqlServerDataService(_traceService);
                 var bulkImportService = new SqlServerBulkImportService(_traceService);
                 var tokenReplacementService = new TokenReplacementService(_traceService);
+                var directoryService = new DirectoryService();
+                var fileService = new FileService();
 
-                var migrationService = new MigrationService(sqlDataService, bulkImportService, tokenReplacementService, _traceService);
+                var migrationService = new MigrationService(sqlDataService, bulkImportService, tokenReplacementService, directoryService, fileService, _traceService);
                 return migrationService;
             }
             {
@@ -56,7 +58,10 @@ namespace Yuniql.Core
                         .First();
 
                     var tokenReplacementService = new TokenReplacementService(_traceService);
-                    var migrationService = new MigrationService(sqlDataService, bulkImportService, tokenReplacementService, _traceService);
+                    var directoryService = new DirectoryService();
+                    var fileService = new FileService();
+
+                    var migrationService = new MigrationService(sqlDataService, bulkImportService, tokenReplacementService, directoryService, fileService, _traceService);
                     return migrationService;
                 }
                 else

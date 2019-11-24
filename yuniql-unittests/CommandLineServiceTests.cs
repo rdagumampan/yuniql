@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Shouldly;
 using Yuniql.CLI;
 using Moq;
 using Yuniql.Extensibility;

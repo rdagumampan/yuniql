@@ -2,27 +2,33 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.IO;
 using System.Linq;
+using System.IO;
 
 namespace Yuniql.Core
 {
     public class MigrationService : IMigrationService
     {
         private readonly IDataService _dataService;
-        private readonly IBulkImportService _csvImportService;
+        private readonly IBulkImportService _bulkImportService;
         private readonly ITokenReplacementService _tokenReplacementService;
+        private readonly IDirectoryService _directoryService;
+        private readonly IFileService _fileService;
         private readonly ITraceService _traceService;
 
         public MigrationService(
             IDataService dataService, 
-            IBulkImportService csvImportService, 
+            IBulkImportService bulkImportService, 
             ITokenReplacementService tokenReplacementService,
+            IDirectoryService directoryService,
+            IFileService fileService,
             ITraceService traceService)
         {
             this._dataService = dataService;
-            this._csvImportService = csvImportService;
+            this._bulkImportService = bulkImportService;
             this._tokenReplacementService = tokenReplacementService;
+            this._directoryService = directoryService;
+            this._fileService = fileService;
             this._traceService = traceService;
         }
 
@@ -30,7 +36,7 @@ namespace Yuniql.Core
         {
             //initialize dependencies
             _dataService.Initialize(connectionString);
-            _csvImportService.Initialize(connectionString);
+            _bulkImportService.Initialize(connectionString);
         }
 
         public void Run(
@@ -152,7 +158,7 @@ namespace Yuniql.Core
             string directoryFullPath,
             List<KeyValuePair<string, string>> tokens = null)
         {
-            var sqlScriptFiles = Directory.GetFiles(directoryFullPath, "*.sql").ToList();
+            var sqlScriptFiles = _directoryService.GetFiles(directoryFullPath, "*.sql").ToList();
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {directoryFullPath}");
             _traceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
 
@@ -160,7 +166,7 @@ namespace Yuniql.Core
             sqlScriptFiles.ForEach(scriptFile =>
             {
                 //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
-                var sqlStatementRaw = File.ReadAllText(scriptFile);
+                var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
                 var sqlStatements = _dataService.BreakStatements(sqlStatementRaw);
 
                 sqlStatements.ForEach(sqlStatement =>
@@ -185,14 +191,14 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokens = null)
         {
             //excludes all versions already executed
-            var versionFolders = Directory.GetDirectories(workingPath, "v*.*")
+            var versionDirectories = _directoryService.GetDirectories(workingPath, "v*.*")
                 .Where(v => !dbVersions.Contains(new DirectoryInfo(v).Name))
                 .ToList();
 
             //exclude all versions greater than the target version
             if (!string.IsNullOrEmpty(targetVersion))
             {
-                versionFolders.RemoveAll(v =>
+                versionDirectories.RemoveAll(v =>
                 {
                     var cv = new LocalVersion(new DirectoryInfo(v).Name);
                     var tv = new LocalVersion(targetVersion);
@@ -202,15 +208,15 @@ namespace Yuniql.Core
             }
 
             //execute all sql scripts in the version folders
-            if (versionFolders.Any())
+            if (versionDirectories.Any())
             {
-                versionFolders.Sort();
-                versionFolders.ForEach(versionDirectory =>
+                versionDirectories.Sort();
+                versionDirectories.ForEach(versionDirectory =>
                 {
                     try
                     {
                         //run scripts in all sub-directories
-                        var versionSubDirectories = Directory.GetDirectories(versionDirectory, "*", SearchOption.AllDirectories).ToList();
+                        var versionSubDirectories = _directoryService.GetDirectories(versionDirectory, "*", SearchOption.AllDirectories).ToList();
                         versionSubDirectories.Sort();
                         versionSubDirectories.ForEach(versionSubDirectory =>
                         {
@@ -248,15 +254,15 @@ namespace Yuniql.Core
             string versionFullPath)
         {
             //execute all script files in the version folder
-            var csvFiles = Directory.GetFiles(versionFullPath, "*.csv").ToList();
-            csvFiles.Sort();
+            var bulkFiles = _directoryService.GetFiles(versionFullPath, "*.csv").ToList();
+            bulkFiles.Sort();
 
-            _traceService.Info($"Found the {csvFiles.Count} bulk files on {versionFullPath}");
-            _traceService.Info($"{string.Join(@"\r\n\t", csvFiles.Select(s => new FileInfo(s).Name))}");
+            _traceService.Info($"Found the {bulkFiles.Count} bulk files on {versionFullPath}");
+            _traceService.Info($"{string.Join(@"\r\n\t", bulkFiles.Select(s => new FileInfo(s).Name))}");
 
-            csvFiles.ForEach(csvFile =>
+            bulkFiles.ForEach(csvFile =>
             {
-                _csvImportService.Run(connection, transaction, csvFile);
+                _bulkImportService.Run(connection, transaction, csvFile);
                 _traceService.Info($"Imported bulk file {csvFile}.");
             });
         }
@@ -267,7 +273,7 @@ namespace Yuniql.Core
             string versionFullPath,
             List<KeyValuePair<string, string>> tokens = null)
         {
-            var sqlScriptFiles = Directory.GetFiles(versionFullPath, "*.sql").ToList();
+            var sqlScriptFiles = _directoryService.GetFiles(versionFullPath, "*.sql").ToList();
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {versionFullPath}");
             _traceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
 
@@ -277,7 +283,7 @@ namespace Yuniql.Core
                 .ForEach(scriptFile =>
             {
                 //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
-                var sqlStatementRaw = File.ReadAllText(scriptFile);
+                var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
                 var sqlStatements = _dataService.BreakStatements(sqlStatementRaw);
     ;
                 sqlStatements.ForEach(sqlStatement =>
