@@ -25,8 +25,9 @@ namespace Yuniql.Core
             {
                 var sqlDataService = new SqlServerDataService(_traceService);
                 var bulkImportService = new SqlServerBulkImportService(_traceService);
+                var tokenReplacementService = new TokenReplacementService(_traceService);
 
-                var migrationService = new MigrationService(sqlDataService, bulkImportService, _traceService);
+                var migrationService = new MigrationService(sqlDataService, bulkImportService, tokenReplacementService, _traceService);
                 return migrationService;
             }
             {
@@ -54,7 +55,8 @@ namespace Yuniql.Core
                         .Cast<IBulkImportService>()
                         .First();
 
-                    var migrationService = new MigrationService(sqlDataService, bulkImportService, _traceService);
+                    var tokenReplacementService = new TokenReplacementService(_traceService);
+                    var migrationService = new MigrationService(sqlDataService, bulkImportService, tokenReplacementService, _traceService);
                     return migrationService;
                 }
                 else

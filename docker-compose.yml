@@ -29,7 +29,7 @@ services:
       YUNIQL_CONNECTION_STRING: "Server=platformtest-db.yuniql.org;Database=yuniqldb;User Id=sa;Password=P@ssw0rd!"
       YUNIQL_TEST_CONNECTION_STRING: "Server=platformtest-db.yuniql.org;Database=yuniqldb;User Id=sa;Password=P@ssw0rd!"
       YUNIQL_TEST_TARGET_PLATFORM: "sqlserver"
-    entrypoint: /bin/bash -c "/bin/bash -c \"dotnet test\""
+    entrypoint: /bin/bash -c "/bin/bash -c \"dotnet test -v n\""
     tty: true
     depends_on:
       - db

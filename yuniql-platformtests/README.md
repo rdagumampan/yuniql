@@ -21,7 +21,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	```console
 	cd yuniql-platformtests
 	dotnet build
-	dotnet test
+	dotnet test -v n
 	```
 
 ## Running platform tests for PostgreSql plugin
@@ -48,7 +48,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	```console
 	cd yuniql-platformtests
 	dotnet build
-	dotnet test
+	dotnet test -v n
 	```
 
 #### Found bugs?

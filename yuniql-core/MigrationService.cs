@@ -11,12 +11,18 @@ namespace Yuniql.Core
     {
         private readonly IDataService _dataService;
         private readonly IBulkImportService _csvImportService;
+        private readonly ITokenReplacementService _tokenReplacementService;
         private readonly ITraceService _traceService;
 
-        public MigrationService(IDataService dataService, IBulkImportService csvImportService, ITraceService traceService)
+        public MigrationService(
+            IDataService dataService, 
+            IBulkImportService csvImportService, 
+            ITokenReplacementService tokenReplacementService,
+            ITraceService traceService)
         {
             this._dataService = dataService;
             this._csvImportService = csvImportService;
+            this._tokenReplacementService = tokenReplacementService;
             this._traceService = traceService;
         }
 
@@ -160,8 +166,7 @@ namespace Yuniql.Core
                 sqlStatements.ForEach(sqlStatement =>
                 {
                     //replace tokens with values from the cli
-                    var tokeReplacementService = new TokenReplacementService(_traceService);
-                    sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
+                    sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
 
                     _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
                     _dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
@@ -278,8 +283,7 @@ namespace Yuniql.Core
                 sqlStatements.ForEach(sqlStatement =>
                 {
                     //replace tokens with values from the cli
-                    var tokeReplacementService = new TokenReplacementService(_traceService);
-                    sqlStatement = tokeReplacementService.Replace(tokens, sqlStatement);
+                    sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
 
                     _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
                     _dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
