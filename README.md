@@ -104,6 +104,7 @@ yuniql -d | --debug
 * Azure SQL Database
 * PostgreSQL
 * MySQL ***
+* Amazon RDS - Aurora ***
 
 *** planned or being evaluated/developer/tested
 
