@@ -82,6 +82,7 @@ yuniql run -p c:\temp\demo | --path c:\temp\demo
 yuniql run -t v1.05 | --target-version v1.05
 yuniql run -c "<connectiong-string>"
 yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"
+yuniql erase
 yuniql -v | --version
 yuniql -h | --help
 yuniql -d | --debug
@@ -101,7 +102,9 @@ yuniql -d | --debug
 
 * SQL Server
 * Azure SQL Database
-* PostgreSQL ***
+* PostgreSQL
+* MySQL ***
+* Amazon RDS - Aurora ***
 
 *** planned or being evaluated/developer/tested
 
