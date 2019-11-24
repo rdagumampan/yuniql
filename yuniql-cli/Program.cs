@@ -12,7 +12,7 @@ namespace Yuniql
         public static void Main(string[] args)
         {
             var environmentService = new EnvironmentService();
-            var traceService = new TraceService();
+            var traceService = new FileTraceService();
             var localVersionService = new LocalVersionService(traceService);
             var migrationServiceFactory = new MigrationServiceFactory(environmentService, traceService);
             var commandLineService = new CommandLineService(migrationServiceFactory, localVersionService, environmentService, traceService);

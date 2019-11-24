@@ -4,10 +4,10 @@ using System.IO;
 
 namespace Yuniql.Core
 {
-    public class TraceService : ITraceService
+    public class FileTraceService : ITraceService
     {
         private string _traceSessionId;
-        public TraceService()
+        public FileTraceService()
         {
             _traceSessionId = DateTime.Now.ToString("MMddyyyy-HHmmss");
         }
