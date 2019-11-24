@@ -102,7 +102,8 @@ yuniql -d | --debug
 
 * SQL Server
 * Azure SQL Database
-* PostgreSQL ***
+* PostgreSQL
+* MySQL ***
 
 *** planned or being evaluated/developer/tested
 
