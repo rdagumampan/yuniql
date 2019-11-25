@@ -135,5 +135,56 @@ namespace Yuniql.UnitTests
             connection.Verify(s => s.BeginTransaction());
             transaction.Verify(s => s.Commit());
         }
+
+        [TestMethod]
+        public void Test_Erase()
+        {
+            //arrange
+            var transaction = new Mock<IDbTransaction>();
+
+            var connection = new Mock<IDbConnection>();
+            connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
+
+            var dataService = new Mock<IDataService>();
+            dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
+            dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
+            dataService.Setup(s => s.ExecuteNonQuery("sql-connection-string", "SELECT erase"));
+
+            var bulkImportService = new Mock<IBulkImportService>();
+            var directoryService = new Mock<IDirectoryService>();
+            var fileService = new Mock<IFileService>();
+
+            directoryService.Setup(s => s.GetFiles(@"c:\temp\_erase", "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            fileService.Setup(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql")).Returns("SELECT 'erase'");
+
+            var tokenReplacementService = new Mock<ITokenReplacementService>();
+            tokenReplacementService.Setup(s => s.Replace(null, "SELECT 'erase'")).Returns("SELECT 'erase'");
+
+            var traceService = new Mock<ITraceService>();
+
+            //act
+            var sut = new MigrationService(
+                dataService.Object,
+                bulkImportService.Object,
+                tokenReplacementService.Object,
+                directoryService.Object,
+                fileService.Object,
+                traceService.Object);
+            sut.Erase(workingPath: @"c:\temp");
+
+            //assert
+            dataService.Verify(s => s.CreateConnection());
+            directoryService.Verify(s => s.GetFiles(@"c:\temp\_erase", "*.sql"));
+            fileService.Verify(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql"));
+            dataService.Verify(s => s.BreakStatements("SELECT 'erase'"));
+            tokenReplacementService.Verify(s => s.Replace(null, "SELECT 'erase'"));
+
+            dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'erase'", It.IsAny<IDbTransaction>()));
+
+            connection.Verify(s => s.Open());
+            connection.Verify(s => s.BeginTransaction());
+            transaction.Verify(s => s.Commit());
+        }
+
     }
 }
