@@ -37,7 +37,7 @@ namespace Yuniql.PlatformTests
 
             //create data service factory for migration proper
             _environmentService = new EnvironmentService();
-            _traceService = new TraceService();
+            _traceService = new FileTraceService();
             _migrationServiceFactory = new MigrationServiceFactory(_environmentService, _traceService);
         }
 

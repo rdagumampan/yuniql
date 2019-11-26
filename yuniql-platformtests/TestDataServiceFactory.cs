@@ -17,7 +17,7 @@ namespace Yuniql.PlatformTests
 
         public ITestDataService Create(string platform)
         {
-            var traceService = new TraceService();
+            var traceService = new FileTraceService();
             if (platform.Equals("sqlserver"))
             {
                 var sqlataService = new SqlServerDataService(traceService);
