@@ -292,6 +292,7 @@ namespace Yuniql.SqlServer
             command.ExecuteNonQuery();
         }
 
+        //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
         public List<string> BreakStatements(string sqlStatementRaw)
         {
             return Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)

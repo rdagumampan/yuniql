@@ -6,6 +6,7 @@ using Moq;
 using Yuniql.Extensibility;
 using System.Data;
 using System.IO;
+using System;
 
 namespace Yuniql.UnitTests
 {
@@ -13,7 +14,7 @@ namespace Yuniql.UnitTests
     public class MigrationServiceTests
     {
         [TestMethod]
-        public void Test_Run_Empty_Workspace_Scenario()
+        public void Test_Run_Empty_Workspace_All_Working_Scenarios()
         {
             //arrange
             var transaction = new Mock<IDbTransaction>();
@@ -73,6 +74,12 @@ namespace Yuniql.UnitTests
 
             var traceService = new Mock<ITraceService>();
 
+            var tokenKeyPairs = new List<KeyValuePair<string, string>> {
+               new KeyValuePair<string, string>("Token1","TokenValue1"),
+               new KeyValuePair<string, string>("Token2","TokenValue2"),
+               new KeyValuePair<string, string>("Token3","TokenValue3"),
+            };
+
             //act
             var sut = new MigrationService(
                 dataService.Object,
@@ -81,7 +88,7 @@ namespace Yuniql.UnitTests
                 directoryService.Object,
                 fileService.Object,
                 traceService.Object);
-            sut.Run(workingPath: @"c:\temp", targetVersion: "v0.00", autoCreateDatabase: true, tokenKeyPairs: new List<KeyValuePair<string, string>>(), verifyOnly: false);
+            sut.Run(workingPath: @"c:\temp", targetVersion: "v0.00", autoCreateDatabase: true, tokenKeyPairs: tokenKeyPairs, verifyOnly: false);
 
             //asset
             dataService.Verify(s => s.GetConnectionInfo());
@@ -115,11 +122,36 @@ namespace Yuniql.UnitTests
             dataService.Verify(s => s.BreakStatements("SELECT 'draft'"));
             dataService.Verify(s => s.BreakStatements("SELECT 'v0.00'"));
 
-            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), "SELECT 'init'"));
-            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), "SELECT 'pre'"));
-            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), "SELECT 'post'"));
-            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), "SELECT 'draft'"));
-            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), "SELECT 'v0.00'"));
+            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x =>
+               x[0].Key == "Token1" && x[0].Value == "TokenValue1"
+               && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
+               && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
+            ), "SELECT 'init'"));
+
+            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x =>
+               x[0].Key == "Token1" && x[0].Value == "TokenValue1"
+               && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
+               && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
+            ), "SELECT 'pre'"));
+
+
+            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x =>
+               x[0].Key == "Token1" && x[0].Value == "TokenValue1"
+               && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
+               && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
+            ), "SELECT 'post'"));
+
+            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x =>
+               x[0].Key == "Token1" && x[0].Value == "TokenValue1"
+               && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
+               && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
+            ), "SELECT 'draft'"));
+
+            tokenReplacementService.Verify(s => s.Replace(It.Is<List<KeyValuePair<string, string>>>(x =>
+               x[0].Key == "Token1" && x[0].Value == "TokenValue1"
+               && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
+               && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
+            ), "SELECT 'v0.00'"));
 
             dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'init'", It.IsAny<IDbTransaction>()));
             dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'pre'", It.IsAny<IDbTransaction>()));
@@ -186,5 +218,54 @@ namespace Yuniql.UnitTests
             transaction.Verify(s => s.Commit());
         }
 
+        [TestMethod]
+        public void Test_Erase_With_Error_Must_Rollback()
+        {
+            //arrange
+            var transaction = new Mock<IDbTransaction>();
+
+            var connection = new Mock<IDbConnection>();
+            connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
+
+            var dataService = new Mock<IDataService>();
+            dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
+            dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
+            dataService.Setup(s => s.ExecuteNonQuery("sql-connection-string", "SELECT erase"));
+
+            var bulkImportService = new Mock<IBulkImportService>();
+            var directoryService = new Mock<IDirectoryService>();
+            var fileService = new Mock<IFileService>();
+
+            directoryService.Setup(s => s.GetFiles(@"c:\temp\_erase", "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+
+            //simulates that an exception happens while erase is executing
+            fileService.Setup(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql")).Throws(new ApplicationException("Fake exception"));
+
+            var tokenReplacementService = new Mock<ITokenReplacementService>();
+            tokenReplacementService.Setup(s => s.Replace(null, "SELECT 'erase'")).Returns("SELECT 'erase'");
+
+            var traceService = new Mock<ITraceService>();
+
+            //act
+            Assert.ThrowsException<ApplicationException>(() =>
+            {
+                var sut = new MigrationService(
+                    dataService.Object,
+                    bulkImportService.Object,
+                    tokenReplacementService.Object,
+                    directoryService.Object,
+                    fileService.Object,
+                    traceService.Object);
+                sut.Erase(workingPath: @"c:\temp");
+            }).Message.ShouldBe("Fake exception");
+
+            //assert
+            dataService.Verify(s => s.CreateConnection());
+            directoryService.Verify(s => s.GetFiles(@"c:\temp\_erase", "*.sql"));
+            fileService.Verify(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql"));
+            connection.Verify(s => s.Open());
+            connection.Verify(s => s.BeginTransaction());
+            transaction.Verify(s => s.Rollback());
+        }
     }
 }
