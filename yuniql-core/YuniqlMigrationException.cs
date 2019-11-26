@@ -7,11 +7,11 @@ namespace Yuniql.Core
         public YuniqlMigrationException(): base()
         {
         }
-        public YuniqlMigrationException(string? message): base(message)
+        public YuniqlMigrationException(string message): base(message)
         {
         }
 
-        public YuniqlMigrationException(string? message, Exception? innerException)
+        public YuniqlMigrationException(string message, Exception innerException)
         {
         }
 
