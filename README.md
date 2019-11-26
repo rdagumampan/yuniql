@@ -1,4 +1,4 @@
-# yuniql ![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql?style=flat-square) [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql?style=flat-square)](https://ci.appveyor.com/project/rdagumampan/yuniql/build/tests) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql?style=flat-square)](https://gitter.im/yuniql/yuniql) [![Stack Overflow](https://img.shields.io/badge/stack%20overflow-yuniql-green.svg?style=flat-square)](http://stackoverflow.com/questions/tagged/yuniql) [![Download latest build](https://img.shields.io/badge/Download-win--x64-green?style=flat-square)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) [![Download latest build](https://img.shields.io/badge/Download-linux--x64-green?style=flat-square)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly-linux-x64.zip)
+# yuniql ![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql?style=flat-square&logo=appveyor) [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql/build/tests) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql?style=flat-square)](https://gitter.im/yuniql/yuniql) [![Stack Overflow](https://img.shields.io/badge/stack%20overflow-yuniql-green.svg?style=flat-square)](http://stackoverflow.com/questions/tagged/yuniql) [![Download latest build](https://img.shields.io/badge/Download-win--x64-green?style=flat-square)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) [![Download latest build](https://img.shields.io/badge/Download-linux--x64-green?style=flat-square)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly-linux-x64.zip)
 
 
 >*** Disclaimer: **`yuniql`** is not yet officially released. Much of the claims here are still work in progress but nightly build have major features available.
@@ -118,8 +118,8 @@ For running migration from docker container, [see instructions here](https://git
 
 |Platform|Build Status|Docker Images|
 |---|---|---|
-|![win-x64](assets/linux_med.png) **linux-x64**|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square?logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
-|![linux-x64](assets/win_med.png) **windows-x64**|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square?logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
+|![win-x64](assets/linux_med.png) **linux-x64**|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
+|![linux-x64](assets/win_med.png) **windows-x64**|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
 
 ## License
 
