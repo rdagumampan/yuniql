@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29326.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.MySql", "src\Yuniql.MySql.csproj", "{2B5F4527-7D07-4E7F-934F-FE76E168EF23}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.MySql.Tests", "tests\Yuniql.MySql.Tests.csproj", "{36D9BD51-1D65-47E9-B074-7B865C45D2A8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B5F4527-7D07-4E7F-934F-FE76E168EF23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B5F4527-7D07-4E7F-934F-FE76E168EF23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B5F4527-7D07-4E7F-934F-FE76E168EF23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B5F4527-7D07-4E7F-934F-FE76E168EF23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36D9BD51-1D65-47E9-B074-7B865C45D2A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36D9BD51-1D65-47E9-B074-7B865C45D2A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36D9BD51-1D65-47E9-B074-7B865C45D2A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36D9BD51-1D65-47E9-B074-7B865C45D2A8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1F1A9329-BE78-4EEC-9042-2D663B1B7272}
+	EndGlobalSection
+EndGlobal

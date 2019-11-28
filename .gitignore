@@ -52,3 +52,11 @@ yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-
 nupkgs
 **/nupkgs
 
+/yuniql-plugins/mysql/src/.vs/Yuniql.PostgreSQL
+/yuniql-plugins/mysql/src/bin
+/yuniql-plugins/mysql/src/obj
+/yuniql-plugins/mysql/tests/bin
+/yuniql-plugins/mysql/tests/obj
+/yuniql-plugins/mysql/tests/Yuniql.PosgreSql.Tests.csproj.user
+/yuniql-plugins/postgresql/.vs/Yuniql.MySql/v16
+/yuniql-plugins/mysql/.vs/Yuniql.MySql

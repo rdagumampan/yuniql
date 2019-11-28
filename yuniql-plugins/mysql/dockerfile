@@ -1,0 +1,17 @@
+﻿FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-env
+
+WORKDIR /code
+
+#copy local files into app or clone github repo
+COPY ./src ./yuniql-plugins/postgresql/src
+COPY ../../yuniql-core ./yuniql-core
+COPY ../../yuniql-platformtests ./yuniql-platformtests
+
+#RUN git clone https://github.com/rdagumampan/yuniql.git /code
+
+#build and run integration tests
+WORKDIR /code/yuniql-plugins/postgresql/src
+RUN ls
+
+RUN dotnet restore
+RUN dotnet build
