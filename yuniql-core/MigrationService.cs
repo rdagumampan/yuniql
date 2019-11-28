@@ -282,7 +282,6 @@ namespace Yuniql.Core
             sqlScriptFiles
                 .ForEach(scriptFile =>
             {
-                //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
                 var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
                 var sqlStatements = _dataService.BreakStatements(sqlStatementRaw);
     ;

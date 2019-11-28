@@ -1,7 +1,5 @@
 ﻿using Yuniql.Extensibility;
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using Npgsql;
 
@@ -85,40 +83,46 @@ namespace Yuniql.PostgreSql
         public string CreateDbObjectScript(string objectName)
         {
             return $@"
-CREATE PROCEDURE {objectName}()
-LANGUAGE SQL
-AS $$
-SELECT 1
-$$;
+CREATE TABLE public.{objectName} (
+	VisitorID SERIAL NOT NULL,
+	FirstName VARCHAR(255) NULL,
+	LastName VARCHAR(255) NULL,
+	Address VARCHAR(255) NULL,
+	Email VARCHAR(255) NULL
+);
 ";
         }
 
         public string CreateDbObjectScriptWithError(string objectName)
         {
             return $@"
-CREATE PROCEDURE {objectName}()
-LANGUAGE SQL
-AS $$
-SELECT 1/0 WITH SYNTAX ERROR
-$$;
+CREATE TABLE public.{objectName} (
+	VisitorID SERIAL NOT NULL,
+	FirstName VARCHAR(255) NULL,
+	LastName VARCHAR(255) NULL,
+	Address VARCHAR(255) NULL,
+	Email [VARCHAR](255) NULL
+);
 ";
         }
 
         public string CreateTokenizedDbObjectScript(string objectName)
         {
             return $@"
-CREATE PROCEDURE {objectName}_${{Token1}}_${{Token2}}_${{Token3}}()
-LANGUAGE SQL
-AS $$
-SELECT 1
-$$;
+CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
+	VisitorID SERIAL NOT NULL,
+	FirstName VARCHAR(255) NULL,
+	LastName VARCHAR(255) NULL,
+	Address VARCHAR(255) NULL,
+	Email VARCHAR(255) NULL
+);
 ";
         }
 
         public string CreateBulkTableScript(string tableName)
         {
             return $@"
-CREATE TABLE {tableName}(
+CREATE TABLE public.{tableName}(
 	FirstName VARCHAR(50) NULL,
 	LastName VARCHAR(50) NULL,
 	BirthDate TIMESTAMP NULL
@@ -129,88 +133,99 @@ CREATE TABLE {tableName}(
         public string CreateSingleLineScript(string objectName)
         {
             return $@"
-CREATE PROCEDURE {objectName}()
-LANGUAGE SQL
-AS $$
-SELECT 1
-$$;
+CREATE TABLE public.{objectName} (
+	VisitorID SERIAL NOT NULL,
+	FirstName VARCHAR(255) NULL,
+	LastName VARCHAR(255) NULL,
+	Address VARCHAR(255) NULL,
+	Email VARCHAR(255) NULL
+);
 ";
         }
 
         public string CreateSingleLineScriptWithoutTerminator(string objectName)
         {
             return $@"
-CREATE PROCEDURE {objectName}()
-LANGUAGE SQL
-AS $$
-SELECT 1
-$$;
+CREATE TABLE public.{objectName} (
+	VisitorID SERIAL NOT NULL,
+	FirstName VARCHAR(255) NULL,
+	LastName VARCHAR(255) NULL,
+	Address VARCHAR(255) NULL,
+	Email VARCHAR(255) NULL
+)
 ";
         }
 
         public string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-CREATE PROCEDURE {objectName1}()
-LANGUAGE SQL
-AS $$
-SELECT 1
-$$;
+CREATE TABLE public.{objectName1} (
+	VisitorID SERIAL NOT NULL,
+	FirstName VARCHAR(255) NULL,
+	LastName VARCHAR(255) NULL,
+	Address VARCHAR(255) NULL,
+	Email VARCHAR(255) NULL
+);
 
-CREATE PROCEDURE {objectName2}()
-LANGUAGE SQL
-AS $$
-SELECT 1
-$$;
+CREATE VIEW public.{objectName2} AS
+SELECT VisitorId, FirstName, LastName, Address, Email
+FROM  public.{objectName1};
 
-CREATE PROCEDURE {objectName3}()
-LANGUAGE SQL
-AS $$
-SELECT 1
-$$;
+CREATE OR REPLACE FUNCTION public.{objectName3} ()
+RETURNS integer AS ${objectName3}$
+declare
+	total integer;
+BEGIN
+   SELECT count(*) into total FROM public.{objectName1};
+   RETURN total;
+END;
+${objectName3}$ LANGUAGE plpgsql
 ";
         }
 
         public string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-CREATE PROCEDURE {objectName1}()
-LANGUAGE SQL
-AS $$
-    --this is a comment with GO as part of the sentence (ALL CAPS)
-    SELECT 1
-$$;
+CREATE TABLE public.{objectName1} (
+	VisitorID SERIAL NOT NULL,
+	FirstName VARCHAR(255) NULL,
+	LastName VARCHAR(255) NULL,
+	Address VARCHAR(255) NULL,
+	Email VARCHAR(255) NULL
+);
 
-CREATE PROCEDURE {objectName2}()
-LANGUAGE SQL
-AS $$
-    --this is a comment with go as part of the sentence (small caps)
-    SELECT 1
-$$;
+CREATE VIEW public.{objectName2} AS
+SELECT VisitorId, FirstName, LastName, Address, Email
+FROM  public.{objectName1};
 
-CREATE PROCEDURE {objectName3}()
-LANGUAGE SQL
-AS $$
-    --this is a comment with Go as part of the sentence (Pascal)
-    SELECT 1
-$$;
+CREATE OR REPLACE FUNCTION public.{objectName3} ()
+RETURNS integer AS ${objectName3}$
+declare
+	total integer;
+BEGIN
+    --this is a comment with terminator ; as part of the sentence;
+    --;this is a comment with terminator ; as part of the sentence
+   SELECT count(*) into total FROM public.{objectName1};
+   RETURN total;
+END;
+${objectName3}$ LANGUAGE plpgsql
 ";
         }
 
         public string CreateMultilineScriptWithError(string objectName1, string objectName2)
         {
             return $@"
-CREATE PROCEDURE {objectName1}()
-LANGUAGE SQL
-AS $$
-    SELECT 1
-$$;
+CREATE TABLE public.{objectName1} (
+	VisitorID SERIAL NOT NULL,
+	FirstName VARCHAR(255) NULL,
+	LastName VARCHAR(255) NULL,
+	Address VARCHAR(255) NULL,
+	Email VARCHAR(255) NULL
+);
 
-CREATE PROCEDURE {objectName2}()
-LANGUAGE SQL
-AS $$
-    SELECT 1
-$$;
+CREATE VIEW public.{objectName2} AS
+SELECT VisitorId, FirstName, LastName, Address, Email
+FROM  public.{objectName1};
 
 SELECT 1/0;
 ";
@@ -225,9 +240,9 @@ SELECT 1/0;
         public string CreateCleanupScript()
         {
             return @"
-DROP PROCEDURE script1();
-DROP PROCEDURE script2();
-DROP PROCEDURE script3();
+DROP TABLE script1;
+DROP TABLE script2;
+DROP TABLE script3;
 ";
         }
     }
