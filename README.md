@@ -120,6 +120,7 @@ For running migration from docker container, [see instructions here](https://git
 |---|---|---|
 |SqlServer|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)|Sql Server 2017, Azure SQL Database|
 |PostgreSql|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)|PostgreSql v9.6|
+|MySql|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)|MySql v5.7|
 |Docker image linux-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
 |Docker imiage win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
 
