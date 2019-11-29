@@ -1,5 +1,0 @@
-skip_commits:
-  files:
-    - .github/
-    - LICENSE
-    - README.md
