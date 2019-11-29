@@ -20,7 +20,7 @@ namespace Yuniql.MySql
             if (string.IsNullOrEmpty(connectionString))
             {
                 //use this when running against docker container with published port 5432
-                return $"Host=localhost;Port=5432;Username=app;Password=app;Database={databaseName}";
+                return $"Host=localhost;Port=3306;Username=root;Password=app;Database={databaseName}";
             }
 
             var result = new MySqlConnectionStringBuilder(connectionString);
@@ -57,25 +57,20 @@ namespace Yuniql.MySql
         {
             //use the target user database to migrate, this is part of orig connection string
             var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
-            var sqlStatement = $"SELECT 1 from pg_database WHERE datname ='{connectionStringBuilder.Database}';";
+            var sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{connectionStringBuilder.Database}';";
 
             //switch database into master/system database where db catalogs are maintained
-            connectionStringBuilder.Database = "postgres";
+            connectionStringBuilder.Database = "INFORMATION_SCHEMA";
             return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
         }
 
         public bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
             //check from procedures, im just lazy to figure out join in pgsql :)
-            var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName.ToLower()}'";
+            //var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName.ToLower()}'";
+            var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
+            var sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{connectionStringBuilder.Database}' AND TABLE_NAME = '{objectName}' LIMIT 1;";
             bool result = QuerySingleBool(connectionString, sqlStatement);
-
-            //check from tables, im just lazy to figure out join in pgsql :)
-            if (!result)
-            {
-                sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName.ToLower()}'";
-                result = QuerySingleBool(connectionString, sqlStatement);
-            }
 
             return result;
         }
@@ -84,7 +79,7 @@ namespace Yuniql.MySql
         {
             return $@"
 CREATE TABLE {objectName} (
-	VisitorID INT AUTO_INCREMENT NOT NULL,
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
@@ -93,11 +88,12 @@ CREATE TABLE {objectName} (
 ";
         }
 
+        //https://stackoverflow.com/questions/42436932/transactions-not-working-for-my-mysql-db
         public string CreateDbObjectScriptWithError(string objectName)
         {
             return $@"
 CREATE TABLE {objectName} (
-	VisitorID SERIAL NOT NULL,
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY_KEY1, #this is a faulty line
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
@@ -110,7 +106,7 @@ CREATE TABLE {objectName} (
         {
             return $@"
 CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
-	VisitorID SERIAL NOT NULL,
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
@@ -134,7 +130,7 @@ CREATE TABLE {tableName}(
         {
             return $@"
 CREATE TABLE {objectName} (
-	VisitorID INT AUTO_INCREMENT NOT NULL,
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
@@ -147,7 +143,7 @@ CREATE TABLE {objectName} (
         {
             return $@"
 CREATE TABLE {objectName} (
-	VisitorID INT AUTO_INCREMENT NOT NULL,
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
@@ -160,7 +156,7 @@ CREATE TABLE {objectName} (
         {
             return $@"
 CREATE TABLE {objectName1} (
-	VisitorID INT AUTO_INCREMENT NOT NULL,
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
@@ -171,15 +167,13 @@ CREATE VIEW {objectName2} AS
 SELECT VisitorId, FirstName, LastName, Address, Email
 FROM  {objectName1};
 
-CREATE OR REPLACE FUNCTION {objectName3} ()
-RETURNS integer AS ${objectName3}$
-declare
-	total integer;
+CREATE FUNCTION {objectName3} ()
+RETURNS INT DETERMINISTIC
 BEGIN
-   SELECT count(*) into total FROM {objectName1};
-   RETURN total;
-END;
-${objectName3}$ LANGUAGE plpgsql
+    DECLARE total INT;   
+    SELECT COUNT(*) INTO total FROM {objectName1};
+    RETURN total;
+END
 ";
         }
 
@@ -187,7 +181,7 @@ ${objectName3}$ LANGUAGE plpgsql
         {
             return $@"
 CREATE TABLE {objectName1} (
-	VisitorID INT AUTO_INCREMENT NOT NULL,
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
@@ -198,17 +192,15 @@ CREATE VIEW {objectName2} AS
 SELECT VisitorId, FirstName, LastName, Address, Email
 FROM  {objectName1};
 
-CREATE OR REPLACE FUNCTION {objectName3} ()
-RETURNS integer AS ${objectName3}$
-declare
-	total integer;
-BEGIN
-    --this is a comment with terminator ; as part of the sentence;
-    --;this is a comment with terminator ; as part of the sentence
-   SELECT count(*) into total FROM {objectName1};
-   RETURN total;
+CREATE FUNCTION {objectName3} ()
+RETURNS INT DETERMINISTIC
+BEGIN   
+    DECLARE total INT;   --this is a comment with terminator ; as part of the sentence;
+    
+    /*;this is a comment with terminator ; as part of the sentence*/
+    SELECT COUNT(*) INTO total FROM {objectName1};
+    RETURN total;
 END;
-${objectName3}$ LANGUAGE plpgsql
 ";
         }
 
@@ -216,7 +208,7 @@ ${objectName3}$ LANGUAGE plpgsql
         {
             return $@"
 CREATE TABLE {objectName1} (
-	VisitorID INT AUTO_INCREMENT NOT NULL,
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,

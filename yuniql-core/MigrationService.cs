@@ -17,8 +17,8 @@ namespace Yuniql.Core
         private readonly ITraceService _traceService;
 
         public MigrationService(
-            IDataService dataService, 
-            IBulkImportService bulkImportService, 
+            IDataService dataService,
+            IBulkImportService bulkImportService,
             ITokenReplacementService tokenReplacementService,
             IDirectoryService directoryService,
             IFileService fileService,
@@ -141,7 +141,7 @@ namespace Yuniql.Core
             return string.Compare(cv.SemVersion, tv.SemVersion) == 1 || //db has more updated than local version
                 string.Compare(cv.SemVersion, tv.SemVersion) == 0;      //db has the same version as local version
         }
-        
+
         public string GetCurrentVersion()
         {
             return _dataService.GetCurrentVersion();
@@ -167,7 +167,9 @@ namespace Yuniql.Core
             {
                 //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
                 var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
-                var sqlStatements = _dataService.BreakStatements(sqlStatementRaw);
+                var sqlStatements = _dataService.BreakStatements(sqlStatementRaw)
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .ToList();
 
                 sqlStatements.ForEach(sqlStatement =>
                 {
@@ -283,8 +285,10 @@ namespace Yuniql.Core
                 .ForEach(scriptFile =>
             {
                 var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
-                var sqlStatements = _dataService.BreakStatements(sqlStatementRaw);
-    ;
+                var sqlStatements = _dataService.BreakStatements(sqlStatementRaw)
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .ToList();
+                ;
                 sqlStatements.ForEach(sqlStatement =>
                 {
                     //replace tokens with values from the cli

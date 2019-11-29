@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using Yuniql.Extensibility;
-using MySql.Data;
 using MySql.Data.MySqlClient;
 
 namespace Yuniql.MySql
@@ -170,10 +169,10 @@ namespace Yuniql.MySql
         {
             //use the target user database to migrate, this is part of orig connection string
             var connectionStringBuilder = new MySqlConnectionStringBuilder(_connectionString);
-            var sqlStatement = $"SELECT 1 from pg_database WHERE datname ='{connectionStringBuilder.Database}';";
+            var sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{connectionStringBuilder.Database}';";
 
             //switch database into master/system database where db catalogs are maintained
-            connectionStringBuilder.Database = "postgres";
+            connectionStringBuilder.Database = "INFORMATION_SCHEMA";
             return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
         }
 
@@ -184,13 +183,14 @@ namespace Yuniql.MySql
             var sqlStatement = $"CREATE DATABASE {connectionStringBuilder.Database};";
 
             //switch database into master/system database where db catalogs are maintained
-            connectionStringBuilder.Database = "postgres";
+            connectionStringBuilder.Database = "INFORMATION_SCHEMA";
             ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
         }
 
         public bool IsTargetDatabaseConfigured()
         {
-            var sqlStatement = $"SELECT 1 FROM pg_tables WHERE  tablename = '__yuniqldbversion'";
+            var connectionStringBuilder = new MySqlConnectionStringBuilder(_connectionString);
+            var sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{connectionStringBuilder.Database}' AND TABLE_NAME = '__YuniqlDbVersion' LIMIT 1;";
             var result = QuerySingleBool(_connectionString, sqlStatement);
 
             return result;
@@ -200,15 +200,15 @@ namespace Yuniql.MySql
         {
             var connectionStringBuilder = new MySqlConnectionStringBuilder(_connectionString);
             var sqlStatement = $@"
-	            CREATE TABLE __YuniqlDbVersion(
-		            Id SMALLSERIAL PRIMARY KEY NOT NULL,
-		            Version VARCHAR(32) NOT NULL,
-		            DateInsertedUtc TIMESTAMP NOT NULL,
-		            LastUpdatedUtc TIMESTAMP NOT NULL,
-		            LastUserId VARCHAR(128) NOT NULL,
-		            Artifact BYTEA NULL,
-		            CONSTRAINT IX___YuniqlDbVersion UNIQUE (Version)
-	            );
+                CREATE TABLE __YuniqlDbVersion (
+	                Id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	                Version VARCHAR(32) NOT NULL,
+	                DateInsertedUtc TIMESTAMP NOT NULL,
+	                LastUpdatedUtc TIMESTAMP NOT NULL,
+	                LastUserId VARCHAR(128) NOT NULL,
+	                Artifact BLOB NULL,
+	                CONSTRAINT IX___YuniqlDbVersion UNIQUE (Version)
+                );
             ";
 
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
@@ -227,7 +227,7 @@ namespace Yuniql.MySql
 
         public string GetCurrentVersion()
         {
-            var sqlStatement = $"SELECT Version FROM __yuniqldbversion ORDER BY Id DESC LIMIT 1;";
+            var sqlStatement = $"SELECT Version FROM __YuniqlDbVersion ORDER BY Id DESC LIMIT 1;";
             return QuerySingleString(_connectionString, sqlStatement);
         }
 
@@ -235,7 +235,7 @@ namespace Yuniql.MySql
         {
             var result = new List<DbVersion>();
 
-            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM __yuniqldbversion ORDER BY Version ASC;";
+            var sqlStatement = $"SELECT Id, Version, DateInsertedUtc, LastUserId FROM __YuniqlDbVersion ORDER BY Version ASC;";
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new MySqlConnection(_connectionString))
@@ -265,7 +265,7 @@ namespace Yuniql.MySql
 
         public void UpdateVersion(IDbConnection activeConnection, IDbTransaction transaction, string version)
         {
-            var incrementVersionSqlStatement = $"INSERT INTO __yuniqldbversion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{version}', NOW(), NOW(), user);";
+            var incrementVersionSqlStatement = $"INSERT INTO __YuniqlDbVersion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{version}', NOW(), NOW(), USER());";
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
 
             var command = activeConnection.CreateCommand();
