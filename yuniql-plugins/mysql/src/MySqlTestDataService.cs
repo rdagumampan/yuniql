@@ -66,11 +66,24 @@ namespace Yuniql.MySql
 
         public bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
-            //check from procedures, im just lazy to figure out join in pgsql :)
-            //var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName.ToLower()}'";
+            //check from tables, im just lazy to figure out join :)
             var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
             var sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{connectionStringBuilder.Database}' AND TABLE_NAME = '{objectName}' LIMIT 1;";
             bool result = QuerySingleBool(connectionString, sqlStatement);
+
+            //check from views, im just lazy to figure out join :)
+            if (!result)
+            {
+                sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = '{connectionStringBuilder.Database}' AND TABLE_NAME = '{objectName}' LIMIT 1;";
+                result = QuerySingleBool(connectionString, sqlStatement);
+            }
+
+            //check from functions, im just lazy to figure out join :)
+            if (!result)
+            {
+                sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = '{connectionStringBuilder.Database}' AND ROUTINE_NAME = '{objectName}' LIMIT 1;";
+                result = QuerySingleBool(connectionString, sqlStatement);
+            }
 
             return result;
         }
@@ -195,7 +208,7 @@ FROM  {objectName1};
 CREATE FUNCTION {objectName3} ()
 RETURNS INT DETERMINISTIC
 BEGIN   
-    DECLARE total INT;   --this is a comment with terminator ; as part of the sentence;
+    DECLARE total INT;   -- this is a comment with terminator ; as part of the sentence;
     
     /*;this is a comment with terminator ; as part of the sentence*/
     SELECT COUNT(*) INTO total FROM {objectName1};
