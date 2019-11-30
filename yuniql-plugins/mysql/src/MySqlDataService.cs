@@ -203,8 +203,8 @@ namespace Yuniql.MySql
                 CREATE TABLE __YuniqlDbVersion (
 	                Id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	                Version VARCHAR(32) NOT NULL,
-	                DateInsertedUtc TIMESTAMP NOT NULL,
-	                LastUpdatedUtc TIMESTAMP NOT NULL,
+	                DateInsertedUtc DATETIME NOT NULL,
+	                LastUpdatedUtc DATETIME NOT NULL,
 	                LastUserId VARCHAR(128) NOT NULL,
 	                Artifact BLOB NULL,
 	                CONSTRAINT IX___YuniqlDbVersion UNIQUE (Version)
