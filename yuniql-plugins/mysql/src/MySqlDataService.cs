@@ -208,7 +208,7 @@ namespace Yuniql.MySql
 	                LastUserId VARCHAR(128) NOT NULL,
 	                Artifact BLOB NULL,
 	                CONSTRAINT IX___YuniqlDbVersion UNIQUE (Version)
-                );
+                ) ENGINE=InnoDB;
             ";
 
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");

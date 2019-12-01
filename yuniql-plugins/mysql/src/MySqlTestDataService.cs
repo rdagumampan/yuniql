@@ -91,13 +91,14 @@ namespace Yuniql.MySql
         public string CreateDbObjectScript(string objectName)
         {
             return $@"
+SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 ";
         }
 
@@ -105,76 +106,82 @@ CREATE TABLE {objectName} (
         public string CreateDbObjectScriptWithError(string objectName)
         {
             return $@"
+SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY_KEY1, #this is a faulty line
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email [VARCHAR](255) NULL
-);
+) ENGINE=InnoDB;
 ";
         }
 
         public string CreateTokenizedDbObjectScript(string objectName)
         {
             return $@"
+SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 ";
         }
 
         public string CreateBulkTableScript(string tableName)
         {
             return $@"
+SET AUTOCOMMIT = 0;
 CREATE TABLE {tableName}(
 	FirstName VARCHAR(50) NULL,
 	LastName VARCHAR(50) NULL,
-	BirthDate TIMESTAMP NULL
-);
+	BirthDate DATETIME NULL
+) ENGINE=InnoDB;
 ";
         }
 
         public string CreateSingleLineScript(string objectName)
         {
             return $@"
+SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 ";
         }
 
         public string CreateSingleLineScriptWithoutTerminator(string objectName)
         {
             return $@"
+SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-)
+) ENGINE=InnoDB
 ";
         }
 
         public string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
+SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName1} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 
 CREATE VIEW {objectName2} AS
 SELECT VisitorId, FirstName, LastName, Address, Email
@@ -193,13 +200,14 @@ END
         public string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
+SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName1} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 
 CREATE VIEW {objectName2} AS
 SELECT VisitorId, FirstName, LastName, Address, Email
@@ -220,13 +228,14 @@ END;
         public string CreateMultilineScriptWithError(string objectName1, string objectName2)
         {
             return $@"
+SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName1} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 
 CREATE VIEW {objectName2} AS
 SELECT VisitorId, FirstName, LastName, Address, Email
@@ -245,6 +254,7 @@ SELECT 1/0;
         public string CreateCleanupScript()
         {
             return @"
+SET AUTOCOMMIT = 0;
 DROP TABLE script1;
 DROP TABLE script2;
 DROP TABLE script3;

@@ -1,10 +1,6 @@
 ﻿using System.Data;
 using System.IO;
 using Yuniql.Extensibility;
-using System.Collections.Generic;
-using MySql.Data;
-using System;
-using System.Linq;
 using MySql.Data.MySqlClient;
 
 //https://github.com/22222/CsvTextFieldParser
@@ -28,30 +24,32 @@ namespace Yuniql.MySql
         public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath)
         {
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(csvFileFullPath);
+            var dataTable = ParseCsvFile(connection, csvFileFullPath);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(connection, transaction, dataTable);
         }
 
-        private DataTable ParseCsvFile(string csvFileFullPath)
+        private DataTable ParseCsvFile(IDbConnection connection, string csvFileFullPath)
         {
             var csvDatatable = new DataTable();
             csvDatatable.TableName = Path.GetFileNameWithoutExtension(csvFileFullPath);
+
+            string query = $"SELECT * FROM " + csvDatatable.TableName + " LIMIT 0;";
+            using (var adapter = new MySqlDataAdapter(query, connection as MySqlConnection))
+            {
+                adapter.Fill(csvDatatable);
+            };
 
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
                 csvReader.Delimiters = (new string[] { "," });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
-                string[] csvColumns = csvReader.ReadFields();
-                foreach (string csvColumn in csvColumns)
-                {
-                    var dataColumn = new DataColumn(csvColumn);
-                    dataColumn.AllowDBNull = true;
-                    csvDatatable.Columns.Add(dataColumn);
-                }
+                //skipped the first row
+                csvReader.ReadFields();
 
+                //process data rows
                 while (!csvReader.EndOfData)
                 {
                     string[] fieldData = csvReader.ReadFields();
@@ -69,57 +67,32 @@ namespace Yuniql.MySql
         }
 
         //https://dev.mysql.com/doc/connector-net/en/connector-net-programming-bulk-loader.html
+        //https://stackoverflow.com/questions/48018614/insert-datatable-into-a-mysql-table-using-c-sharp
 
         //NOTE: This is not the most typesafe and performant way to do this and this is just to demonstrate
         //possibility to bulk import data in custom means during migration execution
-        //https://www.npgsql.org/doc/copy.html
         private void BulkCopyWithDataTable(IDbConnection connection, IDbTransaction transaction, DataTable dataTable)
         {
             _traceService.Info($"MySqlBulkImportService: Started copying data into destination table {dataTable.TableName}");
 
-            //remove the first row as its the column names
-            dataTable.Rows[0].Delete();
-
-            //var bulkLoader = new MySqlBulkLoader(connection as MySqlConnection);
-            //bulkLoader.TableName = dataTable.TableName;
-            
-            _traceService.Info($"MySqlBulkImportService: Finished copying data into destination table {dataTable.TableName}");
-        }
-
-        //https://www.npgsql.org/doc/types/basic.html
-        private IDictionary<string, ColumnDefinition> GetDestinationSchema(string tableName)
-        {
-            var result = new Dictionary<string, ColumnDefinition>();
-            using (var connection = new MySqlConnection(_connectionString))
+            using (var cmd = new MySqlCommand())
             {
-                connection.Open();
+                cmd.Connection = connection as MySqlConnection;
+                cmd.Transaction = transaction as MySqlTransaction;
+                cmd.CommandText = $"SELECT * FROM " + dataTable.TableName + " LIMIT 0;";
 
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = $"SELECT column_name, data_type FROM information_schema.COLUMNS WHERE TABLE_NAME = '{tableName.ToLower()}'";
-                command.CommandTimeout = 0;
-
-                using (var reader = command.ExecuteReader())
+                using (var adapter = new MySqlDataAdapter(cmd))
                 {
-                    while (reader.Read())
+                    adapter.UpdateBatchSize = 10000;
+                    using (var cb = new MySqlCommandBuilder(adapter))
                     {
-                        result.Add(reader.GetString(0), new ColumnDefinition
-                        {
-                            ColumnName = reader.GetString(0),
-                            DataType = reader.GetString(1)
-                        });
+                        cb.SetAllValues = true;
+                        adapter.Update(dataTable);
                     }
-                }
+                };
+
+                _traceService.Info($"MySqlBulkImportService: Finished copying data into destination table {dataTable.TableName}");
             }
-
-            return result;
         }
-    }
-
-    public class ColumnDefinition
-    {
-        public string ColumnName { get; set; }
-        public string DataType { get; set; }
     }
 }
-
