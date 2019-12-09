@@ -111,7 +111,7 @@ yuniql -d | --debug
 You may submit ideas for improvement or report a bug by [creating an issue](https://github.com/rdagumampan/yuniql/issues/new). <br>
 If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/community). Alternatively, tag [#yuniql](https://twitter.com/) on Twitter.
 
-## To track docker build status
+## To track docker builds and platform tests
 For running migration from docker container, [see instructions here](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-a-docker-container)
 
 |Platform|Build Status|Description|
