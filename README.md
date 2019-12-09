@@ -106,7 +106,7 @@ yuniql -d | --debug
 
 *** planned or being evaluated/developer/tested
 
-## To contribute or ask for help
+## To ask for help or contribute
 
 You may submit ideas for improvement or report a bug by [creating an issue](https://github.com/rdagumampan/yuniql/issues/new). <br>
 If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/community). Alternatively, tag [#yuniql](https://twitter.com/) on Twitter.
