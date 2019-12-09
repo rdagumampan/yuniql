@@ -8,24 +8,9 @@
 
 **yuniql** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR). Docker container images are also [available](https://cloud.docker.com/u/rdagumampan/repository/docker/rdagumampan/yuniql) for seamless continuous delivery of database changes in Linux environments.
 
-## To start using **`yuniql`**
+## To start using **`yuniql`** on Sql Server
 
-1. Clone sample project
-	```bash
-	git clone https://github.com/rdagumampan/yuniql c:\temp\yuniql
-	cd c:\temp\yuniql\sqlserver-samples\visitph-db
-	```
-
-2. Download latest `yuniql` build<br>
-
-	```bash
-	powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip -OutFile  "c:\temp\yuniql\yuniql-nightly.zip"
-	powershell Expand-Archive "c:\temp\yuniql\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql\sqlserver-samples\visitph-db"
-	```
-
-	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) and extract to desired directory.
-
-3. Set default connection string to target database<br>
+1. Prepare the connection string to target database<br>
 	- Using an sql account<br>
 	`Server=<server-instance>,[<port-number>];Database=VisitorDB;User Id=<sql-user-name>;Password=<sql-user-password>`	
 	- Using trusted connection<br>
@@ -34,6 +19,20 @@
 	```bash
 	SETX YUNIQL_CONNECTION_STRING "Server=.\;Database=VisitorDB;Trusted_Connection=True;"
 	```
+2. Clone sample project
+	```bash
+	git clone https://github.com/rdagumampan/yuniql c:\temp\yuniql
+	cd c:\temp\yuniql\sqlserver-samples\visitph-db
+	```
+
+3. Download latest `yuniql` build<br>
+
+	```bash
+	powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip -OutFile  "c:\temp\yuniql\yuniql-nightly.zip"
+	powershell Expand-Archive "c:\temp\yuniql\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql\sqlserver-samples\visitph-db"
+	```
+
+	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) and extract to desired directory.
 
 4. Run migration<br>
 The following commands `yuniql` to discover the project directory, creates the target database if it doesn't exist and runs all migration steps in the order they are listed. These includes `.sql` files, directories, subdirectories, and csv files. Tokens are also replaced via `-k` parameters.
