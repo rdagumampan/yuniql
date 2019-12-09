@@ -10,7 +10,7 @@
 
 ## To start using **`yuniql`** on Sql Server
 
-1. Prepare the connection string to target database<br>
+1. Prepare the connection string to your target sqlserver instance
 	- Using an sql account<br>
 	`Server=<server-instance>,[<port-number>];Database=VisitorDB;User Id=<sql-user-name>;Password=<sql-user-password>`	
 	- Using trusted connection<br>
