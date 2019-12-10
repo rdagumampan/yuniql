@@ -4,7 +4,7 @@
 
 <img align="right" src="assets/yuniql-logo.png" width="200">
 
-**yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories and scripts are stored transparently as `.sql` files. yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
+**yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories and scripts are stored transparently as `.sql` files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
 
 **yuniql** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR). Docker container images are also [available](https://cloud.docker.com/u/rdagumampan/repository/docker/rdagumampan/yuniql) for seamless continuous delivery of database changes in Linux environments.
 
@@ -89,7 +89,7 @@ yuniql -d | --debug
 ## To dig deeper for advanced use cases
 
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
-* [How to setup new database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
+* [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
 * [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
 * [How to migrate from docker container](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-a-docker-container)
