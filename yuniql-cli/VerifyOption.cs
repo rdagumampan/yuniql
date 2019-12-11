@@ -27,5 +27,9 @@ namespace Yuniql.CLI
         //yuniql verify -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3" | --token "...,...,..."
         [Option('k', "token", Required = false, HelpText = "Replace tokens using the passed key-value pairs", Separator = ',')]
         public IEnumerable<string> Tokens { get; set; } = new List<string>();
+
+        //yuniql run --delimeter "," | --delimeter "|"
+        [Option("delimeter", Required = false, HelpText = "Bulk import file delimeter", Default = ",")]
+        public string Delimeter { get; set; } = ",";
     }
 }

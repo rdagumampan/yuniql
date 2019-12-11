@@ -38,7 +38,7 @@ namespace Yuniql.PlatformTests
         }
 
         [TestMethod]
-        public void Test_Bulk_Import()
+        public void Test_Bulk_Import_With_Default_Delimter()
         {
             //arrange
             var workingPath = GetOrCreateWorkingPath();
@@ -71,7 +71,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMinorVersion(workingPath, null);
             string v102Directory = Path.Combine(workingPath, "v1.02");
             _testDataService.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02.sql"), _testDataService.CreateDbObjectScript($"test_v1_02"));
-            File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.csv"), Path.Combine(v102Directory, "TestCsv.csv"));
+            File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.dat"), Path.Combine(v102Directory, "TestCsv.dat"));
 
             //act - bulk load csv files
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
@@ -79,6 +79,50 @@ namespace Yuniql.PlatformTests
             //assert
             _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_02").ShouldBeTrue();
             _testDataService.CheckIfDbObjectExist(connectionString, "TestCsv").ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void Test_Bulk_Import_With_Pipe_Delimter()
+        {
+            //arrange
+            var workingPath = GetOrCreateWorkingPath();
+            var databaseName = new DirectoryInfo(workingPath).Name;
+            var connectionString = _testDataService.GetConnectionString(databaseName);
+
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(workingPath);
+
+            localVersionService.IncrementMajorVersion(workingPath, null);
+            string v100Directory = Path.Combine(workingPath, "v1.00");
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"test_v1_00.sql"), _testDataService.CreateDbObjectScript($"test_v1_00"));
+
+            localVersionService.IncrementMinorVersion(workingPath, null);
+            string v101Directory = Path.Combine(workingPath, "v1.01");
+            _testDataService.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_01.sql"), _testDataService.CreateDbObjectScript($"test_v1_01"));
+            _testDataService.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_02_TestPsv.sql"), _testDataService.CreateBulkTableScript("TestPsv"));
+
+            //act
+            var migrationService = _migrationServiceFactory.Create(_targetPlatform);
+            migrationService.Initialize(connectionString);
+            migrationService.Run(workingPath, "v1.01", autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "TestPsv").ShouldBeTrue();
+
+            //arrange - add new version with csv files
+            localVersionService.IncrementMinorVersion(workingPath, null);
+            string v102Directory = Path.Combine(workingPath, "v1.02");
+            _testDataService.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02.sql"), _testDataService.CreateDbObjectScript($"test_v1_02"));
+            File.Copy(Path.Combine(Environment.CurrentDirectory, "TestPsv.dat"), Path.Combine(v102Directory, "TestPsv.dat"));
+
+            //act - bulk load csv files
+            migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true, delimeter: "|");
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(connectionString, "test_v1_02").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(connectionString, "TestPsv").ShouldBeTrue();
         }
 
         [Ignore]

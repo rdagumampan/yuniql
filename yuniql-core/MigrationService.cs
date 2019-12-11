@@ -44,7 +44,8 @@ namespace Yuniql.Core
             string targetVersion,
             bool autoCreateDatabase,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
-            bool verifyOnly = false)
+            bool verifyOnly = false,
+            string delimeter = ",")
         {
             var connectionInfo = _dataService.GetConnectionInfo();
             var targetDatabaseName = connectionInfo.Database;
@@ -99,7 +100,7 @@ namespace Yuniql.Core
                             _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                             //runs all scripts int the vxx.xx folders and subfolders
-                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs);
+                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimeter);
 
                             //runs all scripts in the _draft folder and subfolders
                             RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs);
@@ -190,7 +191,8 @@ namespace Yuniql.Core
             List<string> dbVersions,
             string workingPath,
             string targetVersion,
-            List<KeyValuePair<string, string>> tokens = null)
+            List<KeyValuePair<string, string>> tokens,
+            string delimeter)
         {
             //excludes all versions already executed
             var versionDirectories = _directoryService.GetDirectories(workingPath, "v*.*")
@@ -229,7 +231,7 @@ namespace Yuniql.Core
                         RunMigrationScriptsInternal(connection, transaction, versionDirectory, tokens);
 
                         //import csv files into tables of the the same filename as the csv
-                        RunBulkImport(connection, transaction, versionDirectory);
+                        RunBulkImport(connection, transaction, versionDirectory, delimeter);
 
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
@@ -253,10 +255,11 @@ namespace Yuniql.Core
         private void RunBulkImport(
             IDbConnection connection,
             IDbTransaction transaction,
-            string versionFullPath)
+            string versionFullPath,
+            string delimter)
         {
             //execute all script files in the version folder
-            var bulkFiles = _directoryService.GetFiles(versionFullPath, "*.csv").ToList();
+            var bulkFiles = _directoryService.GetFiles(versionFullPath, "*.dat").ToList();
             bulkFiles.Sort();
 
             _traceService.Info($"Found the {bulkFiles.Count} bulk files on {versionFullPath}");
@@ -264,7 +267,7 @@ namespace Yuniql.Core
 
             bulkFiles.ForEach(csvFile =>
             {
-                _bulkImportService.Run(connection, transaction, csvFile);
+                _bulkImportService.Run(connection, transaction, csvFile, delimter);
                 _traceService.Info($"Imported bulk file {csvFile}.");
             });
         }

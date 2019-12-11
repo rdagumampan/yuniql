@@ -21,27 +21,23 @@ namespace Yuniql.SqlServer
             this._connectionString = connectionString;
         }
 
-        public void Run(IDbConnection connection, IDbTransaction transaction, string fileFullPath)
+        public void Run(IDbConnection connection, IDbTransaction transaction, string fileFullPath, string delimeter)
         {
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(fileFullPath);
+            var dataTable = ParseCsvFile(fileFullPath, delimeter);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(connection, transaction, dataTable);
-
-            //TODO: validate staging data against destination table schema defs
-
-            //TODO: transport staging data into destination table
         }
 
-        private DataTable ParseCsvFile(string csvFileFullPath)
+        private DataTable ParseCsvFile(string csvFileFullPath, string delimeter)
         {
             var csvDatatable = new DataTable();
             csvDatatable.TableName = Path.GetFileNameWithoutExtension(csvFileFullPath);
 
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
-                csvReader.Delimiters = (new string[] { "," });
+                csvReader.Delimiters = (new string[] { delimeter });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 string[] csvColumns = csvReader.ReadFields();

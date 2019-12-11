@@ -351,7 +351,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMajorVersion(workingPath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00.sql"), _testDataService.CreateDbObjectScript($"test_v1_00"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $".sql"), _testDataService.CreateBulkTableScript("TestCsv"));
-            File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.csv"), Path.Combine(Path.Combine(workingPath, "v1.00"), "TestCsv.csv"));
+            File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.dat"), Path.Combine(Path.Combine(workingPath, "v1.00"), "TestCsv.dat"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"test_v1_00_error.sql"), _testDataService.CreateDbObjectScriptWithError($"test_v1_00_error"));
 
             //act

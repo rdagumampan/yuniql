@@ -6,6 +6,6 @@ namespace Yuniql.Extensibility
     {
         void Initialize(string connectionString);
 
-        void Run(IDbConnection connection, IDbTransaction transaction, string fileFullPath);
+        void Run(IDbConnection connection, IDbTransaction transaction, string fileFullPath, string delimeter);
     }
 }

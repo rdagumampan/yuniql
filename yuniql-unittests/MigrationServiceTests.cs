@@ -42,7 +42,7 @@ namespace Yuniql.UnitTests
             dataService.Setup(s => s.UpdateVersion(connection.Object, transaction.Object, "v0.00"));
 
             var bulkImportService = new Mock<IBulkImportService>();
-            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv"));
+            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.dat", ","));
 
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
@@ -57,7 +57,7 @@ namespace Yuniql.UnitTests
 
             directoryService.Setup(s => s.GetDirectories(@"c:\temp\v0.00", "*", SearchOption.AllDirectories)).Returns(new string[] { });
 
-            directoryService.Setup(s => s.GetFiles(@"c:\temp\v0.00", "*.csv")).Returns(new string[] { @"c:\temp\v0.00\file.csv" });
+            directoryService.Setup(s => s.GetFiles(@"c:\temp\v0.00", "*.dat")).Returns(new string[] { @"c:\temp\v0.00\file.dat" });
 
             fileService.Setup(s => s.ReadAllText(@"c:\temp\_init\sql_init.sql")).Returns("SELECT 'init'");
             fileService.Setup(s => s.ReadAllText(@"c:\temp\_pre\sql_pre.sql")).Returns("SELECT 'pre'");
@@ -108,7 +108,7 @@ namespace Yuniql.UnitTests
             directoryService.Verify(s => s.GetFiles(@"c:\temp\_draft", "*.sql"));
             directoryService.Verify(s => s.GetFiles(@"c:\temp\v0.00", "*.sql"));
             directoryService.Verify(s => s.GetDirectories(@"c:\temp\v0.00", "*", SearchOption.AllDirectories));
-            directoryService.Verify(s => s.GetFiles(@"c:\temp\v0.00", "*.csv"));
+            directoryService.Verify(s => s.GetFiles(@"c:\temp\v0.00", "*.dat"));
 
             fileService.Verify(s => s.ReadAllText(@"c:\temp\_init\sql_init.sql"));
             fileService.Verify(s => s.ReadAllText(@"c:\temp\_pre\sql_pre.sql"));
@@ -159,7 +159,7 @@ namespace Yuniql.UnitTests
             dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'draft'", It.IsAny<IDbTransaction>()));
             dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", It.IsAny<IDbTransaction>()));
 
-            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv"));
+            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.dat", ","));
 
             dataService.Verify(s => s.UpdateVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00"));
 
