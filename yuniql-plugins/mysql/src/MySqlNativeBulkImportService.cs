@@ -23,7 +23,7 @@ namespace Yuniql.MySql
         //https://wiki.ispirer.com/sqlways/troubleshooting-guide/mysql/import/command-not-allowed-data-load
         //https://www.youtube.com/watch?v=XM2xx-PD4cg&vl=en
         //https://dev.mysql.com/doc/connector-net/en/connector-net-programming-bulk-loader.html
-        public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath)
+        public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath, string delimeter)
         {
             var tableName = Path.GetFileNameWithoutExtension(csvFileFullPath);
 
@@ -32,7 +32,7 @@ namespace Yuniql.MySql
             var bulkLoader = new MySqlBulkLoader(connection as MySqlConnection);
             bulkLoader.Local = true;
             bulkLoader.TableName = tableName;
-            bulkLoader.FieldTerminator = ",";
+            bulkLoader.FieldTerminator = delimeter;
             bulkLoader.LineTerminator = "\n";
             bulkLoader.FileName = csvFileFullPath;
             bulkLoader.NumberOfLinesToSkip = 1;

@@ -21,16 +21,16 @@ namespace Yuniql.MySql
             this._connectionString = connectionString;
         }
 
-        public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath)
+        public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath, string delimeter)
         {
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(connection, csvFileFullPath);
+            var dataTable = ParseCsvFile(connection, csvFileFullPath, delimeter);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(connection, transaction, dataTable);
         }
 
-        private DataTable ParseCsvFile(IDbConnection connection, string csvFileFullPath)
+        private DataTable ParseCsvFile(IDbConnection connection, string csvFileFullPath, string delimeter)
         {
             var csvDatatable = new DataTable();
             csvDatatable.TableName = Path.GetFileNameWithoutExtension(csvFileFullPath);
@@ -43,7 +43,7 @@ namespace Yuniql.MySql
 
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
-                csvReader.Delimiters = (new string[] { "," });
+                csvReader.Delimiters = (new string[] { delimeter });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 //skipped the first row

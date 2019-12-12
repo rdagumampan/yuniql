@@ -32,7 +32,7 @@
     </None>
     <PackageReference Include="MySql.Data" Version="8.0.18" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
-    <PackageReference Include="Yuniql.Extensibility" Version="0.1.0" />
+    <PackageReference Include="Yuniql.Extensibility" Version="0.5.0" />
     <None Include="favicon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 
