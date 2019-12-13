@@ -23,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestPsv.dat">
+    <None Update="TestPsv.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestCsv.dat">
+    <None Update="TestCsv.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

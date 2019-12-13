@@ -71,7 +71,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMinorVersion(workingPath, null);
             string v102Directory = Path.Combine(workingPath, "v1.02");
             _testDataService.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02.sql"), _testDataService.CreateDbObjectScript($"test_v1_02"));
-            File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.dat"), Path.Combine(v102Directory, "TestCsv.dat"));
+            File.Copy(Path.Combine(Environment.CurrentDirectory, "TestCsv.csv"), Path.Combine(v102Directory, "TestCsv.csv"));
 
             //act - bulk load csv files
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true);
@@ -115,7 +115,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMinorVersion(workingPath, null);
             string v102Directory = Path.Combine(workingPath, "v1.02");
             _testDataService.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02.sql"), _testDataService.CreateDbObjectScript($"test_v1_02"));
-            File.Copy(Path.Combine(Environment.CurrentDirectory, "TestPsv.dat"), Path.Combine(v102Directory, "TestPsv.dat"));
+            File.Copy(Path.Combine(Environment.CurrentDirectory, "TestPsv.csv"), Path.Combine(v102Directory, "TestPsv.csv"));
 
             //act - bulk load csv files
             migrationService.Run(workingPath, "v1.02", autoCreateDatabase: true, delimeter: "|");

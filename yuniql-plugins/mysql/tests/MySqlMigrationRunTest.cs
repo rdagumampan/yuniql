@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using Yuniql.MySql;
 using Yuniql.Core;
-using Yuniql.Extensibility;
 using Shouldly;
 
 namespace Yuniql.PosgreSQL.Tests

@@ -259,7 +259,7 @@ namespace Yuniql.Core
             string delimter)
         {
             //execute all script files in the version folder
-            var bulkFiles = _directoryService.GetFiles(versionFullPath, "*.dat").ToList();
+            var bulkFiles = _directoryService.GetFiles(versionFullPath, "*.csv").ToList();
             bulkFiles.Sort();
 
             _traceService.Info($"Found the {bulkFiles.Count} bulk files on {versionFullPath}");

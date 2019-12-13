@@ -91,7 +91,6 @@ namespace Yuniql.MySql
         public string CreateDbObjectScript(string objectName)
         {
             return $@"
-SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
@@ -106,7 +105,6 @@ CREATE TABLE {objectName} (
         public string CreateDbObjectScriptWithError(string objectName)
         {
             return $@"
-SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY_KEY1, #this is a faulty line
 	FirstName VARCHAR(255) NULL,
@@ -120,7 +118,6 @@ CREATE TABLE {objectName} (
         public string CreateTokenizedDbObjectScript(string objectName)
         {
             return $@"
-SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
@@ -134,7 +131,6 @@ CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
         public string CreateBulkTableScript(string tableName)
         {
             return $@"
-SET AUTOCOMMIT = 0;
 CREATE TABLE {tableName}(
 	FirstName VARCHAR(50) NULL,
 	LastName VARCHAR(50) NULL,
@@ -146,7 +142,6 @@ CREATE TABLE {tableName}(
         public string CreateSingleLineScript(string objectName)
         {
             return $@"
-SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
@@ -160,7 +155,6 @@ CREATE TABLE {objectName} (
         public string CreateSingleLineScriptWithoutTerminator(string objectName)
         {
             return $@"
-SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
@@ -174,7 +168,6 @@ CREATE TABLE {objectName} (
         public string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName1} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
@@ -200,7 +193,6 @@ END
         public string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName1} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
@@ -228,7 +220,6 @@ END;
         public string CreateMultilineScriptWithError(string objectName1, string objectName2)
         {
             return $@"
-SET AUTOCOMMIT = 0;
 CREATE TABLE {objectName1} (
 	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
@@ -254,7 +245,6 @@ SELECT 1/0;
         public string CreateCleanupScript()
         {
             return @"
-SET AUTOCOMMIT = 0;
 DROP TABLE script1;
 DROP TABLE script2;
 DROP TABLE script3;
