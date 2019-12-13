@@ -5,7 +5,7 @@ This project is just to demonstrate how you can test the plugin in isolation. A 
 To start debugging, you would need to a postgresql instance running either locally or on docker container.
 	
 ```console
-	docker run --name mysql -e MYSQL_ROOT_PASSWORD=Y0urStr0ngP@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
+	docker run --name mysql -e MYSQL_ROOT_PASSWORD=app -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
 ```
 
 ## References
