@@ -39,5 +39,7 @@ namespace Yuniql.Extensibility
         void CreateScriptFile(string sqlFilePath, string sqlStatement);
 
         string CreateCleanupScript();
+
+        bool IsAtomicDDLSupported { get; }
     }
 }

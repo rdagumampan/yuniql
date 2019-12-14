@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 
 //https://github.com/22222/CsvTextFieldParser
-namespace Yuniql.PostgreSql
+namespace Yuniql.Extensibility
 {
     /// <summary>
     /// Parses comma-delimited text files.

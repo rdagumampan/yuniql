@@ -340,6 +340,12 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void Test_Run_With_Faulty_Script_Throws_Error_Must_Rollback_All_Changes()
         {
+            //ignore if atomic ddl transaction not supported in target platforms
+            if (!_testDataService.IsAtomicDDLSupported)
+            {
+                Assert.Inconclusive();
+            }
+
             //arrange
             var workingPath = GetOrCreateWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
@@ -361,7 +367,8 @@ namespace Yuniql.PlatformTests
                 migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 //used try/catch this instead of Assert.ThrowsException because different vendors
                 //throws different exception type and message content
                 ex.Message.ShouldNotBeNullOrEmpty();
@@ -376,6 +383,12 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void Test_Verify()
         {
+            //ignore if atomic ddl transaction not supported in target platforms
+            if (!_testDataService.IsAtomicDDLSupported)
+            {
+                Assert.Inconclusive();
+            }
+
             //arrange
             var workingPath = GetOrCreateWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;

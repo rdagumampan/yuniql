@@ -4,14 +4,23 @@ This project is just to demonstrate how you can test the plugin in isolation. A 
 
 To start debugging, you would need to a postgresql instance running either locally or on docker container.
 	
+1. Deploy postgresql linux container
+
 ```console
 docker run --name postgresql -e POSTGRES_USER=app -e POSTGRES_PASSWORD=app -e POSTGRES_DB=yuniqldb  -d -p 5432:5432 postgres
 ```
 
-To view and manage 
+2. Deploy pgadmin to visually manage the database
+
 ```console
-docker run --name pgadmin4  -p 80:80 -e "PGADMIN_DEFAULT_EMAIL=admin@getyuniql.org" -e "PGADMIN_DEFAULT_PASSWORD=app" -d dpage/pgadmin4
+docker run --name pgadmin4  -p 8081:80 -e "PGADMIN_DEFAULT_EMAIL=admin@getyuniql.org" -e "PGADMIN_DEFAULT_PASSWORD=app" -d dpage/pgadmin4
 ```
+
+3. Open your tests databases
+
+	```console
+	start http://localhost:8081/index.php
+	``
 
 ## References
 

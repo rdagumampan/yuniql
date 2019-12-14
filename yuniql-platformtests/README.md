@@ -59,7 +59,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 
 ## Running platform tests for MySql plugin
 
-1. Deploy a postgresql linux container
+1. Deploy a mysql linux container
 	
 	```console
 	docker run --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password

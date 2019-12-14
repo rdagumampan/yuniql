@@ -11,6 +11,8 @@ namespace Yuniql.SqlServer
     {
         private readonly IDataService _dataService;
 
+        public bool IsAtomicDDLSupported => true;
+
         public SqlServerTestDataService(IDataService dataService)
         {
             this._dataService = dataService;
@@ -20,8 +22,7 @@ namespace Yuniql.SqlServer
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");
             if (string.IsNullOrEmpty(connectionString))
             {
-                //use this when running against sql server container with published port 1400
-                return $"Server=localhost,1400;Database={databaseName};User Id=SA;Password=P@ssw0rd!";
+                throw new ApplicationException("Missing environment variable YUNIQL_TEST_CONNECTION_STRING. See WIKI for developer guides.");
             }
 
             var result = new SqlConnectionStringBuilder(connectionString);

@@ -9,6 +9,8 @@ namespace Yuniql.PostgreSql
     {
         private readonly IDataService _dataService;
 
+        public bool IsAtomicDDLSupported => true;
+
         public PostgreSqlTestDataService(IDataService dataService)
         {
             this._dataService = dataService;

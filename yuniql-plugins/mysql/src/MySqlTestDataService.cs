@@ -9,6 +9,8 @@ namespace Yuniql.MySql
     {
         private readonly IDataService _dataService;
 
+        public bool IsAtomicDDLSupported => false;
+
         public MySqlTestDataService(IDataService dataService)
         {
             this._dataService = dataService;

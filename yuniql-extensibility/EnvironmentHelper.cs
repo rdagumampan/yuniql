@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Yuniql.SqlServer
+namespace Yuniql.Extensibility
 {
     public static class EnvironmentHelper
     {

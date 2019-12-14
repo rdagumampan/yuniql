@@ -172,6 +172,12 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void Test_Create_Multiline_Script_With_Error_Must_Rollback()
         {
+            //ignore if atomic ddl transaction not supported in target platforms
+            if (!_testDataService.IsAtomicDDLSupported)
+            {
+                Assert.Inconclusive();
+            }
+
             //arrange
             var workingPath = GetOrCreateWorkingPath();
             var databaseName = new DirectoryInfo(workingPath).Name;
