@@ -18,6 +18,8 @@ namespace Yuniql.SqlServer
             this._traceService = traceService;
         }
 
+        public bool IsAtomicDDLSupported => true;
+
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
@@ -204,8 +206,6 @@ namespace Yuniql.SqlServer
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(_connectionString);
             var sqlStatement = $@"
-                    USE {connectionStringBuilder.InitialCatalog};
-
                     IF OBJECT_ID('[dbo].[__YuniqlDbVersion]') IS NULL 
                     BEGIN
 	                    CREATE TABLE [dbo].[__YuniqlDbVersion](

@@ -121,7 +121,6 @@ namespace Yuniql.CLI
                 //run the migration
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString);
-
                 migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens: tokens, verifyOnly: false, delimeter: opts.Delimter);
             }
             catch (Exception ex)

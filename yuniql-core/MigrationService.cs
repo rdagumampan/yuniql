@@ -47,6 +47,14 @@ namespace Yuniql.Core
             bool verifyOnly = false,
             string delimeter = ",")
         {
+            //when uncomitted run is not supported, fail migration and throw exceptions
+            if (verifyOnly && !_dataService.IsAtomicDDLSupported) {
+                throw new NotSupportedException("Yuniql.Verify is not supported in the target platform. " +
+                    "The feature requires support for atomic DDL operations. " +
+                    "An atomic DDL operations ensures creation of tables, views and other objects and data are rolledback in case of error. " +
+                    "For more information see WIKI.");
+            }
+
             var connectionInfo = _dataService.GetConnectionInfo();
             var targetDatabaseName = connectionInfo.Database;
             var targetDatabaseServer = connectionInfo.DataSource;

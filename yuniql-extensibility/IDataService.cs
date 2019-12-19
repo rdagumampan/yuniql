@@ -41,5 +41,7 @@ namespace Yuniql.Extensibility
         public IDbConnection CreateConnection();
 
         ConnectionInfo GetConnectionInfo();
+
+        bool IsAtomicDDLSupported { get; }
     }
 };
