@@ -1,0 +1,22 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: install@0
+  inputs:
+    version: 'latest'
+- task: run@0
+  inputs:
+    version: 'latest'
+    connectionString: 'Server=tcp:azsql-sandbox.database.windows.net,1433;Initial Catalog=azsql-sandbox;Persist Security Info=False;User ID=rdagumampan;Password=P@ssw0rd!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+    workspacePath: '$(Build.SourcesDirectory)\sqlserver-samples\visitph-db'
+    targetPlatform: 'SqlServer'
+    additionalArguments: '--debug'
