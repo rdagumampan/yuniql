@@ -28,11 +28,11 @@
 3. Download latest `yuniql` build<br>
 
 	```bash
-	powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip -OutFile  "c:\temp\yuniql\yuniql-nightly.zip"
-	powershell Expand-Archive "c:\temp\yuniql\yuniql-nightly.zip" -DestinationPath "c:\temp\yuniql\sqlserver-samples\visitph-db"
+	powershell Invoke-WebRequest -Uri https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-latest-win-x64.zip -OutFile  "c:\temp\yuniql\yuniql-latest-win-x64.zip"
+	powershell Expand-Archive "c:\temp\yuniql\yuniql-latest-win-x64.zip" -DestinationPath "c:\temp\yuniql\sqlserver-samples\visitph-db"
+	cd c:\temp\yuniql-nightly
 	```
-
-	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) and extract to desired directory.
+	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-latest-win-x64.zip) and extract to desired directory.
 
 4. Run migration<br>
 The following commands `yuniql` to discover the project directory, creates the target database if it doesn't exist and runs all migration steps in the order they are listed. These includes `.sql` files, directories, subdirectories, and csv files. Tokens are also replaced via `-k` parameters.
