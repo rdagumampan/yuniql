@@ -172,6 +172,7 @@ namespace Yuniql.Core
             _traceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
 
             //execute all script files in the target folder
+            sqlScriptFiles.Sort();
             sqlScriptFiles.ForEach(scriptFile =>
             {
                 //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
