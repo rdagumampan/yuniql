@@ -5,7 +5,7 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- task: InstallYUNIQLCLI@0
+- task: UseYUNIQLCLI@0
   inputs:
     version: 'latest'
 
