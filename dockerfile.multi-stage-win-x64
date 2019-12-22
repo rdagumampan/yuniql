@@ -9,6 +9,12 @@ COPY ./yuniql-sqlserver ./yuniql-sqlserver
 WORKDIR /code/yuniql-cli
 RUN dotnet publish -c release -r win-x64 /p:publishtrimmed=true -o ./app
 
+WORKDIR /code/yuniql-plugins/postgresql/src
+RUN dotnet publish -c release -r win-x64 -o ./app/.plugins/postgresql
+
+WORKDIR /code/yuniql-plugins/mysql/src
+RUN dotnet publish -c release -r win-x64 -o ./app/.plugins/mysql
+
 #https://github.com/dotnet/dotnet-docker/issues/1332
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime-env
 
