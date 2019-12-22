@@ -6,18 +6,6 @@
 
 **yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories and scripts are stored transparently as `.sql` files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
 
-## Why yuniql?
-- **It's raw SQL.** Yuniql follows database-first approach to version your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
-- **It's .NET Core Native.** Released as a self-contained .NET Core 3.0 application. Yuniql doesn't require any dependencies or CLR installed on the developer machine or CI/CD server. For windows, `yuniql.exe` is ready-for-use on day 1.
-- **Bulk Import CSV.** Load up your master data and lookup tables from CSV files. A powerful feature when provisioning fresh developer databases or when taking large block of master data as part of a new version.
-- **DevOps Friendly.** Azure Pipeline Tasks available in the Market Place. `Use Yuniql` task acquires a specific version of the Yuniql. `Run Yuniql` task runs database migrations with Yuniql CLI using version acquired earlier.
-- **Cloud Ready.** Platform tested for Azure SQL Database. Plugins for Amazon RDS and Google Cloud SQL are lined up for development. ***
-- **Docker Support.** Each project is prepared for containerized execution using Yuniql base images. A dockerized database project is cheap way to run migration on any CI/CD platform.
-- **Cross-platform.** Works with Windows and major Linux distros.
-- **Open Source.** Released under Apache License version 2.0. Absolutely free for personal or commercial use.
-
-*** planned or being evaluated/developer/tested
-
 ## To start using **`yuniql`** on Sql Server
 
 1. Prepare the connection string to your target sqlserver instance
@@ -72,6 +60,18 @@ Query tables with SSMS or your preferred SQL client
 	<br>
 	<img align="center" src="assets/visitordb-screensot-ssms.png" width="700">
 
+## Why yuniql?
+- **It's raw SQL.** Yuniql follows database-first approach to version your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
+- **It's .NET Core Native.** Released as a self-contained .NET Core 3.0 application. Yuniql doesn't require any dependencies or CLR installed on the developer machine or CI/CD server. For windows, `yuniql.exe` is ready-for-use on day 1.
+- **Bulk Import CSV.** Load up your master data and lookup tables from CSV files. A powerful feature when provisioning fresh developer databases or when taking large block of master data as part of a new version.
+- **DevOps Friendly.** Azure Pipeline Tasks available in the Market Place. `Use Yuniql` task acquires a specific version of the Yuniql. `Run Yuniql` task runs database migrations with Yuniql CLI using version acquired earlier.
+- **Cloud Ready.** Platform tested for Azure SQL Database. Plugins for Amazon RDS and Google Cloud SQL are lined up for development. ***
+- **Docker Support.** Each project is prepared for containerized execution using Yuniql base images. A dockerized database project is cheap way to run migration on any CI/CD platform.
+- **Cross-platform.** Works with Windows and major Linux distros.
+- **Open Source.** Released under Apache License version 2.0. Absolutely free for personal or commercial use.
+
+*** planned or being evaluated/developer/tested
+
 ## To start working with **`yuniql`** CLI
 See how it works here https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works
 
@@ -79,17 +79,18 @@ See how it works here https://github.com/rdagumampan/yuniql/wiki/How-yuniql-work
 yuniql init
 yuniql init -p c:\temp\demo | --path c:\temp\demo
 yuniql vnext
-yuniql vnext -p c:\temp\demo | --path c:\temp\demo
 yuniql vnext -M | --major
 yuniql vnext -m | --minor
 yuniql vnext -f "your-script-file.sql"
 yuniql verify
 yuniql run
+yuniql run --platform postgresql | --platform mysql
 yuniql run -a true | --auto-create-db true
 yuniql run -p c:\temp\demo | --path c:\temp\demo
 yuniql run -t v1.05 | --target-version v1.05
 yuniql run -c "<connectiong-string>"
 yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"
+yuniql run -delimeter "|"
 yuniql erase
 yuniql -v | --version
 yuniql -h | --help
