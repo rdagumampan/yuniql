@@ -16,6 +16,8 @@ namespace Yuniql.MySql
             this._traceService = traceService;
         }
 
+        public bool IsAtomicDDLSupported => true;
+
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
