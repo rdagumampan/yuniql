@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Npgsql;
+using System;
 
 namespace Yuniql.PostgreSql
 {
@@ -21,8 +22,7 @@ namespace Yuniql.PostgreSql
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");
             if (string.IsNullOrEmpty(connectionString))
             {
-                //use this when running against docker container with published port 5432
-                return $"Host=localhost;Port=5432;Username=app;Password=app;Database={databaseName}";
+                throw new ApplicationException("Missing environment variable YUNIQL_TEST_CONNECTION_STRING. See WIKI for developer guides.");
             }
 
             var result = new NpgsqlConnectionStringBuilder(connectionString);
@@ -125,8 +125,8 @@ CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
         {
             return $@"
 CREATE TABLE public.{tableName}(
-	FirstName VARCHAR(50) NULL,
-	LastName VARCHAR(50) NULL,
+	FirstName VARCHAR(50) NOT NULL,
+	LastName VARCHAR(50) NOT NULL,
 	BirthDate TIMESTAMP NULL
 );
 ";

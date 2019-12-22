@@ -343,7 +343,7 @@ namespace Yuniql.PlatformTests
             //ignore if atomic ddl transaction not supported in target platforms
             if (!_testDataService.IsAtomicDDLSupported)
             {
-                Assert.Inconclusive();
+                Assert.Inconclusive("Target database platform or version does not support atomic DDL operations. DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.");
             }
 
             //arrange
@@ -386,7 +386,7 @@ namespace Yuniql.PlatformTests
             //ignore if atomic ddl transaction not supported in target platforms
             if (!_testDataService.IsAtomicDDLSupported)
             {
-                Assert.Inconclusive();
+                Assert.Inconclusive("Target database platform or version does not support atomic DDL operations. DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.");
             }
 
             //arrange

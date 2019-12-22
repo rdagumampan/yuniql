@@ -23,6 +23,8 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	dotnet build
 	dotnet test -v n
 	```
+4. Access SqlServer database via SQL Server Management Studio (SSMS) tool<br>
+https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15
 
 ## Running platform tests for PostgreSql plugin
 
@@ -51,11 +53,8 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	dotnet test -v n
 	```
 
-4. Clean up
-
-	```console
-	docker rm postgresql -f
-	```
+4. Access PostgreSql database by downloading pgAdmin tool<br>
+https://www.pgadmin.org/download/
 
 ## Running platform tests for MySql plugin
 
@@ -84,11 +83,8 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	dotnet test -v n
 	```
 
-4. Clean up
-
-	```console
-	docker rm mysql -f
-	```
+4. Access PostgreSql database by downloading phpMyAdmin tool<br>
+https://www.phpmyadmin.net/
 
 #### Found bugs?
 Help us improve further please [create an issue](https://github.com/rdagumampan/yuniql/issues/new).

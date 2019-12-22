@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using MySql.Data.MySqlClient;
+using System;
 
 namespace Yuniql.MySql
 {
@@ -21,8 +22,7 @@ namespace Yuniql.MySql
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");
             if (string.IsNullOrEmpty(connectionString))
             {
-                //use this when running against docker container with published port 5432
-                return $"Host=localhost;Port=3306;Username=root;Password=app;Database={databaseName}";
+                throw new ApplicationException("Missing environment variable YUNIQL_TEST_CONNECTION_STRING. See WIKI for developer guides.");
             }
 
             var result = new MySqlConnectionStringBuilder(connectionString);
@@ -134,8 +134,8 @@ CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
         {
             return $@"
 CREATE TABLE {tableName}(
-	FirstName VARCHAR(50) NULL,
-	LastName VARCHAR(50) NULL,
+	FirstName VARCHAR(50) NOT NULL,
+	LastName VARCHAR(50) NOT NULL,
 	BirthDate DATETIME NULL
 ) ENGINE=InnoDB;
 ";

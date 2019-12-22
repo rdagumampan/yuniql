@@ -105,8 +105,8 @@ AS
 IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = '{tableName}'))
 BEGIN
     CREATE TABLE [dbo].[{tableName}](
-	    [FirstName] [nvarchar](50) NULL,
-	    [LastName] [nvarchar](50) NULL,
+	    [FirstName] [nvarchar](50) NOT NULL,
+	    [LastName] [nvarchar](50) NOT NULL,
 	    [BirthDate] [datetime] NULL
     );
 END
