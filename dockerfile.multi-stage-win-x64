@@ -5,6 +5,7 @@ COPY ./yuniql-cli ./yuniql-cli
 COPY ./yuniql-core ./yuniql-core
 COPY ./yuniql-extensibility ./yuniql-extensibility
 COPY ./yuniql-sqlserver ./yuniql-sqlserver
+COPY ./yuniql-plugins ./yuniql-plugins
 
 WORKDIR /code/yuniql-cli
 RUN dotnet publish -c release -r win-x64 /p:publishtrimmed=true -o ./app
