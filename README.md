@@ -6,7 +6,17 @@
 
 **yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories and scripts are stored transparently as `.sql` files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
 
-**yuniql** is released as self-contained .NET Core 3.0 application (no need for JVM or .NET CLR). Docker container images are also [available](https://cloud.docker.com/u/rdagumampan/repository/docker/rdagumampan/yuniql) for seamless continuous delivery of database changes in Linux environments.
+## Why yuniql?
+- **It's raw SQL.** Yuniql follows database-first approach to version your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
+- **It's .NET Core Native.** Released as a self-contained .NET Core 3.0 application. Yuniql doesn't require any dependencies or CLR installed on the developer machine or CI/CD server. For windows, `yuniql.exe` is ready-for-use on day 1.
+- **Bulk Import CSV.** Load up your master data and lookup tables from CSV files. A powerful feature when provisioning fresh developer databases or when taking large block of master data as part of a new version.
+- **DevOps Friendly.** Azure Pipeline Tasks available in the Market Place. `Use Yuniql` task acquires a specific version of the Yuniql. `Run Yuniql` task runs database migrations with Yuniql CLI using version acquired earlier.
+- **Cloud Ready.** Platform tested for Azure SQL Database. Plugins for Amazon RDS and Google Cloud SQL are lined up for development. ***
+- **Docker Support.** Each project is prepared for containerized execution using Yuniql base images. A dockerized database project is cheap way to run migration on any CI/CD platform.
+- **Cross-platform.** Works with Windows and major Linux distros.
+- **Open Source.** Released under Apache License version 2.0. Absolutely free for personal or commercial use.
+
+*** planned or being evaluated/developer/tested
 
 ## To start using **`yuniql`** on Sql Server
 
