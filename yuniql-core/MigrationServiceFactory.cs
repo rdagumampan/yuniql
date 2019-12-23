@@ -21,6 +21,8 @@ namespace Yuniql.Core
 
         public IMigrationService Create(string platform)
         {
+            _traceService.Debug($"platform: {platform}");
+
             if (string.IsNullOrEmpty(platform) || platform.Equals("sqlserver"))
             {
                 var sqlDataService = new SqlServerDataService(_traceService);
@@ -35,7 +37,10 @@ namespace Yuniql.Core
             {
                 //extracts plugins and creates required services
                 var defaultAssemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", platform);
+                _traceService.Debug($"defaultAssemblyBasePath: {defaultAssemblyBasePath}");
+
                 var environmentVariableAssemblyBasePath = _environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
+                _traceService.Debug($"environmentVariableAssemblyBasePath: {environmentVariableAssemblyBasePath}");
 
                 var assemblyBasePath = string.IsNullOrEmpty(environmentVariableAssemblyBasePath) ? defaultAssemblyBasePath : environmentVariableAssemblyBasePath;
                 var assemblyFilePath = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");
