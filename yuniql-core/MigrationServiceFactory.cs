@@ -31,7 +31,7 @@ namespace Yuniql.Core
         [MethodImpl(MethodImplOptions.NoInlining)]
         public IMigrationService Create(string platform)
         {
-            _traceService.Debug($"platform: {platform}");
+            _traceService.Debug($"{this.GetType().Name}/platform: {platform}");
 
             if (string.IsNullOrEmpty(platform) || platform.Equals("sqlserver"))
             {
@@ -47,19 +47,19 @@ namespace Yuniql.Core
             {
                 //extracts plugins and creates required services
                 var defaultPluginsBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins");
-                _traceService.Debug($"defaultPluginsBasePath: {defaultPluginsBasePath}");
+                _traceService.Debug($"{this.GetType().Name}/defaultPluginsBasePath: {defaultPluginsBasePath}");
 
                 var defaultAssemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", platform);
-                _traceService.Debug($"defaultAssemblyBasePath: {defaultAssemblyBasePath}");
+                _traceService.Debug($"{this.GetType().Name}/defaultAssemblyBasePath: {defaultAssemblyBasePath}");
 
                 var environmentVariableAssemblyBasePath = _environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
-                _traceService.Debug($"environmentVariableAssemblyBasePath: {environmentVariableAssemblyBasePath}");
+                _traceService.Debug($"{this.GetType().Name}/environmentVariableAssemblyBasePath: {environmentVariableAssemblyBasePath}");
 
                 var assemblyBasePath = string.IsNullOrEmpty(environmentVariableAssemblyBasePath) ? defaultAssemblyBasePath : environmentVariableAssemblyBasePath;
-                _traceService.Debug($"assemblyBasePath: {assemblyBasePath}");
+                _traceService.Debug($"{this.GetType().Name}/assemblyBasePath: {assemblyBasePath}");
 
                 var assemblyFilePath = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");
-                _traceService.Debug($"assemblyFilePath: {assemblyFilePath}");
+                _traceService.Debug($"{this.GetType().Name}/assemblyFilePath: {assemblyFilePath}");
 
                 //TODO: Use DirectoryService and FileService to find case-insensitive filename
                 var directoryService = new DirectoryService();
@@ -68,12 +68,12 @@ namespace Yuniql.Core
                 var directories = directoryService.GetDirectories(defaultPluginsBasePath, "*", SearchOption.AllDirectories).ToList();
                 directories.ForEach(d =>
                 {
-                    _traceService.Debug($"Found plugin dir: {d}");
+                    _traceService.Debug($"{this.GetType().Name}/Found plugin dir: {d}");
 
                     var files = directoryService.GetFiles(d, "*.*").ToList();
                     files.ForEach(f =>
                     {
-                        _traceService.Debug($"Found plugin file: {f}. ProductVersion: {FileVersionInfo.GetVersionInfo(f).ProductVersion}, FileVersion: {FileVersionInfo.GetVersionInfo(f).FileVersion}");
+                        _traceService.Debug($"{this.GetType().Name}/Found plugin file: {f}. ProductVersion: {FileVersionInfo.GetVersionInfo(f).ProductVersion}, FileVersion: {FileVersionInfo.GetVersionInfo(f).FileVersion}");
                     });
                 });
 
@@ -89,7 +89,7 @@ namespace Yuniql.Core
                         .ToList()
                         .ForEach(a =>
                         {
-                            _traceService.Debug($"loadedAssembly: {a.FullName}");
+                            _traceService.Debug($"{this.GetType().Name}/loadedAssembly: {a.FullName}");
                         });
                     assemblyContext.Resolving += AssemblyContext_Resolving;
                     assemblyContext.Unloading += AssemblyContext_Unloading;
@@ -121,18 +121,18 @@ namespace Yuniql.Core
 
         private void AssemblyContext_Unloading(System.Runtime.Loader.AssemblyLoadContext obj)
         {
-            _traceService.Debug($"unloading: {obj.Name}");
+            _traceService.Debug($"{this.GetType().Name}/unloading: {obj.Name}");
         }
 
         private System.Reflection.Assembly AssemblyContext_Resolving(System.Runtime.Loader.AssemblyLoadContext assemblyContext, System.Reflection.AssemblyName failedAssembly)
         {
-            _traceService.Debug($"retryResolving: {failedAssembly.FullName}");
+            _traceService.Debug($"{this.GetType().Name}/retryResolving: {failedAssembly.FullName}");
 
             var defaultAssemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", "PostgreSql");
             var assemblyFilePath = Path.Combine(defaultAssemblyBasePath, failedAssembly.Name + ".dll");
 
-            _traceService.Debug($"failedAssemblyFileExists: {File.Exists(assemblyFilePath)}");
-            _traceService.Debug($"attempting to reload {failedAssembly.FullName} from {assemblyFilePath}");
+            _traceService.Debug($"{this.GetType().Name}/failedAssemblyFileExists: {File.Exists(assemblyFilePath)}");
+            _traceService.Debug($"{this.GetType().Name}/attempting to reload {failedAssembly.FullName} from {assemblyFilePath}");
             assemblyContext.LoadFromAssemblyPath(assemblyFilePath);
             //assemblyContext.LoadFromAssemblyName(new System.Reflection.AssemblyName(failedAssembly.Name));
 
