@@ -31,9 +31,10 @@ namespace Yuniql.Core
         [MethodImpl(MethodImplOptions.NoInlining)]
         public IMigrationService Create(string platform)
         {
-            _traceService.Debug($"{this.GetType().Name}/platform: {platform}");
+            var platformLowerCased = platform.ToLower();
+            _traceService.Debug($"{this.GetType().Name}/platformLowerCased: {platformLowerCased}");
 
-            if (string.IsNullOrEmpty(platform) || platform.Equals("sqlserver"))
+            if (string.IsNullOrEmpty(platformLowerCased) || platformLowerCased.Equals("sqlserver"))
             {
                 var sqlDataService = new SqlServerDataService(_traceService);
                 var bulkImportService = new SqlServerBulkImportService(_traceService);
@@ -49,7 +50,7 @@ namespace Yuniql.Core
                 var defaultPluginsBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins");
                 _traceService.Debug($"{this.GetType().Name}/defaultPluginsBasePath: {defaultPluginsBasePath}");
 
-                var defaultAssemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", platform);
+                var defaultAssemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", platformLowerCased);
                 _traceService.Debug($"{this.GetType().Name}/defaultAssemblyBasePath: {defaultAssemblyBasePath}");
 
                 var environmentVariableAssemblyBasePath = _environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
@@ -57,9 +58,6 @@ namespace Yuniql.Core
 
                 var assemblyBasePath = string.IsNullOrEmpty(environmentVariableAssemblyBasePath) ? defaultAssemblyBasePath : environmentVariableAssemblyBasePath;
                 _traceService.Debug($"{this.GetType().Name}/assemblyBasePath: {assemblyBasePath}");
-
-                var assemblyFilePath = Path.Combine(assemblyBasePath, $"Yuniql.{platform}.dll");
-                _traceService.Debug($"{this.GetType().Name}/assemblyFilePath: {assemblyFilePath}");
 
                 //TODO: Use DirectoryService and FileService to find case-insensitive filename
                 var directoryService = new DirectoryService();
@@ -76,6 +74,11 @@ namespace Yuniql.Core
                         _traceService.Debug($"{this.GetType().Name}/Found plugin file: {f}. ProductVersion: {FileVersionInfo.GetVersionInfo(f).ProductVersion}, FileVersion: {FileVersionInfo.GetVersionInfo(f).FileVersion}");
                     });
                 });
+
+                var assemblyFilePath = directoryService.GetFiles(assemblyBasePath, "*.dll")
+                    .ToList()
+                    .First(f => new FileInfo(f).Name.ToLower() == $"yuniql.{platformLowerCased}.dll");
+                _traceService.Debug($"{this.GetType().Name}/assemblyFilePath: {assemblyFilePath}");
 
                 if (File.Exists(assemblyFilePath))
                 {
@@ -95,13 +98,13 @@ namespace Yuniql.Core
                     assemblyContext.Unloading += AssemblyContext_Unloading;
 
                     var sqlDataService = assembly.GetTypes()
-                        .Where(t => t.Name.ToLower().Contains($"{platform.ToLower()}dataservice"))
+                        .Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
                         .Select(t => Activator.CreateInstance(t, _traceService))
                         .Cast<IDataService>()
                         .First();
 
                     var bulkImportService = assembly.GetTypes()
-                        .Where(t => t.Name.ToLower().Contains($"{platform.ToLower()}bulkimportservice"))
+                        .Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}bulkimportservice"))
                         .Select(t => Activator.CreateInstance(t, _traceService))
                         .Cast<IBulkImportService>()
                         .First();
@@ -113,7 +116,7 @@ namespace Yuniql.Core
                 }
                 else
                 {
-                    throw new NotSupportedException($"The target database platform {platform} is not supported. " +
+                    throw new NotSupportedException($"The target database platform {platformLowerCased} is not supported. " +
                         $"See WIKI for supported database platforms and how to configure plugins for non-sqlserver databases.");
                 }
             }
@@ -126,10 +129,9 @@ namespace Yuniql.Core
 
         private System.Reflection.Assembly AssemblyContext_Resolving(System.Runtime.Loader.AssemblyLoadContext assemblyContext, System.Reflection.AssemblyName failedAssembly)
         {
+            var assemblyLoadContext = assemblyContext as PluginAssemblyLoadContext;
             _traceService.Debug($"{this.GetType().Name}/retryResolving: {failedAssembly.FullName}");
-
-            var defaultAssemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", "PostgreSql");
-            var assemblyFilePath = Path.Combine(defaultAssemblyBasePath, failedAssembly.Name + ".dll");
+            var assemblyFilePath = Path.Combine(assemblyLoadContext.PluginPath, failedAssembly.Name + ".dll");
 
             _traceService.Debug($"{this.GetType().Name}/failedAssemblyFileExists: {File.Exists(assemblyFilePath)}");
             _traceService.Debug($"{this.GetType().Name}/attempting to reload {failedAssembly.FullName} from {assemblyFilePath}");

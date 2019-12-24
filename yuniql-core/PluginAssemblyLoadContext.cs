@@ -13,8 +13,11 @@ namespace Yuniql.Core
         // main plugin assembly.
         private AssemblyDependencyResolver _resolver;
 
+        public string PluginPath { get; set; }
+
         public PluginAssemblyLoadContext(string pluginPath) : base(isCollectible: true)
         {
+            PluginPath = pluginPath;
             _resolver = new AssemblyDependencyResolver(pluginPath);
         }
 
