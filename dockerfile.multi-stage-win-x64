@@ -30,8 +30,8 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime-env
 
 WORKDIR app
 COPY --from=build-env /code/yuniql-cli/app .
-COPY --from=build-env /code/yuniql-plugins/postgresql/src/app ./.plugins/postgresql
-COPY --from=build-env /code/yuniql-plugins/mysql/src/app ./.plugins/mysql
+COPY --from=build-env /code/yuniql-plugins/postgresql/src/app ./.plugins/PostgreSql
+COPY --from=build-env /code/yuniql-plugins/mysql/src/app ./.plugins/MySql
 
 #WORKDIR app
 #RUN ls
