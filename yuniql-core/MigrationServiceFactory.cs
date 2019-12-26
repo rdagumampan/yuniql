@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using Yuniql.Extensibility;
 using Yuniql.SqlServer;
@@ -29,11 +28,12 @@ namespace Yuniql.Core
         // instances may get lifetime extended beyond the point when the plugin is expected to be
         // unloaded.
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public IMigrationService Create(string platform)
+        public IMigrationService Create(string platform, string pluginsPath = null)
         {
             var platformLowerCased = platform.ToLower();
-            _traceService.Debug($"{this.GetType().Name}/platformLowerCased: {platformLowerCased}");
+            _traceService.Debug($"platformLowerCased: {platformLowerCased}");
 
+            //sqlserver is built-in with yuniql, works out of the box
             if (string.IsNullOrEmpty(platformLowerCased) || platformLowerCased.Equals("sqlserver"))
             {
                 var sqlDataService = new SqlServerDataService(_traceService);
@@ -45,57 +45,72 @@ namespace Yuniql.Core
                 var migrationService = new MigrationService(sqlDataService, bulkImportService, tokenReplacementService, directoryService, fileService, _traceService);
                 return migrationService;
             }
+            //other platforms like postgresql, mysql and others are delivered as plugins
+            //by implementing Yuniql.Extensibility interfaces and placing other plugins directory
+            else
             {
-                //extracts plugins and creates required services
-                var defaultPluginsBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins");
-                _traceService.Debug($"{this.GetType().Name}/defaultPluginsBasePath: {defaultPluginsBasePath}");
+                //we picked the plugins location based on these order
+                //parameter-based -> environment variable -> default from .exe assemply path
+                var defaultPluginsBasePath = pluginsPath;
+                _traceService.Debug($"pluginsPathParameter: {pluginsPath}");
 
-                var defaultAssemblyBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins", platformLowerCased);
-                _traceService.Debug($"{this.GetType().Name}/defaultAssemblyBasePath: {defaultAssemblyBasePath}");
-
-                var environmentVariableAssemblyBasePath = _environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
-                _traceService.Debug($"{this.GetType().Name}/environmentVariableAssemblyBasePath: {environmentVariableAssemblyBasePath}");
-
-                var assemblyBasePath = string.IsNullOrEmpty(environmentVariableAssemblyBasePath) ? defaultAssemblyBasePath : environmentVariableAssemblyBasePath;
-                _traceService.Debug($"{this.GetType().Name}/assemblyBasePath: {assemblyBasePath}");
+                if (string.IsNullOrEmpty(defaultPluginsBasePath))
+                {
+                    defaultPluginsBasePath = _environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
+                    _traceService.Debug($"pluginsPathEnvVariable: {defaultPluginsBasePath}");
+                }
+                else if (string.IsNullOrEmpty(defaultPluginsBasePath))
+                {
+                    defaultPluginsBasePath = Path.Combine(Environment.CurrentDirectory, ".plugins");
+                    _traceService.Debug($"pluginsPathEnvCurrentDirectory: {defaultPluginsBasePath}");
+                }
 
                 //TODO: Use DirectoryService and FileService to find case-insensitive filename
                 var directoryService = new DirectoryService();
                 var fileService = new FileService();
 
+                if (!directoryService.Exists(defaultPluginsBasePath))
+                {
+                    throw new NotSupportedException($"The target database platform {platformLowerCased} is not supported or plugins location was not correctly configured. " +
+                        $"The plugins location is set to : {defaultPluginsBasePath}" +
+                        $"See WIKI for supported database platforms and how to configure plugins for non-sqlserver databases.");
+                }
+
+                //extracts plugins and creates required services
+                var pluginAssemblyBasePath = Path.Combine(defaultPluginsBasePath, platformLowerCased);
+                _traceService.Debug($"defaultAssemblyBasePath: {pluginAssemblyBasePath}");
+
                 var directories = directoryService.GetDirectories(defaultPluginsBasePath, "*", SearchOption.AllDirectories).ToList();
                 directories.ForEach(d =>
                 {
-                    _traceService.Debug($"{this.GetType().Name}/Found plugin dir: {d}");
+                    _traceService.Debug($"Found plugin dir: {d}");
 
                     var files = directoryService.GetFiles(d, "*.*").ToList();
                     files.ForEach(f =>
                     {
-                        _traceService.Debug($"{this.GetType().Name}/Found plugin file: {f}. ProductVersion: {FileVersionInfo.GetVersionInfo(f).ProductVersion}, FileVersion: {FileVersionInfo.GetVersionInfo(f).FileVersion}");
+                        _traceService.Debug($"Found plugin file: {f}. ProductVersion: {FileVersionInfo.GetVersionInfo(f).ProductVersion}, FileVersion: {FileVersionInfo.GetVersionInfo(f).FileVersion}");
                     });
                 });
 
-                var assemblyFilePath = directoryService.GetFiles(assemblyBasePath, "*.dll")
-                    .ToList()
-                    .First(f => new FileInfo(f).Name.ToLower() == $"yuniql.{platformLowerCased}.dll");
-                _traceService.Debug($"{this.GetType().Name}/assemblyFilePath: {assemblyFilePath}");
+                var pluginAssemblyFilePath = directoryService.GetFileCaseInsensitive(pluginAssemblyBasePath, $"yuniql.{platformLowerCased}.dll");
+                _traceService.Debug($"pluginAssemblyFilePath: {pluginAssemblyFilePath}");
 
-                if (File.Exists(assemblyFilePath))
+                if (fileService.Exists(pluginAssemblyFilePath))
                 {
                     // create the unloadable HostAssemblyLoadContext
-                    var assemblyContext = new PluginAssemblyLoadContext(assemblyBasePath);
+                    var pluginAssemblyLoadContext = new PluginAssemblyLoadContext(pluginAssemblyBasePath);
 
                     //the plugin assembly into the HostAssemblyLoadContext. 
                     //the assemblyPath must be an absolute path.
-                    var assembly = assemblyContext.LoadFromAssemblyPath(assemblyFilePath);
-                    assemblyContext.Assemblies
+                    var assembly = pluginAssemblyLoadContext.LoadFromAssemblyPath(pluginAssemblyFilePath);
+                    pluginAssemblyLoadContext.Assemblies
                         .ToList()
                         .ForEach(a =>
                         {
-                            _traceService.Debug($"{this.GetType().Name}/loadedAssembly: {a.FullName}");
+                            _traceService.Debug($"loadedAssembly: {a.FullName}");
                         });
-                    assemblyContext.Resolving += AssemblyContext_Resolving;
-                    assemblyContext.Unloading += AssemblyContext_Unloading;
+                    pluginAssemblyLoadContext.Resolving += AssemblyContext_Resolving;
+                    pluginAssemblyLoadContext.Unloading += AssemblyContext_Unloading;
 
                     var sqlDataService = assembly.GetTypes()
                         .Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
@@ -116,7 +131,8 @@ namespace Yuniql.Core
                 }
                 else
                 {
-                    throw new NotSupportedException($"The target database platform {platformLowerCased} is not supported. " +
+                    throw new NotSupportedException($"The target database platform {platformLowerCased} is not supported or plugins location was not correctly configured. " +
+                        $"The plugin assembly file location is set to : {pluginAssemblyFilePath}" +
                         $"See WIKI for supported database platforms and how to configure plugins for non-sqlserver databases.");
                 }
             }
@@ -124,18 +140,24 @@ namespace Yuniql.Core
 
         private void AssemblyContext_Unloading(System.Runtime.Loader.AssemblyLoadContext obj)
         {
-            _traceService.Debug($"{this.GetType().Name}/unloading: {obj.Name}");
+            _traceService.Debug($"unloading: {obj.Name}");
         }
 
         private System.Reflection.Assembly AssemblyContext_Resolving(System.Runtime.Loader.AssemblyLoadContext assemblyContext, System.Reflection.AssemblyName failedAssembly)
         {
-            var assemblyLoadContext = assemblyContext as PluginAssemblyLoadContext;
-            _traceService.Debug($"{this.GetType().Name}/retryResolving: {failedAssembly.FullName}");
-            var assemblyFilePath = Path.Combine(assemblyLoadContext.PluginPath, failedAssembly.Name + ".dll");
+            var pluginAssemblyLoadContext = assemblyContext as PluginAssemblyLoadContext;
+            _traceService.Debug($"retryResolving: {failedAssembly.FullName}");
 
-            _traceService.Debug($"{this.GetType().Name}/failedAssemblyFileExists: {File.Exists(assemblyFilePath)}");
-            _traceService.Debug($"{this.GetType().Name}/attempting to reload {failedAssembly.FullName} from {assemblyFilePath}");
-            assemblyContext.LoadFromAssemblyPath(assemblyFilePath);
+            var assemblyFilePath = Path.Combine(pluginAssemblyLoadContext.PluginPath, failedAssembly.Name + ".dll");
+            _traceService.Debug($"failedAssemblyFileExists: {File.Exists(assemblyFilePath)}");
+
+            using (var file = File.Open(assemblyFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                _traceService.Debug($"attempting to reload {failedAssembly.FullName} via streaming from {assemblyFilePath}");
+                pluginAssemblyLoadContext.LoadFromStream(file);
+            }
+
+            //assemblyContext.LoadFromAssemblyPath(assemblyFilePath);
             //assemblyContext.LoadFromAssemblyName(new System.Reflection.AssemblyName(failedAssembly.Name));
 
             return null;

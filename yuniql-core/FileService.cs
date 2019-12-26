@@ -8,5 +8,10 @@ namespace Yuniql.Core
         {
             return File.ReadAllText(path);
         }
+
+        public bool Exists(string path)
+        {
+            return File.Exists(path);
+        }
     }
 }

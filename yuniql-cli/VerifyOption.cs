@@ -31,5 +31,9 @@ namespace Yuniql.CLI
         //yuniql run --delimeter "," | --delimeter "|"
         [Option("delimeter", Required = false, HelpText = "Bulk import file delimeter", Default = ",")]
         public string Delimeter { get; set; } = ",";
+
+        //yuniql run --plugins-path "," | --plugins-path "|"
+        [Option("plugins-path", Required = false, HelpText = "The location of plugins. The default location is current location of the yuniql assemblies.")]
+        public string PluginsPath { get; set; }
     }
 }

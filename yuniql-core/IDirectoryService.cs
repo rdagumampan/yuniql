@@ -9,5 +9,9 @@ namespace Yuniql.Core
         string[] GetDirectories(string path, string searchPattern, SearchOption searchOption);
 
         string[] GetFiles(string path, string searchPattern);
+
+        public bool Exists(string path);
+
+        string GetFileCaseInsensitive(string path, string fileName);
     }
 }

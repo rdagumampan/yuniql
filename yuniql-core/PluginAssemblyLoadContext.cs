@@ -31,7 +31,7 @@ namespace Yuniql.Core
             string assemblyPath = _resolver.ResolveAssemblyToPath(name);
             if (assemblyPath != null)
             {
-                Console.WriteLine($"Loading assembly {assemblyPath} into the HostAssemblyLoadContext");
+                Console.WriteLine($"Loading assembly {assemblyPath} into the PluginAssemblyLoadContext");
                 return LoadFromAssemblyPath(assemblyPath);
             }
 
