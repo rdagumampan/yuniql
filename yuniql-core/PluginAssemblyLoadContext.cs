@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.Loader;
+using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
@@ -12,13 +13,15 @@ namespace Yuniql.Core
         // Resolver of the locations of the assemblies that are dependencies of the
         // main plugin assembly.
         private AssemblyDependencyResolver _resolver;
+        private readonly ITraceService _traceService;
 
         public string PluginPath { get; set; }
 
-        public PluginAssemblyLoadContext(string pluginPath) : base(isCollectible: true)
+        public PluginAssemblyLoadContext(string pluginPath, ITraceService traceService) : base(isCollectible: true)
         {
             PluginPath = pluginPath;
-            _resolver = new AssemblyDependencyResolver(pluginPath);
+            this._traceService = traceService;
+            this._resolver = new AssemblyDependencyResolver(pluginPath);
         }
 
         // The Load method override causes all the dependencies present in the plugin's binary directory to get loaded
@@ -29,10 +32,16 @@ namespace Yuniql.Core
         protected override Assembly Load(AssemblyName name)
         {
             string assemblyPath = _resolver.ResolveAssemblyToPath(name);
+            _traceService.Debug($"Resolving dependency: {name.Name}, v{name.Version} from componentAssemblyPath: {PluginPath}");
+
             if (assemblyPath != null)
             {
-                Console.WriteLine($"Loading assembly {assemblyPath} into the PluginAssemblyLoadContext");
+                _traceService.Debug($"Resolved dependency. Loading {assemblyPath} into the PluginAssemblyLoadContext");
                 return LoadFromAssemblyPath(assemblyPath);
+            }
+            else
+            {
+                _traceService.Debug($"Failed resolving dependency: {name.Name}, v{name.Version}");
             }
 
             return null;

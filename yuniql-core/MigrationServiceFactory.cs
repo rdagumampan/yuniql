@@ -98,7 +98,7 @@ namespace Yuniql.Core
                 if (fileService.Exists(pluginAssemblyFilePath))
                 {
                     // create the unloadable HostAssemblyLoadContext
-                    var pluginAssemblyLoadContext = new PluginAssemblyLoadContext(pluginAssemblyBasePath);
+                    var pluginAssemblyLoadContext = new PluginAssemblyLoadContext(pluginAssemblyBasePath, _traceService);
 
                     //the plugin assembly into the HostAssemblyLoadContext. 
                     //the assemblyPath must be an absolute path.
