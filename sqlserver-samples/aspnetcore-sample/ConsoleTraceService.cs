@@ -3,8 +3,8 @@ using Yuniql.Extensibility;
 
 namespace aspnetcore_sample
 {
-    //you can implement ITraceService to capture the log and debug information during your migration run
-    //this us usefule if you wish to sink trace logs into your preferred provider ie. serilog, seq, or others
+    //TIP: You can implement custom ITraceService to capture the log and debug information during your migration run.
+    //This us usefule if you wish to sink trace logs into your preferred provider ie. serilog, seq, or others.
     public class ConsoleTraceService : ITraceService
     {
         public ConsoleTraceService()

@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +26,7 @@ namespace aspnetcore_sample
                 app.UseDeveloperExceptionPage();
             }
 
+            //make sure your db project is part of your deployment package
             Console.WriteLine($"AppDomain.CurrentDomain.BaseDirectory: {AppDomain.CurrentDomain.BaseDirectory}");
             Console.WriteLine($"Environment.CurrentDirectory: {Environment.CurrentDirectory}");
 
@@ -38,6 +36,8 @@ namespace aspnetcore_sample
                 WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
                 ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
                 AutoCreateDatabase = true,
+
+                //optional configuration for more advanced features
                 //TargetVersion ="v1.00",
                 //Tokens = new List<KeyValuePair<string, string>> {
                 //    new KeyValuePair<string, string>("VwColumnPrefix1","Vw1"),
