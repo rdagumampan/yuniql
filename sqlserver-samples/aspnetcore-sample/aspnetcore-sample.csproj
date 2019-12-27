@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>aspnetcore_sample</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\yuniql-aspnetcore\Yuniql.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\yuniql-core\Yuniql.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,16 @@
+
+.vs
 **/.vs
 
-/.vs
+nupkgs
+**/nupkgs
+
+bin
+**/bin
+
+obj
+**/obj
+
 src/.vs
 src/bin
 src/obj
@@ -50,9 +60,6 @@ yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-
 /yuniql-platformtests/obj
 /yuniql-core/nupkgs
 /yuniql-extensibility/nupkgs
-
-nupkgs
-**/nupkgs
 
 /yuniql-plugins/mysql/src/.vs/Yuniql.PostgreSQL
 /yuniql-plugins/mysql/src/bin

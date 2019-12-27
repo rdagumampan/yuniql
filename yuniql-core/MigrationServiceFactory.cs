@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using Yuniql.Extensibility;
 using Yuniql.SqlServer;
 
@@ -38,11 +40,13 @@ namespace Yuniql.Core
             {
                 var sqlDataService = new SqlServerDataService(_traceService);
                 var bulkImportService = new SqlServerBulkImportService(_traceService);
+
+                var localVersionService = new LocalVersionService(_traceService);
                 var tokenReplacementService = new TokenReplacementService(_traceService);
                 var directoryService = new DirectoryService();
                 var fileService = new FileService();
 
-                var migrationService = new MigrationService(sqlDataService, bulkImportService, tokenReplacementService, directoryService, fileService, _traceService);
+                var migrationService = new MigrationService(localVersionService, sqlDataService, bulkImportService, tokenReplacementService, directoryService, fileService, _traceService);
                 return migrationService;
             }
             //other platforms like postgresql, mysql and others are delivered as plugins
@@ -69,6 +73,7 @@ namespace Yuniql.Core
                 var directoryService = new DirectoryService();
                 var fileService = new FileService();
 
+                //check if the base plugin directory exists
                 if (!directoryService.Exists(defaultPluginsBasePath))
                 {
                     throw new NotSupportedException($"The target database platform {platformLowerCased} is not supported or plugins location was not correctly configured. " +
@@ -92,9 +97,18 @@ namespace Yuniql.Core
                     });
                 });
 
+                //check if the base plugin directory for selected platform exists
+                if (!directoryService.Exists(pluginAssemblyBasePath))
+                {
+                    throw new NotSupportedException($"The target database platform {platformLowerCased} is not supported or plugins location was not correctly configured. " +
+                        $"The plugins location is set to : {pluginAssemblyBasePath}" +
+                        $"See WIKI for supported database platforms and how to configure plugins for non-sqlserver databases.");
+                }
+
                 var pluginAssemblyFilePath = directoryService.GetFileCaseInsensitive(pluginAssemblyBasePath, $"yuniql.{platformLowerCased}.dll");
                 _traceService.Debug($"pluginAssemblyFilePath: {pluginAssemblyFilePath}");
 
+                //check if the plugin assembly file for selected platform exists
                 if (fileService.Exists(pluginAssemblyFilePath))
                 {
                     // create the unloadable HostAssemblyLoadContext
@@ -124,9 +138,10 @@ namespace Yuniql.Core
                         .Cast<IBulkImportService>()
                         .First();
 
+                    var localVersionService = new LocalVersionService(_traceService);
                     var tokenReplacementService = new TokenReplacementService(_traceService);
 
-                    var migrationService = new MigrationService(sqlDataService, bulkImportService, tokenReplacementService, directoryService, fileService, _traceService);
+                    var migrationService = new MigrationService(localVersionService, sqlDataService, bulkImportService, tokenReplacementService, directoryService, fileService, _traceService);
                     return migrationService;
                 }
                 else
@@ -138,12 +153,12 @@ namespace Yuniql.Core
             }
         }
 
-        private void AssemblyContext_Unloading(System.Runtime.Loader.AssemblyLoadContext obj)
+        private void AssemblyContext_Unloading(AssemblyLoadContext obj)
         {
             _traceService.Debug($"unloading: {obj.Name}");
         }
 
-        private System.Reflection.Assembly AssemblyContext_Resolving(System.Runtime.Loader.AssemblyLoadContext assemblyContext, System.Reflection.AssemblyName failedAssembly)
+        private Assembly AssemblyContext_Resolving(AssemblyLoadContext assemblyContext, AssemblyName failedAssembly)
         {
             var pluginAssemblyLoadContext = assemblyContext as PluginAssemblyLoadContext;
             _traceService.Debug($"retryResolving: {failedAssembly.FullName}");

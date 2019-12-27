@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Authors>Rodel E. Dagumampan</Authors>
+    <Description>The package to use for running yuniql-based database migrations inside ASP.NET Core application or service. See WIKI for how-to instructions.</Description>
+    <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/rdagumampan/yuniql</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</PackageIconUrl>
+    <PackageIcon>favicon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
+    <PackageTags>yuniql sqlserver-migration database-migration sql devops devops-tools database-versioning</PackageTags>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\yuniql-core\Yuniql.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

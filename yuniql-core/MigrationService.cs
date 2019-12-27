@@ -9,6 +9,7 @@ namespace Yuniql.Core
 {
     public class MigrationService : IMigrationService
     {
+        private readonly ILocalVersionService _localVersionService;
         private readonly IDataService _dataService;
         private readonly IBulkImportService _bulkImportService;
         private readonly ITokenReplacementService _tokenReplacementService;
@@ -17,6 +18,7 @@ namespace Yuniql.Core
         private readonly ITraceService _traceService;
 
         public MigrationService(
+            ILocalVersionService localVersionService,
             IDataService dataService,
             IBulkImportService bulkImportService,
             ITokenReplacementService tokenReplacementService,
@@ -24,6 +26,7 @@ namespace Yuniql.Core
             IFileService fileService,
             ITraceService traceService)
         {
+            this._localVersionService = localVersionService;
             this._dataService = dataService;
             this._bulkImportService = bulkImportService;
             this._tokenReplacementService = tokenReplacementService;
@@ -53,6 +56,13 @@ namespace Yuniql.Core
                     "The feature requires support for atomic DDL operations. " +
                     "An atomic DDL operations ensures creation of tables, views and other objects and data are rolledback in case of error. " +
                     "For more information see WIKI.");
+            }
+
+            //when no target version specified, we use the latest local version 
+            if (string.IsNullOrEmpty(targetVersion))
+            {
+                targetVersion = _localVersionService.GetLatestVersion(workingPath);
+                _traceService.Info($"No explicit target version requested. We'll use latest available locally {targetVersion} on {workingPath}.");
             }
 
             var connectionInfo = _dataService.GetConnectionInfo();

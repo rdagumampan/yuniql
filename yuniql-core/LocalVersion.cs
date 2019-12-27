@@ -15,7 +15,9 @@ namespace Yuniql.Core
         }
 
         public int Major { get; set; }
+
         public int Minor { get; set; }
+
         public string SemVersion
         {
             get
