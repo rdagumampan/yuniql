@@ -4,7 +4,7 @@ using Yuniql.Extensibility;
 
 namespace Yuniql.AspNetCore
 {
-    public static class YuniqlIWebHostBuilderExtensions
+    public static class YuniqlWebHostBuilderExtensions
     {
         public static IWebHostBuilder UseYuniql(
             this IWebHostBuilder builder,

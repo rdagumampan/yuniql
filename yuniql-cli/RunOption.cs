@@ -33,8 +33,8 @@ namespace Yuniql.CLI
         public IEnumerable<string> Tokens { get; set; } = new List<string>();
 
         //yuniql run --delimeter "," | --delimeter "|"
-        [Option("delimeter", Required = false, HelpText = "Bulk import file delimeter", Default = ",")]
-        public string Delimter { get; set; } = ",";
+        [Option("delimiter", Required = false, HelpText = "Bulk import file delimiter", Default = ",")]
+        public string Delimiter { get; set; } = ",";
 
         //yuniql run --plugins-path "," | --plugins-path "|"
         [Option("plugins-path", Required = false, HelpText = "The location of plugins. The default location is current location of the yuniql assemblies.")]

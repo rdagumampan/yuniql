@@ -1,0 +1,1 @@
+SELECT 'This is a initialization health check'
