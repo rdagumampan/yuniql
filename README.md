@@ -4,7 +4,11 @@
 
 <img align="right" src="assets/yuniql-logo.png" width="200">
 
-**yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories and scripts are stored transparently as `.sql` files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
+**yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories. Scripts are stored transparently as plain old `.sql` files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
+
+Yuniql promotes and facilitates an end-to-end database DevOps discipline. From schema versioning, fresh database provisioning and to continuous delivery pipeline tasks.
+
+<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png">
 
 ## To start using **`yuniql`** on Sql Server
 
@@ -99,12 +103,17 @@ yuniql -d | --debug
 ## To dig deeper for advanced use cases
 
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
+* [How to migrate via ASP.NET Core](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core)
+* [How to migrate via Azure Devops](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops)
+* [How to migrate via Docker](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container)
 * [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
 * [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
-* [How to migrate from docker container](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-a-docker-container)
 * [Known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
 * [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
+
+
+
 
 ## Supported databases
 
