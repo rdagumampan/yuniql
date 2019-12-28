@@ -8,7 +8,7 @@
 
 Yuniql promotes and facilitates an end-to-end database DevOps discipline. From schema versioning, fresh database provisioning and to continuous delivery pipeline tasks.
 
-<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png">
+<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
 ## To start using **`yuniql`** on Sql Server
 
