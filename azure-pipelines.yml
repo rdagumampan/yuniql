@@ -12,7 +12,7 @@ steps:
 - task: RunYUNIQLCLI@0
   inputs:
     version: 'latest'
-    connectionString: 'Server=tcp:azsql-sandbox.database.windows.net,1433;Initial Catalog=azsql-sandbox;Persist Security Info=False;User ID=rdagumampan;Password=P@ssw0rd!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+    connectionString: '$(AzSqlDemoDatabase)'
     workspacePath: '$(Build.SourcesDirectory)\sqlserver-samples\visitph-db'
     targetPlatform: 'SqlServer'
     additionalArguments: '--debug'
