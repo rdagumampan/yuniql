@@ -5,7 +5,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  AzSqlDemoDatabase: ""
+  AzSqlDemoDatabase: '$(AzSqlDemoDatabase)'
 
 steps:
 - task: UseYUNIQLCLI@0
