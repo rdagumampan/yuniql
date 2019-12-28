@@ -106,14 +106,11 @@ yuniql -d | --debug
 * [How to migrate via ASP.NET Core](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core)
 * [How to migrate via Azure Devops](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops)
 * [How to migrate via Docker](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container)
-* [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
-* [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
 * [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
+* [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
+* [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [Known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
 * [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
-
-
-
 
 ## Supported databases
 
@@ -148,6 +145,15 @@ Copyright (C) 2019 Rodel E. Dagumampan
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+## Credits
+
+Yuniql relies on many open-source projects and we would like to thanks:
+- [CommandlineParser](https://github.com/commandlineparser)
+- [Npgsql](https://github.com/npgsql/npgsql)
+- [Shouldly](https://github.com/shouldly)
+- [Moq](https://github.com/moq)
+- Microsoft, everything in dotnetcore seems open source now :)
 
 ## Maintainers
 
