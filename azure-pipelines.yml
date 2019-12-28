@@ -4,6 +4,9 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  AzSqlDemoDatabase: ""
+
 steps:
 - task: UseYUNIQLCLI@0
   inputs:
