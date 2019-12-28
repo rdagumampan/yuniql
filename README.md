@@ -150,6 +150,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 Yuniql relies on many open-source projects and we would like to thanks:
 - [CommandlineParser](https://github.com/commandlineparser) for CLI commands
+- [CsvTextFieldParser](https://github.com/22222/CsvTextFieldParser) for CSV file parsing
 - [Npgsql](https://github.com/npgsql/npgsql) for PostgreSql drivers
 - [Shouldly](https://github.com/shouldly) for unit tests
 - [Moq](https://github.com/moq) for unit test mocks
