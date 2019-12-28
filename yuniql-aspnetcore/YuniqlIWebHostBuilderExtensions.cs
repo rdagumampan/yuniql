@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Hosting;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
 namespace Yuniql.AspNetCore
 {
-    public static class YuniqlApplicationBuilderExtensions
+    public static class YuniqlIWebHostBuilderExtensions
     {
-        public static IApplicationBuilder UseYuniql(
-            this IApplicationBuilder builder,
+        public static IWebHostBuilder UseYuniql(
+            this IWebHostBuilder builder,
             YuniqlConfiguration configuration
         )
         {
@@ -15,8 +15,8 @@ namespace Yuniql.AspNetCore
             return builder.UseYuniql(traceService, configuration);
         }
 
-        public static IApplicationBuilder UseYuniql(
-            this IApplicationBuilder builder,
+        public static IWebHostBuilder UseYuniql(
+            this IWebHostBuilder builder,
             ITraceService traceService,
             YuniqlConfiguration configuration
         )
@@ -26,11 +26,11 @@ namespace Yuniql.AspNetCore
             var migrationService = migrationServiceFactory.Create(configuration.Platform);
             migrationService.Initialize(configuration.ConnectionString);
             migrationService.Run(
-                configuration.WorkspacePath, 
-                configuration.TargetVersion, 
-                configuration.AutoCreateDatabase, 
-                configuration.Tokens, 
-                configuration.VerifyOnly, 
+                configuration.WorkspacePath,
+                configuration.TargetVersion,
+                configuration.AutoCreateDatabase,
+                configuration.Tokens,
+                configuration.VerifyOnly,
                 configuration.Delimiter);
 
             return builder;
