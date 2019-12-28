@@ -13,14 +13,11 @@ namespace Yuniql.Core
     //https://docs.microsoft.com/en-us/dotnet/core/dependency-loading/loading-managed
     public class MigrationServiceFactory : IMigrationServiceFactory
     {
-        private readonly IEnvironmentService _environmentService;
         private readonly ITraceService _traceService;
 
         public MigrationServiceFactory(
-            IEnvironmentService environmentService,
             ITraceService traceService)
         {
-            this._environmentService = environmentService;
             this._traceService = traceService;
         }
 
@@ -60,7 +57,8 @@ namespace Yuniql.Core
 
                 if (string.IsNullOrEmpty(defaultPluginsBasePath))
                 {
-                    defaultPluginsBasePath = _environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
+                    var environmentService = new EnvironmentService();
+                    defaultPluginsBasePath = environmentService.GetEnvironmentVariable("YUNIQL_PLUGINS");
                     _traceService.Debug($"pluginsPathEnvVariable: {defaultPluginsBasePath}");
                 }
                 else if (string.IsNullOrEmpty(defaultPluginsBasePath))
