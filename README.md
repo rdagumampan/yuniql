@@ -153,7 +153,8 @@ Yuniql relies on many open-source projects and we would like to thanks:
 - [Npgsql](https://github.com/npgsql/npgsql)
 - [Shouldly](https://github.com/shouldly)
 - [Moq](https://github.com/moq)
-- Microsoft, everything in dotnetcore seems open source now :)
+- Microsoft, Oracle, everything in dotnetcore seems open source now :)
+- All the free devops tools! GitHub, AppVeyor, Docker Shields.io++
 
 ## Maintainers
 
