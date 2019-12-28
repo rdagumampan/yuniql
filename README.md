@@ -149,11 +149,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 ## Credits
 
 Yuniql relies on many open-source projects and we would like to thanks:
-- [CommandlineParser](https://github.com/commandlineparser)
-- [Npgsql](https://github.com/npgsql/npgsql)
-- [Shouldly](https://github.com/shouldly)
-- [Moq](https://github.com/moq)
-- Microsoft, Oracle, everything in dotnetcore seems open source now :)
+- [CommandlineParser](https://github.com/commandlineparser) for CLI commands
+- [Npgsql](https://github.com/npgsql/npgsql) for PostgreSql drivers
+- [Shouldly](https://github.com/shouldly) for unit tests
+- [Moq](https://github.com/moq) for unit test mocks
+- Microsoft, Oracle, for everything in dotnetcore seems open source now :)
 - All the free devops tools! GitHub, AppVeyor, Docker Shields.io++
 
 ## Maintainers
