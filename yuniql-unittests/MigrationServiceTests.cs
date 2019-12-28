@@ -22,6 +22,8 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
 
+            var localVersionService = new Mock<ILocalVersionService>();
+
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.GetConnectionInfo()).Returns(new ConnectionInfo { DataSource = "server", Database = "db" });
             dataService.Setup(s => s.IsTargetDatabaseExists()).Returns(false);
@@ -82,6 +84,7 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new MigrationService(
+                localVersionService.Object,
                 dataService.Object,
                 bulkImportService.Object,
                 tokenReplacementService.Object,
@@ -177,6 +180,8 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
 
+            var localVersionService = new Mock<ILocalVersionService>();
+
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
             dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
@@ -196,6 +201,7 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new MigrationService(
+                localVersionService.Object,
                 dataService.Object,
                 bulkImportService.Object,
                 tokenReplacementService.Object,
@@ -227,6 +233,8 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
 
+            var localVersionService = new Mock<ILocalVersionService>();
+
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
             dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
@@ -250,6 +258,7 @@ namespace Yuniql.UnitTests
             Assert.ThrowsException<ApplicationException>(() =>
             {
                 var sut = new MigrationService(
+                    localVersionService.Object,
                     dataService.Object,
                     bulkImportService.Object,
                     tokenReplacementService.Object,
