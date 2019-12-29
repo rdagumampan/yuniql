@@ -21,8 +21,7 @@ namespace Yuniql.AspNetCore
             YuniqlConfiguration configuration
         )
         {
-            var environmentService = new EnvironmentService();
-            var migrationServiceFactory = new MigrationServiceFactory(environmentService, traceService);
+            var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var migrationService = migrationServiceFactory.Create(configuration.Platform);
             migrationService.Initialize(configuration.ConnectionString);
             migrationService.Run(
