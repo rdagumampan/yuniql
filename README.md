@@ -20,23 +20,23 @@ Yuniql CLI allows developers and DBAa to run migration steps from CLI, Azure Dev
 	```
 2. Download and extract sample db project
 	```bash
-	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip -OutFile "c:\temp\yuniql\sqlserver-sample.zip"
-	powershell Expand-Archive "c:\temp\yuniql\sqlserver-sample.zip" -DestinationPath "c:\temp\yuniql\sqlserver-sample
+	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip -OutFile "c:\temp\yuniql-sqlserver-sample.zip"
+	powershell Expand-Archive "c:\temp\yuniql-sqlserver-sample.zip" -DestinationPath "c:\temp\yuniql
 	```
 	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip) and extract to desired directory.
 
 3. Download and extract latest `yuniql` build<br>
 
 	```bash
-	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip -OutFile  "c:\temp\yuniql\yuniql-win-x64-latest.zip"
-	powershell Expand-Archive "c:\temp\yuniql\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql\sqlserver-sample\visitph-db"
+	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip -OutFile  "c:\temp\yuniql-win-x64-latest.zip"
+	powershell Expand-Archive "c:\temp\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql\visitph-db"
 	```
 	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip) and extract to desired directory.
 
 4. Run migration<br>
 The following commands `yuniql` to discover the project directory, creates the target database if it doesn't exist and runs all migration steps in the order they are listed. These includes `.sql` files, directories, subdirectories, and csv files. Tokens are also replaced via `-k` parameters.
 	```bash
-	cd c:\temp\yuniql\sqlserver-sample\visitph-db
+	cd c:\temp\yuniql\visitph-db
 	dir
 	
 	yuniql run -a -k "VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4"
