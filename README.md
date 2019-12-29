@@ -11,7 +11,7 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
 ## To start using **`yuniql`** on Sql Server
-To get started, fire up a Command Prompt and issue the following commands one line at a time.
+To get started, executed these commands line by line via Command Prompt (CMD). Yuniql CLI allows developers and DBA to execute migration steps from CLI.
 
 1. Prepare the connection string to your target sqlserver instance. This demo uses local default instance. For more connection string samples, visit https://www.connectionstrings.com/sql-server/.
 
