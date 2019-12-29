@@ -11,12 +11,9 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
 ## To start using **`yuniql`** on Sql Server
+To get started, fire up a Command Prompt and issue the following commands one line at a time.
 
-1. Prepare the connection string to your target sqlserver instance
-	- Using an sql account<br>
-	`Server=<server-instance>,[<port-number>];Database=VisitorDB;User Id=<sql-user-name>;Password=<sql-user-password>`	
-	- Using trusted connection<br>
-	`Server=<server-instance>,[<port-number>];Database=VisitorDB;Trusted_Connection=True;`<br><br>
+1. Prepare the connection string to your target sqlserver instance. This demo uses local default instance. For more connection string samples, visit https://www.connectionstrings.com/sql-server/.
 
 	```bash
 	SETX YUNIQL_CONNECTION_STRING "Server=.\;Database=VisitorDB;Trusted_Connection=True;"
@@ -24,7 +21,7 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 2. Download and extract sample db project
 	```bash
 	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip -OutFile  "c:\temp\yuniql\sqlserver-sample.zip"
-	cd c:\temp\yuniql\sqlserver-sample
+	cd c:\temp\yuniql\sqlserver-sample\visitph-db
 	```
 	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip) and extract to desired directory.
 
@@ -32,7 +29,7 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 
 	```bash
 	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip -OutFile  "c:\temp\yuniql\yuniql-win-x64-latest.zip"
-	powershell Expand-Archive "c:\temp\yuniql\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql\sqlserver-sample"
+	powershell Expand-Archive "c:\temp\yuniql\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql\sqlserver-sample\visitph-db"
 	```
 	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip) and extract to desired directory.
 
