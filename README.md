@@ -4,24 +4,24 @@
 
 <img align="right" src="assets/yuniql-logo.png" width="150">
 
-**yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories. Scripts are stored transparently as plain old `.sql` files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
+**yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories or folders. Scripts are stored transparently as plain old `.sql` files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
 
-Yuniql promotes and facilitates an end-to-end database DevOps discipline. From schema versioning, fresh database provisioning and to continuous delivery pipeline tasks.
+Yuniql promotes and facilitates an end-to-end database DevOps discipline. From schema versioning, to fresh database provisioning and execution via continuous delivery pipeline tasks.
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
 ## To start using **`yuniql`** on Sql Server
-To get started, executed these commands line by line via Command Prompt (CMD). Yuniql CLI allows developers and DBA to execute migration steps from CLI.
+Yuniql CLI allows developers and DBAa to run migration steps from CLI, Azure DevOps Tasks, Docker or within .NET Core App. To get started, run these commands line by line via Command Prompt (CMD). 
 
-1. Prepare the connection string to your target sqlserver instance. This demo uses local default instance. For more connection string samples, visit https://www.connectionstrings.com/sql-server/.
+1. Set your db connection string in environment variable. This demo uses local SQL Server instance. For more connection string samples, visit https://www.connectionstrings.com/sql-server/.
 
 	```bash
 	SETX YUNIQL_CONNECTION_STRING "Server=.\;Database=VisitorDB;Trusted_Connection=True;"
 	```
 2. Download and extract sample db project
 	```bash
-	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip -OutFile  "c:\temp\yuniql\sqlserver-sample.zip"
-	cd c:\temp\yuniql\sqlserver-sample\visitph-db
+	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip -OutFile "c:\temp\yuniql\sqlserver-sample.zip"
+	powershell Expand-Archive "c:\temp\yuniql\sqlserver-sample.zip" -DestinationPath "c:\temp\yuniql\sqlserver-sample
 	```
 	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip) and extract to desired directory.
 
@@ -36,6 +36,9 @@ To get started, executed these commands line by line via Command Prompt (CMD). Y
 4. Run migration<br>
 The following commands `yuniql` to discover the project directory, creates the target database if it doesn't exist and runs all migration steps in the order they are listed. These includes `.sql` files, directories, subdirectories, and csv files. Tokens are also replaced via `-k` parameters.
 	```bash
+	cd c:\temp\yuniql\sqlserver-sample\visitph-db
+	dir
+	
 	yuniql run -a -k "VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4"
 	yuniql info
 
