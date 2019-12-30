@@ -1,43 +1,44 @@
-# yuniql ![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql?style=flat-square&logo=appveyor) [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql/build/tests) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql?style=flat-square&logo=gitter&color=orange)](https://gitter.im/yuniql/yuniql) [![Download latest build](https://img.shields.io/badge/Download-win--x64-green?style=flat-square&logo=windows)](https://ci.appveyor.com/api/projects/rdagumampan/yuniql/artifacts/yuniql-nightly.zip) [![Download latest build](https://img.shields.io/badge/Download-docker--images-green?style=flat-square&logo=docker)](https://hub.docker.com/r/rdagumampan/yuniql)
+# yuniql ![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql?style=flat-square&logo=appveyor) [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql/build/tests) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql?style=flat-square&logo=gitter&color=orange)](https://gitter.im/yuniql/yuniql) [![Download latest build](https://img.shields.io/badge/Download-win--x64-green?style=flat-square&logo=windows)](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip) [![Download latest build](https://img.shields.io/badge/Download-docker--images-green?style=flat-square&logo=docker)](https://hub.docker.com/r/rdagumampan/yuniql)
 
 >*** Disclaimer: **`yuniql`** is not yet officially released. Much of the claims here are still work in progress but nightly build have major features available.
 
 <img align="right" src="assets/yuniql-logo.png" width="150">
 
-**yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories. Scripts are stored transparently as plain old `.sql` files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
+**yuniql** (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories or folders. Scripts are stored transparently as plain old `.sql` files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
 
-Yuniql promotes and facilitates an end-to-end database DevOps discipline. From schema versioning, fresh database provisioning and to continuous delivery pipeline tasks.
+Yuniql promotes and facilitates an end-to-end database DevOps discipline. From schema versioning, to fresh database provisioning and releases via continuous delivery pipeline tasks.
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
 ## To start using **`yuniql`** on Sql Server
+Yuniql CLI allows developers and DBAa to run migration steps from CLI, Azure DevOps Tasks, Docker or within .NET Core App. To get started, run these commands line by line via Command Prompt (CMD). 
 
-1. Prepare the connection string to your target sqlserver instance
-	- Using an sql account<br>
-	`Server=<server-instance>,[<port-number>];Database=VisitorDB;User Id=<sql-user-name>;Password=<sql-user-password>`	
-	- Using trusted connection<br>
-	`Server=<server-instance>,[<port-number>];Database=VisitorDB;Trusted_Connection=True;`<br><br>
+1. Set your db connection string in environment variable. This demo uses local SQL Server instance. For more connection string samples, visit https://www.connectionstrings.com/sql-server/.
 
 	```bash
 	SETX YUNIQL_CONNECTION_STRING "Server=.\;Database=VisitorDB;Trusted_Connection=True;"
 	```
-2. Clone sample project
+2. Download and extract sample db project
 	```bash
-	git clone https://github.com/rdagumampan/yuniql c:\temp\yuniql
-	cd c:\temp\yuniql\sqlserver-samples\visitph-db
+	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip -OutFile "c:\temp\yuniql-sqlserver-sample.zip"
+	powershell Expand-Archive "c:\temp\yuniql-sqlserver-sample.zip" -DestinationPath "c:\temp\yuniql
 	```
+	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip) and extract to desired directory.
 
-3. Download latest `yuniql` build<br>
+3. Download and extract latest `yuniql` build<br>
 
 	```bash
-	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip -OutFile  "c:\temp\yuniql\yuniql-win-x64-latest.zip"
-	powershell Expand-Archive "c:\temp\yuniql\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql\sqlserver-samples\visitph-db"
+	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip -OutFile  "c:\temp\yuniql-win-x64-latest.zip"
+	powershell Expand-Archive "c:\temp\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql\visitph-db"
 	```
 	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip) and extract to desired directory.
 
 4. Run migration<br>
 The following commands `yuniql` to discover the project directory, creates the target database if it doesn't exist and runs all migration steps in the order they are listed. These includes `.sql` files, directories, subdirectories, and csv files. Tokens are also replaced via `-k` parameters.
 	```bash
+	cd c:\temp\yuniql\visitph-db
+	dir
+	
 	yuniql run -a -k "VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4"
 	yuniql info
 
@@ -93,7 +94,7 @@ yuniql run -p c:\temp\demo | --path c:\temp\demo
 yuniql run -t v1.05 | --target-version v1.05
 yuniql run -c "<connectiong-string>"
 yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"
-yuniql run -delimeter "|"
+yuniql run -delimiter "|"
 yuniql erase
 yuniql -v | --version
 yuniql -h | --help
@@ -132,9 +133,9 @@ For running migration from docker container, [see instructions here](https://git
 
 |Platform|Build Status|Description|
 |---|---|---|
-|SqlServer|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)|Sql Server 2017, Azure SQL Database|
-|PostgreSql|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)|PostgreSql v9.6|
-|MySql|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)|MySql v5.7|
+|SqlServer|[![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017, Azure SQL Database|
+|PostgreSql|[![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6|
+|MySql|[![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7|
 |Docker image linux-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
 |Docker imiage win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
 
