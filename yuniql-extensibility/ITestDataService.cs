@@ -41,5 +41,7 @@ namespace Yuniql.Extensibility
         string CreateCleanupScript();
 
         bool IsAtomicDDLSupported { get; }
+
+        public bool DropTestDatabase(string connectionString, string databaseName);
     }
 }

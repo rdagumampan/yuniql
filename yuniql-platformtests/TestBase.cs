@@ -18,12 +18,14 @@ namespace Yuniql.PlatformTests
             return workingPath;
         }
 
-        public void CleanUp(string workingPath)
+        public string GetTargetPlatform()
         {
-            if (Directory.Exists(workingPath))
+            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_TARGET_PLATFORM");
+            if (string.IsNullOrEmpty(targetPlatform))
             {
-                Directory.Delete(workingPath, true);
+                targetPlatform = "sqlserver";
             }
+            return targetPlatform;
         }
     }
 }

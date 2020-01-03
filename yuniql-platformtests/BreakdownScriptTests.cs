@@ -10,29 +10,35 @@ namespace Yuniql.PlatformTests
     [TestClass]
     public class BreakdownScriptTests: TestBase
     {
-        private string _targetPlatform;
         private ITestDataService _testDataService;
-
         private IMigrationServiceFactory _migrationServiceFactory;
         private ITraceService _traceService;
+        private TestConfiguration _testConfiguration;
 
         [TestInitialize]
         public void Setup()
         {
             //get target platform to tests from environment variable
-            _targetPlatform = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_TARGET_PLATFORM");
-            if (string.IsNullOrEmpty(_targetPlatform))
-            {
-                _targetPlatform = "sqlserver";
-            }
+            var targetPlatform = GetTargetPlatform();
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();
-            _testDataService = testDataServiceFactory.Create(_targetPlatform);
+            _testDataService = testDataServiceFactory.Create(targetPlatform);
 
             //create data service factory for migration proper
             _traceService = new FileTraceService();
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
+
+            //create test run configuration
+            var workspacePath = GetOrCreateWorkingPath();
+            var databaseName = new DirectoryInfo(workspacePath).Name;
+            _testConfiguration = new TestConfiguration
+            {
+                TargetPlatform = targetPlatform,
+                WorkspacePath = workspacePath,
+                DatabaseName = databaseName,
+                ConnectionString = _testDataService.GetConnectionString(databaseName)
+            };
         }
 
         [TestMethod]
@@ -52,7 +58,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"Test_Single_Run_Empty.sql"), sqlStatement);
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_targetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -76,7 +82,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.CreateSingleLineScript(sqlObjectName));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_targetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -99,7 +105,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.CreateSingleLineScriptWithoutTerminator(sqlObjectName));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_targetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -126,7 +132,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.CreateMultilineScriptWithoutTerminatorInLastLine(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_targetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -157,7 +163,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(workingPath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.CreateMultilineScriptWithTerminatorInsideStatements(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_targetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
             migrationService.Initialize(connectionString);
             migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
 
@@ -193,7 +199,7 @@ namespace Yuniql.PlatformTests
             //act
             try
             {
-                var migrationService = _migrationServiceFactory.Create(_targetPlatform);
+                var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
                 migrationService.Initialize(connectionString);
                 migrationService.Run(workingPath, "v1.00", autoCreateDatabase: true);
             }
