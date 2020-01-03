@@ -13,56 +13,56 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 ## To start using **`yuniql`** on Sql Server
 Yuniql CLI allows developers and DBAa to run migration steps from CLI, Azure DevOps Tasks, Docker or within .NET Core App. To get started, run these commands line by line via Command Prompt (CMD). 
 
-1. Set your db connection string in environment variable. This demo uses local SQL Server instance. For more connection string samples, visit https://www.connectionstrings.com/sql-server/.
+#### Prepare connection
+Set your db connection string in environment variable. This demo uses local SQL Server instance. For more connection string samples, visit https://www.connectionstrings.com/sql-server/.
 
-	```bash
-	SETX YUNIQL_CONNECTION_STRING "Server=.\;Database=VisitorDB;Trusted_Connection=True;"
-	```
-2. Download and extract sample db project
-	```bash
-	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip -OutFile "c:\temp\yuniql-sqlserver-sample.zip"
-	powershell Expand-Archive "c:\temp\yuniql-sqlserver-sample.zip" -DestinationPath "c:\temp\yuniql
-	```
-	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip) and extract to desired directory.
+```bash
+SETX YUNIQL_CONNECTION_STRING "Server=.\;Database=VisitorDB;Trusted_Connection=True;"
+```
+#### Download samples
+```bash
+powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip -OutFile "c:\temp\yuniql-sqlserver-sample.zip"
+powershell Expand-Archive "c:\temp\yuniql-sqlserver-sample.zip" -DestinationPath "c:\temp\yuniql
+```
+>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip) and extract to desired directory.
 
-3. Download and extract latest `yuniql` build<br>
+#### Download `yuniql`
+```bash
+powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip -OutFile  "c:\temp\yuniql-win-x64-latest.zip"
+powershell Expand-Archive "c:\temp\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql\visitph-db"
+```
+>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip) and extract to desired directory.
 
-	```bash
-	powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip -OutFile  "c:\temp\yuniql-win-x64-latest.zip"
-	powershell Expand-Archive "c:\temp\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql\visitph-db"
-	```
-	>`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip) and extract to desired directory.
-
-4. Run migration<br>
+#### Run migration
 The following commands `yuniql` to discover the project directory, creates the target database if it doesn't exist and runs all migration steps in the order they are listed. These includes `.sql` files, directories, subdirectories, and csv files. Tokens are also replaced via `-k` parameters.
-	```bash
-	cd c:\temp\yuniql\visitph-db
-	dir
-	
-	yuniql run -a -k "VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4"
-	yuniql info
+```bash
+cd c:\temp\yuniql\visitph-db
+dir
 
-	Version         Created                         CreatedBy
-	v0.00           2019-11-03T16:29:36.0130000     DESKTOP-ULR8GDO\rdagumampan
-	v1.00           2019-11-03T16:29:36.0600000     DESKTOP-ULR8GDO\rdagumampan
-	v1.01           2019-11-03T16:29:36.1130000     DESKTOP-ULR8GDO\rdagumampan
-	```
+yuniql run -a -k "VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4"
+yuniql info
 
-5. Verify results<br>
-Query tables with SSMS or your preferred SQL client
-	```sql
-	//SELECT * FROM [dbo].[Visitor]
-	VisitorID   FirstName   LastName    Address  Email
-	----------- ----------- ----------- ------------------------------------------
-	1000        Jack        Poole       Manila   jack.poole@never-exists.com
-	1001        Diana       Churchill   Makati   diana.churchill@never-exists.com
-	1002        Rebecca     Lyman       Rizal    rebecca.lyman@never-exists.com
-	1003        Sam         Macdonald   Batangas sam.macdonald@never-exists.com
-	1004        Matt        Paige       Laguna   matt.paige@never-exists.com
-	```
+Version         Created                         CreatedBy
+v0.00           2019-11-03T16:29:36.0130000     DESKTOP-ULR8GDO\rdagumampan
+v1.00           2019-11-03T16:29:36.0600000     DESKTOP-ULR8GDO\rdagumampan
+v1.01           2019-11-03T16:29:36.1130000     DESKTOP-ULR8GDO\rdagumampan
+```
 
-	<br>
-	<img align="center" src="assets/visitordb-screensot-ssms.png" width="700">
+#### Verify results
+Query tables with SSMS or your preferred SQL client. Noticed tgat `VwVisitorTokenized` carries the tokens passed in the CLI.
+```sql
+//SELECT * FROM [dbo].[Visitor]
+VisitorID   FirstName   LastName    Address  Email
+----------- ----------- ----------- ------------------------------------------
+1000        Jack        Poole       Manila   jack.poole@never-exists.com
+1001        Diana       Churchill   Makati   diana.churchill@never-exists.com
+1002        Rebecca     Lyman       Rizal    rebecca.lyman@never-exists.com
+1003        Sam         Macdonald   Batangas sam.macdonald@never-exists.com
+1004        Matt        Paige       Laguna   matt.paige@never-exists.com
+```
+
+<br>
+<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/visitordb-screensot-ssms.png" width="700">
 
 ## Why yuniql?
 - **It's raw SQL.** Yuniql follows database-first approach to version your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
