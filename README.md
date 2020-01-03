@@ -11,7 +11,7 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
 ## To start using **`yuniql`** on Sql Server
-Yuniql CLI allows developers and DBAa to run migration steps from CLI, Azure DevOps Tasks, Docker or within .NET Core App. To get started, run these commands line by line via Command Prompt (CMD). 
+This an express guide to using yuniql-cli. Yuniql allows developers and DBAa to run migration steps from CLI, Azure DevOps Tasks, Docker or within .NET Core App. To get started, run these commands line by line via Command Prompt (CMD).
 
 #### Prepare connection
 Set your db connection string in environment variable. This demo uses local SQL Server instance. For more connection string samples, visit https://www.connectionstrings.com/sql-server/.
