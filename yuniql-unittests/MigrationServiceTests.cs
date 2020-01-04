@@ -23,6 +23,7 @@ namespace Yuniql.UnitTests
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
 
             var localVersionService = new Mock<ILocalVersionService>();
+            localVersionService.Setup(s => s.Validate(@"c:\temp")).Verifiable();
 
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.GetConnectionInfo()).Returns(new ConnectionInfo { DataSource = "server", Database = "db" });
@@ -94,6 +95,8 @@ namespace Yuniql.UnitTests
             sut.Run(workingPath: @"c:\temp", targetVersion: "v0.00", autoCreateDatabase: true, tokenKeyPairs: tokenKeyPairs, verifyOnly: false);
 
             //asset
+            localVersionService.Verify(s => s.Validate(@"c:\temp"));
+
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.IsTargetDatabaseExists());
             dataService.Verify(s => s.CreateDatabase());

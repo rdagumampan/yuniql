@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace Yuniql.Core
 {
@@ -200,6 +201,27 @@ yuniqlx.exe
             }
 
             return nextMinorVersion.SemVersion;
+        }
+
+        public void Validate(string workingPath)
+        {
+            var directories = new List<KeyValuePair<string, bool>> {
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_init"), Directory.Exists(Path.Combine(workingPath, "_init"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_pre"), Directory.Exists(Path.Combine(workingPath, "_pre"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00"), Directory.Exists(Path.Combine(workingPath, "v0.00"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_draft"), Directory.Exists(Path.Combine(workingPath, "_draft"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_post"), Directory.Exists(Path.Combine(workingPath, "_post"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_erase"), Directory.Exists(Path.Combine(workingPath, "_erase"))),
+            };
+
+            if (directories.Any(t => !t.Value))
+            {
+                var message = new StringBuilder();
+                directories.ForEach(t => message.AppendLine($"{t.Key} / {(t.Value ? "Found" : "Missing!")}"));
+
+                throw new YuniqlMigrationException($"At least one Yuniql directory is missing in your project. " +
+                    $"See validation results below.{Environment.NewLine}{message.ToString()}");
+            }
         }
     }
 }

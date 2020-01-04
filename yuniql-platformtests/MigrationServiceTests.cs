@@ -432,5 +432,57 @@ namespace Yuniql.PlatformTests
                 migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
             }).Message.ShouldContain($"The target database platform oracle is not supported or plugins location was not correctly configured.");
         }
+
+        [TestMethod]
+        public void Test_Run_With_Missing_Directories_In_Workspace_Must_Throw_Exception()
+        {
+            //arrange
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.CreateDbObjectScript($"test_v0_00"));
+
+            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, "_init"), true);
+            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, "_post"), true);
+
+            //act
+            var exception = Assert.ThrowsException<YuniqlMigrationException>(() =>
+            {
+                var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+                migrationService.Initialize(_testConfiguration.ConnectionString);
+                migrationService.Run(_testConfiguration.WorkspacePath, "v0.00", autoCreateDatabase: true);
+            });
+
+            //assert
+            exception.Message.Contains("At least one Yuniql directory is missing in your project.").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_init")} / Missing").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_pre")} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00")} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_draft")} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_post")} / Missing").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_erase")} / Found").ShouldBeTrue();
+
+            _testDataService.CheckIfDbExist(_testConfiguration.ConnectionString).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void Test_Run_With_User_Custom_Directories_In_Workspace()
+        {
+            //arrange
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.CreateDbObjectScript($"test_v0_00"));
+
+            Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "user_created_folder"));
+            Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_another_user_created_folder"));
+
+            //act
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v0.00", autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00").ShouldBeTrue();
+        }
+
     }
 }

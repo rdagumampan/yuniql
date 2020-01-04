@@ -9,5 +9,7 @@
         string IncrementMinorVersion(string workingPath, string sqlFileName);
 
         void Init(string workingPath);
+
+        void Validate(string workingPath);
     }
 }

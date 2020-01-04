@@ -50,6 +50,9 @@ namespace Yuniql.Core
             bool verifyOnly = false,
             string delimeter = ",")
         {
+            //validate workspace structure
+            _localVersionService.Validate(workingPath);
+
             //when uncomitted run is not supported, fail migration and throw exceptions
             if (verifyOnly && !_dataService.IsAtomicDDLSupported) {
                 throw new NotSupportedException("Yuniql.Verify is not supported in the target platform. " +
