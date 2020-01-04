@@ -233,5 +233,33 @@ DROP PROCEDURE [dbo].[script3];
             
             return true;
         }
+
+        public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName) {
+            List<BulkTestDataRow> results = new List<BulkTestDataRow>();
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var sqlStatement = $"SELECT * FROM {tableName};";
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = sqlStatement;
+                command.CommandTimeout = 0;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new BulkTestDataRow { 
+                            FirstName = !reader.IsDBNull(0)? reader.GetString(0): null,
+                            LastName = !reader.IsDBNull(1) ? reader.GetString(1) : null,
+                            BirthDate = !reader.IsDBNull(2) ? reader.GetDateTime(2) : new DateTime?()
+                        });
+                    }
+                }
+            }
+            return results;
+        }
     }
 }

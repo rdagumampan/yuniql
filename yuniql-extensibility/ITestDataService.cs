@@ -43,5 +43,7 @@ namespace Yuniql.Extensibility
         bool IsAtomicDDLSupported { get; }
 
         public bool DropTestDatabase(string connectionString, string databaseName);
+
+        List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName);
     }
 }

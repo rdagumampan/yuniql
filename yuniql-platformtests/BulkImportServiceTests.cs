@@ -4,6 +4,8 @@ using Shouldly;
 using System;
 using Yuniql.Core;
 using Yuniql.Extensibility;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Yuniql.PlatformTests
 {
@@ -92,6 +94,23 @@ namespace Yuniql.PlatformTests
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_02").ShouldBeTrue();
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeTrue();
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsv");
+            var testDataRows = new List<BulkTestDataRow>
+            {
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+            };
+
+            results.Count.ShouldBe(5);
+            testDataRows.All(t => results.Exists(r => 
+                t.FirstName == r.FirstName 
+                && t.LastName == r.LastName 
+                && t.BirthDate == r.BirthDate
+            )).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -112,8 +131,24 @@ namespace Yuniql.PlatformTests
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvPipeDelimited").ShouldBeTrue();
-        }
 
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvPipeDelimited");
+            var testDataRows = new List<BulkTestDataRow>
+            {
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+            };
+
+            results.Count.ShouldBe(5);
+            testDataRows.All(t => results.Exists(r =>
+                t.FirstName == r.FirstName
+                && t.LastName == r.LastName
+                && t.BirthDate == r.BirthDate
+            )).ShouldBeTrue();
+        }
 
         [TestMethod]
         public void Test_Bulk_Import_With_Utf8()
@@ -133,6 +168,23 @@ namespace Yuniql.PlatformTests
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvUtf8").ShouldBeTrue();
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvUtf8");
+            var testDataRows = new List<BulkTestDataRow>
+            {
+                new BulkTestDataRow { FirstName="Allan", LastName ="Søgaard", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Martin", LastName ="Bæk", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Gitte", LastName ="Jürgensen", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Maria", LastName ="Østergård", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Peter", LastName ="Langkjær", BirthDate = new DateTime(1980,1,1) },
+            };
+
+            results.Count.ShouldBe(5);
+            testDataRows.All(t => results.Exists(r =>
+                t.FirstName == r.FirstName
+                && t.LastName == r.LastName
+                && t.BirthDate == r.BirthDate
+            )).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -153,6 +205,23 @@ namespace Yuniql.PlatformTests
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvNullColumn").ShouldBeTrue();
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvNullColumn");
+            var testDataRows = new List<BulkTestDataRow>
+            {
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole"},
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill"},
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald"},
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige"},
+            };
+
+            results.Count.ShouldBe(5);
+            testDataRows.All(t => results.Exists(r =>
+                t.FirstName == r.FirstName
+                && t.LastName == r.LastName
+                && !r.BirthDate.HasValue
+            )).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -173,6 +242,23 @@ namespace Yuniql.PlatformTests
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvUnquoted").ShouldBeTrue();
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvUnquoted");
+            var testDataRows = new List<BulkTestDataRow>
+            {
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+            };
+
+            results.Count.ShouldBe(5);
+            testDataRows.All(t => results.Exists(r =>
+                t.FirstName == r.FirstName
+                && t.LastName == r.LastName
+                && t.BirthDate == r.BirthDate
+            )).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -223,6 +309,23 @@ namespace Yuniql.PlatformTests
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvMismatchColumn").ShouldBeTrue();
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvMismatchColumn");
+            var testDataRows = new List<BulkTestDataRow>
+            {
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole"},
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill"},
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald"},
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige"},
+            };
+
+            results.Count.ShouldBe(5);
+            testDataRows.All(t => results.Exists(r =>
+                t.FirstName == r.FirstName
+                && t.LastName == r.LastName
+                && !r.BirthDate.HasValue
+            )).ShouldBeTrue();
         }
 
         [TestMethod]

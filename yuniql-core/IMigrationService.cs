@@ -12,7 +12,11 @@ namespace Yuniql.Core
 
         List<DbVersion> GetAllVersions();
 
-        void Run(string workingPath, string targetVersion, bool autoCreateDatabase, List<KeyValuePair<string, string>> tokens = null, bool verifyOnly = false, string delimeter = ",");
+        void Run(string workingPath, string targetVersion, bool autoCreateDatabase, 
+            List<KeyValuePair<string, string>> tokens = null, 
+            bool verifyOnly = false, 
+            string delimeter = ",",
+            int commandTimeout = 30);
 
         void Erase(string workingPath);
     }

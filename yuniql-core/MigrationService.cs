@@ -48,7 +48,8 @@ namespace Yuniql.Core
             bool autoCreateDatabase,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             bool verifyOnly = false,
-            string delimeter = ",")
+            string delimeter = ",",
+            int commandTimeOut = 30)
         {
             //validate workspace structure
             _localVersionService.Validate(workingPath);
