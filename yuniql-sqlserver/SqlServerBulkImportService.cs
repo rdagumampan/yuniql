@@ -8,6 +8,7 @@ namespace Yuniql.SqlServer
 {
     public class SqlServerBulkImportService : IBulkImportService
     {
+        private int _commandTimeout = 30;
         private string _connectionString;
         private readonly ITraceService _traceService;
 
@@ -16,18 +17,25 @@ namespace Yuniql.SqlServer
             this._traceService = traceService;
         }
 
-        public void Initialize(string connectionString)
+        public void Initialize(string connectionString, int commandTimeout = 30)
         {
             this._connectionString = connectionString;
+            this._commandTimeout = commandTimeout;
         }
 
-        public void Run(IDbConnection connection, IDbTransaction transaction, string fileFullPath, string delimeter)
+        public void Run(
+            IDbConnection activeConnection, 
+            IDbTransaction activeTransaction, 
+            string fileFullPath, 
+            string delimiter, 
+            int batchSize = 0, 
+            int commandTimeout = 30)
         {
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(fileFullPath, delimeter);
+            var dataTable = ParseCsvFile(fileFullPath, delimiter);
 
             //save the csv data into staging sql table
-            BulkCopyWithDataTable(connection, transaction, dataTable);
+            BulkCopyWithDataTable(activeConnection, activeTransaction, dataTable, batchSize, commandTimeout);
         }
 
         private DataTable ParseCsvFile(string csvFileFullPath, string delimeter)
@@ -64,12 +72,18 @@ namespace Yuniql.SqlServer
             return csvDatatable;
         }
 
-        private void BulkCopyWithDataTable(IDbConnection connection, IDbTransaction transaction, DataTable csvFileDatatTable)
+        private void BulkCopyWithDataTable(
+            IDbConnection activeConnection, 
+            IDbTransaction activeTransaction, 
+            DataTable csvFileDatatTable, 
+            int batchSize, 
+            int commandTimeout)
         {
-            using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
+            using (var sqlBulkCopy = new SqlBulkCopy(activeConnection as SqlConnection, SqlBulkCopyOptions.Default, activeTransaction as SqlTransaction))
             {
                 sqlBulkCopy.DestinationTableName = csvFileDatatTable.TableName;
-                sqlBulkCopy.BatchSize = 0;
+                sqlBulkCopy.BulkCopyTimeout = commandTimeout;
+                sqlBulkCopy.BatchSize = batchSize;
                 sqlBulkCopy.EnableStreaming = true;
                 sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
                 foreach (var column in csvFileDatatTable.Columns)
@@ -79,7 +93,7 @@ namespace Yuniql.SqlServer
                 sqlBulkCopy.WriteToServer(csvFileDatatTable);
             }
         }
-        
+
         private void SqlBulkCopy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e)
         {
             _traceService.Info($"SqlServerBulkImportService copied {e.RowsCopied} rows");

@@ -21,5 +21,7 @@ namespace Yuniql.Core
         public string Delimiter { get; set; } = ",";
 
         public bool DebugTraceMode { get; set; } = false;
+
+        public int CommandTimeout { get; set; }
     }
 }

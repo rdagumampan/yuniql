@@ -5,19 +5,26 @@ namespace Yuniql.Core
 {
     public interface IMigrationService
     {
-
-        void Initialize(string connectionString);
+        void Initialize(string connectionString, int commandTimeout);
 
         string GetCurrentVersion();
 
         List<DbVersion> GetAllVersions();
 
-        void Run(string workingPath, string targetVersion, bool autoCreateDatabase, 
+        void Run(
+            string workingPath, 
+            string targetVersion, 
+            bool autoCreateDatabase, 
             List<KeyValuePair<string, string>> tokens = null, 
             bool verifyOnly = false, 
-            string delimeter = ",",
-            int commandTimeout = 30);
+            string delimiter = ",",
+            int commandTimeout = 30
+            );
 
-        void Erase(string workingPath);
+        void Erase(
+            string workingPath,
+            List<KeyValuePair<string, string>> tokens = null,
+            int commandTimeout = 30
+            );
     }
 }

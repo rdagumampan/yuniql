@@ -122,8 +122,8 @@ namespace Yuniql.CLI
 
                 //run the migration
                 var migrationService = _migrationServiceFactory.Create(opts.Platform, pluginsPath: opts.PluginsPath);
-                migrationService.Initialize(opts.ConnectionString);
-                migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens: tokens, verifyOnly: false, delimeter: opts.Delimiter);
+                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
+                migrationService.Run(opts.Path, opts.TargetVersion, opts.AutoCreateDatabase, tokens: tokens, verifyOnly: false, delimiter: opts.Delimiter, commandTimeout: opts.CommandTimeout);
             }
             catch (Exception ex)
             {
@@ -171,8 +171,8 @@ namespace Yuniql.CLI
 
                 //run the migration
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
-                migrationService.Initialize(opts.ConnectionString);
-                migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verifyOnly: true, delimeter: opts.Delimeter);
+                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
+                migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verifyOnly: true, delimiter: opts.Delimiter, commandTimeout: opts.CommandTimeout);
 
                 _traceService.Info("Verification run successful.");
             }
@@ -202,7 +202,7 @@ namespace Yuniql.CLI
                 }
 
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
-                migrationService.Initialize(opts.ConnectionString);
+                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 var versions = migrationService.GetAllVersions();
 
                 var results = new StringBuilder();
@@ -246,9 +246,13 @@ namespace Yuniql.CLI
                     opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
+                //parse tokens
+                var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+
+                //run all erase scripts
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
-                migrationService.Initialize(opts.ConnectionString);
-                migrationService.Erase(opts.Path);
+                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
+                migrationService.Erase(opts.Path, tokens, opts.CommandTimeout);
             }
             catch (Exception ex)
             {

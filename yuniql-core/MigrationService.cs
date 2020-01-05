@@ -35,11 +35,11 @@ namespace Yuniql.Core
             this._traceService = traceService;
         }
 
-        public void Initialize(string connectionString)
+        public void Initialize(string connectionString, int commandTimeout)
         {
             //initialize dependencies
-            _dataService.Initialize(connectionString);
-            _bulkImportService.Initialize(connectionString);
+            _dataService.Initialize(connectionString, commandTimeout);
+            _bulkImportService.Initialize(connectionString, commandTimeout);
         }
 
         public void Run(
@@ -48,14 +48,16 @@ namespace Yuniql.Core
             bool autoCreateDatabase,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             bool verifyOnly = false,
-            string delimeter = ",",
-            int commandTimeOut = 30)
+            string delimiter = ",",
+            int commandTimeout = 30
+            )
         {
             //validate workspace structure
             _localVersionService.Validate(workingPath);
 
             //when uncomitted run is not supported, fail migration and throw exceptions
-            if (verifyOnly && !_dataService.IsAtomicDDLSupported) {
+            if (verifyOnly && !_dataService.IsAtomicDDLSupported)
+            {
                 throw new NotSupportedException("Yuniql.Verify is not supported in the target platform. " +
                     "The feature requires support for atomic DDL operations. " +
                     "An atomic DDL operations ensures creation of tables, views and other objects and data are rolledback in case of error. " +
@@ -112,24 +114,24 @@ namespace Yuniql.Core
                             if (!targetDatabaseConfigured)
                             {
                                 //runs all scripts in the _init folder
-                                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokenKeyPairs);
+                                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokenKeyPairs, commandTimeout);
                                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
                             }
 
                             //checks if target database already runs the latest version and skips work if it already is
                             //runs all scripts in the _pre folder and subfolders
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs);
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, commandTimeout);
                             _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                             //runs all scripts int the vxx.xx folders and subfolders
-                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimeter);
+                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimiter, commandTimeout);
 
                             //runs all scripts in the _draft folder and subfolders
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs);
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, commandTimeout);
                             _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                             //runs all scripts in the _post folder and subfolders
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs);
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, commandTimeout);
                             _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
 
                             //when true, the execution is an uncommitted transaction 
@@ -179,7 +181,8 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string directoryFullPath,
-            List<KeyValuePair<string, string>> tokens = null)
+            List<KeyValuePair<string, string>> tokens,
+            int commandTimeout)
         {
             var sqlScriptFiles = _directoryService.GetFiles(directoryFullPath, "*.sql").ToList();
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {directoryFullPath}");
@@ -201,7 +204,7 @@ namespace Yuniql.Core
                     sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
 
                     _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-                    _dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
+                    _dataService.ExecuteNonQuery(connection, sqlStatement, transaction, commandTimeout: commandTimeout);
                 });
 
                 _traceService.Info($"Executed script file {scriptFile}.");
@@ -215,7 +218,8 @@ namespace Yuniql.Core
             string workingPath,
             string targetVersion,
             List<KeyValuePair<string, string>> tokens,
-            string delimeter)
+            string delimiter,
+            int commandTimeout)
         {
             //excludes all versions already executed
             var versionDirectories = _directoryService.GetDirectories(workingPath, "v*.*")
@@ -247,18 +251,18 @@ namespace Yuniql.Core
                         versionSubDirectories.Sort();
                         versionSubDirectories.ForEach(versionSubDirectory =>
                         {
-                            RunMigrationScriptsInternal(connection, transaction, versionSubDirectory, tokens);
+                            RunMigrationScriptsInternal(connection, transaction, versionSubDirectory, tokens, commandTimeout);
                         });
 
                         //run all scripts in the current version folder
-                        RunMigrationScriptsInternal(connection, transaction, versionDirectory, tokens);
+                        RunMigrationScriptsInternal(connection, transaction, versionDirectory, tokens, commandTimeout);
 
                         //import csv files into tables of the the same filename as the csv
-                        RunBulkImport(connection, transaction, versionDirectory, delimeter);
+                        RunBulkImport(connection, transaction, versionDirectory, delimiter, commandTimeout);
 
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
-                        _dataService.UpdateVersion(connection, transaction, versionName);
+                        _dataService.UpdateVersion(connection, transaction, versionName, commandTimeout: commandTimeout);
 
                         _traceService.Info($"Completed migration to version {versionDirectory}");
                     }
@@ -279,7 +283,8 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string versionFullPath,
-            string delimter)
+            string delimiter,
+            int commandTimeout)
         {
             //execute all script files in the version folder
             var bulkFiles = _directoryService.GetFiles(versionFullPath, "*.csv").ToList();
@@ -290,7 +295,7 @@ namespace Yuniql.Core
 
             bulkFiles.ForEach(csvFile =>
             {
-                _bulkImportService.Run(connection, transaction, csvFile, delimter);
+                _bulkImportService.Run(connection, transaction, csvFile, delimiter, commandTimeout: commandTimeout);
                 _traceService.Info($"Imported bulk file {csvFile}.");
             });
         }
@@ -299,7 +304,8 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string versionFullPath,
-            List<KeyValuePair<string, string>> tokens = null)
+            List<KeyValuePair<string, string>> tokens,
+            int commandTimeout)
         {
             var sqlScriptFiles = _directoryService.GetFiles(versionFullPath, "*.sql").ToList();
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {versionFullPath}");
@@ -321,14 +327,14 @@ namespace Yuniql.Core
                     sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
 
                     _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-                    _dataService.ExecuteNonQuery(connection, sqlStatement, transaction);
+                    _dataService.ExecuteNonQuery(connection, sqlStatement, activeTransaction: transaction, commandTimeout: commandTimeout);
                 });
 
                 _traceService.Info($"Executed script file {scriptFile}.");
             });
         }
 
-        public void Erase(string workingPath)
+        public void Erase(string workingPath, List<KeyValuePair<string, string>> tokenKeyPairs, int commandTimeout)
         {
             //enclose all executions in a single transaction
             using (var connection = _dataService.CreateConnection())
@@ -339,7 +345,7 @@ namespace Yuniql.Core
                     try
                     {
                         //runs all scripts in the _erase folder
-                        RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_erase"));
+                        RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_erase"), tokenKeyPairs, commandTimeout);
                         _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
 
                         transaction.Commit();

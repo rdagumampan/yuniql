@@ -5,22 +5,21 @@ namespace Yuniql.Extensibility
 {
     public interface IDataService
     {
+        void ExecuteNonQuery(string connectionString, string sqlStatement, int commandTimeout = 30);
 
-        public void Initialize(string onnectionString);
+        string QuerySingleString(string connectionString, string sqlStatement, int commandTimeout = 30);
 
-        void ExecuteNonQuery(string connectionString, string sqlStatement);
+        bool QuerySingleBool(string connectionString, string sqlStatement, int commandTimeout = 30);
 
-        string QuerySingleString(string connectionString, string sqlStatement);
+        void ExecuteNonQuery(IDbConnection activeConnection, string sqlStatement, IDbTransaction activeTransaction = null, int commandTimeout = 30);
 
-        bool QuerySingleBool(string connectionString, string sqlStatement);
+        int ExecuteScalar(IDbConnection activeConnection, string sqlStatement, IDbTransaction activeTransaction = null, int commandTimeout = 30);
 
-        void ExecuteNonQuery(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null);
+        bool QuerySingleBool(IDbConnection activeConnection, string sqlStatement, IDbTransaction activeTransaction = null, int commandTimeout = 30);
 
-        int ExecuteScalar(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null);
+        string QuerySingleString(IDbConnection activeConnection, string sqlStatement, IDbTransaction activeTransaction = null, int commandTimeout = 30);
 
-        bool QuerySingleBool(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null);
-
-        string QuerySingleString(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null);
+        public void Initialize(string connectionString, int commandTimeout = 30);
 
         bool IsTargetDatabaseExists();
 
@@ -34,9 +33,9 @@ namespace Yuniql.Extensibility
 
         List<DbVersion> GetAllVersions();
 
-        void UpdateVersion(IDbConnection activeConnection, IDbTransaction transaction, string version);
+        void UpdateVersion(IDbConnection activeConnection, IDbTransaction activeTransaction, string version, int commandTimeout = 30);
         
-        List<string> BreakStatements(string sqlStatementRaw);
+        List<string> BreakStatements(string sqlStatement);
 
         public IDbConnection CreateConnection();
 
