@@ -17,35 +17,35 @@ namespace Yuniql.SqlServer
             this._traceService = traceService;
         }
 
-        public void Initialize(string connectionString, int commandTimeout = 30)
+        public void Initialize(string connectionString, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             this._connectionString = connectionString;
             this._commandTimeout = commandTimeout;
         }
 
         public void Run(
-            IDbConnection activeConnection, 
-            IDbTransaction activeTransaction, 
+            IDbConnection connection, 
+            IDbTransaction transaction, 
             string fileFullPath, 
             string delimiter, 
-            int batchSize = 0, 
-            int commandTimeout = 30)
+            int batchSize = DefaultConstants.BatchSize, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             //read csv file and load into data table
             var dataTable = ParseCsvFile(fileFullPath, delimiter);
 
             //save the csv data into staging sql table
-            BulkCopyWithDataTable(activeConnection, activeTransaction, dataTable, batchSize, commandTimeout);
+            BulkCopyWithDataTable(connection, transaction, dataTable, batchSize = DefaultConstants.BatchSize, commandTimeout = DefaultConstants.CommandTimeoutSecs);
         }
 
-        private DataTable ParseCsvFile(string csvFileFullPath, string delimeter)
+        private DataTable ParseCsvFile(string csvFileFullPath, string delimiter)
         {
             var csvDatatable = new DataTable();
             csvDatatable.TableName = Path.GetFileNameWithoutExtension(csvFileFullPath);
 
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
-                csvReader.Delimiters = (new string[] { delimeter });
+                csvReader.Delimiters = (new string[] { delimiter });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 string[] csvColumns = csvReader.ReadFields();
@@ -73,13 +73,13 @@ namespace Yuniql.SqlServer
         }
 
         private void BulkCopyWithDataTable(
-            IDbConnection activeConnection, 
-            IDbTransaction activeTransaction, 
+            IDbConnection connection, 
+            IDbTransaction transaction, 
             DataTable csvFileDatatTable, 
             int batchSize, 
             int commandTimeout)
         {
-            using (var sqlBulkCopy = new SqlBulkCopy(activeConnection as SqlConnection, SqlBulkCopyOptions.Default, activeTransaction as SqlTransaction))
+            using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
             {
                 sqlBulkCopy.DestinationTableName = csvFileDatatTable.TableName;
                 sqlBulkCopy.BulkCopyTimeout = commandTimeout;

@@ -127,7 +127,7 @@ namespace Yuniql.PlatformTests
             //act - bulk load csv files and change the default delimieted to |
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true, delimeter: "|");
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true, delimiter: "|");
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvPipeDelimited").ShouldBeTrue();

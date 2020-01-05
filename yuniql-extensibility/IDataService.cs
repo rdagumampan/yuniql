@@ -3,23 +3,24 @@ using System.Data;
 
 namespace Yuniql.Extensibility
 {
+
     public interface IDataService
     {
-        void ExecuteNonQuery(string connectionString, string sqlStatement, int commandTimeout = 30);
+        void ExecuteNonQuery(string connectionString, string sqlStatement, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
 
-        string QuerySingleString(string connectionString, string sqlStatement, int commandTimeout = 30);
+        string QuerySingleString(string connectionString, string sqlStatement, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
 
-        bool QuerySingleBool(string connectionString, string sqlStatement, int commandTimeout = 30);
+        bool QuerySingleBool(string connectionString, string sqlStatement, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
 
-        void ExecuteNonQuery(IDbConnection activeConnection, string sqlStatement, IDbTransaction activeTransaction = null, int commandTimeout = 30);
+        void ExecuteNonQuery(IDbConnection connection, string sqlStatement, IDbTransaction transaction = null, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
 
-        int ExecuteScalar(IDbConnection activeConnection, string sqlStatement, IDbTransaction activeTransaction = null, int commandTimeout = 30);
+        int ExecuteScalar(IDbConnection connection, string sqlStatement, IDbTransaction transaction = null, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
 
-        bool QuerySingleBool(IDbConnection activeConnection, string sqlStatement, IDbTransaction activeTransaction = null, int commandTimeout = 30);
+        bool QuerySingleBool(IDbConnection connection, string sqlStatement, IDbTransaction transaction = null, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
 
-        string QuerySingleString(IDbConnection activeConnection, string sqlStatement, IDbTransaction activeTransaction = null, int commandTimeout = 30);
+        string QuerySingleString(IDbConnection connection, string sqlStatement, IDbTransaction transaction = null, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
 
-        public void Initialize(string connectionString, int commandTimeout = 30);
+        public void Initialize(string connectionString, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
 
         bool IsTargetDatabaseExists();
 
@@ -33,7 +34,7 @@ namespace Yuniql.Extensibility
 
         List<DbVersion> GetAllVersions();
 
-        void UpdateVersion(IDbConnection activeConnection, IDbTransaction activeTransaction, string version, int commandTimeout = 30);
+        void UpdateVersion(IDbConnection connection, IDbTransaction transaction, string version, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
         
         List<string> BreakStatements(string sqlStatement);
 

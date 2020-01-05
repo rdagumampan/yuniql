@@ -191,13 +191,18 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver", null)).Returns(migrationService.Object);
 
             //act
-            var option = new EraseOption();
+            var option = new EraseOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
             sut.RunEraseOption(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string"));
-            migrationService.Verify(s => s.Erase(@"c:\temp\yuniql"));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
+            migrationService.Verify(s => s.Erase(@"c:\temp\yuniql",
+                   It.Is<List<KeyValuePair<string, string>>>(x =>
+                    x[0].Key == "Token1" && x[0].Value == "TokenValue1"
+                    && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
+                    && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
+                ), DefaultConstants.CommandTimeoutSecs));
         }
 
         [TestMethod]
@@ -219,7 +224,7 @@ namespace Yuniql.UnitTests
             sut.RunInfoOption(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string"));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
             migrationService.Verify(s => s.GetAllVersions());
         }
 
@@ -245,8 +250,8 @@ namespace Yuniql.UnitTests
             sut.RunVerify(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string"));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, ","));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, DefaultConstants.BatchSize));
         }
 
         [TestMethod]
@@ -271,13 +276,13 @@ namespace Yuniql.UnitTests
             sut.RunVerify(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string"));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
             migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false,
                 It.Is<List<KeyValuePair<string, string>>>(x =>
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), true, ","));
+                ), true, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, DefaultConstants.BatchSize));
         }
 
 
@@ -303,8 +308,8 @@ namespace Yuniql.UnitTests
             sut.RunMigration(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string"));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, ","));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, DefaultConstants.BatchSize));
         }
 
         [TestMethod]
@@ -329,13 +334,13 @@ namespace Yuniql.UnitTests
             sut.RunMigration(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string"));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
             migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false,
                 It.Is<List<KeyValuePair<string, string>>>(x =>
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), false, ","));
+                ), false, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, DefaultConstants.BatchSize));
         }
     }
 }
