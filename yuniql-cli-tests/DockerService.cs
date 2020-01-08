@@ -11,6 +11,10 @@ namespace Yuniql.CliTests
     {
         private DockerClient _dockerClient;
 
+        public DockerService()
+        {
+            Initialize();
+        }
         public void Initialize()
         {
             var dockerApiUri = new Uri(GetDockerApiUri());
@@ -62,7 +66,7 @@ namespace Yuniql.CliTests
                 Name = container.Name,
                 Image = $"{container.Image}:{container.Tag}",
                 Env = container.Env.Select(t => $"{t.Item1}={t.Item2}").ToList(),
-                Cmd = container.Cmd.Select(t => $"{t.Item1}={t.Item2}").ToList(),
+                Cmd = container.Cmd,
                 ExposedPorts = container.ExposedPorts.ToDictionary(x => x, x => default(EmptyStruct)),
                 HostConfig = new HostConfig
                 {
@@ -111,7 +115,7 @@ namespace Yuniql.CliTests
                 .ConfigureAwait(false)
                 .GetAwaiter()
                 .GetResult()
-                .Where(r => r.Names.Contains(containerName))
+                .Where(r => r.Names.Contains($"/{containerName}"))
                 .Select(r => new DockerContainer { Id = r.ID, Image = r.Image, State = r.State })
                 .ToList();
 

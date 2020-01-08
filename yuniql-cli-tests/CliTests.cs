@@ -2,16 +2,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using Yuniql.CliTests;
 
 namespace CliTests
 {
+
     [TestClass]
     public class CliTests : TestBase
     {
         private TestConfiguration _testConfiguration;
 
-        public void SetupWithEmptyWorkspace()
+        public void SetupWorkspace()
         {
             //create test run configuration from empty workspace
             var workspacePath = CreateEmptyWorkspace();
@@ -19,7 +22,7 @@ namespace CliTests
 
             //prepare a unique connection string for each test case
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");
-            connectionString.Replace("yuniqldb", databaseName);
+            connectionString = connectionString.Replace("yuniqldb", databaseName);
 
             _testConfiguration = new TestConfiguration
             {
@@ -31,7 +34,7 @@ namespace CliTests
             };
         }
 
-        public void SetupWithSampleWorkspace()
+        public void SetupWorkspaceWithSampleDb()
         {
             //create test run configuration from sample workspace
             var workspacePath = CreateEmptyWorkspace();
@@ -42,7 +45,7 @@ namespace CliTests
 
             //prepare a unique connection string for each test case
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");
-            connectionString.Replace("yuniqldb", databaseName);
+            connectionString = connectionString.Replace("yuniqldb", databaseName);
 
             _testConfiguration = new TestConfiguration
             {
@@ -54,22 +57,35 @@ namespace CliTests
             };
         }
 
-        //[ClassInitialize]
-        //public void TestClassSetup()
-        //{
-        //}
+        [ClassInitialize]
+        public static void SetupInfrastrucuture(TestContext testContext)
+        {
+            var containerFactory = new ContainerFactory();
+            var container = containerFactory.Create("sqlserver");
 
-        //[ClassCleanup]
-        //public void TestClassCleanup()
-        //{
-        //}
+            var dockerService = new DockerService();
+            var foundContainer = dockerService.FindByName(container.Name).FirstOrDefault();
+            if (null != foundContainer)
+            {
+                dockerService.Remove(foundContainer);
+            }
+
+            dockerService.Run(container);
+
+            Thread.Sleep(1000 * 10);
+        }
+
+        [ClassCleanup]
+        public static void TearDownInfrastructure()
+        {
+            var dockerService = new DockerService();
+            var container = dockerService.FindByName("sqlserver-testserver-for-cli-tests").First(); ;
+            dockerService.Remove(container);
+        }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            //drop test database
-            //_testDataService.DropTestDatabase(_testConfiguration.ConnectionString, _testConfiguration.DatabaseName);
-
             //drop test directories
             if (Directory.Exists(_testConfiguration.WorkspacePath))
             {
@@ -82,11 +98,8 @@ namespace CliTests
         [DataRow("init", "-d")]
         public void Test_Cli_init(string command, string arguments)
         {
-            Bootstrapper bootstrapper = new Bootstrapper();
-            bootstrapper.Initialize();
-
             //arrange
-            SetupWithEmptyWorkspace();
+            SetupWorkspace();
 
             //act & assert
             var result = ExecuteCli(command, _testConfiguration.WorkspacePath, arguments);
@@ -106,7 +119,7 @@ namespace CliTests
         public void Test_Cli_vnext(string command, string arguments)
         {
             //arrange
-            SetupWithSampleWorkspace();
+            SetupWorkspaceWithSampleDb();
 
             //act & assert
             var result = ExecuteCli(command, _testConfiguration.WorkspacePath, arguments);
@@ -125,7 +138,7 @@ namespace CliTests
         public void Test_Cli_run(string command, string arguments)
         {
             //arrange
-            SetupWithSampleWorkspace();
+            SetupWorkspaceWithSampleDb();
 
             //act & assert
             var result = ExecuteCli(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, arguments);
@@ -138,7 +151,7 @@ namespace CliTests
         public void Test_Cli_info(string command, string arguments)
         {
             //arrange
-            SetupWithSampleWorkspace();
+            SetupWorkspaceWithSampleDb();
 
             //act & assert
             var result = ExecuteCli("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
@@ -154,7 +167,7 @@ namespace CliTests
         public void Test_Cli_verify(string command, string arguments)
         {
             //arrange
-            SetupWithSampleWorkspace();
+            SetupWorkspaceWithSampleDb();
 
             //act & assert
             var result = ExecuteCli("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
@@ -171,7 +184,7 @@ namespace CliTests
         public void Test_Cli_erase(string command, string arguments)
         {
             //arrange
-            SetupWithSampleWorkspace();
+            SetupWorkspaceWithSampleDb();
 
             //act & assert
             var result = ExecuteCli("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");

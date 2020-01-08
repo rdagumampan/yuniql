@@ -9,7 +9,7 @@ namespace Yuniql.CliTests
         public string Image { get; set; }
         public string Tag { get; set; }
         public List<Tuple<string, string>> Env { get; set; } = new List<Tuple<string, string>>();
-        public List<Tuple<string, string>> Cmd { get; set; } = new List<Tuple<string, string>>();
+        public List<string> Cmd { get; set; } = new List<string>();
         public List<string> ExposedPorts { get; set; } = new List<string>();
         public List<Tuple<string, string>> MappedPorts { get; set; } = new List<Tuple<string, string>>();
         public string State { get; set; }
