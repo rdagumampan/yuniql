@@ -47,6 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Cli\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 
