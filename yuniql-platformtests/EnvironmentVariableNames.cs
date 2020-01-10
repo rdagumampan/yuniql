@@ -7,6 +7,6 @@
         public const string YUNIQL_TEST_TARGET_PLATFORM = "YUNIQL_TEST_TARGET_PLATFORM";
         public const string YUNIQL_TEST_CONNECTION_STRING = "YUNIQL_TEST_CONNECTION_STRING";
         public const string YUNIQL_TEST_SAMPLEDB = "YUNIQL_TEST_SAMPLEDB";
-        public const string YUNIQL_TEST_HOST = "LOCAL";
+        public const string YUNIQL_TEST_HOST = "YUNIQL_TEST_HOST";
     }
 }
