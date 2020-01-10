@@ -58,7 +58,7 @@ namespace Yuniql.PlatformTests
 
             return new TestConfiguration
             {
-                CliProcessFile = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_CLI),
+                CliProcessFile = GetCliProcessFile(),
                 TargetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
                 ConnectionString = connectionString,
                 WorkspacePath = workspacePath,
@@ -79,6 +79,17 @@ namespace Yuniql.PlatformTests
             var connectionString = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_CONNECTION_STRING);
             connectionString = connectionString.Replace("yuniqldb", databaseName);
 
+            return new TestConfiguration
+            {
+                CliProcessFile = GetCliProcessFile(),
+                TargetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
+                ConnectionString = connectionString,
+                WorkspacePath = workspacePath,
+                DatabaseName = databaseName
+            };
+        }
+        private string GetCliProcessFile()
+        {
             //handle environment where tests are executed
             var isWindows = Environment.OSVersion.Platform == PlatformID.Win32NT;
             var cliProcessFile = Path.Combine(EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_CLI), "yuniql.exe");
@@ -87,15 +98,7 @@ namespace Yuniql.PlatformTests
                 cliProcessFile = Path.Combine(EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_CLI), "yuniql");
             }
 
-            return new TestConfiguration
-            {
-                CliProcessFile = cliProcessFile,
-                TargetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
-                ConnectionString = connectionString,
-                WorkspacePath = workspacePath,
-                DatabaseName = databaseName
-            };
+            return cliProcessFile;
         }
-
     }
 }

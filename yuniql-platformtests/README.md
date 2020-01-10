@@ -2,6 +2,15 @@
 
 Platform tests verifies that yuniql works on the target RDMBS platform. The following guide describes how to run runs for SqlServer and PostgreSql.
 
+## Environment Variables
+
+|Variable Name|Description|
+|---|---|
+|YUNIQL_TEST_CLI|The directory where yuniql CLI is placed.|
+|YUNIQL_TEST_PLUGINS|The directory where plugins are placed.|
+|YUNIQL_TEST_TARGET_PLATFORM|The target platform `sqlserver`,`postgresql`,`mysql`. Default is `sqlserver`.|
+|YUNIQL_TEST_CONNECTION_STRING|The connection string to your test server. See defaults for each containerized server.|
+
 ## Running platform tests for SqlServer
 1. Deploy a sql server linux container
 	

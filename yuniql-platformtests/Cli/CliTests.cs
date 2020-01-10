@@ -39,7 +39,7 @@ namespace Yuniql.PlatformTests
             SetupWithEmptyWorkspace();
 
             //act & assert
-            var result = _executionService.ExecuteCli(command, _testConfiguration.WorkspacePath, arguments);
+            var result = _executionService.Run(command, _testConfiguration.WorkspacePath, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
@@ -59,7 +59,7 @@ namespace Yuniql.PlatformTests
             SetupWorkspaceWithSampleDb();
 
             //act & assert
-            var result = _executionService.ExecuteCli(command, _testConfiguration.WorkspacePath, arguments);
+            var result = _executionService.Run(command, _testConfiguration.WorkspacePath, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
@@ -78,7 +78,7 @@ namespace Yuniql.PlatformTests
             SetupWorkspaceWithSampleDb();
 
             //act & assert
-            var result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, arguments);
+            var result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
@@ -91,11 +91,11 @@ namespace Yuniql.PlatformTests
             SetupWorkspaceWithSampleDb();
 
             //act & assert
-            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
             result.Contains($"Failed to execute run").ShouldBeFalse();
 
             //act & assert
-            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, arguments);
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
@@ -107,11 +107,11 @@ namespace Yuniql.PlatformTests
             SetupWorkspaceWithSampleDb();
 
             //act & assert
-            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
             result.Contains($"Failed to execute run").ShouldBeFalse();
 
             //act & assert
-            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, arguments);
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
@@ -124,11 +124,11 @@ namespace Yuniql.PlatformTests
             SetupWorkspaceWithSampleDb();
 
             //act & assert
-            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
             result.Contains($"Failed to execute run").ShouldBeFalse();
 
             //act & assert
-            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, arguments);
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
     }

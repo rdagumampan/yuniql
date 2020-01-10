@@ -13,19 +13,19 @@ namespace Yuniql.PlatformTests
         {
             this._executionProcessFile = executionProcessFile;
         }
-        public string Run(string command, string workspace, string connectionString, string arguments)
+        public string Run(string command, string workspace, string connectionString, string platform, string arguments)
         {
-            string processArguments = $"{command} -p \"{workspace}\" -c \"{connectionString}\" {arguments}";
-            return Run(processArguments);
+            string processArguments = $"{command} -p \"{workspace}\" -c \"{connectionString}\" --platform \"{platform}\" {arguments}";
+            return RunInternal(processArguments);
         }
 
-        public string ExecuteCli(string command, string workspace, string arguments)
+        public string Run(string command, string workspace, string arguments)
         {
             string processArguments = $"{command} -p \"{workspace}\" {arguments}";
-            return Run(processArguments);
+            return RunInternal(processArguments);
         }
 
-        public string Run(string arguments)
+        private string RunInternal(string arguments)
         {
             using var process = new Process
             {
