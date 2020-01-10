@@ -6,10 +6,12 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 
 |Variable Name|Description|
 |---|---|
+|YUNIQL_TEST_HOST|The location where tests is executed. Value can be `LOCAL`, `APPVEYOR`. Default is `LOCAL`. A `LOCAL` run will always use Docker containers for test server.|
 |YUNIQL_TEST_CLI|The directory where yuniql CLI is placed.|
 |YUNIQL_TEST_PLUGINS|The directory where plugins are placed.|
-|YUNIQL_TEST_TARGET_PLATFORM|The target platform `sqlserver`,`postgresql`,`mysql`. Default is `sqlserver`.|
+|YUNIQL_TEST_TARGET_PLATFORM|The target platform for the test. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.|
 |YUNIQL_TEST_CONNECTION_STRING|The connection string to your test server. See defaults for each containerized server.|
+|YUNIQL_TEST_SAMPLEDB|The directory where sample yuniql db project is placed.|
 
 ## Running platform tests for SqlServer
 1. Deploy a sql server linux container
