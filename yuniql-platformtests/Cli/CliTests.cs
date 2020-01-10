@@ -65,6 +65,7 @@ namespace Yuniql.PlatformTests
 
         [DataTestMethod]
         [DataRow("run", "-a")]
+        [DataRow("run", "-a --command-timeout 10")]
         [DataRow("run", "-a -d")]
         [DataRow("run", "--autocreate-db")]
         [DataRow("run", "-a -t v1.00")]
@@ -81,9 +82,30 @@ namespace Yuniql.PlatformTests
             var result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
+        
+        [DataTestMethod]
+        [DataRow("verify", "-t v1.00")]
+        [DataRow("verify", "--target-version v1.00")]
+        [DataRow("verify", "--delimiter \",\"")]
+        [DataRow("verify", "--command-timeout 10")]
+        [DataRow("verify", "-k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
+        public void Test_Cli_verify(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //act & assert
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, "-a -t v0.00 -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
+            result.Contains($"Failed to execute run").ShouldBeFalse();
+
+            //act & assert
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeFalse();
+        }
 
         [DataTestMethod]
         [DataRow("info", "")]
+        [DataRow("info", "--command-timeout 10")]
         [DataRow("info", "-d")]
         public void Test_Cli_info(string command, string arguments)
         {
@@ -100,23 +122,8 @@ namespace Yuniql.PlatformTests
         }
 
         [DataTestMethod]
-        [DataRow("verify", "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        public void Test_Cli_verify(string command, string arguments)
-        {
-            //arrange
-            SetupWorkspaceWithSampleDb();
-
-            //act & assert
-            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"");
-            result.Contains($"Failed to execute run").ShouldBeFalse();
-
-            //act & assert
-            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.TargetPlatform, arguments);
-            result.Contains($"Failed to execute {command}").ShouldBeFalse();
-        }
-
-        [DataTestMethod]
         [DataRow("erase", "")]
+        [DataRow("erase", "--command-timeout 10")]
         [DataRow("erase", "-d")]
         public void Test_Cli_erase(string command, string arguments)
         {
