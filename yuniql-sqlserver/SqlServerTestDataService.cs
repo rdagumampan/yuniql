@@ -211,29 +211,7 @@ DROP PROCEDURE [dbo].[script2];
 DROP PROCEDURE [dbo].[script3];
 ";
         }
-
-        public bool DropTestDatabase(string connectionString, string databaseName)
-        {
-            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            connectionStringBuilder.InitialCatalog = "master";
-
-            using (var connection = new SqlConnection(connectionStringBuilder.ConnectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandTimeout = 0;
-
-                command.CommandText = $"ALTER DATABASE [{databaseName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;";
-                command.ExecuteNonQuery();
-
-                command.CommandText = $"DROP DATABASE [{databaseName}];";
-                command.ExecuteNonQuery();
-            }
-            
-            return true;
-        }
-
+        
         public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName) {
             List<BulkTestDataRow> results = new List<BulkTestDataRow>();
 

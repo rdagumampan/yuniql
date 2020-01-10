@@ -12,6 +12,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 2. Configure your connection string
 
 	```bash
+	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"
 	SETX YUNIQL_TEST_TARGET_PLATFORM "sqlserver"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
 	```
@@ -40,7 +41,8 @@ https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-
 	cd yuniql-plugins\postgresql\src
 	dotnet publish -c release -r win-x64
 
-	SETX YUNIQL_PLUGINS "C:\play\yuniql\yuniql-plugins\postgresql\src\bin\Release\netcoreapp3.0\win-x64\publish"
+	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"
+	SETX YUNIQL_TEST_PLUGINS "C:\play\yuniql\yuniql-plugins\postgresql\src\bin\Release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=app;Password=P@ssw0rd!;Database=yuniqldb"
 	```
@@ -70,7 +72,8 @@ https://www.pgadmin.org/download/
 	cd yuniql-plugins\mysql\src
 	dotnet publish -c release -r win-x64
 
-	SETX YUNIQL_PLUGINS "C:\play\yuniql\yuniql-plugins\mysql\src\bin\Release\netcoreapp3.0\win-x64\publish"
+	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"
+	SETX YUNIQL_TEST_PLUGINS "C:\play\yuniql\yuniql-plugins\mysql\src\bin\Release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_TARGET_PLATFORM "mysql"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
 	```

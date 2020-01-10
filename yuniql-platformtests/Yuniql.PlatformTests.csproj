@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Docker.DotNet" Version="3.125.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
@@ -23,31 +24,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="TestCsvMismatchColumnNotNullable.csv">
+    <None Update="Core\TestCsvMismatchColumnNotNullable.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestCsvMismatchColumn.csv">
+    <None Update="Core\TestCsvMismatchColumn.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestCsvUnquoted.csv">
+    <None Update="Core\TestCsvUnquoted.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestCsvNullColumn.csv">
+    <None Update="Core\TestCsvNullColumn.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestCsvUtf8.csv">
+    <None Update="Core\TestCsvUtf8.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestCsvPipeDelimited.csv">
+    <None Update="Core\TestCsvPipeDelimited.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestCsv.csv">
+    <None Update="Core\TestCsv.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Cli\" />
     <Folder Include="Properties\" />
   </ItemGroup>
 

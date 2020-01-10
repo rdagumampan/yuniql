@@ -26,7 +26,7 @@ namespace Yuniql.PlatformTests
             }
             else
             {
-                var assemblyBasePath = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_PLUGINS");
+                var assemblyBasePath = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_PLUGINS);
                 var assemblyFilePath = Path.Combine(assemblyBasePath, platform, $"Yuniql.{platform}.dll");
 
                 if (File.Exists(assemblyFilePath))
