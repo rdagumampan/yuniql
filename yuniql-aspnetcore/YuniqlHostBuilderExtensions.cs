@@ -6,6 +6,12 @@ namespace Yuniql.AspNetCore
 {
     public static class YuniqlHostBuilderExtensions
     {
+        /// <summary>
+        /// Runs database migrations with Yuniql. This uses default trace service FileTraceService.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="configuration">Desired configuration when yuniql runs. Set your workspace location, connection string, target version and other parameters.</param>
+        /// <returns></returns>
         public static IHostBuilder UseYuniql(
             this IHostBuilder builder,
             YuniqlConfiguration configuration
@@ -15,6 +21,14 @@ namespace Yuniql.AspNetCore
             return builder.UseYuniql(traceService, configuration);
         }
 
+
+        /// <summary>
+        /// Runs database migrations with Yuniql. This uses your specific implementation of ITraceService interface.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="traceService">Your custom implementation of ITraceService interface</param>
+        /// <param name="configuration">Desired configuration when yuniql runs. Set your workspace location, connection string, target version and other parameters.</param>
+        /// <returns></returns>
         public static IHostBuilder UseYuniql(
             this IHostBuilder builder,
             ITraceService traceService,
@@ -30,7 +44,9 @@ namespace Yuniql.AspNetCore
                 configuration.AutoCreateDatabase,
                 configuration.Tokens,
                 configuration.VerifyOnly,
-                configuration.Delimiter);
+                configuration.Delimiter,
+                configuration.BatchSize,
+                configuration.CommandTimeout);
 
             return builder;
         }
