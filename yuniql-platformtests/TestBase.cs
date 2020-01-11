@@ -48,11 +48,11 @@ namespace Yuniql.PlatformTests
 
             return new TestConfiguration
             {
-                TargetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
+                Platform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
                 ConnectionString = connectionString,
                 DatabaseName = databaseName,
                 WorkspacePath = workspacePath,
-                CliProcessFile = GetCliProcessFile(),
+                CliProcessPath = GetCliProcessFile(),
                 PluginsPath = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_PLUGINS),
                 TestAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST)
             };
@@ -73,11 +73,11 @@ namespace Yuniql.PlatformTests
 
             return new TestConfiguration
             {
-                TargetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
+                Platform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
                 ConnectionString = connectionString,
                 DatabaseName = databaseName,
                 WorkspacePath = workspacePath,
-                CliProcessFile = GetCliProcessFile(),
+                CliProcessPath = GetCliProcessFile(),
                 PluginsPath = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_PLUGINS),
                 TestAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST)
             };

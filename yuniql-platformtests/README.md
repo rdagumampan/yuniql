@@ -1,17 +1,17 @@
 ﻿# How to run platform tests
 
-Platform tests verifies that yuniql works on the target RDMBS platform. The following guide describes how to run runs for SqlServer and PostgreSql.
+Platform tests verifies that yuniql works on the target RDMBS platform. The following guide describes how to run for SqlServer, PostgreSql and MySql.
 
 ## Pre-requisites
 
 * .NET Core 3.0+ SDK
-* Docker
+* Docker Client
 
 ## Environment Variables
 
 |Variable Name|Description|
 |---|---|
-|YUNIQL_PLUGINS|The directory where plugins are placed.|
+|YUNIQL_PLUGINS|The directory where plugins to be tested are placed.|
 |YUNIQL_TEST_HOST|The location where tests is executed. Value can be `LOCAL`, `APPVEYOR`. Default is `LOCAL`. A `LOCAL` run will always use Docker containers for test server.|
 |YUNIQL_TEST_CLI|The directory where yuniql CLI is placed.|
 |YUNIQL_TEST_TARGET_PLATFORM|The target platform for the test. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.|

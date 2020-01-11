@@ -35,7 +35,9 @@ namespace Yuniql.Core
             this._traceService = traceService;
         }
 
-        public void Initialize(string connectionString, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public void Initialize(
+            string connectionString, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             //initialize dependencies
             _dataService.Initialize(connectionString, commandTimeout);

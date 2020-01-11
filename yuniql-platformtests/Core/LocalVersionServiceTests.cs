@@ -21,7 +21,7 @@ namespace Yuniql.PlatformTests
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();
-            _testDataService = testDataServiceFactory.Create(_testConfiguration.TargetPlatform);
+            _testDataService = testDataServiceFactory.Create(_testConfiguration.Platform);
 
             //create data service factory for migration proper
             _traceService = new FileTraceService();

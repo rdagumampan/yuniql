@@ -27,7 +27,7 @@ namespace Yuniql.PlatformTests
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();
-            _testDataService = testDataServiceFactory.Create(_testConfiguration.TargetPlatform);
+            _testDataService = testDataServiceFactory.Create(_testConfiguration.Platform);
 
             //create data service factory for migration proper
             _traceService = new FileTraceService();
@@ -51,7 +51,7 @@ namespace Yuniql.PlatformTests
             //act and assert
             try
             {
-                var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+                var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
                 migrationService.Initialize(_testConfiguration.ConnectionString);
                 migrationService.Run(_testConfiguration.WorkspacePath, null, autoCreateDatabase: false);
             }
@@ -73,7 +73,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
 
@@ -91,7 +91,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
             var versions = _testDataService.GetAllDbVersions(_testConfiguration.ConnectionString);
@@ -122,7 +122,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, scriptFolder), $"test_{scriptFolder}.sql"), _testDataService.CreateDbObjectScript($"test_{scriptFolder}"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
@@ -147,7 +147,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.CreateDbObjectScript($"test_v1_02"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.02", autoCreateDatabase: true);
 
@@ -171,7 +171,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.CreateDbObjectScript($"test_v1_01"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
 
@@ -214,7 +214,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v2.00"), $"test_v2_00.sql"), _testDataService.CreateDbObjectScript($"test_v2_00"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
 
@@ -241,7 +241,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, versionFolder), $"{scriptName}.sql"), _testDataService.CreateTokenizedDbObjectScript($"{scriptName}"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             List<KeyValuePair<string, string>> tokens = new List<KeyValuePair<string, string>>
             {
@@ -287,7 +287,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v2level1SubDirectory, $"test_v2_00_level1_sublevel1.sql"), _testDataService.CreateDbObjectScript($"test_v2_00_level1_sublevel1"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v2.00", autoCreateDatabase: true);
 
@@ -323,7 +323,7 @@ namespace Yuniql.PlatformTests
             //act
             try
             {
-                var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+                var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
                 migrationService.Initialize(_testConfiguration.ConnectionString);
                 migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
             }
@@ -359,7 +359,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.CreateDbObjectScript($"test_v1_01"));
 
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
 
@@ -388,7 +388,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"script3.sql"), _testDataService.CreateDbObjectScript($"script3"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
@@ -437,7 +437,7 @@ namespace Yuniql.PlatformTests
             //act
             var exception = Assert.ThrowsException<YuniqlMigrationException>(() =>
             {
-                var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+                var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
                 migrationService.Initialize(_testConfiguration.ConnectionString);
                 migrationService.Run(_testConfiguration.WorkspacePath, "v0.00", autoCreateDatabase: true);
             });
@@ -466,7 +466,7 @@ namespace Yuniql.PlatformTests
             Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_another_user_created_folder"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v0.00", autoCreateDatabase: true);
 

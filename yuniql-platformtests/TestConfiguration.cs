@@ -2,11 +2,11 @@
 {
     public class TestConfiguration
     {
-        public string CliProcessFile { get; set; }
+        public string CliProcessPath { get; set; }
 
         public string WorkspacePath { get; set; }
 
-        public string TargetPlatform { get; set; }
+        public string Platform { get; set; }
 
         public string DatabaseName { get; set; }
 

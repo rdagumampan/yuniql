@@ -24,7 +24,7 @@ namespace Yuniql.PlatformTests
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();
-            _testDataService = testDataServiceFactory.Create(_testConfiguration.TargetPlatform);
+            _testDataService = testDataServiceFactory.Create(_testConfiguration.Platform);
 
             //create data service factory for migration proper
             _traceService = new FileTraceService();
@@ -55,7 +55,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_02_TestCsv.sql"), _testDataService.CreateBulkTableScript("TestCsv"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
 
@@ -107,7 +107,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvPipeDelimited.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvPipeDelimited.csv"));
 
             //act - bulk load csv files and change the default delimieted to |
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true, delimiter: "|");
 
@@ -144,7 +144,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUtf8.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvUtf8.csv"));
 
             //act - bulk load csv files
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
@@ -181,7 +181,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullColumn.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvNullColumn.csv"));
 
             //act - bulk load csv files
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
@@ -218,7 +218,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUnquoted.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvUnquoted.csv"));
 
             //act - bulk load csv files
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
@@ -259,7 +259,7 @@ namespace Yuniql.PlatformTests
             //act - bulk load csv files
             try
             {
-                var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+                var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
                 migrationService.Initialize(_testConfiguration.ConnectionString);
                 migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
             }
@@ -285,7 +285,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvMismatchColumn.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvMismatchColumn.csv"));
 
             //act - bulk load csv files
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
@@ -331,7 +331,7 @@ namespace Yuniql.PlatformTests
             //act - bulk load csv files
             try
             {
-                var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+                var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
                 migrationService.Initialize(_testConfiguration.ConnectionString);
                 migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
             }
