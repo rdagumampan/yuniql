@@ -8,6 +8,7 @@ namespace Yuniql.PostgreSql
 {
     public class PostgreSqlDataService : IDataService
     {
+        private int _commandTimeout = 30;
         private string _connectionString;
         private readonly ITraceService _traceService;
 
@@ -18,9 +19,10 @@ namespace Yuniql.PostgreSql
 
         public bool IsAtomicDDLSupported => true;
 
-        public void Initialize(string connectionString)
+        public void Initialize(string connectionString, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             this._connectionString = connectionString;
+            this._commandTimeout = commandTimeout;
         }
 
         public IDbConnection CreateConnection()
@@ -28,7 +30,10 @@ namespace Yuniql.PostgreSql
             return new NpgsqlConnection(_connectionString);
         }
 
-        public void ExecuteNonQuery(string connectionString, string sqlStatement)
+        public void ExecuteNonQuery(
+            string connectionString,
+            string sqlStatement,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -38,12 +43,15 @@ namespace Yuniql.PostgreSql
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
+                command.CommandTimeout = _commandTimeout;
                 command.ExecuteNonQuery();
             }
         }
 
-        public bool QuerySingleBool(string connectionString, string sqlStatement)
+        public bool QuerySingleBool(
+            string connectionString,
+            string sqlStatement,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -55,7 +63,7 @@ namespace Yuniql.PostgreSql
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
+                command.CommandTimeout = _commandTimeout;
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -69,7 +77,10 @@ namespace Yuniql.PostgreSql
             return result;
         }
 
-        public string QuerySingleString(string connectionString, string sqlStatement)
+        public string QuerySingleString(
+            string connectionString,
+            string sqlStatement,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -81,7 +92,7 @@ namespace Yuniql.PostgreSql
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
+                command.CommandTimeout = _commandTimeout;
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -95,7 +106,11 @@ namespace Yuniql.PostgreSql
             return result;
         }
 
-        public void ExecuteNonQuery(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null)
+        public void ExecuteNonQuery(
+            IDbConnection activeConnection,
+            string sqlStatement,
+            IDbTransaction transaction = null,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -103,11 +118,15 @@ namespace Yuniql.PostgreSql
             command.Transaction = transaction;
             command.CommandType = CommandType.Text;
             command.CommandText = sqlStatement;
-            command.CommandTimeout = 0;
+            command.CommandTimeout = _commandTimeout;
             command.ExecuteNonQuery();
         }
 
-        public int ExecuteScalar(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null)
+        public int ExecuteScalar(
+            IDbConnection activeConnection,
+            string sqlStatement,
+            IDbTransaction transaction = null,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -117,13 +136,17 @@ namespace Yuniql.PostgreSql
             command.Transaction = transaction;
             command.CommandType = CommandType.Text;
             command.CommandText = sqlStatement;
-            command.CommandTimeout = 0;
+            command.CommandTimeout = _commandTimeout;
             result = command.ExecuteNonQuery();
 
             return result;
         }
 
-        public bool QuerySingleBool(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null)
+        public bool QuerySingleBool(
+            IDbConnection activeConnection,
+            string sqlStatement,
+            IDbTransaction transaction = null,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -132,7 +155,7 @@ namespace Yuniql.PostgreSql
             command.Transaction = transaction;
             command.CommandType = CommandType.Text;
             command.CommandText = sqlStatement;
-            command.CommandTimeout = 0;
+            command.CommandTimeout = _commandTimeout;
 
             using (var reader = command.ExecuteReader())
             {
@@ -145,7 +168,11 @@ namespace Yuniql.PostgreSql
             return result;
         }
 
-        public string QuerySingleString(IDbConnection activeConnection, string sqlStatement, IDbTransaction transaction = null)
+        public string QuerySingleString(
+            IDbConnection activeConnection,
+            string sqlStatement,
+            IDbTransaction transaction = null,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -155,7 +182,7 @@ namespace Yuniql.PostgreSql
             command.Transaction = transaction;
             command.CommandType = CommandType.Text;
             command.CommandText = sqlStatement;
-            command.CommandTimeout = 0;
+            command.CommandTimeout = _commandTimeout;
 
             using (var reader = command.ExecuteReader())
             {
@@ -175,7 +202,7 @@ namespace Yuniql.PostgreSql
 
             //switch database into master/system database where db catalogs are maintained
             connectionStringBuilder.Database = "postgres";
-            return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
+            return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement, _commandTimeout);
         }
 
         public void CreateDatabase()
@@ -186,13 +213,13 @@ namespace Yuniql.PostgreSql
 
             //switch database into master/system database where db catalogs are maintained
             connectionStringBuilder.Database = "postgres";
-            ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
+            ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement, _commandTimeout);
         }
 
         public bool IsTargetDatabaseConfigured()
         {
             var sqlStatement = $"SELECT 1 FROM pg_tables WHERE  tablename = '__yuniqldbversion'";
-            var result = QuerySingleBool(_connectionString, sqlStatement);
+            var result = QuerySingleBool(_connectionString, sqlStatement, _commandTimeout);
 
             return result;
         }
@@ -221,7 +248,7 @@ namespace Yuniql.PostgreSql
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
+                command.CommandTimeout = _commandTimeout;
                 command.ExecuteNonQuery();
             }
         }
@@ -229,7 +256,7 @@ namespace Yuniql.PostgreSql
         public string GetCurrentVersion()
         {
             var sqlStatement = $"SELECT Version FROM __yuniqldbversion ORDER BY Id DESC LIMIT 1;";
-            return QuerySingleString(_connectionString, sqlStatement);
+            return QuerySingleString(_connectionString, sqlStatement, _commandTimeout);
         }
 
         public List<DbVersion> GetAllVersions()
@@ -245,7 +272,7 @@ namespace Yuniql.PostgreSql
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
                 command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
+                command.CommandTimeout = _commandTimeout;
 
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -264,7 +291,11 @@ namespace Yuniql.PostgreSql
             return result;
         }
 
-        public void UpdateVersion(IDbConnection activeConnection, IDbTransaction transaction, string version)
+        public void UpdateVersion(
+            IDbConnection activeConnection,
+            IDbTransaction transaction,
+            string version,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             var incrementVersionSqlStatement = $"INSERT INTO __yuniqldbversion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{version}', NOW(), NOW(), user);";
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{incrementVersionSqlStatement}");
@@ -273,7 +304,7 @@ namespace Yuniql.PostgreSql
             command.Transaction = transaction;
             command.CommandType = CommandType.Text;
             command.CommandText = incrementVersionSqlStatement;
-            command.CommandTimeout = 0;
+            command.CommandTimeout = _commandTimeout;
             command.ExecuteNonQuery();
         }
 
@@ -285,7 +316,7 @@ namespace Yuniql.PostgreSql
         public ConnectionInfo GetConnectionInfo()
         {
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(_connectionString);
-            return new ConnectionInfo {DataSource = connectionStringBuilder.Host, Database = connectionStringBuilder.Database };
+            return new ConnectionInfo { DataSource = connectionStringBuilder.Host, Database = connectionStringBuilder.Database };
         }
     }
 }

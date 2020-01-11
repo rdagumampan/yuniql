@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Npgsql;
 using System;
+using System.Data;
 
 namespace Yuniql.PostgreSql
 {
@@ -246,6 +247,36 @@ DROP TABLE script1;
 DROP TABLE script2;
 DROP TABLE script3;
 ";
+        }
+
+        public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName)
+        {
+            List<BulkTestDataRow> results = new List<BulkTestDataRow>();
+
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var sqlStatement = $"SELECT * FROM {tableName};";
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = sqlStatement;
+                command.CommandTimeout = 0;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new BulkTestDataRow
+                        {
+                            FirstName = !reader.IsDBNull(0) ? reader.GetString(0) : null,
+                            LastName = !reader.IsDBNull(1) ? reader.GetString(1) : null,
+                            BirthDate = !reader.IsDBNull(2) ? reader.GetDateTime(2) : new DateTime?()
+                        });
+                    }
+                }
+            }
+            return results;
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Yuniql.PostgreSql
 {
     public class PostgreSqlBulkImportService : IBulkImportService
     {
+        private int _commandTimeout = 30;
         private string _connectionString;
         private readonly ITraceService _traceService;
 
@@ -20,12 +21,21 @@ namespace Yuniql.PostgreSql
             this._traceService = traceService;
         }
 
-        public void Initialize(string connectionString)
+        public void Initialize(
+            string connectionString,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             this._connectionString = connectionString;
+            this._commandTimeout = commandTimeout;
         }
 
-        public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath, string delimeter)
+        public void Run(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string csvFileFullPath,
+            string delimeter,
+            int batchSize = DefaultConstants.BatchSize,
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             //read csv file and load into data table
             var dataTable = ParseCsvFile(csvFileFullPath, delimeter);
@@ -71,7 +81,10 @@ namespace Yuniql.PostgreSql
         //NOTE: This is not the most typesafe and performant way to do this and this is just to demonstrate
         //possibility to bulk import data in custom means during migration execution
         //https://www.npgsql.org/doc/copy.html
-        private void BulkCopyWithDataTable(IDbConnection connection, IDbTransaction transaction, DataTable dataTable)
+        private void BulkCopyWithDataTable(
+            IDbConnection connection, 
+            IDbTransaction transaction, 
+            DataTable dataTable)
         {
             _traceService.Info($"PostgreSqlBulkImportService: Started copying data into destination table {dataTable.TableName}");
 
