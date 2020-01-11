@@ -11,6 +11,9 @@ bin
 obj
 **/obj
 
+.plugins
+**/plugins
+
 src/.vs
 src/bin
 src/obj

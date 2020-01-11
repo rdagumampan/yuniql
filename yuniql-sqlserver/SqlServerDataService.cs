@@ -21,7 +21,10 @@ namespace Yuniql.SqlServer
 
         public bool IsAtomicDDLSupported => true;
 
-        public void ExecuteNonQuery(string connectionString, string sqlStatement, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public void ExecuteNonQuery(
+            string connectionString, 
+            string sqlStatement, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -37,7 +40,10 @@ namespace Yuniql.SqlServer
             }
         }
 
-        public bool QuerySingleBool(string connectionString, string sqlStatement, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public bool QuerySingleBool(
+            string connectionString, 
+            string sqlStatement, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -63,7 +69,10 @@ namespace Yuniql.SqlServer
             return result;
         }
 
-        public string QuerySingleString(string connectionString, string sqlStatement, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public string QuerySingleString(
+            string connectionString, 
+            string sqlStatement, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -89,7 +98,11 @@ namespace Yuniql.SqlServer
             return result;
         }
 
-        public void ExecuteNonQuery(IDbConnection connection, string sqlStatement, IDbTransaction transaction = null, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public void ExecuteNonQuery(
+            IDbConnection connection, 
+            string sqlStatement, 
+            IDbTransaction transaction = null, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -101,7 +114,11 @@ namespace Yuniql.SqlServer
             command.ExecuteNonQuery();
         }
 
-        public int ExecuteScalar(IDbConnection connection, string sqlStatement, IDbTransaction transaction = null, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public int ExecuteScalar(
+            IDbConnection connection, 
+            string sqlStatement, 
+            IDbTransaction transaction = null, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -117,7 +134,11 @@ namespace Yuniql.SqlServer
             return result;
         }
 
-        public bool QuerySingleBool(IDbConnection connection, string sqlStatement, IDbTransaction transaction = null, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public bool QuerySingleBool(
+            IDbConnection connection, 
+            string sqlStatement, 
+            IDbTransaction transaction = null, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -139,7 +160,11 @@ namespace Yuniql.SqlServer
             return result;
         }
 
-        public string QuerySingleString(IDbConnection connection, string sqlStatement, IDbTransaction transaction = null, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public string QuerySingleString(
+            IDbConnection connection, 
+            string sqlStatement, 
+            IDbTransaction transaction = null, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
@@ -228,7 +253,7 @@ namespace Yuniql.SqlServer
                     END                
             ";
 
-            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}", _commandTimeout);
+            _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -282,7 +307,11 @@ namespace Yuniql.SqlServer
             return result;
         }
 
-        public void UpdateVersion(IDbConnection connection, IDbTransaction transaction, string version, int commandTimeOut = DefaultConstants.CommandTimeoutSecs)
+        public void UpdateVersion(
+            IDbConnection connection, 
+            IDbTransaction transaction, 
+            string version, 
+            int commandTimeOut = DefaultConstants.CommandTimeoutSecs)
         {
             var sqlStatement = $"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{version}');";
             _traceService.Debug($"Executing sql statement: {Environment.NewLine}{sqlStatement}");

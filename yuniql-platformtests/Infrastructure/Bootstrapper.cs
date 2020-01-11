@@ -15,10 +15,12 @@ namespace Yuniql.PlatformTests
         public static void SetupInfrastrucuture(TestContext testContext)
         {
             var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST);
+            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM);
+
             if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("LOCAL"))
             {
                 var containerFactory = new ContainerFactory();
-                var container = containerFactory.Create("sqlserver");
+                var container = containerFactory.Create(targetPlatform.ToLower());
 
                 var dockerService = new DockerService();
                 var foundContainer = dockerService.FindByName(container.Name).FirstOrDefault();
@@ -37,10 +39,12 @@ namespace Yuniql.PlatformTests
         public static void TearDownInfrastructure()
         {
             var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST);
+            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM);
+
             if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("LOCAL"))
             {
                 var dockerService = new DockerService();
-                var container = dockerService.FindByName("sqlserver-test-infra").First(); ;
+                var container = dockerService.FindByName($"{targetPlatform.ToLower()}-test-infra").First(); ;
                 dockerService.Remove(container);
             }
         }

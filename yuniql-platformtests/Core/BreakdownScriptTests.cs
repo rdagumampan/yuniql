@@ -88,7 +88,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.CreateSingleLineScriptWithoutTerminator(sqlObjectName));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform);
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.TargetPlatform, pluginsPath: _testConfiguration.PluginsPath);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 

@@ -17,7 +17,9 @@ namespace Yuniql.SqlServer
             this._traceService = traceService;
         }
 
-        public void Initialize(string connectionString, int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public void Initialize(
+            string connectionString, 
+            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             this._connectionString = connectionString;
             this._commandTimeout = commandTimeout;
@@ -35,10 +37,17 @@ namespace Yuniql.SqlServer
             var dataTable = ParseCsvFile(fileFullPath, delimiter);
 
             //save the csv data into staging sql table
-            BulkCopyWithDataTable(connection, transaction, dataTable, batchSize = DefaultConstants.BatchSize, commandTimeout = DefaultConstants.CommandTimeoutSecs);
+            BulkCopyWithDataTable(
+                connection, 
+                transaction, 
+                dataTable, 
+                batchSize = DefaultConstants.BatchSize, 
+                commandTimeout = DefaultConstants.CommandTimeoutSecs);
         }
 
-        private DataTable ParseCsvFile(string csvFileFullPath, string delimiter)
+        private DataTable ParseCsvFile(
+            string csvFileFullPath, 
+            string delimiter)
         {
             var csvDatatable = new DataTable();
             csvDatatable.TableName = Path.GetFileNameWithoutExtension(csvFileFullPath);

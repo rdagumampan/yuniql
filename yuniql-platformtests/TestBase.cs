@@ -36,16 +36,6 @@ namespace Yuniql.PlatformTests
             return workingPath;
         }
 
-        public string GetTargetPlatform()
-        {
-            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM);
-            if (string.IsNullOrEmpty(targetPlatform))
-            {
-                targetPlatform = "sqlserver";
-            }
-            return targetPlatform;
-        }
-
         public TestConfiguration ConfigureWithEmptyWorkspace()
         {
             //create test run configuration from empty workspace
@@ -58,11 +48,13 @@ namespace Yuniql.PlatformTests
 
             return new TestConfiguration
             {
-                CliProcessFile = GetCliProcessFile(),
                 TargetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
                 ConnectionString = connectionString,
+                DatabaseName = databaseName,
                 WorkspacePath = workspacePath,
-                DatabaseName = databaseName
+                CliProcessFile = GetCliProcessFile(),
+                PluginsPath = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_PLUGINS),
+                TestAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST)
             };
         }
 
@@ -81,11 +73,13 @@ namespace Yuniql.PlatformTests
 
             return new TestConfiguration
             {
-                CliProcessFile = GetCliProcessFile(),
                 TargetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
                 ConnectionString = connectionString,
+                DatabaseName = databaseName,
                 WorkspacePath = workspacePath,
-                DatabaseName = databaseName
+                CliProcessFile = GetCliProcessFile(),
+                PluginsPath = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_PLUGINS),
+                TestAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST)
             };
         }
         private string GetCliProcessFile()

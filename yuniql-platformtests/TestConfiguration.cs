@@ -11,5 +11,9 @@
         public string DatabaseName { get; set; }
 
         public string ConnectionString { get; set; }
+
+        public string PluginsPath { get; set; }
+
+        public string TestAgentHost { get; set; }
     }
 }
