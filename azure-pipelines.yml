@@ -13,6 +13,6 @@ steps:
   inputs:
     version: 'latest'
     connectionString: '$(AzSqlDemoDatabase)'
-    workspacePath: '$(Build.SourcesDirectory)\sqlserver-samples\visitph-db'
+    workspacePath: '$(Build.SourcesDirectory)\samples\helloyuniql-db'
     targetPlatform: 'SqlServer'
     additionalArguments: '--debug'
