@@ -18,7 +18,7 @@ namespace Yuniql.SqlServer
         }
 
         public void Initialize(
-            string connectionString, 
+            string connectionString,
             int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             this._connectionString = connectionString;
@@ -26,32 +26,41 @@ namespace Yuniql.SqlServer
         }
 
         public void Run(
-            IDbConnection connection, 
-            IDbTransaction transaction, 
-            string fileFullPath, 
-            string delimiter, 
-            int batchSize = DefaultConstants.BatchSize, 
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string fileFullPath,
+            string delimiter,
+            int batchSize = DefaultConstants.BatchSize,
             int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
+            //check if a non-default dbo schema is used
+            var schemaName = "dbo";
+            var tableName = Path.GetFileNameWithoutExtension(fileFullPath);
+            if (tableName.IndexOf('.') > 0)
+            {
+                schemaName = tableName.Split('.')[0];
+                tableName = tableName.Split('.')[1];
+            }
+
             //read csv file and load into data table
             var dataTable = ParseCsvFile(fileFullPath, delimiter);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(
-                connection, 
-                transaction, 
-                dataTable, 
-                batchSize = DefaultConstants.BatchSize, 
-                commandTimeout = DefaultConstants.CommandTimeoutSecs);
+                connection,
+                transaction,
+                schemaName,
+                tableName,
+                dataTable,
+                batchSize,
+                commandTimeout);
         }
 
         private DataTable ParseCsvFile(
-            string csvFileFullPath, 
+            string csvFileFullPath,
             string delimiter)
         {
             var csvDatatable = new DataTable();
-            csvDatatable.TableName = Path.GetFileNameWithoutExtension(csvFileFullPath);
-
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
                 csvReader.Delimiters = (new string[] { delimiter });
@@ -82,24 +91,26 @@ namespace Yuniql.SqlServer
         }
 
         private void BulkCopyWithDataTable(
-            IDbConnection connection, 
-            IDbTransaction transaction, 
-            DataTable csvFileDatatTable, 
-            int batchSize, 
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string schemaName,
+            string tableName,
+            DataTable dataTable,
+            int batchSize,
             int commandTimeout)
         {
             using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
             {
-                sqlBulkCopy.DestinationTableName = csvFileDatatTable.TableName;
+                sqlBulkCopy.DestinationTableName = $"[{schemaName}].[{tableName}]";
                 sqlBulkCopy.BulkCopyTimeout = commandTimeout;
                 sqlBulkCopy.BatchSize = batchSize;
                 sqlBulkCopy.EnableStreaming = true;
                 sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
-                foreach (var column in csvFileDatatTable.Columns)
+                foreach (var column in dataTable.Columns)
                 {
                     sqlBulkCopy.ColumnMappings.Add(column.ToString(), column.ToString());
                 }
-                sqlBulkCopy.WriteToServer(csvFileDatatTable);
+                sqlBulkCopy.WriteToServer(dataTable);
             }
         }
 

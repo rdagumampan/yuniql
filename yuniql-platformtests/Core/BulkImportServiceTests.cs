@@ -344,6 +344,43 @@ namespace Yuniql.PlatformTests
                 _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvMismatchColumnNotNullable").ShouldBeFalse();
             }
         }
+        
+        [TestMethod]
+        public void Test_Bulk_Import_With_NonDefault_Schema_Destination_Table()
+        {
+            //arrange
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
 
+            string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
+            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00__CreateSchema.sql"), _testDataService.CreateDbSchemaScript("TestSchema"));
+            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00_TestCsvWithSchema.sql"), _testDataService.CreateBulkTableScript("[TestSchema].[test_v0_00_TestCsvWithSchema]"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v000Directory, "TestSchema.test_v0_00_TestCsvWithSchema.csv"));
+
+            //act - bulk load csv files
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
+            migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "[TestSchema].[test_v0_00_TestCsvWithSchema]").ShouldBeTrue();
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "[TestSchema].[test_v0_00_TestCsvWithSchema]");
+            var testDataRows = new List<BulkTestDataRow>
+            {
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+            };
+
+            results.Count.ShouldBe(5);
+            testDataRows.All(t => results.Exists(r =>
+                t.FirstName == r.FirstName
+                && t.LastName == r.LastName
+                && t.BirthDate == r.BirthDate
+            )).ShouldBeTrue();
+        }
     }
 }

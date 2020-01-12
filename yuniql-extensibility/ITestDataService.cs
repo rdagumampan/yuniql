@@ -18,6 +18,8 @@ namespace Yuniql.Extensibility
 
         bool CheckIfDbObjectExist(string connectionString, string objectName);
 
+        string CreateDbSchemaScript(string schemaName);
+
         string CreateDbObjectScript(string scriptName);
 
         string CreateDbObjectScriptWithError(string objectName);
