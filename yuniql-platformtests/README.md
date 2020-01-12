@@ -26,44 +26,29 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	```
 
 ## Running platform tests for SqlServer
-1. Deploy a sql server linux container
-	
-	```console
-	docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
-	```
 
-2. Configure your connection string
+1. Configure your connection string
 
 	```bash
-	SETX YUNIQL_PLUGINS "C:\play\yuniql\yuniql-plugins\postgresql\src\bin\Release\netcoreapp3.0\win-x64\publish"
-
 	SETX YUNIQL_TEST_TARGET_PLATFORM "sqlserver"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\sqlserver-samples\visitph-db"
+	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\helloyuniql-db"
 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"
 	SETX YUNIQL_TEST_HOST "LOCAL"
 	```
 
-3. Run the platform tests
+2. Run the platform tests
 	
 	```console
 	cd yuniql-platformtests
 	dotnet build
 	dotnet test -v n
 	```
-4. Access SqlServer database via SQL Server Management Studio (SSMS) tool<br>
-https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15
 
 ## Running platform tests for PostgreSql plugin
 
-1. Deploy a postgresql linux container
-	
-	```console
-	docker run --name postgresql -e POSTGRES_USER=app -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -d -p 5432:5432 postgres
-	```
-
-2. Configure your connection string
+1. Configure your connection string
 
 	```bash
 	cd yuniql-plugins\postgresql\src
@@ -79,7 +64,7 @@ https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-
 	SETX YUNIQL_TEST_HOST "LOCAL"
 	```
 
-3. Run the platform tests
+2. Run the platform tests
 	
 	```console
 	cd yuniql-platformtests
@@ -87,18 +72,9 @@ https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-
 	dotnet test -v n
 	```
 
-4. Access PostgreSql database by downloading pgAdmin tool<br>
-https://www.pgadmin.org/download/
-
 ## Running platform tests for MySql plugin
 
-1. Deploy a mysql linux container
-	
-	```console
-	docker run --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
-	```
-
-2. Configure your connection string
+1. Configure your connection string
 
 	```bash
 	cd yuniql-plugins\mysql\src
@@ -113,17 +89,20 @@ https://www.pgadmin.org/download/
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"
 	SETX YUNIQL_TEST_HOST "LOCAL"
 	```
-
-3. Run the platform tests
+2. Run the platform tests
 	
 	```console
 	cd yuniql-platformtests
 	dotnet build
 	dotnet test -v n
 	```
-
-4. Access PostgreSql database by downloading phpMyAdmin tool<br>
+## References
+- Access SqlServer database with SQL Server Management Studio (SSMS) tool<br>
+https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15
+- Access PostgreSql database with pgAdmin tool<br>
+https://www.pgadmin.org/download/
+- Access PostgreSql database with phpMyAdmin tool<br>
 https://www.phpmyadmin.net/
 
-#### Found bugs?
+## Found bugs?
 Help us improve further please [create an issue](https://github.com/rdagumampan/yuniql/issues/new).

@@ -64,15 +64,15 @@ namespace Yuniql.PlatformTests
         }
 
         [DataTestMethod]
-        [DataRow("run", "-a")]
-        [DataRow("run", "-a --command-timeout 10")]
-        [DataRow("run", "-a -d")]
-        [DataRow("run", "--autocreate-db")]
-        [DataRow("run", "-a -t v1.00")]
-        [DataRow("run", "-a --target-version v1.00")]
+        [DataRow("run", "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
+        [DataRow("run", "-a --command-timeout 10 -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
+        [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
+        [DataRow("run", "--autocreate-db -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
+        [DataRow("run", "-a -t v1.00 -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
+        [DataRow("run", "-a --target-version v1.00 -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
         [DataRow("run", "-a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
         [DataRow("run", "-a -k \"VwColumnPrefix1=Vw1\" -k \"VwColumnPrefix2=Vw2\" -k \"VwColumnPrefix3=Vw3\" -k \"VwColumnPrefix4=Vw4\"")]
-        [DataRow("run", "-a --delimiter \",\"")]
+        [DataRow("run", "-a --delimiter \",\" -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
         public void Test_Cli_run(string command, string arguments)
         {
             //arrange
