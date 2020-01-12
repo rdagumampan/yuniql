@@ -6,13 +6,13 @@ For more how-to guides and deep-divers, please visit yuniql [wiki page on github
 
 Run with basic parameters
 ```
-docker build -t helloyuniql .
-docker run helloyuniql -c "your-connection-string"
+docker build -t yuniql-sqlserver-sample .
+docker run yuniql-sqlserver-sample -c "your-connection-string"
 ```
 
 Run with token replacement, verify in `VwVisitorTokenized`
 ```
-docker run helloyuniql -c "your-connection-string" -k "VwColumnPrefix1=App1,VwColumnPrefix2=App2,VwColumnPrefix3=App3,VwColumnPrefix4=App4"
+docker run yuniql-sqlserver-sample -c "your-connection-string" -k "VwColumnPrefix1=App1,VwColumnPrefix2=App2,VwColumnPrefix3=App3,VwColumnPrefix4=App4"
 ```
 
 #### Found bugs?

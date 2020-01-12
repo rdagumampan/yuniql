@@ -32,7 +32,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	```bash
 	SETX YUNIQL_TEST_TARGET_PLATFORM "sqlserver"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\helloyuniql-db"
+	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\sqlserver-sample"
 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"
 	SETX YUNIQL_TEST_HOST "LOCAL"
