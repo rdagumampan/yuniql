@@ -18,14 +18,21 @@ namespace Yuniql.Core
 
         public string Replace(List<KeyValuePair<string, string>> tokens, string sqlStatement)
         {
-            //when no token values passed, do nothing
-            if (null == tokens || !tokens.Any()) return sqlStatement;
-
-            //when no tokens found in sql statement, do nothing
+            //check if the sql statement has tokens in it
             var tokenParser = new System.Text.RegularExpressions.Regex(tokenPattern);
             var tokenMatches = tokenParser.Matches(sqlStatement);
             if (!tokenMatches.Any()) return sqlStatement;
 
+            //when no token values passed but sql statement gas tokens, we fail the whole migration
+            var errorMessage = $"Some tokens were not successfully replaced. " +
+                    $"This ussually due to missing or insufficient token key/value pairs passed during migration run. " +
+                    $"See the faulting script below. {Environment.NewLine}";
+            if ((null == tokens || !tokens.Any()) && tokenMatches.Any())
+            {
+                throw new YuniqlMigrationException($"{errorMessage}{sqlStatement}");
+            }
+
+            //attempt to replace tokens in the statement
             var processedSqlStatement = new StringBuilder(sqlStatement);
             tokens.ForEach(t =>
             {
@@ -33,15 +40,12 @@ namespace Yuniql.Core
                 _traceService.Debug($"Replaced {t.Key} with {t.Value}");
             });
 
-            //when some tokens were not replaced because no values was passed, we fail the whole migration
+            //when some tokens were not replaced because some token/value keypairs are not passed, we fail the whole migration
             //unreplaced tokens may cause unforseen production issues
             var tokenMatchesAfterReplacement = tokenParser.Matches(processedSqlStatement.ToString());
             if (tokenMatchesAfterReplacement.Any())
             {
-                throw new YuniqlMigrationException($"Some tokens were not successfully replaced. " +
-                    $"This ussually due to missing or insufficient token key/value pairs passed during migration run. " +
-                    $"See the faulting script below. {Environment.NewLine}" +
-                    $"{processedSqlStatement.ToString()}");
+                throw new YuniqlMigrationException($"{errorMessage}{processedSqlStatement}");
             }
 
             return processedSqlStatement.ToString();

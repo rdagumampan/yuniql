@@ -40,6 +40,21 @@ namespace Yuniql.UnitTests
             Assert.ThrowsException<YuniqlMigrationException>(() =>
             {
                 var sut = new TokenReplacementService(traceService.Object);
+                var result = sut.Replace(new List<KeyValuePair<string, string>>(), sqlStatement);
+            }).Message.Contains("Some tokens were not successfully replaced.").ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void Test_Insufficient_Token_Values_Must_Throw_Exception()
+        {
+            //arrange
+            var traceService = new Mock<ITraceService>();
+            var sqlStatement = @"SELECT 'Ok' ${Token1}, 'Ok' ${Token2}, 'Ok' ${Token3}";
+
+            //act and assert
+            Assert.ThrowsException<YuniqlMigrationException>(() =>
+            {
+                var sut = new TokenReplacementService(traceService.Object);
                 var result = sut.Replace(new List<KeyValuePair<string, string>> {
                  new KeyValuePair<string, string>("Token1","TokenValue1"),
                  new KeyValuePair<string, string>("Token2","TokenValue2")
@@ -80,6 +95,5 @@ namespace Yuniql.UnitTests
             //asset
             result.ShouldBe("SELECT Column1, Column2, Column3");
         }
-
     }
 }

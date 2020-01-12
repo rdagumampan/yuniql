@@ -75,3 +75,4 @@ yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-
 sqlserver-samples/aspnetcore-sample/aspnetcore-sample.csproj.user
 yuniql-platformtests/Yuniql.PlatformTests.csproj.user
 yuniql-sqlserver/Yuniql.SqlServer.csproj.user
+build-nupkgs.bat
