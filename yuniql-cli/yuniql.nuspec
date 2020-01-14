@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Yuniql.CLI</id>
+    <version>$version$</version>
+    <title>Yuniql</title>
+    <authors>Rodel E. Dagumampan</authors>
+    <owners>Rodel E. Dagumampan</owners>
+    <projectUrl>https://github.com/rdagumampan/yuniql</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Yuniql (yuu-nee-kel). Schema versioning and database migration tool for sql server and others.</description>
+    <copyright>Copyright 2019 Rodel E. Dagumampan</copyright>
+  </metadata>
+  <files>
+    <file src="chocolateyinstall.ps1" target="tools" />
+    <file src="chocolateyuninstall.ps1" target="tools" />
+    <file src="C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish\**" target="tools" />
+  </files>
+</package>

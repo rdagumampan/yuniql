@@ -5,8 +5,11 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <StartupObject>Yuniql.Program</StartupObject>
     <AssemblyName>yuniql</AssemblyName>
-    <PackageId>Yuniql.CLI</PackageId>
+    <PackageId>yuniql</PackageId>
     <Version>1.0.0</Version>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>yuniql</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>    
   </PropertyGroup>
 
   <ItemGroup>

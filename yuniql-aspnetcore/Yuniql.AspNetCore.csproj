@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Yuniql.Core" Version="0.304.0" />
+    <PackageReference Include="Yuniql.Core" Version="0.317.0" />
   </ItemGroup>
 
   <ItemGroup>
