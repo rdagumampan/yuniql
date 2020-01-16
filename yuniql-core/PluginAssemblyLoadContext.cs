@@ -46,6 +46,20 @@ namespace Yuniql.Core
 
             return null;
         }
+
+        protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+        {
+            string libraryPath = _resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
+            _traceService.Debug($"Resolving unmanaged dependency: {unmanagedDllName} from componentAssemblyPath: {PluginPath}");
+
+            if (libraryPath != null)
+            {
+                _traceService.Debug($"Resolved unmanaged dependency. Loading {libraryPath} into the PluginAssemblyLoadContext");
+                return LoadUnmanagedDllFromPath(libraryPath);
+            }
+
+            return IntPtr.Zero;
+        }
     }
 }
 

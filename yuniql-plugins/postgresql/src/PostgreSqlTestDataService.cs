@@ -83,6 +83,13 @@ namespace Yuniql.PostgreSql
             return result;
         }
 
+        public string CreateDbSchemaScript(string schemaName)
+        {
+            return $@"
+CREATE SCHEMA {schemaName};
+";
+        }
+
         public string CreateDbObjectScript(string objectName)
         {
             return $@"
