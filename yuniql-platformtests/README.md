@@ -57,7 +57,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	SETX YUNIQL_PLUGINS "C:\play\yuniql\yuniql-plugins\postgresql\src\.plugins"
 
 	SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
-	SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=app;Password=P@ssw0rd!;Database=yuniqldb"
+	SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
 	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\yuniql-plugins\postgresql\samples"
 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"

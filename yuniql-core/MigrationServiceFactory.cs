@@ -110,11 +110,14 @@ namespace Yuniql.Core
                 if (fileService.Exists(pluginAssemblyFilePath))
                 {
                     // create the unloadable HostAssemblyLoadContext
-                    var pluginAssemblyLoadContext = new PluginAssemblyLoadContext(pluginAssemblyBasePath, _traceService);
+                    var pluginAssemblyLoadContext = new PluginAssemblyLoadContext(pluginAssemblyFilePath, _traceService);
 
                     //the plugin assembly into the HostAssemblyLoadContext. 
                     //the assemblyPath must be an absolute path.
-                    var assembly = pluginAssemblyLoadContext.LoadFromAssemblyPath(pluginAssemblyFilePath);
+                    var defaulContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()) ?? AssemblyLoadContext.Default;
+                    var assembly = defaulContext.LoadFromAssemblyPath(pluginAssemblyFilePath);
+
+                    //var assembly = pluginAssemblyLoadContext.LoadFromAssemblyPath(pluginAssemblyFilePath);
                     pluginAssemblyLoadContext.Assemblies
                         .ToList()
                         .ForEach(a =>
@@ -124,11 +127,32 @@ namespace Yuniql.Core
                     pluginAssemblyLoadContext.Resolving += AssemblyContext_Resolving;
                     pluginAssemblyLoadContext.Unloading += AssemblyContext_Unloading;
 
+                    object[] args = new object[] { _traceService };
+
+                    //var pluginLoader = McMaster.NETCore.Plugins.PluginLoader.CreateFromAssemblyFile(pluginAssemblyFilePath, new[] { typeof(IDataService) });
+                    //var sqlDataService = pluginLoader.LoadDefaultAssembly().GetTypes()
+                    //    .Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
+                    //    .Select(t => Activator.CreateInstance(t, args))
+                    //    .Cast<IDataService>()
+                    //    .First();
+
                     var sqlDataService = assembly.GetTypes()
                         .Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
                         .Select(t => Activator.CreateInstance(t, _traceService))
                         .Cast<IDataService>()
                         .First();
+
+                    //                var t = assembly.GetTypes()
+                    //.Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
+                    //.First();
+
+                    //                var sqlDataService2 = Activator.CreateInstance(t, _traceService);
+
+                    //                var sqlDataService = assembly.GetTypes()
+                    //.Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
+                    //.Select(t => Activator.CreateInstance(t, _traceService))
+                    //.Cast<IDataService>()
+                    //.First();
 
                     var bulkImportService = assembly.GetTypes()
                         .Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}bulkimportservice"))
