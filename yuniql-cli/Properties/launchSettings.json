@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "run -a --platform pgsql -p \"C:\\play\\yuniql\\yuniql-plugins\\postgresql\\samples\" -c \"Host=localhost; Port=5432;Username=app;Password=app;Database=yuniqldb\""
+      "commandLineArgs": "run -p \"C:\\play\\yuniql\\yuniql-plugins\\postgresql\\samples\" -c \"Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniql_testdb_b560d6\" --platform \"postgresql\" -a -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\" -d"
     }
   }
 }

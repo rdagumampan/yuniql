@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -110,49 +111,54 @@ namespace Yuniql.Core
                 if (fileService.Exists(pluginAssemblyFilePath))
                 {
                     // create the unloadable HostAssemblyLoadContext
-                    var pluginAssemblyLoadContext = new PluginAssemblyLoadContext(pluginAssemblyFilePath, _traceService);
+                    //var pluginAssemblyLoadContext = new PluginAssemblyLoadContext(pluginAssemblyFilePath, _traceService);
 
                     //the plugin assembly into the HostAssemblyLoadContext. 
                     //the assemblyPath must be an absolute path.
-                    var defaulContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()) ?? AssemblyLoadContext.Default;
-                    var assembly = defaulContext.LoadFromAssemblyPath(pluginAssemblyFilePath);
+                    //var defaulContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()) ?? AssemblyLoadContext.Default;
+                    var entryAssembly = Assembly.GetEntryAssembly();
+                    _traceService.Debug($"Assembly.GetEntryAssembly(): {Assembly.GetEntryAssembly().ToString()}");
+                    _traceService.Debug($"Assembly.GetExecutingAssembly(): {Assembly.GetExecutingAssembly().ToString()}");
+                    _traceService.Debug($"AssemblyLoadContext.GetLoadContext(Assembly.GetEntryAssembly()): {AssemblyLoadContext.GetLoadContext(Assembly.GetEntryAssembly())}");
 
-                    //var assembly = pluginAssemblyLoadContext.LoadFromAssemblyPath(pluginAssemblyFilePath);
-                    pluginAssemblyLoadContext.Assemblies
-                        .ToList()
-                        .ForEach(a =>
-                        {
-                            _traceService.Debug($"loadedAssembly: {a.FullName}");
-                        });
-                    pluginAssemblyLoadContext.Resolving += AssemblyContext_Resolving;
-                    pluginAssemblyLoadContext.Unloading += AssemblyContext_Unloading;
+                    AssemblyLoadContext defaulContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()) ?? AssemblyLoadContext.Default; ;
+                    //if (entryAssembly.GetName().Name.Equals("yuniql"))
+                    //{
+                    //    defaulContext = AssemblyLoadContext.GetLoadContext(Assembly.GetEntryAssembly()) ?? AssemblyLoadContext.Default;
+                    //}
+                    //_defaultLoadContext = defaulContext;
+                    //var assembly = defaulContext.LoadFromAssemblyPath(pluginAssemblyFilePath);
+                    //PreloadReferencedAssemblies(assembly.GetName());
 
-                    object[] args = new object[] { _traceService };
+                    //assembly.GetReferencedAssemblies()
+                    //    .ToList()
+                    //    .ForEach(refAssembly =>
+                    //    {
+                    //        defaulContext.LoadFromAssemblyName(refAssembly);
+                    //    });
 
-                    //var pluginLoader = McMaster.NETCore.Plugins.PluginLoader.CreateFromAssemblyFile(pluginAssemblyFilePath, new[] { typeof(IDataService) });
-                    //var sqlDataService = pluginLoader.LoadDefaultAssembly().GetTypes()
-                    //    .Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
-                    //    .Select(t => Activator.CreateInstance(t, args))
-                    //    .Cast<IDataService>()
-                    //    .First();
+                    //defaulContext.Assemblies
+                    //    .ToList()
+                    //    .ForEach(a =>
+                    //    {
+                    //        _traceService.Debug($"loadedAssembly: {a.FullName}");
+                    //    });
+                    //defaulContext.Resolving += AssemblyContext_Resolving;
+                    //defaulContext.Unloading += AssemblyContext_Unloading;
+
+                    //var contextFactory = new ContextFactory(_traceService, defaulContext, pluginAssemblyFilePath);
+                    ////contextFactory.LoadReferences(typeof(IDataService).Assembly.GetName());
+                    ////contextFactory.LoadReferences(typeof(IBulkImportService).Assembly.GetName());
+
+                    //var context = contextFactory.Create();
+                    var pluginAssemblyLoadContext = new PluginAssemblyLoadContext(defaulContext, pluginAssemblyFilePath, _traceService);
+                    var assembly = pluginAssemblyLoadContext.LoadFromAssemblyPath(pluginAssemblyFilePath);
 
                     var sqlDataService = assembly.GetTypes()
                         .Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
                         .Select(t => Activator.CreateInstance(t, _traceService))
                         .Cast<IDataService>()
                         .First();
-
-                    //                var t = assembly.GetTypes()
-                    //.Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
-                    //.First();
-
-                    //                var sqlDataService2 = Activator.CreateInstance(t, _traceService);
-
-                    //                var sqlDataService = assembly.GetTypes()
-                    //.Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}dataservice"))
-                    //.Select(t => Activator.CreateInstance(t, _traceService))
-                    //.Cast<IDataService>()
-                    //.First();
 
                     var bulkImportService = assembly.GetTypes()
                         .Where(t => t.Name.ToLower().Contains($"{platformLowerCased.ToLower()}bulkimportservice"))
@@ -188,17 +194,57 @@ namespace Yuniql.Core
             var assemblyFilePath = Path.Combine(pluginAssemblyLoadContext.PluginPath, failedAssembly.Name + ".dll");
             _traceService.Debug($"failedAssemblyFileExists: {File.Exists(assemblyFilePath)}");
 
-            using (var file = File.Open(assemblyFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                _traceService.Debug($"attempting to reload {failedAssembly.FullName} via streaming from {assemblyFilePath}");
-                pluginAssemblyLoadContext.LoadFromStream(file);
-            }
+            //using (var file = File.Open(assemblyFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            //{
+            //    _traceService.Debug($"attempting to reload {failedAssembly.FullName} via streaming from {assemblyFilePath}");
+            //    pluginAssemblyLoadContext.LoadFromStream(file);
+            //}
 
             //assemblyContext.LoadFromAssemblyPath(assemblyFilePath);
             //assemblyContext.LoadFromAssemblyName(new System.Reflection.AssemblyName(failedAssembly.Name));
 
             return null;
         }
+
+    }
+
+    public class ContextFactory
+    {
+        public ContextFactory(ITraceService traceService, AssemblyLoadContext defaultLoadContext, string pluginFilePath)
+        {
+            this._traceService = traceService;
+            _defaultLoadContext = defaultLoadContext;
+            this.pluginFilePath = pluginFilePath;
+        }
+
+        List<string> _loadedAssemblies = new List<string>();
+        AssemblyLoadContext _defaultLoadContext;
+        private readonly string pluginFilePath;
+        private readonly ITraceService _traceService;
+
+        public PluginAssemblyLoadContext Create()
+        {
+            return new PluginAssemblyLoadContext(_defaultLoadContext, pluginFilePath, _traceService);
+
+        }
+
+        public ContextFactory LoadReferences(AssemblyName assemblyName)
+        {
+            if (_loadedAssemblies.Contains(assemblyName.ToString()))
+                return this;
+
+            _loadedAssemblies.Add(assemblyName.ToString());
+
+            _traceService.Debug($"Pre-loading {assemblyName}");
+            var assembly = _defaultLoadContext.LoadFromAssemblyName(assemblyName);
+            foreach (var reference in assembly.GetReferencedAssemblies())
+            {
+                LoadReferences(reference);
+            }
+
+            return this;
+        }
+
     }
 }
 
