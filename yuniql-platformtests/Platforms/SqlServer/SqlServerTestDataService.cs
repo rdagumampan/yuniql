@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 
-namespace Yuniql.SqlServer
+namespace Yuniql.PlatformTests
 {
     public class SqlServerTestDataService : ITestDataService
     {

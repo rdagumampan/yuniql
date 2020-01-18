@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Yuniql.Extensibility;
 
-namespace Yuniql.Extensibility
+namespace Yuniql.PlatformTests
 {
     public interface ITestDataService
     {

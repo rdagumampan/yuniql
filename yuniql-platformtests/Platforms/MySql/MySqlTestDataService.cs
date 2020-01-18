@@ -1,19 +1,18 @@
 ﻿using Yuniql.Extensibility;
 using System.Collections.Generic;
 using System.IO;
-using Npgsql;
+using MySql.Data.MySqlClient;
 using System;
-using System.Data;
 
-namespace Yuniql.PostgreSql
+namespace Yuniql.PlatformTests
 {
-    public class PostgreSqlTestDataService : ITestDataService
+    public class MySqlTestDataService : ITestDataService
     {
         private readonly IDataService _dataService;
 
-        public bool IsAtomicDDLSupported => true;
+        public bool IsAtomicDDLSupported => false;
 
-        public PostgreSqlTestDataService(IDataService dataService)
+        public MySqlTestDataService(IDataService dataService)
         {
             this._dataService = dataService;
         }
@@ -26,7 +25,7 @@ namespace Yuniql.PostgreSql
                 throw new ApplicationException("Missing environment variable YUNIQL_TEST_CONNECTION_STRING. See WIKI for developer guides.");
             }
 
-            var result = new NpgsqlConnectionStringBuilder(connectionString);
+            var result = new MySqlConnectionStringBuilder(connectionString);
             result.Database = databaseName;
 
             return result.ConnectionString;
@@ -59,183 +58,181 @@ namespace Yuniql.PostgreSql
         public bool CheckIfDbExist(string connectionString)
         {
             //use the target user database to migrate, this is part of orig connection string
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
-            var sqlStatement = $"SELECT 1 from pg_database WHERE datname ='{connectionStringBuilder.Database}';";
+            var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
+            var sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{connectionStringBuilder.Database}';";
 
             //switch database into master/system database where db catalogs are maintained
-            connectionStringBuilder.Database = "postgres";
+            connectionStringBuilder.Database = "INFORMATION_SCHEMA";
             return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
         }
 
         public bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
-            //check from procedures, im just lazy to figure out join in pgsql :)
-            var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName.ToLower()}'";
+            //check from tables, im just lazy to figure out join :)
+            var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
+            var sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{connectionStringBuilder.Database}' AND TABLE_NAME = '{objectName}' LIMIT 1;";
             bool result = QuerySingleBool(connectionString, sqlStatement);
 
-            //check from tables, im just lazy to figure out join in pgsql :)
+            //check from views, im just lazy to figure out join :)
             if (!result)
             {
-                sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName.ToLower()}'";
+                sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = '{connectionStringBuilder.Database}' AND TABLE_NAME = '{objectName}' LIMIT 1;";
+                result = QuerySingleBool(connectionString, sqlStatement);
+            }
+
+            //check from functions, im just lazy to figure out join :)
+            if (!result)
+            {
+                sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = '{connectionStringBuilder.Database}' AND ROUTINE_NAME = '{objectName}' LIMIT 1;";
                 result = QuerySingleBool(connectionString, sqlStatement);
             }
 
             return result;
         }
 
-        public string CreateDbSchemaScript(string schemaName)
-        {
-            return $@"
-CREATE SCHEMA {schemaName};
-";
-        }
-
         public string CreateDbObjectScript(string objectName)
         {
             return $@"
-CREATE TABLE public.{objectName} (
-	VisitorID SERIAL NOT NULL,
+CREATE TABLE {objectName} (
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 ";
         }
 
+        //https://stackoverflow.com/questions/42436932/transactions-not-working-for-my-mysql-db
         public string CreateDbObjectScriptWithError(string objectName)
         {
             return $@"
-CREATE TABLE public.{objectName} (
-	VisitorID SERIAL NOT NULL,
+CREATE TABLE {objectName} (
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY_KEY1, #this is a faulty line
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email [VARCHAR](255) NULL
-);
+) ENGINE=InnoDB;
 ";
         }
 
         public string CreateTokenizedDbObjectScript(string objectName)
         {
             return $@"
-CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
-	VisitorID SERIAL NOT NULL,
+CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 ";
         }
 
         public string CreateBulkTableScript(string tableName)
         {
             return $@"
-CREATE TABLE public.{tableName}(
+CREATE TABLE {tableName}(
 	FirstName VARCHAR(50) NOT NULL,
 	LastName VARCHAR(50) NOT NULL,
-	BirthDate TIMESTAMP NULL
-);
+	BirthDate DATETIME NULL
+) ENGINE=InnoDB;
 ";
         }
 
         public string CreateSingleLineScript(string objectName)
         {
             return $@"
-CREATE TABLE public.{objectName} (
-	VisitorID SERIAL NOT NULL,
+CREATE TABLE {objectName} (
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 ";
         }
 
         public string CreateSingleLineScriptWithoutTerminator(string objectName)
         {
             return $@"
-CREATE TABLE public.{objectName} (
-	VisitorID SERIAL NOT NULL,
+CREATE TABLE {objectName} (
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-)
+) ENGINE=InnoDB
 ";
         }
 
         public string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-CREATE TABLE public.{objectName1} (
-	VisitorID SERIAL NOT NULL,
+CREATE TABLE {objectName1} (
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 
-CREATE VIEW public.{objectName2} AS
+CREATE VIEW {objectName2} AS
 SELECT VisitorId, FirstName, LastName, Address, Email
-FROM  public.{objectName1};
+FROM  {objectName1};
 
-CREATE OR REPLACE FUNCTION public.{objectName3} ()
-RETURNS integer AS ${objectName3}$
-declare
-	total integer;
+CREATE FUNCTION {objectName3} ()
+RETURNS INT DETERMINISTIC
 BEGIN
-   SELECT count(*) into total FROM public.{objectName1};
-   RETURN total;
-END;
-${objectName3}$ LANGUAGE plpgsql
+    DECLARE total INT;   
+    SELECT COUNT(*) INTO total FROM {objectName1};
+    RETURN total;
+END
 ";
         }
 
         public string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-CREATE TABLE public.{objectName1} (
-	VisitorID SERIAL NOT NULL,
+CREATE TABLE {objectName1} (
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 
-CREATE VIEW public.{objectName2} AS
+CREATE VIEW {objectName2} AS
 SELECT VisitorId, FirstName, LastName, Address, Email
-FROM  public.{objectName1};
+FROM  {objectName1};
 
-CREATE OR REPLACE FUNCTION public.{objectName3} ()
-RETURNS integer AS ${objectName3}$
-declare
-	total integer;
-BEGIN
-    --this is a comment with terminator ; as part of the sentence;
-    --;this is a comment with terminator ; as part of the sentence
-   SELECT count(*) into total FROM public.{objectName1};
-   RETURN total;
+CREATE FUNCTION {objectName3} ()
+RETURNS INT DETERMINISTIC
+BEGIN   
+    DECLARE total INT;   -- this is a comment with terminator ; as part of the sentence;
+    
+    /*;this is a comment with terminator ; as part of the sentence*/
+    SELECT COUNT(*) INTO total FROM {objectName1};
+    RETURN total;
 END;
-${objectName3}$ LANGUAGE plpgsql
 ";
         }
 
         public string CreateMultilineScriptWithError(string objectName1, string objectName2)
         {
             return $@"
-CREATE TABLE public.{objectName1} (
-	VisitorID SERIAL NOT NULL,
+CREATE TABLE {objectName1} (
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
 	Email VARCHAR(255) NULL
-);
+) ENGINE=InnoDB;
 
-CREATE VIEW public.{objectName2} AS
+CREATE VIEW {objectName2} AS
 SELECT VisitorId, FirstName, LastName, Address, Email
-FROM  public.{objectName1};
+FROM  {objectName1};
 
 SELECT 1/0;
 ";
@@ -256,34 +253,14 @@ DROP TABLE script3;
 ";
         }
 
+        public string CreateDbSchemaScript(string schemaName)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName)
         {
-            List<BulkTestDataRow> results = new List<BulkTestDataRow>();
-
-            using (var connection = new NpgsqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var sqlStatement = $"SELECT * FROM {tableName};";
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        results.Add(new BulkTestDataRow
-                        {
-                            FirstName = !reader.IsDBNull(0) ? reader.GetString(0) : null,
-                            LastName = !reader.IsDBNull(1) ? reader.GetString(1) : null,
-                            BirthDate = !reader.IsDBNull(2) ? reader.GetDateTime(2) : new DateTime?()
-                        });
-                    }
-                }
-            }
-            return results;
+            throw new NotImplementedException();
         }
     }
 }

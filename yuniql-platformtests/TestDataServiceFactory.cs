@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 using Yuniql.SqlServer;
@@ -31,20 +32,24 @@ namespace Yuniql.PlatformTests
 
                 if (File.Exists(assemblyFilePath))
                 {
-                    var assembly = Assembly.LoadFrom(assemblyFilePath);
+                    //var assembly = Assembly.LoadFrom(assemblyFilePath);
+                    var defaulContext = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()) ?? AssemblyLoadContext.Default;
+                    var assembly = defaulContext.LoadFromAssemblyPath(assemblyFilePath);
 
                     var sqlDataService = assembly.GetTypes()
-                        .Where(t => t.Name.ToLower().Contains($"{platform}dataservice"))
+                        .Where(t => t.Name.ToLower().Contains($"{platform.ToLower()}dataservice"))
                         .Select(t => Activator.CreateInstance(t, traceService))
                         .Cast<IDataService>()
                         .First();
 
-                    var testDataService = assembly.GetTypes()
-                    .Where(t => t.Name.ToLower().Contains($"{platform}testdataservice"))
-                    .Select(t => Activator.CreateInstance(t, sqlDataService))
-                    .Cast<ITestDataService>()
-                    .First();
-                    return testDataService;
+                    return new PostgreSqlTestDataService(sqlDataService);
+
+                    //var testDataService = assembly.GetTypes()
+                    //.Where(t => t.Name.ToLower().Contains($"{platform}testdataservice"))
+                    //.Select(t => Activator.CreateInstance(t, sqlDataService))
+                    //.Cast<ITestDataService>()
+                    //.First();
+                    //return testDataService;
                 }
                 else
                 {

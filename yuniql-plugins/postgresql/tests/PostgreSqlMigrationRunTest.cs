@@ -27,16 +27,9 @@ namespace Yuniql.PosgreSQL.Tests
             var bulkImportService = new PostgreSqlBulkImportService(traceService);
             bulkImportService.Initialize(connectionString);
 
-            var testDataService = new PostgreSqlTestDataService(dataService);
-
             //act
             var migrationService = new MigrationService(dataService, bulkImportService, tokenReplacementService, new DirectoryService(), new FileService(), traceService);
             migrationService.Run(workspacePath, null, true, tokenKeyPairs: null, verifyOnly: false);
-
-            //assert
-            testDataService.CheckIfDbExist(connectionString).ShouldBeTrue();
-            testDataService.CheckIfDbObjectExist(connectionString, "company").ShouldBeTrue();
-            testDataService.CheckIfDbObjectExist(connectionString, "company_view").ShouldBeTrue();
         }
     }
 }
