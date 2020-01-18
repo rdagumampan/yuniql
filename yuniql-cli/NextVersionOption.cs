@@ -6,14 +6,6 @@ namespace Yuniql.CLI
     [Verb("vnext", HelpText = "Increment to next version")]
     public class NextVersionOption: BaseOption
     {
-        ////yuniql vnext -p c:\temp\demo | --path c:\temp\demo
-        //[Option('p', "path", Required = false, HelpText = "Path to increment version from")]
-        //public string Path { get; set; }
-
-        ////yuniql vnext -d | --debug
-        //[Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts")]
-        //public bool Debug { get; set; }
-
         //yuniql vnext -M | --major
         [Option('M', "major", Required = false, HelpText = "Increment major version")]
         public bool IncrementMajorVersion { get; set; }

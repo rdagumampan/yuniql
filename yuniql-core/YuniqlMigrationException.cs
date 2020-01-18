@@ -14,6 +14,5 @@ namespace Yuniql.Core
         public YuniqlMigrationException(string message, Exception innerException)
         {
         }
-
     }
 }

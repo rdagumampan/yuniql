@@ -4,7 +4,6 @@ using System.Text;
 using System.Linq;
 using Yuniql.Core;
 using Yuniql.Extensibility;
-using System.Runtime.CompilerServices;
 
 namespace Yuniql.CLI
 {
@@ -84,7 +83,6 @@ namespace Yuniql.CLI
             return 0;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public object RunMigration(RunOption opts)
         {
             try
@@ -121,7 +119,7 @@ namespace Yuniql.CLI
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var migrationService = _migrationServiceFactory.Create(opts.Platform, pluginsPath: opts.PluginsPath);
+                var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: opts.AutoCreateDatabase, tokens: tokens, verifyOnly: false, delimiter: opts.Delimiter, commandTimeout: opts.CommandTimeout);
             }
@@ -201,6 +199,7 @@ namespace Yuniql.CLI
                     opts.Platform = "sqlserver";
                 }
 
+                //get all exsiting db versions
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 var versions = migrationService.GetAllVersions();

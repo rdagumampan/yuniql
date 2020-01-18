@@ -88,9 +88,6 @@ namespace Yuniql.PostgreSql
         {
             _traceService.Info($"PostgreSqlBulkImportService: Started copying data into destination table {dataTable.TableName}");
 
-            //remove the first row as its the column names
-            dataTable.Rows[0].Delete();
-
             //get destination table schema
             var destinationSchema = GetDestinationSchema(dataTable.TableName);
 
