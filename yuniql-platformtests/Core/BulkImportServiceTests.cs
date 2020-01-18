@@ -41,40 +41,31 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void Test_Bulk_Import_With_Default_Delimter()
         {
-            //arrange
+            //arrange - prepare bulk destination table
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
-            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"test_v1_00.sql"), _testDataService.CreateDbObjectScript($"test_v1_00"));
-
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
-            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
-            _testDataService.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_01.sql"), _testDataService.CreateDbObjectScript($"test_v1_01"));
-            _testDataService.CreateScriptFile(Path.Combine(v101Directory, $"test_v1_02_TestCsv.sql"), _testDataService.CreateBulkTableScript("TestCsv"));
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsv.sql"), _testDataService.CreateBulkTableScript("TestCsv"));
 
             //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeTrue();
+
+            //arrange - add new minor version with csv files
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v101Directory, "TestCsv.csv"));
+
+            //act
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_00").ShouldBeTrue();
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_01").ShouldBeTrue();
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeTrue();
-
-            //arrange - add new version with csv files
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
-            string v102Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.02");
-            _testDataService.CreateScriptFile(Path.Combine(v102Directory, $"test_v1_02.sql"), _testDataService.CreateDbObjectScript($"test_v1_02"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v102Directory, "TestCsv.csv"));
-
-            //act - bulk load csv files
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.02", autoCreateDatabase: true);
-
-            //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_02").ShouldBeTrue();
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeTrue();
 
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsv");
@@ -98,23 +89,32 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void Test_Bulk_Import_With_Pipe_Delimter()
         {
-            //arrange
+            //arrange - pre-create destination bulk tables
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
-            string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
-            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00_TestCsvPipeDelimited.sql"), _testDataService.CreateBulkTableScript("test_v0_00_TestCsvPipeDelimited"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvPipeDelimited.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvPipeDelimited.csv"));
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvPipeDelimited.sql"), _testDataService.CreateBulkTableScript("TestCsvPipeDelimited"));
 
-            //act - bulk load csv files and change the default delimieted to |
+            //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true, delimiter: "|");
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvPipeDelimited").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvPipeDelimited").ShouldBeTrue();
 
-            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvPipeDelimited");
+            //arrange - add new version with csv files
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvPipeDelimited.csv"), Path.Combine(v101Directory, "TestCsvPipeDelimited.csv"));
+
+            //act - bulk load csv files
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true, delimiter: "|");
+
+            //assert
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvPipeDelimited");
             var testDataRows = new List<BulkTestDataRow>
             {
                 new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
@@ -135,23 +135,32 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void Test_Bulk_Import_With_Utf8()
         {
-            //arrange
+            //arrange - pre-create destination bulk tables
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
-            string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
-            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00_TestCsvUtf8.sql"), _testDataService.CreateBulkTableScript("test_v0_00_TestCsvUtf8"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUtf8.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvUtf8.csv"));
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvUtf8.sql"), _testDataService.CreateBulkTableScript("TestCsvUtf8"));
 
-            //act - bulk load csv files
+            //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvUtf8").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvUtf8").ShouldBeTrue();
 
-            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvUtf8");
+            //arrange - add new version with csv files
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUtf8.csv"), Path.Combine(v101Directory, "TestCsvUtf8.csv"));
+
+            //act - bulk load csv files
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+
+            //assert
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvUtf8");
             var testDataRows = new List<BulkTestDataRow>
             {
                 new BulkTestDataRow { FirstName="Allan", LastName ="Søgaard", BirthDate = new DateTime(1980,1,1) },
@@ -172,23 +181,31 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void Test_Bulk_Import_With_Null_Columns()
         {
-            //arrange
+            //arrange - pre-create destination bulk tables
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
-            string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
-            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00_TestCsvNullColumn.sql"), _testDataService.CreateBulkTableScript("test_v0_00_TestCsvNullColumn"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullColumn.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvNullColumn.csv"));
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvNullColumn.sql"), _testDataService.CreateBulkTableScript("TestCsvNullColumn"));
 
-            //act - bulk load csv files
+            //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvNullColumn").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvNullColumn").ShouldBeTrue();
 
-            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvNullColumn");
+            //arrange - add new version with csv files
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullColumn.csv"), Path.Combine(v101Directory, "TestCsvNullColumn.csv"));
+
+            //act - bulk load csv files
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvNullColumn");
             var testDataRows = new List<BulkTestDataRow>
             {
                 new BulkTestDataRow { FirstName="Jack", LastName ="Poole"},
@@ -209,23 +226,32 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void Test_Bulk_Import_With_Unquoted()
         {
-            //arrange
+            //arrange - pre-create destination bulk tables
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
-            string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
-            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00_TestCsvUnquoted.sql"), _testDataService.CreateBulkTableScript("test_v0_00_TestCsvUnquoted"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUnquoted.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvUnquoted.csv"));
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvUnquoted.sql"), _testDataService.CreateBulkTableScript("TestCsvUnquoted"));
 
-            //act - bulk load csv files
+            //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvUnquoted").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvUnquoted").ShouldBeTrue();
 
-            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvUnquoted");
+            //arrange - add new version with csv files
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUnquoted.csv"), Path.Combine(v101Directory, "TestCsvUnquoted.csv"));
+
+            //act - bulk load csv files
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+
+            //assert
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvUnquoted");
             var testDataRows = new List<BulkTestDataRow>
             {
                 new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
@@ -251,10 +277,10 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
-            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00_TestCsvBulkTableOld.sql"), _testDataService.CreateBulkTableScript("test_v0_00_TestCsvBulkTableOld"));
+            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"TestCsvBulkTableOld.sql"), _testDataService.CreateBulkTableScript("TestCsvBulkTableOld"));
 
             //we simulate a importing data into TestCsvBulkTable that doesnt exist
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvBulkTable.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v000Directory, "TestCsv.csv"));
 
             //act - bulk load csv files
             try
@@ -268,31 +294,39 @@ namespace Yuniql.PlatformTests
                 ex.Message.ShouldNotBeEmpty();
 
                 //asset all changes were rolled back
-                _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvBulkTableOld").ShouldBeFalse();
-                _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvBulkTable").ShouldBeFalse();
+                _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvBulkTableOld").ShouldBeFalse();
+                _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeFalse();
             }
         }
 
         [TestMethod]
         public void Test_Bulk_Import_Mismatch_Columns_But_Nullable()
         {
-            //arrange
+            //arrange - pre-create destination bulk tables
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
-            string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
-            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00_TestCsvMismatchColumn.sql"), _testDataService.CreateBulkTableScript("test_v0_00_TestCsvMismatchColumn"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvMismatchColumn.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvMismatchColumn.csv"));
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvMismatchColumn.sql"), _testDataService.CreateBulkTableScript("TestCsvMismatchColumn"));
 
-            //act - bulk load csv files
+            //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvMismatchColumn").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvMismatchColumn").ShouldBeTrue();
 
-            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "test_v0_00_TestCsvMismatchColumn");
+            //arrange - add new version with csv files
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvMismatchColumn.csv"), Path.Combine(v101Directory, "TestCsvMismatchColumn.csv"));
+
+            //act - bulk load csv files
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvMismatchColumn");
             var testDataRows = new List<BulkTestDataRow>
             {
                 new BulkTestDataRow { FirstName="Jack", LastName ="Poole"},
@@ -316,7 +350,8 @@ namespace Yuniql.PlatformTests
             //ignore if atomic ddl transaction not supported in target platforms
             if (!_testDataService.IsAtomicDDLSupported)
             {
-                Assert.Inconclusive("Target database platform or version does not support atomic DDL operations. DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.");
+                Assert.Inconclusive("Target database platform or version does not support atomic DDL operations. " +
+                    "DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.");
             }
 
             //arrange
@@ -348,24 +383,35 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void Test_Bulk_Import_With_NonDefault_Schema_Destination_Table()
         {
-            //arrange
+            //arrange - pre-create destination bulk tables
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
-            string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
-            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00__CreateSchema.sql"), _testDataService.CreateDbSchemaScript("TestSchema"));
-            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00_TestCsvWithSchema.sql"), _testDataService.CreateBulkTableScript("[TestSchema].[test_v0_00_TestCsvWithSchema]"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v000Directory, "TestSchema.test_v0_00_TestCsvWithSchema.csv"));
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"__CreateSchema.sql"), _testDataService.CreateDbSchemaScript("TestSchema"));
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvWithSchema.sql"), _testDataService.CreateBulkTableScript("TestSchema.TestCsv"));
 
-            //act - bulk load csv files
+            //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "[TestSchema].[test_v0_00_TestCsvWithSchema]").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestSchema.TestCsv").ShouldBeTrue();
 
-            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "[TestSchema].[test_v0_00_TestCsvWithSchema]");
+            //arrange - add new version with csv files
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v101Directory, "TestSchema.TestCsv.csv"));
+
+            //act - bulk load csv files
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestSchema.TestCsv").ShouldBeTrue();
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestSchema.TestCsv");
             var testDataRows = new List<BulkTestDataRow>
             {
                 new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },

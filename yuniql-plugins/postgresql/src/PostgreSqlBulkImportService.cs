@@ -32,16 +32,25 @@ namespace Yuniql.PostgreSql
         public void Run(
             IDbConnection connection,
             IDbTransaction transaction,
-            string csvFileFullPath,
+            string fileFullPath,
             string delimeter,
             int batchSize = DefaultConstants.BatchSize,
             int commandTimeout = DefaultConstants.CommandTimeoutSecs)
         {
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(csvFileFullPath, delimeter);
+            var dataTable = ParseCsvFile(fileFullPath, delimeter);
+
+            //check if a non-default dbo schema is used
+            var schemaName = "public";
+            var tableName = Path.GetFileNameWithoutExtension(fileFullPath).ToLower();
+            if (tableName.IndexOf('.') > 0)
+            {
+                schemaName = tableName.Split('.')[0];
+                tableName = tableName.Split('.')[1];
+            }
 
             //save the csv data into staging sql table
-            BulkCopyWithDataTable(connection, transaction, dataTable);
+            BulkCopyWithDataTable(connection, transaction, schemaName, tableName, dataTable);
         }
 
         private DataTable ParseCsvFile(string csvFileFullPath, string delimeter)
@@ -57,7 +66,7 @@ namespace Yuniql.PostgreSql
                 string[] csvColumns = csvReader.ReadFields();
                 foreach (string csvColumn in csvColumns)
                 {
-                    var dataColumn = new DataColumn(csvColumn);
+                    var dataColumn = new DataColumn(csvColumn.ToLower());
                     dataColumn.AllowDBNull = true;
                     csvDatatable.Columns.Add(dataColumn);
                 }
@@ -82,17 +91,20 @@ namespace Yuniql.PostgreSql
         //possibility to bulk import data in custom means during migration execution
         //https://www.npgsql.org/doc/copy.html
         private void BulkCopyWithDataTable(
-            IDbConnection connection, 
-            IDbTransaction transaction, 
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string schemaName,
+            string tableName,
             DataTable dataTable)
         {
-            _traceService.Info($"PostgreSqlBulkImportService: Started copying data into destination table {dataTable.TableName}");
+            _traceService.Info($"PostgreSqlBulkImportService: Started copying data into destination table {schemaName}.{tableName}");
 
-            //get destination table schema
-            var destinationSchema = GetDestinationSchema(dataTable.TableName);
+            //get destination table schema and filter out columns not in csv file
+            var destinationSchema = GetDestinationSchema(schemaName, tableName);
+            var destinationColumns = destinationSchema.ToList().Where(f => dataTable.Columns.Contains(f.Key)).Select(k => k.Key).ToArray();
 
             //prepare statement for binary import
-            var sqlStatement = $"COPY {dataTable.TableName} ({string.Join(',', destinationSchema.ToList().Select(k => k.Key).ToArray())}) FROM STDIN (FORMAT BINARY)";
+            var sqlStatement = $"COPY {schemaName}.{tableName} ({string.Join(',', destinationColumns)}) FROM STDIN (FORMAT BINARY)";
             _traceService.Info("PostgreSqlBulkImportService: " + sqlStatement);
 
             var pgsqlConnection = connection as NpgsqlConnection;
@@ -104,7 +116,17 @@ namespace Yuniql.PostgreSql
                     writer.StartRow();
                     foreach (DataColumn dataColumn in dataTable.Columns)
                     {
+                        if (dataRow.IsNull(dataColumn.ColumnName))
+                        {
+                            writer.Write(DBNull.Value);
+                            continue;
+                        }
+
+                        if (!destinationSchema.ContainsKey(dataColumn.ColumnName))
+                            continue;
+
                         var dataType = destinationSchema[dataColumn.ColumnName.ToLower()].DataType;
+
                         if (dataType == "boolean" || dataType == "bit" || dataType == "bit varying")
                         {
                             writer.Write(bool.Parse(dataRow[dataColumn.ColumnName].ToString()), NpgsqlDbType.Boolean);
@@ -199,7 +221,7 @@ namespace Yuniql.PostgreSql
                         else
                         {
                             //not supported types: lseg,path,polygon,line,circle,box,hstore,cidr,inet,macaddr,tsquery,tsvector,bytea,oid,xid,cid,oidvector,composite types,range types,enum types,array types
-                            throw new NotSupportedException($"PostgreSqlBulkImportService: Data type '{dataType}' on destination table {dataTable.TableName} is not support for bulk import operations.");
+                            throw new NotSupportedException($"PostgreSqlBulkImportService: Data type '{dataType}' on destination table {schemaName}.{tableName} is not support for bulk import operations.");
                         }
                     }
                 }
@@ -208,11 +230,11 @@ namespace Yuniql.PostgreSql
                 writer.Complete();
             }
 
-            _traceService.Info($"PostgreSqlBulkImportService: Finished copying data into destination table {dataTable.TableName}");
+            _traceService.Info($"PostgreSqlBulkImportService: Finished copying data into destination table {tableName}");
         }
 
         //https://www.npgsql.org/doc/types/basic.html
-        private IDictionary<string, ColumnDefinition> GetDestinationSchema(string tableName)
+        private IDictionary<string, ColumnDefinition> GetDestinationSchema(string schemaName, string tableName)
         {
             var result = new Dictionary<string, ColumnDefinition>();
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -221,7 +243,7 @@ namespace Yuniql.PostgreSql
 
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = $"SELECT column_name, data_type FROM information_schema.COLUMNS WHERE TABLE_NAME = '{tableName.ToLower()}'";
+                command.CommandText = $"SELECT column_name, data_type FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{schemaName}' AND TABLE_NAME = '{tableName}'";
                 command.CommandTimeout = 0;
 
                 using (var reader = command.ExecuteReader())

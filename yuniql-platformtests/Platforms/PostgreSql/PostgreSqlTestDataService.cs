@@ -67,8 +67,25 @@ namespace Yuniql.PlatformTests
             return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
         }
 
+        private Tuple<string, string> GetObjectNameWithSchema(string objectName)
+        {
+            //check if a non-default dbo schema is used
+            var schemaName = "public";
+            var newObjectName = objectName;
+
+            if (objectName.IndexOf('.') > 0)
+            {
+                schemaName = objectName.Split('.')[0];
+                newObjectName = objectName.Split('.')[1];
+            }
+
+            return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
+        }
+
         public bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
+
             //check from procedures, im just lazy to figure out join in pgsql :)
             var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName.ToLower()}'";
             bool result = QuerySingleBool(connectionString, sqlStatement);
@@ -77,6 +94,11 @@ namespace Yuniql.PlatformTests
             if (!result)
             {
                 sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName.ToLower()}'";
+                result = QuerySingleBool(connectionString, sqlStatement);
+            }
+
+            if (!result) {
+                sqlStatement = $"SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA = '{dbObject.Item1}'  AND TABLE_NAME = '{dbObject.Item2}'";
                 result = QuerySingleBool(connectionString, sqlStatement);
             }
 
@@ -132,7 +154,7 @@ CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
         public string CreateBulkTableScript(string tableName)
         {
             return $@"
-CREATE TABLE public.{tableName}(
+CREATE TABLE {tableName}(
 	FirstName VARCHAR(50) NOT NULL,
 	LastName VARCHAR(50) NOT NULL,
 	BirthDate TIMESTAMP NULL
