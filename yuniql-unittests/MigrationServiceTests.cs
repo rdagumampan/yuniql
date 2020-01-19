@@ -25,14 +25,24 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
             localVersionService.Setup(s => s.Validate(@"c:\temp")).Verifiable();
 
+            var configurationService = new Mock<IConfigurationDataService>();
+            configurationService.Setup(s => s.IsTargetDatabaseExists(null)).Returns(false);
+            configurationService.Setup(s => s.CreateDatabase(null));
+            configurationService.Setup(s => s.IsTargetDatabaseConfigured(null)).Returns(false);
+            configurationService.Setup(s => s.ConfigureDatabase(null));
+            configurationService.Setup(s => s.GetAllVersions(null)).Returns(new List<DbVersion> { });
+            configurationService.Setup(s => s.GetCurrentVersion(null)).Returns(string.Empty);
+            configurationService.Setup(s => s.UpdateVersion(connection.Object, transaction.Object, "v0.00", null));
+
+            configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 1", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'pre'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'post'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'draft'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.GetConnectionInfo()).Returns(new ConnectionInfo { DataSource = "server", Database = "db" });
-            dataService.Setup(s => s.IsTargetDatabaseExists()).Returns(false);
-            dataService.Setup(s => s.CreateDatabase());
-            dataService.Setup(s => s.IsTargetDatabaseConfigured()).Returns(false);
-            dataService.Setup(s => s.ConfigureDatabase());
-            dataService.Setup(s => s.GetAllVersions()).Returns(new List<DbVersion> { });
-            dataService.Setup(s => s.GetCurrentVersion()).Returns(string.Empty);
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
 
             dataService.Setup(s => s.BreakStatements("SELECT 'init'")).Returns(new List<string> { "SELECT 'init'" });
@@ -40,9 +50,6 @@ namespace Yuniql.UnitTests
             dataService.Setup(s => s.BreakStatements("SELECT 'post'")).Returns(new List<string> { "SELECT 'post'" });
             dataService.Setup(s => s.BreakStatements("SELECT 'draft'")).Returns(new List<string> { "SELECT 'draft'" });
             dataService.Setup(s => s.BreakStatements("SELECT 'v0.00'")).Returns(new List<string> { "SELECT 'v0.00'" });
-
-            dataService.Setup(s => s.ExecuteNonQuery("sql-connection-string", "SELECT 1", DefaultConstants.CommandTimeoutSecs));
-            dataService.Setup(s => s.UpdateVersion(connection.Object, transaction.Object, "v0.00", DefaultConstants.CommandTimeoutSecs));
 
             var bulkImportService = new Mock<IBulkImportService>();
             bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv", DefaultConstants.Delimiter, DefaultConstants.BatchSize, DefaultConstants.CommandTimeoutSecs));
@@ -91,20 +98,22 @@ namespace Yuniql.UnitTests
                 tokenReplacementService.Object,
                 directoryService.Object,
                 fileService.Object,
-                traceService.Object);
+                traceService.Object,
+                configurationService.Object);
             sut.Run(workingPath: @"c:\temp", targetVersion: "v0.00", autoCreateDatabase: true, tokenKeyPairs: tokenKeyPairs, verifyOnly: false);
 
             //asset
             localVersionService.Verify(s => s.Validate(@"c:\temp"));
 
-            dataService.Verify(s => s.GetConnectionInfo());
-            dataService.Verify(s => s.IsTargetDatabaseExists());
-            dataService.Verify(s => s.CreateDatabase());
-            dataService.Verify(s => s.IsTargetDatabaseConfigured());
-            dataService.Verify(s => s.ConfigureDatabase());
+            configurationService.Verify(s => s.IsTargetDatabaseExists(null));
+            configurationService.Verify(s => s.CreateDatabase(null));
+            configurationService.Verify(s => s.IsTargetDatabaseConfigured(null));
+            configurationService.Verify(s => s.ConfigureDatabase(null));
+            configurationService.Verify(s => s.GetAllVersions(null));
+            configurationService.Verify(s => s.GetCurrentVersion(null));
+            configurationService.Verify(s => s.UpdateVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null));
 
-            dataService.Verify(s => s.GetAllVersions());
-            dataService.Verify(s => s.GetCurrentVersion());
+            dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());
 
             directoryService.Verify(s => s.GetDirectories(@"c:\temp", "v*.*"));
@@ -159,15 +168,13 @@ namespace Yuniql.UnitTests
                && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
             ), "SELECT 'v0.00'"));
 
-            dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'init'", It.IsAny<IDbTransaction>(), DefaultConstants.CommandTimeoutSecs));
-            dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'pre'", It.IsAny<IDbTransaction>(), DefaultConstants.CommandTimeoutSecs));
-            dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'post'", It.IsAny<IDbTransaction>(), DefaultConstants.CommandTimeoutSecs));
-            dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'draft'", It.IsAny<IDbTransaction>(), DefaultConstants.CommandTimeoutSecs));
-            dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", It.IsAny<IDbTransaction>(), DefaultConstants.CommandTimeoutSecs));
+            configurationService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            configurationService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'pre'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            configurationService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'post'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            configurationService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'draft'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            configurationService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
 
-            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", DefaultConstants.Delimiter, DefaultConstants.BatchSize, DefaultConstants.CommandTimeoutSecs));
-
-            dataService.Verify(s => s.UpdateVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", DefaultConstants.CommandTimeoutSecs));
+            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", null, null, null));
 
             connection.Verify(s => s.Open());
             connection.Verify(s => s.BeginTransaction());
@@ -185,10 +192,12 @@ namespace Yuniql.UnitTests
 
             var localVersionService = new Mock<ILocalVersionService>();
 
+            var configurationService = new Mock<IConfigurationDataService>();
+            configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'erase'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
             dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
-            dataService.Setup(s => s.ExecuteNonQuery("sql-connection-string", "SELECT erase", DefaultConstants.CommandTimeoutSecs));
 
             var bulkImportService = new Mock<IBulkImportService>();
             var directoryService = new Mock<IDirectoryService>();
@@ -210,17 +219,18 @@ namespace Yuniql.UnitTests
                 tokenReplacementService.Object,
                 directoryService.Object,
                 fileService.Object,
-                traceService.Object);
+                traceService.Object,
+                configurationService.Object);
             sut.Erase(workingPath: @"c:\temp");
 
             //assert
+            configurationService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'erase'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+
             dataService.Verify(s => s.CreateConnection());
             directoryService.Verify(s => s.GetFiles(@"c:\temp\_erase", "*.sql"));
             fileService.Verify(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql"));
             dataService.Verify(s => s.BreakStatements("SELECT 'erase'"));
             tokenReplacementService.Verify(s => s.Replace(null, "SELECT 'erase'"));
-
-            dataService.Verify(s => s.ExecuteNonQuery(It.IsAny<IDbConnection>(), "SELECT 'erase'", It.IsAny<IDbTransaction>(), DefaultConstants.CommandTimeoutSecs));
 
             connection.Verify(s => s.Open());
             connection.Verify(s => s.BeginTransaction());
@@ -238,10 +248,12 @@ namespace Yuniql.UnitTests
 
             var localVersionService = new Mock<ILocalVersionService>();
 
+            var configurationService = new Mock<IConfigurationDataService>();
+
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
             dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
-            dataService.Setup(s => s.ExecuteNonQuery("sql-connection-string", "SELECT erase", DefaultConstants.CommandTimeoutSecs));
+            //dataService.Setup(s => s.ExecuteNonQuery("sql-connection-string", "SELECT erase", DefaultConstants.CommandTimeoutSecs));
 
             var bulkImportService = new Mock<IBulkImportService>();
             var directoryService = new Mock<IDirectoryService>();
@@ -267,7 +279,8 @@ namespace Yuniql.UnitTests
                     tokenReplacementService.Object,
                     directoryService.Object,
                     fileService.Object,
-                    traceService.Object);
+                    traceService.Object,
+                    configurationService.Object);
                 sut.Erase(workingPath: @"c:\temp");
             }).Message.ShouldBe("Fake exception");
 

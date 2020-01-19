@@ -25,7 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\yuniql-core\Yuniql.Core.csproj" />
     <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
-    <ProjectReference Include="..\yuniql-plugins\postgresql\src\Yuniql.PostgreSql.csproj" />
   </ItemGroup>
 
 </Project>

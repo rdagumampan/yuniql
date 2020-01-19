@@ -5,7 +5,7 @@ namespace Yuniql.Core
 {
     public interface IMigrationService
     {
-        void Initialize(string connectionString, int commandTimeout = DefaultConstants.CommandTimeoutSecs);
+        void Initialize(string connectionString, int? commandTimeout);
 
         string GetCurrentVersion();
 
@@ -14,18 +14,18 @@ namespace Yuniql.Core
         void Run(
             string workingPath, 
             string targetVersion, 
-            bool autoCreateDatabase = false, 
-            List<KeyValuePair<string, string>> tokens = null, 
-            bool verifyOnly = false, 
-            string delimiter = DefaultConstants.Delimiter,
-            int commandTimeout = DefaultConstants.CommandTimeoutSecs,
-            int batchSize = DefaultConstants.BatchSize
+            bool autoCreateDatabase, 
+            List<KeyValuePair<string, string>> tokens, 
+            bool verifyOnly, 
+            string delimiter,
+            int? commandTimeout,
+            int? batchSize
         );
 
         void Erase(
             string workingPath,
-            List<KeyValuePair<string, string>> tokens = null,
-            int commandTimeout = DefaultConstants.CommandTimeoutSecs
+            List<KeyValuePair<string, string>> tokens,
+            int? commandTimeout
         );
     }
 }

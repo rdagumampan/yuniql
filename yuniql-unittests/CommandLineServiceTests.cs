@@ -251,7 +251,7 @@ namespace Yuniql.UnitTests
 
             //assert
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, DefaultConstants.BatchSize));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, null));
         }
 
         [TestMethod]
@@ -282,7 +282,7 @@ namespace Yuniql.UnitTests
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), true, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, DefaultConstants.BatchSize));
+                ), true, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, null));
         }
 
 
@@ -309,7 +309,7 @@ namespace Yuniql.UnitTests
 
             //assert
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, DefaultConstants.BatchSize));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, null));
         }
 
         [TestMethod]
@@ -340,7 +340,7 @@ namespace Yuniql.UnitTests
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), false, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, DefaultConstants.BatchSize));
+                ), false, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, null));
         }
     }
 }

@@ -121,7 +121,15 @@ namespace Yuniql.CLI
                 //run the migration
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: opts.AutoCreateDatabase, tokens: tokens, verifyOnly: false, delimiter: opts.Delimiter, commandTimeout: opts.CommandTimeout);
+                migrationService.Run(
+                    opts.Path,
+                    opts.TargetVersion,
+                    autoCreateDatabase: opts.AutoCreateDatabase,
+                    tokens: tokens,
+                    verifyOnly: false,
+                    delimiter: opts.Delimiter,
+                    commandTimeout: opts.CommandTimeout,
+                    batchSize: null);
             }
             catch (Exception ex)
             {
@@ -170,7 +178,15 @@ namespace Yuniql.CLI
                 //run the migration
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                migrationService.Run(opts.Path, opts.TargetVersion, autoCreateDatabase: false, tokens, verifyOnly: true, delimiter: opts.Delimiter, commandTimeout: opts.CommandTimeout);
+                migrationService.Run(
+                    opts.Path,
+                    opts.TargetVersion,
+                    autoCreateDatabase: false,
+                    tokens: tokens,
+                    verifyOnly: true,
+                    delimiter: opts.Delimiter,
+                    commandTimeout: opts.CommandTimeout,
+                    batchSize: null);
 
                 _traceService.Info("Verification run successful.");
             }

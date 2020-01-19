@@ -8,7 +8,6 @@ namespace Yuniql.SqlServer
 {
     public class SqlServerBulkImportService : IBulkImportService
     {
-        private int _commandTimeout = 30;
         private string _connectionString;
         private readonly ITraceService _traceService;
 
@@ -17,21 +16,18 @@ namespace Yuniql.SqlServer
             this._traceService = traceService;
         }
 
-        public void Initialize(
-            string connectionString,
-            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+        public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
-            this._commandTimeout = commandTimeout;
         }
 
         public void Run(
             IDbConnection connection,
             IDbTransaction transaction,
             string fileFullPath,
-            string delimiter,
-            int batchSize = DefaultConstants.BatchSize,
-            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+            string delimiter = null,
+            int? batchSize = null,
+            int? commandTimeout = null)
         {
             //check if a non-default dbo schema is used
             var schemaName = "dbo";
@@ -58,8 +54,11 @@ namespace Yuniql.SqlServer
 
         private DataTable ParseCsvFile(
             string csvFileFullPath,
-            string delimiter)
+            string delimiter = null)
         {
+            if (string.IsNullOrEmpty(delimiter))
+                delimiter = ",";
+
             var csvDatatable = new DataTable();
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
@@ -96,14 +95,14 @@ namespace Yuniql.SqlServer
             string schemaName,
             string tableName,
             DataTable dataTable,
-            int batchSize,
-            int commandTimeout)
+            int? batchSize = null,
+            int? commandTimeout = null)
         {
             using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
             {
                 sqlBulkCopy.DestinationTableName = $"[{schemaName}].[{tableName}]";
-                sqlBulkCopy.BulkCopyTimeout = commandTimeout;
-                sqlBulkCopy.BatchSize = batchSize;
+                sqlBulkCopy.BulkCopyTimeout = commandTimeout.HasValue ? commandTimeout.Value : DefaultConstants.CommandTimeoutSecs;
+                sqlBulkCopy.BatchSize = batchSize.HasValue ? batchSize.Value : DefaultConstants.BatchSize;
                 sqlBulkCopy.EnableStreaming = true;
                 sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
                 foreach (var column in dataTable.Columns)

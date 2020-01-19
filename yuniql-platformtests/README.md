@@ -11,7 +11,6 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 
 |Variable Name|Description|
 |---|---|
-|YUNIQL_PLUGINS|The directory where plugins to be tested are placed.|
 |YUNIQL_TEST_TARGET_PLATFORM|The target platform for the test. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.|
 |YUNIQL_TEST_CONNECTION_STRING|The connection string to your test server. See defaults for each containerized server.|
 |YUNIQL_TEST_SAMPLEDB|The directory where sample yuniql db project is placed.|
@@ -34,7 +33,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
 	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\sqlserver-sample"
 
-	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"
+	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"
 	```
 
@@ -54,13 +53,11 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	cd yuniql-plugins\postgresql\src
 	dotnet publish -c release -r win-x64 -o .\.plugins\postgresql
 
-	SETX YUNIQL_PLUGINS "C:\play\yuniql\yuniql-plugins\postgresql\src\.plugins"
-
 	SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
 	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\yuniql-plugins\postgresql\samples"
 
-	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"
+	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"
 	```
 
@@ -80,13 +77,11 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	cd yuniql-plugins\mysql\src
 	dotnet publish -c release -r win-x64
 
-	SETX YUNIQL_PLUGINS "C:\play\yuniql\yuniql-plugins\mysql\src\bin\Release\netcoreapp3.0\win-x64\publish"
-
 	SETX YUNIQL_TEST_TARGET_PLATFORM "mysql"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
 	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\yuniql-plugins\mysql\samples"
 
-	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\Debug\netcoreapp3.0"
+	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"
 	```
 2. Run the platform tests

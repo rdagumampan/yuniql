@@ -10,7 +10,6 @@ namespace Yuniql.PlatformTests
     [TestClass]
     public class Bootstrapper
     {
-
         [AssemblyInitialize]
         public static void SetupInfrastrucuture(TestContext testContext)
         {
@@ -21,6 +20,11 @@ namespace Yuniql.PlatformTests
             {
                 var containerFactory = new ContainerFactory();
                 var container = containerFactory.Create(targetPlatform.ToLower());
+                var image = new DockerImage
+                {
+                    Image = container.Image,
+                    Tag = container.Tag
+                };
 
                 var dockerService = new DockerService();
                 var foundContainer = dockerService.FindByName(container.Name).FirstOrDefault();
@@ -29,9 +33,11 @@ namespace Yuniql.PlatformTests
                     dockerService.Remove(foundContainer);
                 }
 
+                dockerService.Pull(image);
                 dockerService.Run(container);
 
-                Thread.Sleep(1000 * 10);
+                //TODO: implement connection ping with timeout
+                Thread.Sleep(1000 * 15);
             }
         }
 
@@ -52,7 +58,7 @@ namespace Yuniql.PlatformTests
         [TestMethod]
         public void BootstrapTest()
         {
-            Assert.IsTrue("Just a placeholder test so boostrap is executed".Length > 0);
+            Assert.IsTrue("Just a placeholder test so boostrap is executed. Do not remove this.".Length > 0);
         }
     }
 }

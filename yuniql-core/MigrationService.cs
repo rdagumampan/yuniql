@@ -16,6 +16,7 @@ namespace Yuniql.Core
         private readonly IDirectoryService _directoryService;
         private readonly IFileService _fileService;
         private readonly ITraceService _traceService;
+        private readonly IConfigurationDataService _configurationDataService;
 
         public MigrationService(
             ILocalVersionService localVersionService,
@@ -24,7 +25,8 @@ namespace Yuniql.Core
             ITokenReplacementService tokenReplacementService,
             IDirectoryService directoryService,
             IFileService fileService,
-            ITraceService traceService)
+            ITraceService traceService,
+            IConfigurationDataService configurationDataService)
         {
             this._localVersionService = localVersionService;
             this._dataService = dataService;
@@ -33,15 +35,16 @@ namespace Yuniql.Core
             this._directoryService = directoryService;
             this._fileService = fileService;
             this._traceService = traceService;
+            this._configurationDataService = configurationDataService;
         }
 
         public void Initialize(
-            string connectionString, 
-            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+            string connectionString,
+            int? commandTimeout = null)
         {
             //initialize dependencies
-            _dataService.Initialize(connectionString, commandTimeout);
-            _bulkImportService.Initialize(connectionString, commandTimeout);
+            _dataService.Initialize(connectionString);
+            _bulkImportService.Initialize(connectionString);
         }
 
         public void Run(
@@ -50,9 +53,9 @@ namespace Yuniql.Core
             bool autoCreateDatabase = false,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             bool verifyOnly = false,
-            string delimiter = DefaultConstants.Delimiter,
-            int commandTimeout = DefaultConstants.CommandTimeoutSecs,
-            int batchSize = DefaultConstants.BatchSize
+            string delimiter = null,
+            int? commandTimeout = null,
+            int? batchSize = null
          )
         {
             //validate workspace structure
@@ -80,24 +83,24 @@ namespace Yuniql.Core
 
             //create the database, we need this to be outside of the transaction scope
             //in an event of failure, users have to manually drop the auto-created database
-            var targetDatabaseExists = _dataService.IsTargetDatabaseExists();
+            var targetDatabaseExists = _configurationDataService.IsTargetDatabaseExists();
             if (!targetDatabaseExists && autoCreateDatabase)
             {
                 _traceService.Info($"Target database does not exist. Creating database {targetDatabaseName} on {targetDatabaseServer}.");
-                _dataService.CreateDatabase();
+                _configurationDataService.CreateDatabase();
                 _traceService.Info($"Created database {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
             //check if database has been pre-configured to support migration and setup when its not
-            var targetDatabaseConfigured = _dataService.IsTargetDatabaseConfigured();
+            var targetDatabaseConfigured = _configurationDataService.IsTargetDatabaseConfigured();
             if (!targetDatabaseConfigured)
             {
                 _traceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");
-                _dataService.ConfigureDatabase();
+                _configurationDataService.ConfigureDatabase();
                 _traceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
-            var dbVersions = _dataService.GetAllVersions()
+            var dbVersions = _configurationDataService.GetAllVersions()
                 .Select(dv => dv.Version)
                 .OrderBy(v => v)
                 .ToList();
@@ -161,7 +164,7 @@ namespace Yuniql.Core
 
         private bool IsTargetDatabaseLatest(string targetVersion)
         {
-            var dbcv = _dataService.GetCurrentVersion();
+            var dbcv = _configurationDataService.GetCurrentVersion();
             if (string.IsNullOrEmpty(dbcv)) return false;
 
             var cv = new LocalVersion(dbcv);
@@ -172,21 +175,21 @@ namespace Yuniql.Core
 
         public string GetCurrentVersion()
         {
-            return _dataService.GetCurrentVersion();
+            return _configurationDataService.GetCurrentVersion();
         }
 
         public List<DbVersion> GetAllVersions()
         {
-            return _dataService.GetAllVersions();
+            return _configurationDataService.GetAllVersions();
         }
 
         private void RunNonVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
             string workingPath,
-            List<KeyValuePair<string, string>> tokens,
-            string delimiter,
-            int commandTimeout
+            List<KeyValuePair<string, string>> tokens = null,
+            string delimiter = null,
+            int? commandTimeout = null
         )
         {
             var sqlScriptFiles = _directoryService.GetFiles(workingPath, "*.sql").ToList();
@@ -209,7 +212,13 @@ namespace Yuniql.Core
                     sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
 
                     _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-                    _dataService.ExecuteNonQuery(connection, sqlStatement, transaction, commandTimeout: commandTimeout);
+
+                    _configurationDataService.ExecuteSql(
+                        connection: connection,
+                        commandText: sqlStatement,
+                        transaction: transaction,
+                        commandTimeout: commandTimeout,
+                        traceService: _traceService);
                 });
 
                 _traceService.Info($"Executed script file {scriptFile}.");
@@ -222,10 +231,10 @@ namespace Yuniql.Core
             List<string> dbVersions,
             string workingPath,
             string targetVersion,
-            List<KeyValuePair<string, string>> tokens,
-            string delimiter,
-            int commandTimeout,
-            int batchSize
+            List<KeyValuePair<string, string>> tokens = null,
+            string delimiter = null,
+            int? commandTimeout = null,
+            int? batchSize = null
         )
         {
             //excludes all versions already executed
@@ -269,7 +278,7 @@ namespace Yuniql.Core
 
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
-                        _dataService.UpdateVersion(connection, transaction, versionName, commandTimeout: commandTimeout);
+                        _configurationDataService.UpdateVersion(connection, transaction, versionName, commandTimeout: commandTimeout);
 
                         _traceService.Info($"Completed migration to version {versionDirectory}");
                     }
@@ -290,9 +299,9 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string versionFullPath,
-            string delimiter,
-            int batchSize,
-            int commandTimeout
+            string delimiter = null,
+            int? batchSize = null,
+            int? commandTimeout = null
         )
         {
             //execute all script files in the version folder
@@ -313,8 +322,8 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string versionFullPath,
-            List<KeyValuePair<string, string>> tokens,
-            int commandTimeout
+            List<KeyValuePair<string, string>> tokens = null,
+            int? commandTimeout = null
         )
         {
             var sqlScriptFiles = _directoryService.GetFiles(versionFullPath, "*.sql").ToList();
@@ -333,11 +342,15 @@ namespace Yuniql.Core
                 ;
                 sqlStatements.ForEach(sqlStatement =>
                 {
-                    //replace tokens with values from the cli
                     sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
 
                     _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-                    _dataService.ExecuteNonQuery(connection, sqlStatement, transaction: transaction, commandTimeout: commandTimeout);
+                    _configurationDataService.ExecuteSql(
+                        connection: connection,
+                        commandText: sqlStatement,
+                        transaction: transaction,
+                        commandTimeout: commandTimeout,
+                        traceService: _traceService);
                 });
 
                 _traceService.Info($"Executed script file {scriptFile}.");
@@ -345,15 +358,15 @@ namespace Yuniql.Core
         }
 
         public void Erase(
-            string workingPath, 
-            List<KeyValuePair<string, string>> tokenKeyPairs = null, 
-            int commandTimeout = DefaultConstants.CommandTimeoutSecs
+            string workingPath,
+            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            int? commandTimeout = null
         )
         {
             //enclose all executions in a single transaction
             using (var connection = _dataService.CreateConnection())
             {
-                connection.Open();
+                connection.KeepOpen();
                 using (var transaction = connection.BeginTransaction())
                 {
                     try
