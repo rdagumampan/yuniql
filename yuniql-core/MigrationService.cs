@@ -83,7 +83,7 @@ namespace Yuniql.Core
 
             //create the database, we need this to be outside of the transaction scope
             //in an event of failure, users have to manually drop the auto-created database
-            var targetDatabaseExists = _configurationDataService.IsTargetDatabaseExists();
+            var targetDatabaseExists = _configurationDataService.IsDatabaseExists();
             if (!targetDatabaseExists && (autoCreateDatabase.HasValue && autoCreateDatabase == true))
             {
                 _traceService.Info($"Target database does not exist. Creating database {targetDatabaseName} on {targetDatabaseServer}.");
@@ -92,7 +92,7 @@ namespace Yuniql.Core
             }
 
             //check if database has been pre-configured to support migration and setup when its not
-            var targetDatabaseConfigured = _configurationDataService.IsTargetDatabaseConfigured();
+            var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured();
             if (!targetDatabaseConfigured)
             {
                 _traceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");

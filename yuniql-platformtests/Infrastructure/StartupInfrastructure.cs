@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Yuniql.PlatformTests
 {
     [TestClass]
-    public class Bootstrapper
+    public class StartupInfrastructure
     {
         [AssemblyInitialize]
         public static void SetupInfrastrucuture(TestContext testContext)

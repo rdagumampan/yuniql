@@ -18,7 +18,7 @@ namespace Yuniql.Core
             this._traceService = traceService;
         }
 
-        public bool IsTargetDatabaseExists(int? commandTimeout = null)
+        public bool IsDatabaseExists(int? commandTimeout = null)
         {
             var sqlStatement = string.Format(_dataService.GetCheckIfDatabaseExistsSql(), _dataService.GetConnectionInfo().Database);
             using (var connection = _dataService.CreateMasterConnection())
@@ -44,7 +44,7 @@ namespace Yuniql.Core
             }
         }
 
-        public bool IsTargetDatabaseConfigured(int? commandTimeout = null)
+        public bool IsDatabaseConfigured(int? commandTimeout = null)
         {
             var sqlStatement = _dataService.GetCheckIfDatabaseConfiguredSql();
             using (var connection = _dataService.CreateConnection())

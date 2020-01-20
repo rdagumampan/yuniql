@@ -14,9 +14,9 @@ namespace Yuniql.Core
 
         string GetCurrentVersion(int? commandTimeout = null);
 
-        bool IsTargetDatabaseConfigured(int? commandTimeout = null);
+        bool IsDatabaseConfigured(int? commandTimeout = null);
 
-        bool IsTargetDatabaseExists(int? commandTimeout = null);
+        bool IsDatabaseExists(int? commandTimeout = null);
 
         void UpdateVersion(
             IDbConnection connection, 
