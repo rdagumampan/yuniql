@@ -2,7 +2,7 @@
 using Yuniql.Core;
 using Yuniql.Extensibility;
 //using Yuniql.MySql;
-using Yuniql.PostgreSql;
+//using Yuniql.PostgreSql;
 using Yuniql.SqlServer;
 
 namespace Yuniql.PlatformTests
@@ -27,12 +27,12 @@ namespace Yuniql.PlatformTests
                         var bulkImportService = new SqlServerBulkImportService(_traceService);
                         return Create(dataService, bulkImportService);
                     }
-                case "postgresql":
-                    {
-                        var dataService = new PostgreSqlDataService(_traceService);
-                        var bulkImportService = new PostgreSqlBulkImportService(_traceService);
-                        return Create(dataService, bulkImportService);
-                    }
+                //case "postgresql":
+                //    {
+                //        var dataService = new PostgreSqlDataService(_traceService);
+                //        var bulkImportService = new PostgreSqlBulkImportService(_traceService);
+                //        return Create(dataService, bulkImportService);
+                //    }
                 //case "mysql":
                 //    {
                 //        var dataService = new MySqlDataService(_traceService);
@@ -52,14 +52,17 @@ namespace Yuniql.PlatformTests
             var directoryService = new DirectoryService();
             var fileService = new FileService();
 
+            var configurationService = new ConfigurationDataService(dataService, _traceService);
+
             var migrationService = new MigrationService(
-                localVersionService, 
-                dataService, 
-                bulkImportService, 
-                tokenReplacementService, 
-                directoryService, 
-                fileService, 
-                _traceService);
+                localVersionService,
+                dataService,
+                bulkImportService,
+                tokenReplacementService,
+                directoryService,
+                fileService,
+                _traceService,
+                configurationService);
             return migrationService;
         }
     }

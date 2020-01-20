@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using Yuniql.Core;
 
 namespace Yuniql.PlatformTests
 {
@@ -33,24 +34,58 @@ namespace Yuniql.PlatformTests
 
         public bool QuerySingleBool(string connectionString, string sqlStatement)
         {
-            return _dataService.QuerySingleBool(connectionString, sqlStatement);
+            _dataService.Initialize(connectionString);
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleBool(sqlStatement);
+            }
         }
 
         public string QuerySingleString(string connectionString, string sqlStatement)
         {
-            return _dataService.QuerySingleString(connectionString, sqlStatement);
+            _dataService.Initialize(connectionString);
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleString(sqlStatement);
+            }
         }
 
         public string GetCurrentDbVersion(string connectionString)
         {
             _dataService.Initialize(connectionString);
-            return _dataService.GetCurrentVersion();
+            var sqlStatement = _dataService.GetGetCurrentVersionSql();
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleString(commandText: sqlStatement);
+            }
         }
 
         public List<DbVersion> GetAllDbVersions(string connectionString)
         {
+
             _dataService.Initialize(connectionString);
-            return _dataService.GetAllVersions();
+            var sqlStatement = _dataService.GetGetAllVersionsSql();
+
+            var result = new List<DbVersion>();
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                var command = connection.CreateCommand(commandText: sqlStatement);
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var dbVersion = new DbVersion
+                    {
+                        Id = reader.GetInt16(0),
+                        Version = reader.GetString(1),
+                        DateInsertedUtc = reader.GetDateTime(2),
+                        LastUserId = reader.GetString(3)
+                    };
+                    result.Add(dbVersion);
+                }
+            }
+
+            return result;
         }
 
         public bool CheckIfDbExist(string connectionString)
@@ -218,8 +253,9 @@ DROP PROCEDURE script2;
 DROP PROCEDURE script3;
 ";
         }
-        
-        public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName) {
+
+        public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName)
+        {
             List<BulkTestDataRow> results = new List<BulkTestDataRow>();
 
             using (var connection = new SqlConnection(connectionString))
@@ -236,8 +272,9 @@ DROP PROCEDURE script3;
                 {
                     while (reader.Read())
                     {
-                        results.Add(new BulkTestDataRow { 
-                            FirstName = !reader.IsDBNull(0)? reader.GetString(0): null,
+                        results.Add(new BulkTestDataRow
+                        {
+                            FirstName = !reader.IsDBNull(0) ? reader.GetString(0) : null,
                             LastName = !reader.IsDBNull(1) ? reader.GetString(1) : null,
                             BirthDate = !reader.IsDBNull(2) ? reader.GetDateTime(2) : new DateTime?()
                         });

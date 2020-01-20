@@ -100,7 +100,11 @@ namespace Yuniql.UnitTests
                 fileService.Object,
                 traceService.Object,
                 configurationService.Object);
-            sut.Run(workingPath: @"c:\temp", targetVersion: "v0.00", autoCreateDatabase: true, tokenKeyPairs: tokenKeyPairs, verifyOnly: false);
+            sut.Run(workingPath: @"c:\temp", 
+                targetVersion: "v0.00", 
+                autoCreateDatabase: true, 
+                tokenKeyPairs: tokenKeyPairs, 
+                verifyOnly: false);
 
             //asset
             localVersionService.Verify(s => s.Validate(@"c:\temp"));

@@ -8,7 +8,7 @@ using System;
 namespace Yuniql.PlatformTests
 {
     [TestClass]
-    public class BreakdownScriptTests: TestBase
+    public class BreakdownScriptTests : TestBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;
@@ -90,7 +90,7 @@ namespace Yuniql.PlatformTests
             //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+            migrationService.Run(workingPath: _testConfiguration.WorkspacePath, targetVersion: "v1.00", autoCreateDatabase: true);
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName}").ShouldBeTrue();

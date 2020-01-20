@@ -49,10 +49,10 @@ namespace Yuniql.Core
 
         public void Run(
             string workingPath,
-            string targetVersion,
-            bool autoCreateDatabase = false,
+            string targetVersion = null,
+            bool? autoCreateDatabase = false,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
-            bool verifyOnly = false,
+            bool? verifyOnly = false,
             string delimiter = null,
             int? commandTimeout = null,
             int? batchSize = null
@@ -62,7 +62,7 @@ namespace Yuniql.Core
             _localVersionService.Validate(workingPath);
 
             //when uncomitted run is not supported, fail migration and throw exceptions
-            if (verifyOnly && !_dataService.IsAtomicDDLSupported)
+            if (verifyOnly.HasValue && verifyOnly == true && !_dataService.IsAtomicDDLSupported)
             {
                 throw new NotSupportedException("Yuniql.Verify is not supported in the target platform. " +
                     "The feature requires support for atomic DDL operations. " +
@@ -84,7 +84,7 @@ namespace Yuniql.Core
             //create the database, we need this to be outside of the transaction scope
             //in an event of failure, users have to manually drop the auto-created database
             var targetDatabaseExists = _configurationDataService.IsTargetDatabaseExists();
-            if (!targetDatabaseExists && autoCreateDatabase)
+            if (!targetDatabaseExists && (autoCreateDatabase.HasValue && autoCreateDatabase == true))
             {
                 _traceService.Info($"Target database does not exist. Creating database {targetDatabaseName} on {targetDatabaseServer}.");
                 _configurationDataService.CreateDatabase();
@@ -142,7 +142,7 @@ namespace Yuniql.Core
 
                             //when true, the execution is an uncommitted transaction 
                             //and only for purpose of testing if all can go well when it run to the target environment
-                            if (verifyOnly)
+                            if (verifyOnly.HasValue && verifyOnly == true)
                                 transaction.Rollback();
                             else
                                 transaction.Commit();

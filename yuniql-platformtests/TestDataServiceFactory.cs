@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Yuniql.Core;
 using Yuniql.Extensibility;
-using Yuniql.PostgreSql;
+//using Yuniql.PostgreSql;
 using Yuniql.SqlServer;
 
 namespace Yuniql.PlatformTests
@@ -26,10 +26,10 @@ namespace Yuniql.PlatformTests
                     {
                         return new SqlServerTestDataService(new SqlServerDataService(traceService));
                     }
-                case "postgresql":
-                    {
-                        return new PostgreSqlTestDataService(new PostgreSqlDataService(traceService));
-                    }
+                //case "postgresql":
+                //    {
+                //        return new PostgreSqlTestDataService(new PostgreSqlDataService(traceService));
+                //    }
                 //case "mysql":
                 //    {
                 //        var dataService = new MySqlDataService(_traceService);
