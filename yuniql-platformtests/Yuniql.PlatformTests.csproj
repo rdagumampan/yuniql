@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Compile Remove="Platforms\MySql\MySqlTestDataService.cs" />
-    <Compile Remove="Platforms\PostgreSql\PostgreSqlTestDataService.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\yuniql-core\Yuniql.Core.csproj" />
     <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
+    <ProjectReference Include="..\yuniql-plugins\postgresql\src\Yuniql.PostgreSql.csproj" />
     <ProjectReference Include="..\yuniql-sqlserver\Yuniql.SqlServer.csproj" />
   </ItemGroup>
 

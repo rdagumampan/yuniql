@@ -12,12 +12,12 @@ namespace Yuniql.PlatformTests
     {
         private readonly IDataService _dataService;
 
-        public bool IsAtomicDDLSupported => true;
-
         public SqlServerTestDataService(IDataService dataService)
         {
             this._dataService = dataService;
         }
+        public bool IsAtomicDDLSupported => true;
+
         public string GetConnectionString(string databaseName)
         {
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");

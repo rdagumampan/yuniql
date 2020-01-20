@@ -4,6 +4,7 @@ using System.IO;
 using Npgsql;
 using System;
 using System.Data;
+using Yuniql.Core;
 
 namespace Yuniql.PlatformTests
 {
@@ -11,12 +12,12 @@ namespace Yuniql.PlatformTests
     {
         private readonly IDataService _dataService;
 
-        public bool IsAtomicDDLSupported => true;
-
         public PostgreSqlTestDataService(IDataService dataService)
         {
             this._dataService = dataService;
         }
+    
+        public bool IsAtomicDDLSupported => true;
 
         public string GetConnectionString(string databaseName)
         {
@@ -35,25 +36,57 @@ namespace Yuniql.PlatformTests
         public bool QuerySingleBool(string connectionString, string sqlStatement)
         {
             _dataService.Initialize(connectionString);
-            return _dataService.QuerySingleBool(connectionString, sqlStatement);
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleBool(sqlStatement);
+            }
         }
 
         public string QuerySingleString(string connectionString, string sqlStatement)
         {
             _dataService.Initialize(connectionString);
-            return _dataService.QuerySingleString(connectionString, sqlStatement);
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleString(sqlStatement);
+            }
         }
 
         public string GetCurrentDbVersion(string connectionString)
         {
             _dataService.Initialize(connectionString);
-            return _dataService.GetCurrentVersion();
+            var sqlStatement = _dataService.GetGetCurrentVersionSql();
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleString(commandText: sqlStatement);
+            }
         }
 
         public List<DbVersion> GetAllDbVersions(string connectionString)
         {
+
             _dataService.Initialize(connectionString);
-            return _dataService.GetAllVersions();
+            var sqlStatement = _dataService.GetGetAllVersionsSql();
+
+            var result = new List<DbVersion>();
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                var command = connection.CreateCommand(commandText: sqlStatement);
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var dbVersion = new DbVersion
+                    {
+                        Id = reader.GetInt16(0),
+                        Version = reader.GetString(1),
+                        DateInsertedUtc = reader.GetDateTime(2),
+                        LastUserId = reader.GetString(3)
+                    };
+                    result.Add(dbVersion);
+                }
+            }
+
+            return result;
         }
 
         public bool CheckIfDbExist(string connectionString)

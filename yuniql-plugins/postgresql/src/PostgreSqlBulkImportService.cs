@@ -12,7 +12,6 @@ namespace Yuniql.PostgreSql
 {
     public class PostgreSqlBulkImportService : IBulkImportService
     {
-        private int _commandTimeout = 30;
         private string _connectionString;
         private readonly ITraceService _traceService;
 
@@ -22,23 +21,21 @@ namespace Yuniql.PostgreSql
         }
 
         public void Initialize(
-            string connectionString,
-            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+            string connectionString)
         {
             this._connectionString = connectionString;
-            this._commandTimeout = commandTimeout;
         }
 
         public void Run(
             IDbConnection connection,
             IDbTransaction transaction,
             string fileFullPath,
-            string delimeter,
-            int batchSize = DefaultConstants.BatchSize,
-            int commandTimeout = DefaultConstants.CommandTimeoutSecs)
+            string delimiter = null,
+            int? batchSize = null,
+            int? commandTimeout = null)
         {
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(fileFullPath, delimeter);
+            var dataTable = ParseCsvFile(fileFullPath, delimiter);
 
             //check if a non-default dbo schema is used
             var schemaName = "public";
@@ -55,9 +52,10 @@ namespace Yuniql.PostgreSql
 
         private DataTable ParseCsvFile(string csvFileFullPath, string delimeter)
         {
-            var csvDatatable = new DataTable();
-            csvDatatable.TableName = Path.GetFileNameWithoutExtension(csvFileFullPath);
+            if (string.IsNullOrEmpty(delimeter))
+                delimeter = ",";
 
+            var csvDatatable = new DataTable();
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
                 csvReader.Delimiters = (new string[] { delimeter });

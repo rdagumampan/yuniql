@@ -26,9 +26,9 @@ namespace Yuniql.UnitTests
             localVersionService.Setup(s => s.Validate(@"c:\temp")).Verifiable();
 
             var configurationService = new Mock<IConfigurationDataService>();
-            configurationService.Setup(s => s.IsTargetDatabaseExists(null)).Returns(false);
+            configurationService.Setup(s => s.IsDatabaseExists(null)).Returns(false);
             configurationService.Setup(s => s.CreateDatabase(null));
-            configurationService.Setup(s => s.IsTargetDatabaseConfigured(null)).Returns(false);
+            configurationService.Setup(s => s.IsDatabaseConfigured(null)).Returns(false);
             configurationService.Setup(s => s.ConfigureDatabase(null));
             configurationService.Setup(s => s.GetAllVersions(null)).Returns(new List<DbVersion> { });
             configurationService.Setup(s => s.GetCurrentVersion(null)).Returns(string.Empty);
@@ -109,9 +109,9 @@ namespace Yuniql.UnitTests
             //asset
             localVersionService.Verify(s => s.Validate(@"c:\temp"));
 
-            configurationService.Verify(s => s.IsTargetDatabaseExists(null));
+            configurationService.Verify(s => s.IsDatabaseExists(null));
             configurationService.Verify(s => s.CreateDatabase(null));
-            configurationService.Verify(s => s.IsTargetDatabaseConfigured(null));
+            configurationService.Verify(s => s.IsDatabaseConfigured(null));
             configurationService.Verify(s => s.ConfigureDatabase(null));
             configurationService.Verify(s => s.GetAllVersions(null));
             configurationService.Verify(s => s.GetCurrentVersion(null));
