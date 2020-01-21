@@ -45,6 +45,8 @@ namespace Yuniql.PlatformTests
 
         bool IsAtomicDDLSupported { get; }
 
+        bool IsSchemaSupported { get; }
+
         List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName);
     }
 }

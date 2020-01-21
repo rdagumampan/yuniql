@@ -16,6 +16,8 @@ namespace Yuniql.Extensibility
 
         bool IsAtomicDDLSupported { get; }
 
+        bool IsSchemaSupported { get; }
+
         List<string> BreakStatements(string sqlStatement);
         
         public string GetCheckIfDatabaseExistsSql();

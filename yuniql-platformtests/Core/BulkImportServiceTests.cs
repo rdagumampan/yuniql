@@ -294,8 +294,7 @@ namespace Yuniql.PlatformTests
                 ex.Message.ShouldNotBeEmpty();
 
                 //asset all changes were rolled back
-                _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvBulkTableOld").ShouldBeFalse();
-                _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeFalse();
+                _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvBulkTableOld").ShouldBeTrue();
             }
         }
 
@@ -382,7 +381,12 @@ namespace Yuniql.PlatformTests
         
         [TestMethod]
         public void Test_Bulk_Import_With_NonDefault_Schema_Destination_Table()
-        {
+        {            //ignore if atomic ddl transaction not supported in target platforms
+            if (!_testDataService.IsSchemaSupported)
+            {
+                Assert.Inconclusive("Target database platform or version does not support schema.");
+            }
+
             //arrange - pre-create destination bulk tables
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);

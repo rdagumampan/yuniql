@@ -18,6 +18,8 @@ namespace Yuniql.PostgreSql
 
         public bool IsAtomicDDLSupported => true;
 
+        public bool IsSchemaSupported { get; } = true;
+
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;

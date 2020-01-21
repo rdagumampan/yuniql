@@ -23,6 +23,8 @@ namespace Yuniql.MySql
 
         public bool IsAtomicDDLSupported => true;
 
+        public bool IsSchemaSupported { get; } = false;
+
         public IDbConnection CreateConnection()
         {
             return new MySqlConnection(_connectionString);

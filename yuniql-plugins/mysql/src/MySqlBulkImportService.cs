@@ -29,26 +29,19 @@ namespace Yuniql.MySql
             int? batchSize = null,
             int? commandTimeout = null)
         {
-            //check if a non-default dbo schema is used
-            var schemaName = "public";
-            var tableName = Path.GetFileNameWithoutExtension(fileFullPath).ToLower();
-            if (tableName.IndexOf('.') > 0)
-            {
-                schemaName = tableName.Split('.')[0];
-                tableName = tableName.Split('.')[1];
-            }
+            //extract destination table name, mysql is case sensitive!
+            var tableName = Path.GetFileNameWithoutExtension(fileFullPath);
 
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(connection, fileFullPath, schemaName, tableName, delimiter);
+            var dataTable = ParseCsvFile(connection, fileFullPath, tableName, delimiter);
 
             //save the csv data into staging sql table
-            BulkCopyWithDataTable(connection, transaction, schemaName, tableName, dataTable);
+            BulkCopyWithDataTable(connection, transaction, tableName, dataTable);
         }
 
         private DataTable ParseCsvFile(
             IDbConnection connection,
             string fileFullPath,
-            string schemaName,
             string tableName,
             string delimiter)
         {
@@ -95,11 +88,10 @@ namespace Yuniql.MySql
         private void BulkCopyWithDataTable(
             IDbConnection connection, 
             IDbTransaction transaction,
-            string schemaName,
             string tableName,
             DataTable dataTable)
         {
-            _traceService.Info($"MySqlBulkImportService: Started copying data into destination table {dataTable.TableName}");
+            _traceService.Info($"MySqlBulkImportService: Started copying data into destination table {tableName}");
 
             using (var cmd = new MySqlCommand())
             {
@@ -117,7 +109,7 @@ namespace Yuniql.MySql
                     }
                 };
 
-                _traceService.Info($"MySqlBulkImportService: Finished copying data into destination table {dataTable.TableName}");
+                _traceService.Info($"MySqlBulkImportService: Finished copying data into destination table {tableName}");
             }
         }
     }

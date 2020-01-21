@@ -16,7 +16,9 @@ namespace Yuniql.PlatformTests
         {
             this._dataService = dataService;
         }
-        public bool IsAtomicDDLSupported => true;
+        public bool IsAtomicDDLSupported => _dataService.IsAtomicDDLSupported;
+
+        public bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
         public string GetConnectionString(string databaseName)
         {

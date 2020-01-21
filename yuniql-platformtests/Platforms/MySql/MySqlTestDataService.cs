@@ -11,13 +11,14 @@ namespace Yuniql.PlatformTests
     public class MySqlTestDataService : ITestDataService
     {
         private readonly IDataService _dataService;
-
-        public bool IsAtomicDDLSupported => false;
-
         public MySqlTestDataService(IDataService dataService)
         {
             this._dataService = dataService;
         }
+
+        public bool IsAtomicDDLSupported => _dataService.IsAtomicDDLSupported;
+
+        public bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
         public string GetConnectionString(string databaseName)
         {
