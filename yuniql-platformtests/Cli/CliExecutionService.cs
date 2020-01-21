@@ -46,6 +46,7 @@ namespace Yuniql.PlatformTests
             string output = reader.ReadToEnd();
             process.WaitForExit();
 
+            Console.WriteLine(output);
             return output;
         }
     }
