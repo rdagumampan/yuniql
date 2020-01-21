@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Platforms\MySql\MySqlTestDataService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
@@ -26,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\yuniql-core\Yuniql.Core.csproj" />
     <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
+    <ProjectReference Include="..\yuniql-plugins\mysql\src\Yuniql.MySql.csproj" />
     <ProjectReference Include="..\yuniql-plugins\postgresql\src\Yuniql.PostgreSql.csproj" />
     <ProjectReference Include="..\yuniql-sqlserver\Yuniql.SqlServer.csproj" />
   </ItemGroup>

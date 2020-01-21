@@ -1,10 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
 using Yuniql.Core;
-using Yuniql.Extensibility;
+using Yuniql.MySql;
 using Yuniql.PostgreSql;
 using Yuniql.SqlServer;
 
@@ -30,12 +26,10 @@ namespace Yuniql.PlatformTests
                     {
                         return new PostgreSqlTestDataService(new PostgreSqlDataService(traceService));
                     }
-                //case "mysql":
-                //    {
-                //        var dataService = new MySqlDataService(_traceService);
-                //        var bulkImportService = new MySqlBulkImportService(_traceService);
-                //        return Create(dataService, bulkImportService);
-                //    }
+                case "mysql":
+                    {
+                        return new MySqlTestDataService(new MySqlDataService(traceService));
+                    }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +
                         $"See WIKI for supported database platforms and usage guide.");

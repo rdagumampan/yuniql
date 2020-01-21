@@ -23,18 +23,24 @@ namespace Yuniql.MySql
         //https://wiki.ispirer.com/sqlways/troubleshooting-guide/mysql/import/command-not-allowed-data-load
         //https://www.youtube.com/watch?v=XM2xx-PD4cg&vl=en
         //https://dev.mysql.com/doc/connector-net/en/connector-net-programming-bulk-loader.html
-        public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath, string delimeter)
+        public void Run(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string fileFullPath,
+            string delimiter = null,
+            int? batchSize = null,
+            int? commandTimeout = null)
         {
-            var tableName = Path.GetFileNameWithoutExtension(csvFileFullPath);
+            var tableName = Path.GetFileNameWithoutExtension(fileFullPath);
 
             _traceService.Info($"MySqlBulkImportService: Started copying data into destination table {tableName}");
 
             var bulkLoader = new MySqlBulkLoader(connection as MySqlConnection);
             bulkLoader.Local = true;
             bulkLoader.TableName = tableName;
-            bulkLoader.FieldTerminator = delimeter;
+            bulkLoader.FieldTerminator = delimiter;
             bulkLoader.LineTerminator = "\n";
-            bulkLoader.FileName = csvFileFullPath;
+            bulkLoader.FileName = fileFullPath;
             bulkLoader.NumberOfLinesToSkip = 1;
 
             int affectedRecords = bulkLoader.Load();

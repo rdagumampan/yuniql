@@ -37,7 +37,7 @@ namespace Yuniql.PlatformTests
                 dockerService.Run(container);
 
                 //TODO: implement connection ping with timeout
-                Thread.Sleep(1000 * 15);
+                Thread.Sleep(1000 * 30);
             }
         }
 

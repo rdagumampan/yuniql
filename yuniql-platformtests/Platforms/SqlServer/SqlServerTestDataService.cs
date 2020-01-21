@@ -256,8 +256,7 @@ DROP PROCEDURE script3;
 
         public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName)
         {
-            List<BulkTestDataRow> results = new List<BulkTestDataRow>();
-
+            var results = new List<BulkTestDataRow>();
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();

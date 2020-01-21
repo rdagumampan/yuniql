@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Core", "yuniql-core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.PostgreSql", "yuniql-plugins\postgresql\src\Yuniql.PostgreSql.csproj", "{45677D54-16A5-4606-B7CD-3A52FA4790F6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.MySql", "yuniql-plugins\mysql\src\Yuniql.MySql.csproj", "{BCBBA9AA-D20E-435D-B9CA-55DE83E8D84E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{45677D54-16A5-4606-B7CD-3A52FA4790F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45677D54-16A5-4606-B7CD-3A52FA4790F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45677D54-16A5-4606-B7CD-3A52FA4790F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCBBA9AA-D20E-435D-B9CA-55DE83E8D84E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCBBA9AA-D20E-435D-B9CA-55DE83E8D84E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCBBA9AA-D20E-435D-B9CA-55DE83E8D84E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCBBA9AA-D20E-435D-B9CA-55DE83E8D84E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

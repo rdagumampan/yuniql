@@ -100,21 +100,6 @@ namespace Yuniql.PlatformTests
             return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
         }
 
-        private Tuple<string, string> GetObjectNameWithSchema(string objectName)
-        {
-            //check if a non-default dbo schema is used
-            var schemaName = "public";
-            var newObjectName = objectName;
-
-            if (objectName.IndexOf('.') > 0)
-            {
-                schemaName = objectName.Split('.')[0];
-                newObjectName = objectName.Split('.')[1];
-            }
-
-            return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
-        }
-
         public bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
             var dbObject = GetObjectNameWithSchema(objectName);
@@ -313,8 +298,7 @@ DROP TABLE script3;
 
         public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName)
         {
-            List<BulkTestDataRow> results = new List<BulkTestDataRow>();
-
+            var results = new List<BulkTestDataRow>();
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
@@ -340,5 +324,21 @@ DROP TABLE script3;
             }
             return results;
         }
+
+        private Tuple<string, string> GetObjectNameWithSchema(string objectName)
+        {
+            //check if a non-default dbo schema is used
+            var schemaName = "public";
+            var newObjectName = objectName;
+
+            if (objectName.IndexOf('.') > 0)
+            {
+                schemaName = objectName.Split('.')[0];
+                newObjectName = objectName.Split('.')[1];
+            }
+
+            return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
+        }
+
     }
 }

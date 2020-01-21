@@ -9,7 +9,7 @@ namespace Yuniql.PlatformTests
     {
         public string CreateEmptyWorkspace()
         {
-            var workingPath = Path.Combine(Environment.CurrentDirectory, @$"yuniql_testdb_{Guid.NewGuid().ToString().Substring(0, 6)}"); ;
+            var workingPath = Path.Combine(Environment.CurrentDirectory, @$"yuniql_testdb_{Guid.NewGuid().ToString().Substring(0, 8)}"); ;
             if (!Directory.Exists(workingPath))
             {
                 Directory.CreateDirectory(workingPath);

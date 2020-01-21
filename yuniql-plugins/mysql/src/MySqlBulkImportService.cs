@@ -21,29 +21,50 @@ namespace Yuniql.MySql
             this._connectionString = connectionString;
         }
 
-        public void Run(IDbConnection connection, IDbTransaction transaction, string csvFileFullPath, string delimeter)
+        public void Run(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string fileFullPath,
+            string delimiter = null,
+            int? batchSize = null,
+            int? commandTimeout = null)
         {
+            //check if a non-default dbo schema is used
+            var schemaName = "public";
+            var tableName = Path.GetFileNameWithoutExtension(fileFullPath).ToLower();
+            if (tableName.IndexOf('.') > 0)
+            {
+                schemaName = tableName.Split('.')[0];
+                tableName = tableName.Split('.')[1];
+            }
+
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(connection, csvFileFullPath, delimeter);
+            var dataTable = ParseCsvFile(connection, fileFullPath, schemaName, tableName, delimiter);
 
             //save the csv data into staging sql table
-            BulkCopyWithDataTable(connection, transaction, dataTable);
+            BulkCopyWithDataTable(connection, transaction, schemaName, tableName, dataTable);
         }
 
-        private DataTable ParseCsvFile(IDbConnection connection, string csvFileFullPath, string delimeter)
+        private DataTable ParseCsvFile(
+            IDbConnection connection,
+            string fileFullPath,
+            string schemaName,
+            string tableName,
+            string delimiter)
         {
-            var csvDatatable = new DataTable();
-            csvDatatable.TableName = Path.GetFileNameWithoutExtension(csvFileFullPath);
+            if (string.IsNullOrEmpty(delimiter))
+                delimiter = ",";
 
-            string query = $"SELECT * FROM " + csvDatatable.TableName + " LIMIT 0;";
+            var csvDatatable = new DataTable();
+            string query = $"SELECT * FROM {tableName} LIMIT 0;";
             using (var adapter = new MySqlDataAdapter(query, connection as MySqlConnection))
             {
                 adapter.Fill(csvDatatable);
             };
 
-            using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
+            using (var csvReader = new CsvTextFieldParser(fileFullPath))
             {
-                csvReader.Delimiters = (new string[] { delimeter });
+                csvReader.Delimiters = (new string[] { delimiter });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 //skipped the first row
@@ -71,7 +92,12 @@ namespace Yuniql.MySql
 
         //NOTE: This is not the most typesafe and performant way to do this and this is just to demonstrate
         //possibility to bulk import data in custom means during migration execution
-        private void BulkCopyWithDataTable(IDbConnection connection, IDbTransaction transaction, DataTable dataTable)
+        private void BulkCopyWithDataTable(
+            IDbConnection connection, 
+            IDbTransaction transaction,
+            string schemaName,
+            string tableName,
+            DataTable dataTable)
         {
             _traceService.Info($"MySqlBulkImportService: Started copying data into destination table {dataTable.TableName}");
 
@@ -79,7 +105,7 @@ namespace Yuniql.MySql
             {
                 cmd.Connection = connection as MySqlConnection;
                 cmd.Transaction = transaction as MySqlTransaction;
-                cmd.CommandText = $"SELECT * FROM " + dataTable.TableName + " LIMIT 0;";
+                cmd.CommandText = $"SELECT * FROM {tableName} LIMIT 0;";
 
                 using (var adapter = new MySqlDataAdapter(cmd))
                 {

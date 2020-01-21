@@ -46,7 +46,7 @@ namespace Yuniql.Core
 
         public bool IsDatabaseConfigured(int? commandTimeout = null)
         {
-            var sqlStatement = _dataService.GetCheckIfDatabaseConfiguredSql();
+            var sqlStatement = string.Format(_dataService.GetCheckIfDatabaseConfiguredSql(), _dataService.GetConnectionInfo().Database);
             using (var connection = _dataService.CreateConnection())
             {
                 return connection.QuerySingleBool(

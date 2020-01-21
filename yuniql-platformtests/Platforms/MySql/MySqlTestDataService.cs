@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using MySql.Data.MySqlClient;
 using System;
+using Yuniql.Core;
+using System.Data;
 
 namespace Yuniql.PlatformTests
 {
@@ -34,25 +36,57 @@ namespace Yuniql.PlatformTests
         public bool QuerySingleBool(string connectionString, string sqlStatement)
         {
             _dataService.Initialize(connectionString);
-            return _dataService.QuerySingleBool(connectionString, sqlStatement);
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleBool(sqlStatement);
+            }
         }
 
         public string QuerySingleString(string connectionString, string sqlStatement)
         {
             _dataService.Initialize(connectionString);
-            return _dataService.QuerySingleString(connectionString, sqlStatement);
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleString(sqlStatement);
+            }
         }
 
         public string GetCurrentDbVersion(string connectionString)
         {
             _dataService.Initialize(connectionString);
-            return _dataService.GetCurrentVersion();
+            var sqlStatement = _dataService.GetGetCurrentVersionSql();
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleString(commandText: sqlStatement);
+            }
         }
 
         public List<DbVersion> GetAllDbVersions(string connectionString)
         {
+
             _dataService.Initialize(connectionString);
-            return _dataService.GetAllVersions();
+            var sqlStatement = _dataService.GetGetAllVersionsSql();
+
+            var result = new List<DbVersion>();
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                var command = connection.CreateCommand(commandText: sqlStatement);
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var dbVersion = new DbVersion
+                    {
+                        Id = reader.GetInt16(0),
+                        Version = reader.GetString(1),
+                        DateInsertedUtc = reader.GetDateTime(2),
+                        LastUserId = reader.GetString(3)
+                    };
+                    result.Add(dbVersion);
+                }
+            }
+
+            return result;
         }
 
         public bool CheckIfDbExist(string connectionString)
@@ -255,12 +289,54 @@ DROP TABLE script3;
 
         public string CreateDbSchemaScript(string schemaName)
         {
-            throw new NotImplementedException();
+            return $@"
+CREATE SCHEMA {schemaName};
+";
         }
 
         public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName)
         {
-            throw new NotImplementedException();
+            var results = new List<BulkTestDataRow>();
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var sqlStatement = $"SELECT * FROM {tableName};";
+                var command = connection.CreateCommand();
+                command.CommandType = CommandType.Text;
+                command.CommandText = sqlStatement;
+                command.CommandTimeout = 0;
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(new BulkTestDataRow
+                        {
+                            FirstName = !reader.IsDBNull(0) ? reader.GetString(0) : null,
+                            LastName = !reader.IsDBNull(1) ? reader.GetString(1) : null,
+                            BirthDate = !reader.IsDBNull(2) ? reader.GetDateTime(2) : new DateTime?()
+                        });
+                    }
+                }
+            }
+            return results;
         }
+
+        private Tuple<string, string> GetObjectNameWithSchema(string objectName)
+        {
+            //check if a non-default dbo schema is used
+            var schemaName = "public";
+            var newObjectName = objectName;
+
+            if (objectName.IndexOf('.') > 0)
+            {
+                schemaName = objectName.Split('.')[0];
+                newObjectName = objectName.Split('.')[1];
+            }
+
+            return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
+        }
+
     }
 }
