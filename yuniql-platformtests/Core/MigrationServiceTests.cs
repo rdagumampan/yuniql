@@ -301,6 +301,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v2_00_level1_sublevel1").ShouldBeTrue();
         }
 
+        [TestCategory("RequireAtomicDDLSupport")]
         [TestMethod]
         public void Test_Run_With_Faulty_Script_Throws_Error_Must_Rollback_All_Changes()
         {
@@ -340,6 +341,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_00_error").ShouldBeFalse();
         }
 
+        [TestCategory("RequireAtomicDDLSupport")]
         [TestMethod]
         public void Test_Verify()
         {

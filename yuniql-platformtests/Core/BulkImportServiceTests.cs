@@ -343,6 +343,7 @@ namespace Yuniql.PlatformTests
             )).ShouldBeTrue();
         }
 
+        [TestCategory("RequireAtomicDDLSupport")]
         [TestMethod]
         public void Test_Bulk_Import_Mismatch_Columns_But_Not_Nullable()
         {
@@ -378,7 +379,8 @@ namespace Yuniql.PlatformTests
                 _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00_TestCsvMismatchColumnNotNullable").ShouldBeFalse();
             }
         }
-        
+
+        [TestCategory("RequireSchemaSupport")]
         [TestMethod]
         public void Test_Bulk_Import_With_NonDefault_Schema_Destination_Table()
         {            //ignore if atomic ddl transaction not supported in target platforms
