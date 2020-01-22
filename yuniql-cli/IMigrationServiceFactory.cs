@@ -1,6 +1,7 @@
-﻿using Yuniql.Extensibility;
+﻿using Yuniql.Core;
+using Yuniql.Extensibility;
 
-namespace Yuniql.Core
+namespace Yuniql.CLI
 {
     public interface IMigrationServiceFactory
     {

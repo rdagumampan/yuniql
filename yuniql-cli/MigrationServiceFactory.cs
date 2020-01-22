@@ -1,11 +1,11 @@
 ﻿using System;
+using Yuniql.Core;
 using Yuniql.Extensibility;
 using Yuniql.MySql;
-//using Yuniql.MySql;
 using Yuniql.PostgreSql;
 using Yuniql.SqlServer;
 
-namespace Yuniql.Core
+namespace Yuniql.CLI
 {
     public class MigrationServiceFactory : IMigrationServiceFactory
     {

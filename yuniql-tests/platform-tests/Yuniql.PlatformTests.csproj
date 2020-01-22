@@ -20,14 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\yuniql-core\Yuniql.Core.csproj" />
-    <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
-    <ProjectReference Include="..\yuniql-platforms\mysql\src\Yuniql.MySql.csproj" />
-    <ProjectReference Include="..\yuniql-platforms\postgresql\src\Yuniql.PostgreSql.csproj" />
-    <ProjectReference Include="..\yuniql-sqlserver\Yuniql.SqlServer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Core\TestCsvMismatchColumnNotNullable.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -53,6 +45,14 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\yuniql-core\Yuniql.Core.csproj" />
+    <ProjectReference Include="..\..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
+    <ProjectReference Include="..\..\yuniql-platforms\mysql\src\Yuniql.MySql.csproj" />
+    <ProjectReference Include="..\..\yuniql-platforms\postgresql\src\Yuniql.PostgreSql.csproj" />
+    <ProjectReference Include="..\..\yuniql-platforms\sqlserver\src\Yuniql.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

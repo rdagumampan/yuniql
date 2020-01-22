@@ -18,13 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\yuniql-cli\Yuniql.CLI.csproj" />
-    <ProjectReference Include="..\yuniql-core\Yuniql.Core.csproj" />
-    <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
-    <ProjectReference Include="..\yuniql-sqlserver\Yuniql.SqlServer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="TestCsv.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -32,6 +25,12 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\yuniql-cli\Yuniql.CLI.csproj" />
+    <ProjectReference Include="..\..\yuniql-core\Yuniql.Core.csproj" />
+    <ProjectReference Include="..\..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
   </ItemGroup>
 
 </Project>
