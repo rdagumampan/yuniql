@@ -21,7 +21,7 @@ namespace Yuniql.MySql
             this._connectionString = connectionString;
         }
 
-        public bool IsAtomicDDLSupported => true;
+        public bool IsAtomicDDLSupported => false;
 
         public bool IsSchemaSupported { get; } = false;
 

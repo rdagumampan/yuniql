@@ -343,17 +343,9 @@ namespace Yuniql.PlatformTests
             )).ShouldBeTrue();
         }
 
-        [TestCategory("RequireAtomicDDLSupport")]
-        [TestMethod]
+        [TestMethodEx(Filter = "IsAtomicDDLSupported")]
         public void Test_Bulk_Import_Mismatch_Columns_But_Not_Nullable()
         {
-            //ignore if atomic ddl transaction not supported in target platforms
-            if (!_testDataService.IsAtomicDDLSupported)
-            {
-                Assert.Inconclusive("Target database platform or version does not support atomic DDL operations. " +
-                    "DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.");
-            }
-
             //arrange
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
@@ -380,15 +372,9 @@ namespace Yuniql.PlatformTests
             }
         }
 
-        [TestCategory("RequireSchemaSupport")]
-        [TestMethod]
+        [TestMethodEx(Filter = "IsSchemaSupported")]
         public void Test_Bulk_Import_With_NonDefault_Schema_Destination_Table()
-        {            //ignore if atomic ddl transaction not supported in target platforms
-            if (!_testDataService.IsSchemaSupported)
-            {
-                Assert.Inconclusive("Target database platform or version does not support schema.");
-            }
-
+        {            
             //arrange - pre-create destination bulk tables
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);

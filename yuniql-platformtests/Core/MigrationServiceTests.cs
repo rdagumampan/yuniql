@@ -301,16 +301,9 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v2_00_level1_sublevel1").ShouldBeTrue();
         }
 
-        [TestCategory("RequireAtomicDDLSupport")]
-        [TestMethod]
+        [TestMethodEx(Filter = "IsAtomicDDLSupported")]
         public void Test_Run_With_Faulty_Script_Throws_Error_Must_Rollback_All_Changes()
         {
-            //ignore if atomic ddl transaction not supported in target platforms
-            if (!_testDataService.IsAtomicDDLSupported)
-            {
-                Assert.Inconclusive("Target database platform or version does not support atomic DDL operations. DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.");
-            }
-
             //arrange
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
@@ -341,16 +334,9 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_00_error").ShouldBeFalse();
         }
 
-        [TestCategory("RequireAtomicDDLSupport")]
-        [TestMethod]
+        [TestMethodEx(Filter = "IsAtomicDDLSupported")]
         public void Test_Verify()
         {
-            //ignore if atomic ddl transaction not supported in target platforms
-            if (!_testDataService.IsAtomicDDLSupported)
-            {
-                Assert.Inconclusive("Target database platform or version does not support atomic DDL operations. DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.");
-            }
-
             //arrange
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
