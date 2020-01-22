@@ -50,12 +50,12 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 1. Configure your connection string
 
 	```bash
-	cd yuniql-plugins\postgresql\src
+	cd yuniql-platforms\postgresql\src
 	dotnet publish -c release -r win-x64 -o .\.plugins\postgresql
 
 	SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\yuniql-plugins\postgresql\samples"
+	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\yuniql-platforms\postgresql\samples"
 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"
@@ -74,12 +74,12 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 1. Configure your connection string
 
 	```bash
-	cd yuniql-plugins\mysql\src
+	cd yuniql-platforms\mysql\src
 	dotnet publish -c release -r win-x64
 
 	SETX YUNIQL_TEST_TARGET_PLATFORM "mysql"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\yuniql-plugins\mysql\samples"
+	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\yuniql-platforms\mysql\samples"
 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"

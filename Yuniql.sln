@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.CLI", "yuniql-cli\Yu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.UnitTests", "yuniql-unittests\Yuniql.UnitTests.csproj", "{3693754E-589D-4815-9F3A-519B071772A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.PostgreSql", "yuniql-plugins\postgresql\src\Yuniql.PostgreSql.csproj", "{F3C39E8C-393E-43FC-B8CF-B25D6BF12308}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.PostgreSql", "yuniql-platforms\postgresql\src\Yuniql.PostgreSql.csproj", "{F3C39E8C-393E-43FC-B8CF-B25D6BF12308}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.MySql", "yuniql-plugins\mysql\src\Yuniql.MySql.csproj", "{0EBF189A-0846-4719-B80D-07F5EF45733A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.MySql", "yuniql-platforms\mysql\src\Yuniql.MySql.csproj", "{0EBF189A-0846-4719-B80D-07F5EF45733A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.PlatformTests", "yuniql-platformtests\Yuniql.PlatformTests.csproj", "{BD647A93-82F6-40AE-B0BF-96309AF18E63}"
 EndProject
