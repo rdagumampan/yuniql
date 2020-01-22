@@ -25,9 +25,9 @@
   <ItemGroup>
     <ProjectReference Include="..\yuniql-core\Yuniql.Core.csproj" />
     <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
-    <ProjectReference Include="..\yuniql-platforms\mysql\src\Yuniql.MySql.csproj" />
-    <ProjectReference Include="..\yuniql-platforms\postgresql\src\Yuniql.PostgreSql.csproj" />
-    <ProjectReference Include="..\yuniql-platforms\sqlserver\src\Yuniql.SqlServer.csproj" />
+    <ProjectReference Include="..\yuniql-platforms\mysql\Yuniql.MySql.csproj" />
+    <ProjectReference Include="..\yuniql-platforms\postgresql\Yuniql.PostgreSql.csproj" />
+    <ProjectReference Include="..\yuniql-platforms\sqlserver\Yuniql.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

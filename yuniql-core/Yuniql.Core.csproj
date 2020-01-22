@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
-    <ProjectReference Include="..\yuniql-sqlserver\Yuniql.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

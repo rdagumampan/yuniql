@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
+    <ProjectReference Include="..\..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
   </ItemGroup>
 
 </Project>
