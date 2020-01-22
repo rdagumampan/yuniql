@@ -1,0 +1,2 @@
+FROM yuniql
+COPY . ./db                
