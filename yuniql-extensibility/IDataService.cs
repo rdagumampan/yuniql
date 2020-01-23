@@ -59,7 +59,7 @@ namespace Yuniql.Extensibility
         public string GetCheckIfDatabaseExistsSql();
 
         /// <summary>
-        /// Returns the SQL statement to use creating new database if --auto-createdb flag is set to true.
+        /// Returns the SQL statement to use for creating new database if --auto-createdb flag is set to true.
         /// </summary>
         public string GetCreateDatabaseSql();
 
@@ -74,12 +74,12 @@ namespace Yuniql.Extensibility
         public string GetConfigureDatabaseSql();
 
         /// <summary>
-        /// Returns the SQL statement to use getting the latest migration version appplied in the target database.
+        /// Returns the SQL statement to use for getting the latest migration version appplied in the target database.
         /// </summary>
         public string GetGetCurrentVersionSql();
 
         /// <summary>
-        /// Returns the SQL statement to use getting all versions applied in the target database.
+        /// Returns the SQL statement to use for getting all versions applied in the target database.
         /// </summary>
         public string GetGetAllVersionsSql();
 
