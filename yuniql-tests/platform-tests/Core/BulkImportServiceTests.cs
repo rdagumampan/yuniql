@@ -276,10 +276,8 @@ namespace Yuniql.PlatformTests
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
-            string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
-            _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"TestCsvBulkTableOld.sql"), _testDataService.CreateBulkTableScript("TestCsvBulkTableOld"));
-
             //we simulate a importing data into TestCsvBulkTable that doesnt exist
+            string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v000Directory, "TestCsv.csv"));
 
             //act - bulk load csv files
@@ -291,10 +289,8 @@ namespace Yuniql.PlatformTests
             }
             catch (Exception ex)
             {
+                //assert
                 ex.Message.ShouldNotBeEmpty();
-
-                //asset all changes were rolled back
-                _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvBulkTableOld").ShouldBeTrue();
             }
         }
 
