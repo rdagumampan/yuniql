@@ -1,0 +1,101 @@
+{
+  "manifestVersion": 1,
+  "id": "yuniql-azdevops-extensions",
+  "version": "0.14.0",
+  "name": "Yuniql",
+  "publisher": "rdagumampan",
+  "description": "Run database migrations and schema versioning with Yuniql. Supports SqlServer, PostgreSql, MySql and others. For developer guides and examples, visit https://getyuniql.org.",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "tags": [
+    "yuniql",
+    "database-migration",
+    "database-version-control",
+    "database-management",
+    "sql",
+    "sqlserver",
+    "mysql",
+    "postgresql",
+    "devops"
+  ],
+  "galleryFlags": [
+    "Free",
+    "Public"
+  ],
+  "icons": {
+    "default": "icon.png"
+  },
+  "content": {
+    "details": {
+      "path": "README.md"
+    }
+  },
+  "files": [
+    {
+      "path": "images",
+      "addressable": true
+    },
+    {
+      "path": "src/install",
+      "packagePath": "install"
+    },
+    {
+      "path": "src/run",
+      "packagePath": "run"
+    },
+    {
+      "path": "src/node_modules",
+      "packagePath": "install/node_modules"
+    },
+    {
+      "path": "src/node_modules",
+      "packagePath": "run/node_modules"
+    }
+  ],
+  "links": {
+    "overview": {
+      "uri": "https://getyuniql.org"
+    },
+    "license": {
+      "uri": "https://github.com/rdagumampan/yuniql/blob/master/LICENSE.md"
+    },
+    "repository": {
+      "uri": "https://github.com/rdagumampan/yuniql"
+    },
+    "issues": {
+      "uri": "https://github.com/rdagumampan/yuniql/issues"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/rdagumampan/yuniql"
+  },
+  "contributions": [
+    {
+      "id": "install-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "install"
+      }
+    },
+    {
+      "id": "run-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "run"
+      }
+    }
+  ]
+}

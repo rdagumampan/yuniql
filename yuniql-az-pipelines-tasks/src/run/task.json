@@ -1,0 +1,107 @@
+{
+  "id": "e911672f-3d03-4a9d-a3b5-c5ecbadae905",
+  "name": "RunYuniqlCLI",
+  "friendlyName": "Run Yuniql",
+  "description": "Runs database migrations with Yuniql CLI using version acquired from Use Yuniql task.",
+  "helpMarkDown": "https://github.com/rdagumampan/yuniql/wiki/how-to-run-migration-from-azure-devops",
+  "author": "Rodel E. Dagumampan",
+
+  "preview": true,
+  "showEnvironmentVariables": false,
+  "runsOn": [
+    "Agent",
+    "MachineGroup",
+    "Server"
+  ],
+  "category": "Azure Pipelines",
+  "version": {
+    "Major": 0,
+    "Minor": 14,
+    "Patch": 0
+  },
+
+  "instanceNameFormat": "Run Yuniql",
+  "inputs": [
+    {
+      "type": "string",
+      "name": "version",
+      "label": "Version",
+      "defaultValue": "latest",
+      "required": true,
+      "helpMarkDown": "The version of Yuniql CLI to use. If omitted, the latest version of Yuniql CLI is installed. Visit the [releases](https://github.com/rdagumampan/yuniql/releases) to get an appropriate version."
+    },
+    {
+      "name": "connectionString",
+      "label": "Database connection string",
+      "type": "string",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The connection string to your target database server."
+    },
+    {
+      "name": "workspacePath",
+      "label": "Target workspace directory",
+      "type": "string",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The location of your version directories to run."
+    },
+    {
+      "name": "targetPlatform",
+      "label": "Target platform",
+      "type": "pickList",
+      "required": true,
+      "defaultValue": "SqlServer",
+      "options": {
+        "sqlserver": "SqlServer"
+      },
+      "helpMarkDown": "The target database platform. Default is SqlServer."
+    },
+    {
+      "name": "autoCreateDatabase",
+      "label": "Auto-create target database",
+      "type": "boolean",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "When true, creates and configure the database in the target server for yuniql migrations."
+    },
+    {
+      "name": "targetVersion",
+      "label": "Target version",
+      "type": "string",
+      "defaultValue": "latest",
+      "required": false,
+      "helpMarkDown": "The maximum target schema version to run migration to."
+    },
+    {
+      "name": "tokenKeyValuePair",
+      "label": "Token key/value pairs",
+      "type": "string",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Token key/value pairs for token replacement."
+    },
+    {
+      "name": "delimiter",
+      "label": "Bulk import file (CSV) delimiter",
+      "type": "string",
+      "defaultValue": ",",
+      "required": false,
+      "helpMarkDown": "Bulk import file delimiter character"
+    },
+    {
+      "name": "additionalArguments",
+      "label": "Arguments",
+      "type": "string",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional CLI arguments"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "runyuniql.js",
+      "argumentFormat": ""
+    }
+  }
+}
