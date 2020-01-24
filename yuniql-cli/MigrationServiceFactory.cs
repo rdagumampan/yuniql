@@ -58,11 +58,11 @@ namespace Yuniql.CLI
                 localVersionService,
                 dataService,
                 bulkImportService,
+                configurationService,
                 tokenReplacementService,
                 directoryService,
                 fileService,
-                _traceService,
-                configurationService);
+                _traceService);
             return migrationService;
         }
     }

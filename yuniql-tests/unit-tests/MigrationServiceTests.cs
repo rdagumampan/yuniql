@@ -95,11 +95,11 @@ namespace Yuniql.UnitTests
                 localVersionService.Object,
                 dataService.Object,
                 bulkImportService.Object,
+                configurationService.Object,
                 tokenReplacementService.Object,
                 directoryService.Object,
                 fileService.Object,
-                traceService.Object,
-                configurationService.Object);
+                traceService.Object);
             sut.Run(workingPath: @"c:\temp", 
                 targetVersion: "v0.00", 
                 autoCreateDatabase: true, 
@@ -220,11 +220,11 @@ namespace Yuniql.UnitTests
                 localVersionService.Object,
                 dataService.Object,
                 bulkImportService.Object,
+                configurationService.Object,
                 tokenReplacementService.Object,
                 directoryService.Object,
                 fileService.Object,
-                traceService.Object,
-                configurationService.Object);
+                traceService.Object);
             sut.Erase(workingPath: @"c:\temp");
 
             //assert
@@ -280,11 +280,11 @@ namespace Yuniql.UnitTests
                     localVersionService.Object,
                     dataService.Object,
                     bulkImportService.Object,
+                    configurationService.Object,
                     tokenReplacementService.Object,
                     directoryService.Object,
                     fileService.Object,
-                    traceService.Object,
-                    configurationService.Object);
+                    traceService.Object);
                 sut.Erase(workingPath: @"c:\temp");
             }).Message.ShouldBe("Fake exception");
 
