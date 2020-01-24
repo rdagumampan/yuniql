@@ -53,7 +53,9 @@
       "required": true,
       "defaultValue": "SqlServer",
       "options": {
-        "sqlserver": "SqlServer"
+        "sqlserver": "SqlServer",
+        "postgresql": "PostgreSql",
+        "mysql": "MySql"
       },
       "helpMarkDown": "The target database platform. Default is SqlServer."
     },

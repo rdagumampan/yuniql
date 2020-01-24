@@ -51,15 +51,15 @@ async function run() {
             console.log('var_yuniqlExecFilePath: ' + yuniqlExecFilePath);
 
             //set the plugin path
-            var pluginsPath = path.join(yuniqlBasePath, '.plugins');
-            console.log('var_pluginsPath: ' + pluginsPath);
+            // var pluginsPath = path.join(yuniqlBasePath, '.plugins');
+            // console.log('var_pluginsPath: ' + pluginsPath);
 
             //builds up the arguments structure
             let yuniql = new tr.ToolRunner(yuniqlExecFilePath);
             yuniql.arg('run');
 
-            yuniql.arg('--plugins-path');
-            yuniql.arg(pluginsPath);
+            // yuniql.arg('--plugins-path');
+            // yuniql.arg(pluginsPath);
 
             yuniql.arg('-p');
             yuniql.arg(workspacePath);
