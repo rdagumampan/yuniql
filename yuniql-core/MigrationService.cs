@@ -267,11 +267,11 @@ namespace Yuniql.Core
                         versionSubDirectories.Sort();
                         versionSubDirectories.ForEach(versionSubDirectory =>
                         {
-                            RunMigrationScriptsInternal(connection, transaction, versionSubDirectory, tokens, commandTimeout);
+                            RunSqlScripts(connection, transaction, versionSubDirectory, tokens, commandTimeout);
                         });
 
                         //run all scripts in the current version folder
-                        RunMigrationScriptsInternal(connection, transaction, versionDirectory, tokens, commandTimeout);
+                        RunSqlScripts(connection, transaction, versionDirectory, tokens, commandTimeout);
 
                         //import csv files into tables of the the same filename as the csv
                         RunBulkImport(connection, transaction, versionDirectory, delimiter, batchSize, commandTimeout);
@@ -318,7 +318,7 @@ namespace Yuniql.Core
             });
         }
 
-        private void RunMigrationScriptsInternal(
+        private void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
             string versionFullPath,

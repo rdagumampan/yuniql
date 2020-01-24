@@ -5,18 +5,18 @@ using Yuniql.Extensibility;
 namespace Yuniql.Core
 {
     /// <summary>
-    /// 
+    /// Connection extensions for most common data access methods
     /// </summary>
     public static class ConnectionExtensions
     {
         /// <summary>
-        /// 
+        /// Creates intance of <see cref="IDbCommand" using the active connection object./>
         /// </summary>
-        /// <param name="connection"></param>
-        /// <param name="commandText"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="transaction"></param>
-        /// <returns></returns>
+        /// <param name="connection">An active connection.</param>
+        /// <param name="commandText">The sql statement to execute with the active connection.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="transaction">An active transaction.</param>
+        /// <returns>An instance of command.</returns>
         public static IDbCommand CreateCommand(
             this IDbConnection connection,
             string commandText,
@@ -34,10 +34,10 @@ namespace Yuniql.Core
         }
 
         /// <summary>
-        /// 
+        /// Opens the connection when its found to be closed.
         /// </summary>
-        /// <param name="connection"></param>
-        /// <returns></returns>
+        /// <param name="connection">A connection.</param>
+        /// <returns>An active connection.</returns>
         public static IDbConnection KeepOpen(this IDbConnection connection)
         {
             if (connection.State != ConnectionState.Open)
@@ -47,13 +47,13 @@ namespace Yuniql.Core
         }
 
         /// <summary>
-        /// 
+        /// Execute SQL statement against the active connection and returns number of affected rows.
         /// </summary>
-        /// <param name="connection"></param>
-        /// <param name="commandText"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="transaction"></param>
-        /// <param name="traceService"></param>
+        /// <param name="connection">An active connection.</param>
+        /// <param name="commandText">The sql statement to execute with the active connection.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="transaction">An active transaction.</param>
+        /// <param name="traceService">Trace service provider where trace messages will be written.</param>
         /// <returns></returns>
         public static int ExecuteNonQuery(
             this IDbConnection connection,
@@ -76,13 +76,13 @@ namespace Yuniql.Core
         }
 
         /// <summary>
-        /// 
+        /// Executes SQL statement against the active connection and returns single row single column result.
         /// </summary>
-        /// <param name="connection"></param>
-        /// <param name="commandText"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="transaction"></param>
-        /// <param name="traceService"></param>
+        /// <param name="connection">An active connection.</param>
+        /// <param name="commandText">The sql statement to execute with the active connection.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="transaction">An active transaction.</param>
+        /// <param name="traceService">Trace service provider where trace messages will be written.</param>
         /// <returns></returns>
         public static int ExecuteScalar(
             this IDbConnection connection,
@@ -100,18 +100,19 @@ namespace Yuniql.Core
                 commandText: commandText,
                 commandTimeout: commandTimeout,
                 transaction: transaction);
+            var result = command.ExecuteScalar();
 
-            return command.ExecuteNonQuery();
+            return DBNull.Value != result ? Convert.ToInt32(result) : 0;
         }
 
         /// <summary>
-        /// 
+        /// Executes SQL statement against the active connection and returns scalar value in boolean.
         /// </summary>
-        /// <param name="connection"></param>
-        /// <param name="commandText"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="transaction"></param>
-        /// <param name="traceService"></param>
+        /// <param name="connection">An active connection.</param>
+        /// <param name="commandText">The sql statement to execute with the active connection.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="transaction">An active transaction.</param>
+        /// <param name="traceService">Trace service provider where trace messages will be written.</param>
         /// <returns></returns>
         public static bool QuerySingleBool(
             this IDbConnection connection,
@@ -138,13 +139,13 @@ namespace Yuniql.Core
         }
 
         /// <summary>
-        /// 
+        /// Executes SQL statement against the active connection and returns scalar value in string.
         /// </summary>
-        /// <param name="connection"></param>
-        /// <param name="commandText"></param>
-        /// <param name="commandTimeout"></param>
-        /// <param name="transaction"></param>
-        /// <param name="traceService"></param>
+        /// <param name="connection">An active connection.</param>
+        /// <param name="commandText">The sql statement to execute with the active connection.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="transaction">An active transaction.</param>
+        /// <param name="traceService">Trace service provider where trace messages will be written.</param>
         /// <returns></returns>
         public static string QuerySingleString(
             this IDbConnection connection,

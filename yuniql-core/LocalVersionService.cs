@@ -8,7 +8,7 @@ using System.Text;
 namespace Yuniql.Core
 {
     /// <summary>
-    /// Service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are operated from.
+    /// Service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are executed from.
     /// When user calls yuniql-init, a directory structure is created in the target workspace directory.
     /// </summary>
     public class LocalVersionService : ILocalVersionService
