@@ -16,6 +16,15 @@ namespace Yuniql.Core
         private readonly ITraceService _traceService;
 
         /// <summary>
+        /// Creates new instance of <see cref="LocalVersionService"/>
+        /// </summary>
+        /// <param name="traceService">Trace service provider where trace messages will be written.</param>
+        public LocalVersionService(ITraceService traceService)
+        {
+            _traceService = traceService;
+        }
+
+        /// <summary>
         /// Creates the baseline directory structure in the target workspace path.
         /// </summary>
         /// <param name="workingPath">The directory path where workspace structure will be created.</param>
