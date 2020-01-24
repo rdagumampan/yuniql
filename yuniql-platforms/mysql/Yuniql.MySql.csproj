@@ -19,6 +19,10 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\play\yuniql\yuniql-platforms\mysql\Yuniql.MySql.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="nupkgs\**" />
     <EmbeddedResource Remove="nupkgs\**" />
