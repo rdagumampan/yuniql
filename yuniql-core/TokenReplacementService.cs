@@ -6,8 +6,16 @@ using System;
 
 namespace Yuniql.Core
 {
+    /// <summary>
+    /// Replaces tokens in the script using the pattern ${TOKEN_KEY}. 
+    /// Throws exception and fails the migration when some tokens not replaced due to missing token values passed from the client.
+    /// </summary>
     public class TokenReplacementService : ITokenReplacementService
     {
+        /// <summary>
+        /// Constructs a new instance of TokenReplacementService.
+        /// </summary>
+        /// <param name="traceService">Trace service provider where trace messages will be written.</param>
         public TokenReplacementService(ITraceService traceService)
         {
             this._traceService = traceService;
@@ -16,6 +24,12 @@ namespace Yuniql.Core
         private const string tokenPattern = @"\${([^}]+)}";
         private readonly ITraceService _traceService;
 
+        /// <summary>
+        /// Runs token replacement process.
+        /// </summary>
+        /// <param name="tokens">List of token Key/Value pairs.</param>
+        /// <param name="sqlStatement">Raw SQL statement where tokens maybe present.</param>
+        /// <returns>SQL statement where tokens are successfully replaced.</returns>
         public string Replace(List<KeyValuePair<string, string>> tokens, string sqlStatement)
         {
             //check if the sql statement has tokens in it

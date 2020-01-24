@@ -13,7 +13,7 @@ namespace Yuniql.Extensibility
         /// For Linux, it will always use Process.
         /// </summary>
         /// <param name="name">Environment varible name.</param>
-        /// <returns></returns>
+        /// <returns>Value of the environment variable.</returns>
         public static string GetEnvironmentVariable(string name)
         {
             string result = null;

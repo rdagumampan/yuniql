@@ -6,8 +6,10 @@ using Yuniql.Extensibility;
 namespace Yuniql.Core
 {
     //https://github.com/dotnet/samples/tree/master/core/tutorials/Unloading
-    // This is a collectible (unloadable) AssemblyLoadContext that loads the dependencies
-    // of the plugin from the plugin's binary directory.
+    /// <summary>
+    /// This is a collectible (unloadable) AssemblyLoadContext that loads the dependencies
+    /// of the plugin from the plugin's binary directory.
+    /// </summary>
     public class PluginAssemblyLoadContext : AssemblyLoadContext
     {
         // Resolver of the locations of the assemblies that are dependencies of the
@@ -28,10 +30,14 @@ namespace Yuniql.Core
             this._resolver = new AssemblyDependencyResolver(pluginAssemblyFilePath);
         }
 
-        //The Load method override causes all the dependencies present in the plugin's binary directory to get loaded
-        //into the HostAssemblyLoadContext together with the plugin assembly itself.
-        //The Interface assembly must not be present in the plugin's binary directory, otherwise we would
-        //end up with the assembly being loaded twice. Once in the default context and once in the HostAssemblyLoadContext.
+        /// <summary>
+        /// The Load method override causes all the dependencies present in the plugin's binary directory to get loaded
+        /// into the HostAssemblyLoadContext together with the plugin assembly itself.
+        /// The Interface assembly must not be present in the plugin's binary directory, otherwise we would
+        /// end up with the assembly being loaded twice. Once in the default context and once in the HostAssemblyLoadContext.
+        /// </summary>
+        /// <param name="assemblyName">The assembly name to load.</param>
+        /// <returns></returns>
         protected override Assembly Load(AssemblyName assemblyName)
         {
             if (null == assemblyName.Name) return null;

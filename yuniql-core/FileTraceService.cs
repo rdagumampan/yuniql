@@ -4,6 +4,9 @@ using System.IO;
 
 namespace Yuniql.Core
 {
+    /// <summary>
+    /// Writes trace information into a text file in the current workspace directory. 
+    /// </summary>
     public class FileTraceService : ITraceService
     {
         private string _traceSessionId;
@@ -12,8 +15,16 @@ namespace Yuniql.Core
             _traceSessionId = DateTime.Now.ToString("MMddyyyy-HHmmss");
         }
 
+        /// <summary>
+        /// When true, debug messages are always written in Trace logs.
+        /// </summary>
         public bool IsDebugEnabled { get; set; } = false;
 
+        /// <summary>
+        /// Writes informational messages.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
+        /// <param name="payload">JSON structured information to support the trace entry.</param>
         public void Info(string message, object payload = null)
         {
             var traceFile = GetTraceSessionFilePath();
@@ -23,6 +34,11 @@ namespace Yuniql.Core
             Console.Write(traceMessage);
         }
 
+        /// <summary>
+        /// Writes error messages.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
+        /// <param name="payload">JSON structured information to support the trace entry.</param>
         public void Error(string message, object payload = null)
         {
             var traceFile = GetTraceSessionFilePath();
@@ -32,6 +48,11 @@ namespace Yuniql.Core
             Console.Write(traceMessage);
         }
 
+        /// <summary>
+        /// Writes debug messages.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
+        /// <param name="payload">JSON structured information to support the trace entry.</param>
         public void Debug(string message, object payload = null)
         {
             if (IsDebugEnabled)
