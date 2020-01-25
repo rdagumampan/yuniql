@@ -21,7 +21,7 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
 
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -41,7 +41,7 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -62,7 +62,7 @@ namespace Yuniql.UnitTests
             environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -82,7 +82,7 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -103,7 +103,7 @@ namespace Yuniql.UnitTests
             environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -124,7 +124,7 @@ namespace Yuniql.UnitTests
             environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -144,7 +144,7 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -164,7 +164,7 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -187,7 +187,7 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
 
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -215,7 +215,7 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
             migrationService.Setup(s => s.GetAllVersions()).Returns(new List<DbVersion> { new DbVersion { Version = "v0.00", DateInsertedUtc = DateTime.UtcNow, LastUserId = "user" } });
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -241,7 +241,7 @@ namespace Yuniql.UnitTests
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -267,7 +267,7 @@ namespace Yuniql.UnitTests
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -299,7 +299,7 @@ namespace Yuniql.UnitTests
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
@@ -325,7 +325,7 @@ namespace Yuniql.UnitTests
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
             var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<IMigrationServiceFactory>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
