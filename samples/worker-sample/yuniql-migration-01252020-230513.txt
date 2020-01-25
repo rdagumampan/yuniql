@@ -1,0 +1,46 @@
+INF   2020-01-25T22:05:21.3247619Z   No explicit target version requested. We'll use latest available locally v1.01 on C:\play\yuniql\samples\worker-sample\_db.
+INF   2020-01-25T22:05:53.8834302Z   Target database does not exist. Creating database yuniqldb on localhost,1400.
+INF   2020-01-25T22:05:54.6446598Z   Created database yuniqldb on localhost,1400.
+INF   2020-01-25T22:05:54.7742473Z   Target database yuniqldb on localhost,1400 not yet configured for migration.
+INF   2020-01-25T22:05:54.8229452Z   Configured database migration support for yuniqldb on localhost,1400.
+INF   2020-01-25T22:05:54.8443782Z   Found the 1 script files on C:\play\yuniql\samples\worker-sample\_db\_init
+INF   2020-01-25T22:05:54.8524831Z   initialization-health-checks.sql
+INF   2020-01-25T22:05:54.8711208Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\_init\initialization-health-checks.sql.
+INF   2020-01-25T22:05:54.8795066Z   Executed script files on C:\play\yuniql\samples\worker-sample\_db\_init
+INF   2020-01-25T22:05:54.8857441Z   Found the 1 script files on C:\play\yuniql\samples\worker-sample\_db\_pre
+INF   2020-01-25T22:05:54.8916537Z   pre-migration-tasks.sql
+INF   2020-01-25T22:05:54.9055162Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\_pre\pre-migration-tasks.sql.
+INF   2020-01-25T22:05:54.9127208Z   Executed script files on C:\play\yuniql\samples\worker-sample\_db\_pre
+INF   2020-01-25T22:05:54.9251266Z   Found the 4 script files on C:\play\yuniql\samples\worker-sample\_db\v0.00
+INF   2020-01-25T22:05:54.9333077Z   01-setup-tables.sql\r\n\t02-setup-views.sql\r\n\t03-setup-stored-procedures.sql\r\n\t04-setup-functions.sql
+INF   2020-01-25T22:05:54.9489734Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\v0.00\01-setup-tables.sql.
+INF   2020-01-25T22:05:54.9646918Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\v0.00\02-setup-views.sql.
+INF   2020-01-25T22:05:54.9915046Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\v0.00\03-setup-stored-procedures.sql.
+INF   2020-01-25T22:05:55.0155785Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\v0.00\04-setup-functions.sql.
+INF   2020-01-25T22:05:55.0329083Z   Found the 1 bulk files on C:\play\yuniql\samples\worker-sample\_db\v0.00
+INF   2020-01-25T22:05:55.0467192Z   Visitor.csv
+INF   2020-01-25T22:05:59.9308135Z   Imported bulk file C:\play\yuniql\samples\worker-sample\_db\v0.00\Visitor.csv.
+INF   2020-01-25T22:05:59.9448112Z   Completed migration to version C:\play\yuniql\samples\worker-sample\_db\v0.00
+INF   2020-01-25T22:05:59.9602727Z   Found the 1 script files on C:\play\yuniql\samples\worker-sample\_db\v1.00
+INF   2020-01-25T22:05:59.9746824Z   01-setup-tokenized-views.sql
+INF   2020-01-25T22:05:59.9998370Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\v1.00\01-setup-tokenized-views.sql.
+INF   2020-01-25T22:06:00.0163113Z   Found the 0 bulk files on C:\play\yuniql\samples\worker-sample\_db\v1.00
+INF   2020-01-25T22:06:00.0385159Z   
+INF   2020-01-25T22:06:00.0511786Z   Completed migration to version C:\play\yuniql\samples\worker-sample\_db\v1.00
+INF   2020-01-25T22:06:00.0632118Z   Found the 1 script files on C:\play\yuniql\samples\worker-sample\_db\v1.01\visitor-data
+INF   2020-01-25T22:06:00.0712023Z   01-initialize-more-visitor-data.sql
+INF   2020-01-25T22:06:00.0876693Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\v1.01\visitor-data\01-initialize-more-visitor-data.sql.
+INF   2020-01-25T22:06:00.0981984Z   Found the 0 script files on C:\play\yuniql\samples\worker-sample\_db\v1.01
+INF   2020-01-25T22:06:00.1059915Z   
+INF   2020-01-25T22:06:00.1172538Z   Found the 0 bulk files on C:\play\yuniql\samples\worker-sample\_db\v1.01
+INF   2020-01-25T22:06:00.1266338Z   
+INF   2020-01-25T22:06:00.1374374Z   Completed migration to version C:\play\yuniql\samples\worker-sample\_db\v1.01
+INF   2020-01-25T22:06:00.1459484Z   Found the 2 script files on C:\play\yuniql\samples\worker-sample\_db\_draft
+INF   2020-01-25T22:06:00.1542424Z   01-setup-destination-tables.sql\r\n\t02-initialize-destination-tables.sql
+INF   2020-01-25T22:06:00.1999340Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\_draft\01-setup-destination-tables.sql.
+INF   2020-01-25T22:06:00.2192344Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\_draft\02-initialize-destination-tables.sql.
+INF   2020-01-25T22:06:00.2300948Z   Executed script files on C:\play\yuniql\samples\worker-sample\_db\_draft
+INF   2020-01-25T22:06:00.2403979Z   Found the 1 script files on C:\play\yuniql\samples\worker-sample\_db\_post
+INF   2020-01-25T22:06:00.2503678Z   post-migration-tasks.sql
+INF   2020-01-25T22:06:00.2669110Z   Executed script file C:\play\yuniql\samples\worker-sample\_db\_post\post-migration-tasks.sql.
+INF   2020-01-25T22:06:00.2755771Z   Executed script files on C:\play\yuniql\samples\worker-sample\_db\_post

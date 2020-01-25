@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,7 +15,13 @@ namespace worker_sample
             {
                 WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
                 ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
-                AutoCreateDatabase = true
+                AutoCreateDatabase = true,
+                Tokens = new List<KeyValuePair<string, string>> {
+                    new KeyValuePair<string, string>("VwColumnPrefix1","Vw1"),
+                    new KeyValuePair<string, string>("VwColumnPrefix2","Vw2"),
+                    new KeyValuePair<string, string>("VwColumnPrefix3","Vw3"),
+                    new KeyValuePair<string, string>("VwColumnPrefix4","Vw4")
+                }
             };
 
             CreateHostBuilder(args)

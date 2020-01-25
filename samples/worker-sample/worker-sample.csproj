@@ -8,9 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\yuniql-aspnetcore\Yuniql.AspNetCore.csproj" />
+    <PackageReference Include="Yuniql.AspNetCore" Version="0.325.0" />
   </ItemGroup>
 </Project>
