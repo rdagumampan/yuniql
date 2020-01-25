@@ -4,7 +4,6 @@ WORKDIR /code
 COPY ./yuniql-cli ./yuniql-cli
 COPY ./yuniql-core ./yuniql-core
 COPY ./yuniql-extensibility ./yuniql-extensibility
-COPY ./yuniql-sqlserver ./yuniql-sqlserver
 COPY ./yuniql-platforms ./yuniql-platforms
 
 WORKDIR /code/yuniql-cli

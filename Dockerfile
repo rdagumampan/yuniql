@@ -6,7 +6,6 @@ WORKDIR /code
 COPY ./yuniql-cli ./yuniql-cli
 COPY ./yuniql-core ./yuniql-core
 COPY ./yuniql-extensibility ./yuniql-extensibility
-COPY ./yuniql-sqlserver ./yuniql-sqlserver
 COPY ./yuniql-platformtests ./yuniql-platformtests
 
 #RUN git clone https://github.com/rdagumampan/yuniql.git /code
@@ -14,7 +13,7 @@ COPY ./yuniql-platformtests ./yuniql-platformtests
 #build and run integration tests
 WORKDIR /code/yuniql-cli
 RUN ls
-WORKDIR /code/yuniql-platformtests
+WORKDIR /code/yuniql-tests/platform-tests
 RUN ls
 
 RUN dotnet restore
