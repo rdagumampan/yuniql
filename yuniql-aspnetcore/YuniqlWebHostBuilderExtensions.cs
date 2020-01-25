@@ -35,7 +35,7 @@ namespace Yuniql.AspNetCore
         )
         {
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
-            var migrationService = migrationServiceFactory.Create(configuration.Platform);
+            var migrationService = migrationServiceFactory.Create();
             migrationService.Initialize(configuration.ConnectionString);
             migrationService.Run(
                 configuration.WorkspacePath,

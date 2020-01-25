@@ -6,12 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\yuniql-aspnetcore\Yuniql.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\yuniql-core\Yuniql.Core.csproj" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <PackageReference Include="Yuniql.AspNetCore" Version="0.325.0" />
   </ItemGroup>
 
 </Project>

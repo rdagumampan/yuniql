@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,27 +27,18 @@ namespace aspnetcore_sample
                 app.UseDeveloperExceptionPage();
             }
 
-            //make sure your db project is part of your deployment package
-            Console.WriteLine($"AppDomain.CurrentDomain.BaseDirectory: {AppDomain.CurrentDomain.BaseDirectory}");
-            Console.WriteLine($"Environment.CurrentDirectory: {Environment.CurrentDirectory}");
-
             var traceService = new ConsoleTraceService { IsDebugEnabled = true };
             var configuration = new YuniqlConfiguration
             {
                 WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
                 ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
                 AutoCreateDatabase = true,
-
-                //optional configuration for more advanced features
-                //TargetVersion ="v1.00",
-                //Tokens = new List<KeyValuePair<string, string>> {
-                //    new KeyValuePair<string, string>("VwColumnPrefix1","Vw1"),
-                //    new KeyValuePair<string, string>("VwColumnPrefix2","Vw2"),
-                //    new KeyValuePair<string, string>("VwColumnPrefix3","Vw3"),
-                //    new KeyValuePair<string, string>("VwColumnPrefix4","Vw4")
-                //},
-                //Delimiter = ",",
-                //DebugTraceMode = true
+                Tokens = new List<KeyValuePair<string, string>> {
+                    new KeyValuePair<string, string>("VwColumnPrefix1","Vw1"),
+                    new KeyValuePair<string, string>("VwColumnPrefix2","Vw2"),
+                    new KeyValuePair<string, string>("VwColumnPrefix3","Vw3"),
+                    new KeyValuePair<string, string>("VwColumnPrefix4","Vw4")
+                }
             };
             app.UseYuniql(traceService, configuration);
 
