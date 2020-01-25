@@ -49,5 +49,39 @@ namespace Yuniql.AspNetCore
 
             return builder;
         }
+
+        /// <summary>
+        /// Runs database migrations with Yuniql. Use this interface to run migrations targeting non-sqlserver platforms such as PostgreSql and MySql.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="dataService">Implementation of <see cref="IDataService". See Yuniql.PostgreSql and Yuniql.MySql pacages./></param>
+        /// <param name="bulkImportService">Implementation of <see cref="IBulkImportService". See Yuniql.PostgreSql and Yuniql.MySql pacages./></param>
+        /// <param name="traceService">Your custom implementation of ITraceService interface</param>
+        /// <param name="configuration">Desired configuration when yuniql runs. Set your workspace location, connection string, target version and other parameters.</param>
+        /// <returns></returns>
+        public static IWebHostBuilder UseYuniql(
+            this IWebHostBuilder builder,
+            IDataService dataService,
+            IBulkImportService bulkImportService,
+            ITraceService traceService,
+            YuniqlConfiguration configuration
+        )
+        {
+            var migrationServiceFactory = new MigrationServiceFactory(traceService);
+            var migrationService = migrationServiceFactory.Create(dataService, bulkImportService);
+            migrationService.Initialize(configuration.ConnectionString);
+            migrationService.Run(
+                configuration.WorkspacePath,
+                configuration.TargetVersion,
+                configuration.AutoCreateDatabase,
+                configuration.Tokens,
+                configuration.VerifyOnly,
+                configuration.Delimiter,
+                configuration.BatchSize,
+                configuration.CommandTimeout);
+
+            return builder;
+        }
+
     }
 }
