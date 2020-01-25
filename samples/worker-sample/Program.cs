@@ -11,6 +11,7 @@ namespace worker_sample
     {
         public static void Main(string[] args)
         {
+            //docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
             var configuration = new YuniqlConfiguration
             {
                 WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
