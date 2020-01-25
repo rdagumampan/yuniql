@@ -339,7 +339,7 @@ namespace Yuniql.PlatformTests
             )).ShouldBeTrue();
         }
 
-        [TestMethodEx(Filter = "IsAtomicDDLSupported")]
+        [TestMethodEx(Requires = "IsAtomicDDLSupported")]
         public void Test_Bulk_Import_Mismatch_Columns_But_Not_Nullable()
         {
             //arrange
@@ -368,7 +368,7 @@ namespace Yuniql.PlatformTests
             }
         }
 
-        [TestMethodEx(Filter = "IsSchemaSupported")]
+        [TestMethodEx(Requires = "IsSchemaSupported")]
         public void Test_Bulk_Import_With_NonDefault_Schema_Destination_Table()
         {            
             //arrange - pre-create destination bulk tables

@@ -65,7 +65,6 @@ namespace Yuniql.PlatformTests
 
         public List<DbVersion> GetAllDbVersions(string connectionString)
         {
-
             _dataService.Initialize(connectionString);
             var sqlStatement = _dataService.GetGetAllVersionsSql();
 

@@ -4,7 +4,7 @@ namespace Yuniql.PlatformTests
 {
     public class TestMethodExAttribute : TestMethodAttribute
     {
-        public string Filter { get; set; }
+        public string Requires { get; set; }
 
         public override TestResult[] Execute(ITestMethod testMethod)
         {
@@ -12,7 +12,7 @@ namespace Yuniql.PlatformTests
             var testDataServiceFactory = new TestDataServiceFactory();
             var testDataService = testDataServiceFactory.Create(platform);
 
-            if (this.Filter.Contains(nameof(testDataService.IsAtomicDDLSupported)) && !testDataService.IsAtomicDDLSupported)
+            if (this.Requires.Contains(nameof(testDataService.IsAtomicDDLSupported)) && !testDataService.IsAtomicDDLSupported)
             {
                 var message = $"Target database platform or version does not support atomic DDL operations. " +
                     $"DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.";
@@ -26,7 +26,7 @@ namespace Yuniql.PlatformTests
                 };
             }
 
-            if (this.Filter.Contains(nameof(testDataService.IsSchemaSupported)) && !testDataService.IsSchemaSupported)
+            if (this.Requires.Contains(nameof(testDataService.IsSchemaSupported)) && !testDataService.IsSchemaSupported)
             {
                 var message = $"Target database platform or version does not support schema within the same database.";
                 return new[]

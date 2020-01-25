@@ -11,7 +11,7 @@ namespace Yuniql.CLI
         public string TargetVersion { get; set; }
 
         //yuniql <command> -a true | --auto-create-db true
-        [Option('a', "auto-create-db", Required = false, HelpText = "Create database automatically")]
+        [Option('a', "auto-create-db", Required = false, HelpText = "Create database automatically", Default = false)]
         public bool AutoCreateDatabase { get; set; }
 
         //yuniql <command> -k "Token1=TokenValue1" -k "Token2=TokenValue2" -k "Token3=TokenValue3" | --token "..." --token "..." --token "..."
