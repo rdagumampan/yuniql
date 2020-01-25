@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <RootNamespace>aspnetcore_sample</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Yuniql.AspNetCore" Version="0.326.0" />
+    <PackageReference Include="Yuniql.PostgreSql" Version="0.326.0" />
+  </ItemGroup>
+
+</Project>
