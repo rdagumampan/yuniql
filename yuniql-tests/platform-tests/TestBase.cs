@@ -82,6 +82,7 @@ namespace Yuniql.PlatformTests
                 TestAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST)
             };
         }
+
         private string GetCliProcessFile()
         {
             //handle environment where tests are executed
