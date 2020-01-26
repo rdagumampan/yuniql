@@ -1,7 +1,7 @@
-DROP TABLE employees;
-DROP TABLE dependents;
-DROP TABLE departments;
-DROP TABLE locations;
-DROP TABLE countries;
-DROP TABLE regions;
-DROP TABLE jobs;
+DROP TABLE employees CASCADE;
+DROP TABLE dependents CASCADE;
+DROP TABLE departments CASCADE;
+DROP TABLE locations CASCADE;
+DROP TABLE countries CASCADE;
+DROP TABLE regions CASCADE;
+DROP TABLE jobs CASCADE;

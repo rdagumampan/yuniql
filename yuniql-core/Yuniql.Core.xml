@@ -1,0 +1,693 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Yuniql.Core</name>
+    </assembly>
+    <members>
+        <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.ConfigurationDataService" -->
+        <member name="M:Yuniql.Core.ConfigurationDataService.#ctor(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Creates new instance of ConfigurationDataService
+            </summary>
+            <param name="dataService">An instance of implementation of <see cref="T:Yuniql.Extensibility.IDataService"/>. 
+            Each database platform implements IDataService.</param>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+        </member>
+        <member name="M:Yuniql.Core.ConfigurationDataService.IsDatabaseExists(System.Nullable{System.Int32})">
+            <summary>
+            Returns true when database already exists in the target host.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>Returns true when database already exists in the target host.</returns>
+        </member>
+        <member name="M:Yuniql.Core.ConfigurationDataService.CreateDatabase(System.Nullable{System.Int32})">
+            <summary>
+            Creates the database
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="M:Yuniql.Core.ConfigurationDataService.IsDatabaseConfigured(System.Nullable{System.Int32})">
+            <summary>
+            Returns true when migration version tracking table is already created.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>Returns true when version tracking table is already created.</returns>
+        </member>
+        <member name="M:Yuniql.Core.ConfigurationDataService.ConfigureDatabase(System.Nullable{System.Int32})">
+            <summary>
+            Creates migration version tracking table in the target database.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="M:Yuniql.Core.ConfigurationDataService.GetCurrentVersion(System.Nullable{System.Int32})">
+            <summary>
+            Returns the latest version applied in the target database.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>Returns the latest version applied in the target database.</returns>
+        </member>
+        <member name="M:Yuniql.Core.ConfigurationDataService.GetAllVersions(System.Nullable{System.Int32})">
+            <summary>
+            Returns all versions applied in the target database.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>All versions applied in the target database.</returns>
+        </member>
+        <member name="M:Yuniql.Core.ConfigurationDataService.UpdateVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Creates new entry to version tracking table after all versions were successfully executed.
+            </summary>
+            <param name="connection">Connection to target database. Connection will be open automatically.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="version">Migration version.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="M:Yuniql.Core.ConfigurationDataService.ExecuteSql(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Executes sql statement to target database.
+            </summary>
+            <param name="connection">Connection to target database. Connection will be open automatically.</param>
+            <param name="commandText">The sql statement.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written to.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Yuniql.Core.ConnectionExtensions">
+            <summary>
+            Connection extensions for most common data access methods
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.ConnectionExtensions.CreateCommand(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction)" -->
+        <member name="M:Yuniql.Core.ConnectionExtensions.KeepOpen(System.Data.IDbConnection)">
+            <summary>
+            Opens the connection when its found to be closed.
+            </summary>
+            <param name="connection">A connection.</param>
+            <returns>An active connection.</returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectionExtensions.ExecuteNonQuery(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Execute SQL statement against the active connection and returns number of affected rows.
+            </summary>
+            <param name="connection">An active connection.</param>
+            <param name="commandText">The sql statement to execute with the active connection.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectionExtensions.ExecuteScalar(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Executes SQL statement against the active connection and returns single row single column result.
+            </summary>
+            <param name="connection">An active connection.</param>
+            <param name="commandText">The sql statement to execute with the active connection.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectionExtensions.QuerySingleBool(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Executes SQL statement against the active connection and returns scalar value in boolean.
+            </summary>
+            <param name="connection">An active connection.</param>
+            <param name="commandText">The sql statement to execute with the active connection.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectionExtensions.QuerySingleString(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Executes SQL statement against the active connection and returns scalar value in string.
+            </summary>
+            <param name="connection">An active connection.</param>
+            <param name="commandText">The sql statement to execute with the active connection.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.DirectoryService" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetDirectories(System.String,System.String,System.IO.SearchOption)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetFiles(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetDirectories(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.Exists(System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetFileCaseInsensitive(System.String,System.String)" -->
+        <member name="T:Yuniql.Core.EnvironmentService">
+            <summary>
+            Helper class for extracting environment variables.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.EnvironmentService.GetCurrentDirectory">
+            <summary>
+            Returns the current directory where yuniql is executed from.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.EnvironmentService.GetEnvironmentVariable(System.String)">
+            <summary>
+            Extract values of environment variable with respect to OS platform.
+            For Windows, the order of ENV variable search is Machine -> User -> Process.
+            For Linux, it will always use Process.
+            </summary>
+            <param name="name">Environment varible name.</param>
+            <returns>Value of the environment variable.</returns>
+        </member>
+        <member name="T:Yuniql.Core.FileService">
+            <summary>
+            Wraps usage of <see cref="T:System.IO.File"/>.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.FileService.ReadAllText(System.String)">
+            <summary>
+            Opens a text file, reads all the text in the file, and then closes the file.
+            </summary>
+            <param name="path">Path of the file to be created.</param>
+            <returns>Returns the path of file created.</returns>
+        </member>
+        <member name="M:Yuniql.Core.FileService.Exists(System.String)">
+            <summary>
+            Determines whether the file exists.
+            </summary>
+            <param name="path">Returns true if file exists.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Yuniql.Core.FileTraceService">
+            <summary>
+            Writes trace information into a text file in the current workspace directory. 
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.FileTraceService.IsDebugEnabled">
+            <summary>
+            When true, debug messages are always written in Trace logs.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.FileTraceService.Info(System.String,System.Object)">
+            <summary>
+            Writes informational messages.
+            </summary>
+            <param name="message">The message to write.</param>
+            <param name="payload">JSON structured information to support the trace entry.</param>
+        </member>
+        <member name="M:Yuniql.Core.FileTraceService.Error(System.String,System.Object)">
+            <summary>
+            Writes error messages.
+            </summary>
+            <param name="message">The message to write.</param>
+            <param name="payload">JSON structured information to support the trace entry.</param>
+        </member>
+        <member name="M:Yuniql.Core.FileTraceService.Debug(System.String,System.Object)">
+            <summary>
+            Writes debug messages.
+            </summary>
+            <param name="message">The message to write.</param>
+            <param name="payload">JSON structured information to support the trace entry.</param>
+        </member>
+        <member name="T:Yuniql.Core.IConfigurationDataService">
+            <summary>
+            Interface for implementing service responsible for accessing target database configuration and executing sql statement batches.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IConfigurationDataService.IsDatabaseExists(System.Nullable{System.Int32})">
+            <summary>
+            Returns true when database already exists in the target host.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>Returns true when database already exists in the target host.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IConfigurationDataService.CreateDatabase(System.Nullable{System.Int32})">
+            <summary>
+            Creates the database
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="M:Yuniql.Core.IConfigurationDataService.IsDatabaseConfigured(System.Nullable{System.Int32})">
+            <summary>
+            Returns true when migration version tracking table is already created.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>Returns true when version tracking table is already created.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IConfigurationDataService.ConfigureDatabase(System.Nullable{System.Int32})">
+            <summary>
+            Creates migration version tracking table in the target database.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="M:Yuniql.Core.IConfigurationDataService.GetCurrentVersion(System.Nullable{System.Int32})">
+            <summary>
+            Returns the latest version applied in the target database.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>Returns the latest version applied in the target database.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IConfigurationDataService.GetAllVersions(System.Nullable{System.Int32})">
+            <summary>
+            Returns all versions applied in the target database.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>All versions applied in the target database.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IConfigurationDataService.UpdateVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Creates new entry to version tracking table after all versions were successfully executed.
+            </summary>
+            <param name="connection">Connection to target database. Connection will be open automatically.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="version">Migration version.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="M:Yuniql.Core.IConfigurationDataService.ExecuteSql(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Executes sql statement to target database.
+            </summary>
+            <param name="connection">Connection to target database. Connection will be open automatically.</param>
+            <param name="commandText">The sql statement.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written to.</param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.IDirectoryService" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetDirectories(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetDirectories(System.String,System.String,System.IO.SearchOption)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetFiles(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.Exists(System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetFileCaseInsensitive(System.String,System.String)" -->
+        <member name="T:Yuniql.Core.IEnvironmentService">
+            <summary>
+            Interface for implementing helper class for extracting environment variables.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IEnvironmentService.GetCurrentDirectory">
+            <summary>
+            Returns the current directory where yuniql is executed from.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IEnvironmentService.GetEnvironmentVariable(System.String)">
+            <summary>
+            Extract values of environment variable with respect to OS platform.
+            For Windows, the order of ENV variable search is Machine -> User -> Process.
+            For Linux, it will always use Process.
+            </summary>
+            <param name="name">Environment varible name.</param>
+            <returns>Value of the environment variable.</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.IFileService" -->
+        <member name="M:Yuniql.Core.IFileService.ReadAllText(System.String)">
+            <summary>
+            Opens a text file, reads all the text in the file, and then closes the file.
+            </summary>
+            <param name="path">Path of the file to be created.</param>
+            <returns>Returns the path of file created.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IFileService.Exists(System.String)">
+            <summary>
+            Determines whether the file exists.
+            </summary>
+            <param name="path">Returns true if file exists.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Yuniql.Core.ILocalVersionService">
+            <summary>
+            Interface for implementing service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are operated from.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.ILocalVersionService.Init(System.String)">
+            <summary>
+            Creates the baseline directory structure in the target workspace path.
+            </summary>
+            <param name="workingPath">The directory path where workspace structure will be created.</param>
+        </member>
+        <member name="M:Yuniql.Core.ILocalVersionService.GetLatestVersion(System.String)">
+            <summary>
+            Gets the latest version available in the local workspace.
+            </summary>
+            <param name="workingPath">The directory path when yuniql operations are executed from.</param>
+        </member>
+        <member name="M:Yuniql.Core.ILocalVersionService.IncrementMajorVersion(System.String,System.String)">
+            <summary>
+            Creates a new major version migration directory by incrementing the latest major version.
+            </summary>
+            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
+            <param name="sqlFileName">File name of sql file to be created.</param>
+            <returns>The version created in v{Major}.{Minor} format.</returns>
+        </member>
+        <member name="M:Yuniql.Core.ILocalVersionService.IncrementMinorVersion(System.String,System.String)">
+            <summary>
+            Creates a new minor version migration directory by incrementing tha latest version.
+            </summary>
+            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
+            <param name="sqlFileName">File name of sql file to be created.</param>
+            <returns>The version created in v{Major}.{Minor} format.</returns>
+        </member>
+        <member name="M:Yuniql.Core.ILocalVersionService.Validate(System.String)">
+            <summary>
+            Validates the baseline directory structure. The following directories are always required to be present in the workspace else the migration would fail.
+            Required folders are _init, _pre, v0.00, _draft, _post, and _erase.
+            </summary>
+            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
+        </member>
+        <member name="T:Yuniql.Core.IMigrationService">
+            <summary>
+            Runs migrations by executing alls scripts in the workspace directory. 
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IMigrationService.Initialize(System.String,System.Nullable{System.Int32})" -->
+        <member name="M:Yuniql.Core.IMigrationService.GetCurrentVersion">
+            <summary>
+            Returns the current migration version applied in target database.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationService.GetAllVersions">
+            <summary>
+            Returns all migration versions applied in the target database
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Runs migrations by executing alls scripts in the workspace directory. 
+            When CSV files are present also run bulk import operations to target database table having same file name.
+            </summary>
+            <param name="workingPath">The directory path to migration project.</param>
+            <param name="targetVersion">The maximum version to run to. When NULL, runs migration to the latest version found in the workspace path.</param>
+            <param name="autoCreateDatabase">When TRUE, creates the database in the target host.</param>
+            <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
+            <param name="verifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
+            <param name="delimiter">Delimeter character in the CSV bulk import files. When NULL, uses comma.</param>
+            <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
+            <param name="batchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationService.Erase(System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32})">
+            <summary>
+            Executes erase scripts presentin _erase directory and subdirectories.
+            </summary>
+            <param name="workingPath">The directory path to migration project.</param>
+            <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="T:Yuniql.Core.IMigrationServiceFactory">
+            <summary>
+            Factory class of creating instance of <see cref="T:Yuniql.Core.IMigrationService"/>.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationServiceFactory.Create">
+            <summary>
+            Create instance of <see cref="T:Yuniql.Core.IMigrationService"/> with default platform provider
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationServiceFactory.Create(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService)">
+            <summary>
+            Create instance of <see cref="T:Yuniql.Core.IMigrationService"/> and uses external data services.
+            When targeting PostgreSql or MySql, this is where you can pass the implementation of <see cref="T:Yuniql.Extensibility.IDataService"/> and <see cref="T:Yuniql.Extensibility.IBulkImportService"/>.
+            </summary>
+            <param name="dataService">Platform specific data service providing compatible SQL statements and connection objects.</param>
+            <param name="bulkImportService">Platform specific service provding support for bulk import of CSV files.</param>
+            <returns>An instance of <see cref="T:Yuniql.Core.IMigrationService"/> and uses external data services.</returns>
+        </member>
+        <member name="T:Yuniql.Core.ITokenReplacementService">
+            <summary>
+            Interface for implementing replacement of tokens in the script using the pattern ${TOKEN_KEY}. 
+            Throws exception and fails the migration when some tokens not replaced due to missing token values passed from the client.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.ITokenReplacementService.Replace(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String)">
+            <summary>
+            Runs token replacement process.
+            </summary>
+            <param name="tokens">List of token Key/Value pairs.</param>
+            <param name="sqlStatement">Raw SQL statement where tokens maybe present.</param>
+            <returns>SQL statement where tokens are successfully replaced.</returns>
+        </member>
+        <member name="T:Yuniql.Core.LocalVersion">
+            <summary>
+            Representions individual migration version entry.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.LocalVersion.#ctor(System.String)">
+            <summary>
+            Creates new instance of LocalVersion
+            </summary>
+            <param name="targetVersion">The target version in format v{Major}.{Minor}. Example v1.01 or v2.00.</param>
+        </member>
+        <member name="P:Yuniql.Core.LocalVersion.Major">
+            <summary>
+            Returns the major part of version.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.LocalVersion.Minor">
+            <summary>
+            Returns the minor part of version.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.LocalVersion.SemVersion">
+            <summary>
+            Retuns verion in v{Major}.{Minor} format.
+            Example v0.00 for baseline version.
+            </summary>
+        </member>
+        <member name="T:Yuniql.Core.LocalVersionService">
+            <summary>
+            Service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are executed from.
+            When user calls yuniql-init, a directory structure is created in the target workspace directory.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.LocalVersionService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Creates new instance of <see cref="T:Yuniql.Core.LocalVersionService"/>
+            </summary>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+        </member>
+        <member name="M:Yuniql.Core.LocalVersionService.Init(System.String)">
+            <summary>
+            Creates the baseline directory structure in the target workspace path.
+            </summary>
+            <param name="workingPath">The directory path where workspace structure will be created.</param>
+        </member>
+        <member name="M:Yuniql.Core.LocalVersionService.GetLatestVersion(System.String)">
+            <summary>
+            Gets the latest version available in the local workspace.
+            </summary>
+            <param name="workingPath">The directory path when yuniql operations are executed from.</param>
+        </member>
+        <member name="M:Yuniql.Core.LocalVersionService.IncrementMajorVersion(System.String,System.String)">
+            <summary>
+            Creates a new major version migration directory by incrementing the latest major version.
+            </summary>
+            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
+            <param name="sqlFileName">File name of sql file to be created.</param>
+            <returns>The version created in v{Major}.{Minor} format.</returns>
+        </member>
+        <member name="M:Yuniql.Core.LocalVersionService.IncrementMinorVersion(System.String,System.String)">
+            <summary>
+            Creates a new minor version migration directory by incrementing tha latest version.
+            </summary>
+            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
+            <param name="sqlFileName">File name of sql file to be created.</param>
+            <returns>The version created in v{Major}.{Minor} format.</returns>
+        </member>
+        <member name="M:Yuniql.Core.LocalVersionService.Validate(System.String)">
+            <summary>
+            Validates the baseline directory structure. The following directories are always required to be present in the workspace else the migration would fail.
+            Required folders are _init, _pre, v0.00, _draft, _post, and _erase.
+            </summary>
+            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.GetCurrentVersion">
+            <summary>
+            Returns the current migration version applied in target database.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.GetAllVersions">
+            <summary>
+            Returns all migration versions applied in the target database
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Runs migrations by executing alls scripts in the workspace directory. 
+            When CSV files are present also run bulk import operations to target database table having same file name.
+            </summary>
+            <param name="workingPath">The directory path to migration project.</param>
+            <param name="targetVersion">The maximum version to run to. When NULL, runs migration to the latest version found in the workspace path.</param>
+            <param name="autoCreateDatabase">When TRUE, creates the database in the target host.</param>
+            <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
+            <param name="verifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
+            <param name="delimiter">Delimeter character in the CSV bulk import files. When NULL, uses comma.</param>
+            <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
+            <param name="batchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.Erase(System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32})">
+            <summary>
+            Executes erase scripts presentin _erase directory and subdirectories.
+            </summary>
+            <param name="workingPath">The directory path to migration project.</param>
+            <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="T:Yuniql.Core.MigrationServiceFactory">
+            <summary>
+            Factory class of creating instance of <see cref="T:Yuniql.Core.IMigrationService"/>.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceFactory.#ctor(Yuniql.Extensibility.ITraceService)">
+            <summary>
+            
+            </summary>
+            <param name="traceService"></param>
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceFactory.Create">
+            <summary>
+            Create instance of <see cref="T:Yuniql.Core.IMigrationService"/> with default support for SQL Server.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceFactory.Create(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService)">
+            <summary>
+            Create instance of <see cref="T:Yuniql.Core.IMigrationService"/> and uses external data services.
+            When targeting PostgreSql or MySql, this is where you can pass the implementation of <see cref="T:Yuniql.Extensibility.IDataService"/> and <see cref="T:Yuniql.Extensibility.IBulkImportService"/>.
+            </summary>
+            <param name="dataService">Platform specific data service providing compatible SQL statements and connection objects.</param>
+            <param name="bulkImportService">Platform specific service provding support for bulk import of CSV files.</param>
+            <returns>An instance of <see cref="T:Yuniql.Core.IMigrationService"/> and uses external data services.</returns>
+        </member>
+        <member name="T:Yuniql.Core.PluginAssemblyLoadContext">
+            <summary>
+            This is a collectible (unloadable) AssemblyLoadContext that loads the dependencies
+            of the plugin from the plugin's binary directory.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.PluginAssemblyLoadContext.Load(System.Reflection.AssemblyName)">
+            <summary>
+            The Load method override causes all the dependencies present in the plugin's binary directory to get loaded
+            into the HostAssemblyLoadContext together with the plugin assembly itself.
+            The Interface assembly must not be present in the plugin's binary directory, otherwise we would
+            end up with the assembly being loaded twice. Once in the default context and once in the HostAssemblyLoadContext.
+            </summary>
+            <param name="assemblyName">The assembly name to load.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Yuniql.Core.TokenReplacementService">
+            <summary>
+            Replaces tokens in the script using the pattern ${TOKEN_KEY}. 
+            Throws exception and fails the migration when some tokens not replaced due to missing token values passed from the client.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.TokenReplacementService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Constructs a new instance of TokenReplacementService.
+            </summary>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+        </member>
+        <member name="M:Yuniql.Core.TokenReplacementService.Replace(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String)">
+            <summary>
+            Runs token replacement process.
+            </summary>
+            <param name="tokens">List of token Key/Value pairs.</param>
+            <param name="sqlStatement">Raw SQL statement where tokens maybe present.</param>
+            <returns>SQL statement where tokens are successfully replaced.</returns>
+        </member>
+        <member name="T:Yuniql.Core.TraceSettings">
+            <summary>
+            Global settings for checking the level of trace message to write.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.TraceSettings.IsDebugEnabled">
+            <summary>
+            When true, trace messages will include debug messages.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.TraceSettings.Instance">
+            <summary>
+            Global singleton instance of trace settings
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.WorkspacePath">
+            <summary>
+            The directory where yuniql-based migration project is placed.
+            This is a required property.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.Platform">
+            <summary>
+            Target database platform. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.ConnectionString">
+            <summary>
+            The connection string to the target database server.
+            This is a required property.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.AutoCreateDatabase">
+            <summary>
+            When true, automatically creates database in target database server.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.TargetVersion">
+            <summary>
+            Runs migration only up to the version specified in this property. Defaul is Null and will run upto latest.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.Tokens">
+            <summary>
+            The list of token key/value pairs to repair tokens in each script file. 
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.VerifyOnly">
+            <summary>
+            When you run yuniql verify, it checks if all your versions can be executed without errors. 
+            It runs through all the non-versioned script folders (except _init) and all migration steps that yuninql run takes but without committing the transaction. 
+            All changes are rolledback after a successful verification run.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.Delimiter">
+            <summary>
+            Delimter to use when parsing CSV bulk import files. Default is comma ",".
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.BatchSize">
+            <summary>
+            The size of each batch when performing bulk load. Default is 100 rows.
+            This may not be used in non-sqlserver platforms.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.CommandTimeout">
+            <summary>
+            The time it taks to wait for one commend to execute before it expires and throws error.
+            Use this prorty to adjust time out when you expect a long running migration execution.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.YuniqlConfiguration.DebugTraceMode">
+            <summary>
+            Enrich trace messages with raw sql statements and more verbose diagnostic messages.
+            Use this when you are investigating some failed migrations.
+            </summary>
+        </member>
+        <member name="T:Yuniql.Core.YuniqlMigrationException">
+            <summary>
+            Custom exception thrown within yuniql migration.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.YuniqlMigrationException.#ctor">
+            <summary>
+            Custom exception thrown within yuniql migration.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.YuniqlMigrationException.#ctor(System.String)">
+            <summary>
+            Creates new YuniqlMigrationException.
+            </summary>
+            <param name="message">The exception message.</param>
+        </member>
+        <member name="M:Yuniql.Core.YuniqlMigrationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Creates new YuniqlMigrationException.
+            </summary>
+            <param name="message">The exception message.</param>
+            <param name="innerException">The exception captured prior to this exception.</param>
+        </member>
+    </members>
+</doc>

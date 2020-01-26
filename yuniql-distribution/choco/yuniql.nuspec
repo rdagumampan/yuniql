@@ -43,21 +43,18 @@ yuniql -d | --debug
     <owners>Rodel E. Dagumampan</owners>
     <projectUrl>https://github.com/rdagumampan/yuniql</projectUrl>
     <projectSourceUrl>https://github.com/rdagumampan/yuniql</projectSourceUrl>
+    <packageSourceUrl>https://github.com/rdagumampan/yuniql</packageSourceUrl>
     <docsUrl>https://github.com/rdagumampan/yuniql/wiki</docsUrl>
     <bugTrackerUrl>https://github.com/rdagumampan/yuniql/issues</bugTrackerUrl>
     <licenseUrl>https://github.com/rdagumampan/yuniql/blob/master/LICENSE.md</licenseUrl>
-    <iconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/rdagumampan/yuniql/master/assets/favicon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <copyright>Copyright 2019 Rodel E. Dagumampan</copyright>
     <tags>yuniql database migration cli devops</tags>
-    <releaseNotes>This is preview release just to try out distribution via Chocolatey.</releaseNotes>
+    <releaseNotes>https://github.com/rdagumampan/yuniql/wiki/Release-notes</releaseNotes>
   </metadata>
   <files>
-    <file src="..\LICENSE.md" target="tools" />
-    <file src="VERIFICATION.txt" target="tools" />
     <file src="favicon.png" target="images" />
-    <file src="chocolateyinstall.ps1" target="tools" />
-    <file src="chocolateyuninstall.ps1" target="tools" />
-    <file src=".\bin\release\netcoreapp3.0\win-x64\publish\**" target="tools" />
-  </files>
+    <file src="tools\**" target="tools" />
+    <file src="legal\**" target="legal" />  </files>
 </package>
