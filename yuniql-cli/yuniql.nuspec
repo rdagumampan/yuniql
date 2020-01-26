@@ -1,19 +1,63 @@
-<?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
-  <metadata>
-    <id>Yuniql.CLI</id>
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<metadata>
+    <id>yuniql</id>
     <version>$version$</version>
     <title>Yuniql</title>
+    <summary>Schema versioning and database migration tool for sql server, postgresql and others. </summary>
+    <description><![CDATA[    
+yuniql (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories or folders. Scripts are stored transparently as plain old .sql files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
+
+Yuniql promotes and facilitates an end-to-end database DevOps discipline. From schema versioning, to fresh database provisioning and releases via continuous delivery pipeline tasks.
+
+![screenshot](https://raw.githubusercontent.com/rdagumampan/yuniql/master/assets/wiki-evodb-01.png)
+
+** NOTE: This is in PREVIEW and NOT YET READY FOR PRODUCTION. Please star or watch in GitHub for release updates. See https://github.com/rdagumampan/yuniql**
+
+## Support CLI Commands
+
+```bash
+yuniql init
+yuniql init -p c:\temp\demo | --path c:\temp\demo
+yuniql vnext
+yuniql vnext -M | --major
+yuniql vnext -m | --minor
+yuniql vnext -f "your-script-file.sql"
+yuniql verify
+yuniql run
+yuniql run --platform postgresql | --platform mysql
+yuniql run -a true | --auto-create-db true
+yuniql run -p c:\temp\demo | --path c:\temp\demo
+yuniql run -t v1.05 | --target-version v1.05
+yuniql run -c "<connectiong-string>"
+yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"
+yuniql run -delimiter "|"
+yuniql erase
+yuniql -v | --version
+yuniql -h | --help
+yuniql -d | --debug
+```
+]]>
+</description>
     <authors>Rodel E. Dagumampan</authors>
     <owners>Rodel E. Dagumampan</owners>
     <projectUrl>https://github.com/rdagumampan/yuniql</projectUrl>
+    <projectSourceUrl>https://github.com/rdagumampan/yuniql</projectSourceUrl>
+    <docsUrl>https://github.com/rdagumampan/yuniql/wiki</docsUrl>
+    <bugTrackerUrl>https://github.com/rdagumampan/yuniql/issues</bugTrackerUrl>
+    <licenseUrl>https://github.com/rdagumampan/yuniql/blob/master/LICENSE.md</licenseUrl>
+    <iconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Yuniql (yuu-nee-kel). Schema versioning and database migration tool for sql server and others.</description>
     <copyright>Copyright 2019 Rodel E. Dagumampan</copyright>
+    <tags>yuniql database migration cli devops</tags>
+    <releaseNotes>This is preview release just to try out distribution via Chocolatey.</releaseNotes>
   </metadata>
   <files>
+    <file src="..\LICENSE.md" target="tools" />
+    <file src="VERIFICATION.txt" target="tools" />
+    <file src="favicon.png" target="images" />
     <file src="chocolateyinstall.ps1" target="tools" />
     <file src="chocolateyuninstall.ps1" target="tools" />
-    <file src="C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish\**" target="tools" />
+    <file src=".\bin\release\netcoreapp3.0\win-x64\publish\**" target="tools" />
   </files>
 </package>

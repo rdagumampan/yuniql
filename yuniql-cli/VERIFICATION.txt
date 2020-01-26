@@ -1,0 +1,9 @@
+﻿VERIFICATION
+Verification is intended to assist the Chocolatey moderators and community
+in verifying that this package's contents are trustworthy.
+ 
+$ powershell "Get-FileHash yuniql.exe | Format-List"
+
+Algorithm : SHA256
+Hash      : 29FD802B586737CEDEBFF673F68281F7214A428F2DC51B55191C918A24DF39A2
+Path      : yuniql.exe
