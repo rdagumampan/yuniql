@@ -1,1 +1,1 @@
-Uninstall-BinFile ""
+Uninstall-BinFile yuniql
