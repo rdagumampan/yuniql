@@ -7,11 +7,10 @@ Write-Host "toolsDir: $toolsDir"
 
 $packageArgs = @{
     packageName     = $packageName
-    fileType        = 'zip'    
     url             = 'https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest.zip'
-    checksum        = '9F8011E76CD9BBC9928E27EAD7D22DA24D1D0DC7D060083F49B5166CB583207D'
-    checksumType    = 'sha256'
     unzipLocation   =  $toolsDir
+    checksum        = '49A596B99873CAE6B94852177B0D8F7F020607800A9A26FDB28C1EE3A21227B3'
+    checksumType    = 'sha256'
 }
 
 Write-Host $packageArgs.packageName
