@@ -43,7 +43,7 @@ yuniql -d | --debug
     <owners>Rodel E. Dagumampan</owners>
     <projectUrl>https://github.com/rdagumampan/yuniql</projectUrl>
     <projectSourceUrl>https://github.com/rdagumampan/yuniql</projectSourceUrl>
-    <packageSourceUrl>https://github.com/rdagumampan/yuniql</packageSourceUrl>
+    <packageSourceUrl>https://github.com/rdagumampan/yuniql/tree/master/yuniql-distribution/choco</packageSourceUrl>
     <docsUrl>https://github.com/rdagumampan/yuniql/wiki</docsUrl>
     <bugTrackerUrl>https://github.com/rdagumampan/yuniql/issues</bugTrackerUrl>
     <licenseUrl>https://github.com/rdagumampan/yuniql/blob/master/LICENSE.md</licenseUrl>
