@@ -42,8 +42,8 @@ $packageArgs = @{
 Write-Host $packageArgs.name
 Write-Host $packageArgs.path
 
-Install-BinFile $packageArgs
-  -Name $packageArgs.packageName `
+Install-BinFile `
+  -Name $packageArgs.name `
   -Path $packageArgs.path
 
 #Install-BinFile $packageArgs
