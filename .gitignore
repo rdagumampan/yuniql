@@ -78,3 +78,4 @@ samples/aspnetcore-sample/aspnetcore-sample.csproj.user
 yuniql-platformtests/Yuniql.PlatformTests.csproj.user
 yuniql-sqlserver/Yuniql.SqlServer.csproj.user
 build-nupkgs.bat
+yuniql-cli/Yuniql.CLI.csproj.user

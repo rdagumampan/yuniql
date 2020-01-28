@@ -5,17 +5,48 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <StartupObject>Yuniql.Program</StartupObject>
     <AssemblyName>yuniql</AssemblyName>
-    <PackageId>yuniql</PackageId>
+    <PackageId>Yuniql.Cli</PackageId>
     <Version>1.0.0</Version>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>yuniql</ToolCommandName>
-    <PackageOutputPath>./nupkg</PackageOutputPath>    
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <Authors>Rodel E. Dagumampan</Authors>
+    <Product>Yuniql.Cli</Product>
+    <Description>
+      yuniql (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories. Scripts are stored transparently as plain old .sql files. yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion. Visit https://getyuniql.org to get started.
+
+      Install tool:
+      $ dotnet tool install -g Yuniql.Cli
+
+      Supported databases:
+      - SQL Server
+      - Azure SQL Database
+      - PostgreSql
+      - MySql
+
+      Getting started:
+      - https://github.com/rdagumampan/yuniql/wiki/getting-started-(simplified)
+
+    </Description>
+    <PackageProjectUrl>https://github.com/rdagumampan/yuniql</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</PackageIconUrl>
+    <PackageIcon>favicon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
+    <PackageTags>yuniql sqlserver-migration database-migration sql devops devops-tools database-versioning</PackageTags>
+    <PackageReleaseNotes>https://github.com/rdagumampan/yuniql/wiki/release-notes</PackageReleaseNotes>
+    <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="nupkgs\**" />
     <EmbeddedResource Remove="nupkgs\**" />
     <None Remove="nupkgs\**" />
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="favicon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
