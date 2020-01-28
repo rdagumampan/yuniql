@@ -14,7 +14,7 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 
 ** NOTE: This is in PREVIEW and NOT YET READY FOR PRODUCTION. Please star or watch in GitHub for release updates. See https://github.com/rdagumampan/yuniql**
 
-## Support CLI Commands
+## Supported CLI Commands
 
 ```bash
 yuniql init
@@ -25,11 +25,11 @@ yuniql vnext -m | --minor
 yuniql vnext -f "your-script-file.sql"
 yuniql verify
 yuniql run
+yuniql run -c "<connectiong-string>"
 yuniql run --platform postgresql | --platform mysql
 yuniql run -a true | --auto-create-db true
 yuniql run -p c:\temp\demo | --path c:\temp\demo
 yuniql run -t v1.05 | --target-version v1.05
-yuniql run -c "<connectiong-string>"
 yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"
 yuniql run -delimiter "|"
 yuniql erase
