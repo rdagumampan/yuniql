@@ -1,3 +1,4 @@
+DROP TABLE __yuniqldbversion CASCADE;
 DROP TABLE employees CASCADE;
 DROP TABLE dependents CASCADE;
 DROP TABLE departments CASCADE;
