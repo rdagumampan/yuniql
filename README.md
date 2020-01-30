@@ -10,6 +10,77 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
+## Working with CLI Commands 
+https://github.com/rdagumampan/yuniql/wiki/Getting-started
+
+```bash
+choco install yuniql --version 0.328.0
+dotnet tool install -g yuniql.cli
+```
+
+```bash
+yuniql init
+yuniql init -p c:\temp\demo | --path c:\temp\demo
+yuniql vnext
+yuniql vnext -M | --major
+yuniql vnext -m | --minor
+yuniql vnext -f "your-script-file.sql"
+yuniql verify
+yuniql run
+yuniql run --platform postgresql | --platform mysql
+yuniql run -a true | --auto-create-db true
+yuniql run -p c:\temp\demo | --path c:\temp\demo
+yuniql run -t v1.05 | --target-version v1.05
+yuniql run -c "<connectiong-string>"
+yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"
+yuniql run -delimiter "|"
+yuniql erase
+yuniql -v | --version
+yuniql -h | --help
+yuniql -d | --debug
+```
+
+## Working with ASP.NET Core
+
+```csharp
+dotnet add package Yuniql.AspNetCore
+```
+
+```csharp
+using Yuniql.AspNetCore;
+...
+...
+
+//docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+var traceService = new ConsoleTraceService { IsDebugEnabled = true };
+app.UseYuniql(traceService, new YuniqlConfiguration
+{
+	WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
+	ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
+	AutoCreateDatabase = true,
+	Tokens = new List<KeyValuePair<string, string>> {
+		new KeyValuePair<string, string>("VwColumnPrefix1","Vw1"),
+		new KeyValuePair<string, string>("VwColumnPrefix2","Vw2"),
+		new KeyValuePair<string, string>("VwColumnPrefix3","Vw3"),
+		new KeyValuePair<string, string>("VwColumnPrefix4","Vw4")
+	}
+});
+```
+
+## Working with Azure DevOps Pipelines Tasks
+
+![](images/screenshot-02.png)
+
+This runs database migration with yuniql-cli.
+* `version`: The version of Yuniql CLI. If omitted, the latest version of yuniql-cli is installed. Visit the [releases](https://github.com/rdagumampan/yuniql/releases) to get an appropriate version. 
+* `connectionString`: The connection string to your target database server.
+* `workspacePath`: The location of your version directories to run.
+* `targetPlatform`: The target database platform. Default is SqlServer.
+* `autoCreateDatabase`: When true, creates and configure the database in the target server for yuniql migrations.
+* `targetVersion`: The maximum target database schema version to run to.
+* `tokenKeyValuePair`: Token key/value pairs for token replacement.
+* `additionalArguments`: Additional CLI arguments
+
 ## To start using **`yuniql`** on Sql Server
 This an express guide to using yuniql-cli. Yuniql allows developers and DBAa to run migration steps from CLI, Azure DevOps Tasks, Docker or within .NET Core App. To get started, run these commands line by line via Command Prompt (CMD).
 
@@ -75,31 +146,6 @@ VisitorID   FirstName   LastName    Address  Email
 - **Open Source.** Released under Apache License version 2.0. Absolutely free for personal or commercial use.
 
 *** planned or being evaluated/developer/tested
-
-## To start working with **`yuniql`** CLI
-See how it works here https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works
-
-```bash
-yuniql init
-yuniql init -p c:\temp\demo | --path c:\temp\demo
-yuniql vnext
-yuniql vnext -M | --major
-yuniql vnext -m | --minor
-yuniql vnext -f "your-script-file.sql"
-yuniql verify
-yuniql run
-yuniql run --platform postgresql | --platform mysql
-yuniql run -a true | --auto-create-db true
-yuniql run -p c:\temp\demo | --path c:\temp\demo
-yuniql run -t v1.05 | --target-version v1.05
-yuniql run -c "<connectiong-string>"
-yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"
-yuniql run -delimiter "|"
-yuniql erase
-yuniql -v | --version
-yuniql -h | --help
-yuniql -d | --debug
-```
 
 ## To dig deeper for advanced use cases
 
