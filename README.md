@@ -11,10 +11,13 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
 ## Working with CLI Commands 
-https://github.com/rdagumampan/yuniql/wiki/Getting-started
+Developer guide available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
 
 ```bash
+#option 1: requires ADMIN mode
 choco install yuniql --version 0.328.0
+
+#option 2: requires .NET Core 3.x installed
 dotnet tool install -g yuniql.cli
 ```
 
@@ -41,6 +44,7 @@ yuniql -d | --debug
 ```
 
 ## Working with ASP.NET Core
+You can add the following code to `Startup.cs`. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core.
 
 ```csharp
 dotnet add package Yuniql.AspNetCore
@@ -68,6 +72,7 @@ app.UseYuniql(traceService, new YuniqlConfiguration
 ```
 
 ## Working with Azure DevOps Pipelines Tasks
+Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how Use .NET Core or Use Node tasks works. Find Yuniql on Azure DevOps MarketPlace. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops.
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/yuniql-azure-pipelines/images/screenshot-02.png" width="700">
 
