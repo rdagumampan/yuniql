@@ -75,7 +75,15 @@ app.UseYuniql(traceService, new YuniqlConfiguration
 ## Working with Console Application
 Run your database migration when Console App starts. Working sample is available here https://github.com/rdagumampan/yuniql/tree/master/samples/sqlserver-console-sample.
  
+```console
+dotnet add package Yuniql.Core
+```
+
 ```csharp
+using Yuniql.Core;
+...
+...
+
 static void Main(string[] args)
 {
 	//docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
