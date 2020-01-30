@@ -72,7 +72,7 @@ app.UseYuniql(traceService, new YuniqlConfiguration
 ```
 
 ## Working with Azure DevOps Pipelines Tasks
-Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how Use .NET Core or Use Node tasks works. Find Yuniql on Azure DevOps MarketPlace. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops.
+Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how `Use .NET Core` or `Use Node` tasks works. Find Yuniql on [Azure DevOps MarketPlace](https://marketplace.visualstudio.com/items?itemName=rdagumampan.yuniql-azdevops-extensions). Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops.
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/yuniql-azure-pipelines/images/screenshot-02.png" width="700">
 
