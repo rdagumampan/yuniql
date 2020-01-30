@@ -10,6 +10,18 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
+## Why yuniql?
+- **It's raw SQL.** Yuniql follows database-first approach to version your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
+- **It's .NET Core Native.** Released as a self-contained .NET Core 3.0 application. Yuniql doesn't require any dependencies or CLR installed on the developer machine or CI/CD server. For windows, `yuniql.exe` is ready-for-use on day 1.
+- **Bulk Import CSV.** Load up your master data and lookup tables from CSV files. A powerful feature when provisioning fresh developer databases or when taking large block of master data as part of a new version.
+- **DevOps Friendly.** Azure Pipeline Tasks available in the Market Place. `Use Yuniql` task acquires a specific version of the Yuniql. `Run Yuniql` task runs database migrations with Yuniql CLI using version acquired earlier.
+- **Cloud Ready.** Platform tested for Azure SQL Database. Plugins for Amazon RDS and Google Cloud SQL are lined up for development. ***
+- **Docker Support.** Each project is prepared for containerized execution using Yuniql base images. A dockerized database project is cheap way to run migration on any CI/CD platform.
+- **Cross-platform.** Works with Windows and major Linux distros.
+- **Open Source.** Released under Apache License version 2.0. Absolutely free for personal or commercial use.
+
+*** planned or being evaluated/developer/tested
+
 ## Working with CLI Commands 
 Manage local db versions and run test migrations with your CLI tool. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
 
@@ -19,6 +31,9 @@ choco install yuniql --version 0.328.0
 
 #option 2: requires .NET Core 3.x installed
 dotnet tool install -g yuniql.cli
+
+#option 3: download directly, no client dependencies
+https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip
 ```
 
 ```bash
@@ -140,18 +155,6 @@ VisitorID   FirstName   LastName    Address  Email
 
 <br>
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/visitordb-screensot-ssms.png" width="700">
-
-## Why yuniql?
-- **It's raw SQL.** Yuniql follows database-first approach to version your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
-- **It's .NET Core Native.** Released as a self-contained .NET Core 3.0 application. Yuniql doesn't require any dependencies or CLR installed on the developer machine or CI/CD server. For windows, `yuniql.exe` is ready-for-use on day 1.
-- **Bulk Import CSV.** Load up your master data and lookup tables from CSV files. A powerful feature when provisioning fresh developer databases or when taking large block of master data as part of a new version.
-- **DevOps Friendly.** Azure Pipeline Tasks available in the Market Place. `Use Yuniql` task acquires a specific version of the Yuniql. `Run Yuniql` task runs database migrations with Yuniql CLI using version acquired earlier.
-- **Cloud Ready.** Platform tested for Azure SQL Database. Plugins for Amazon RDS and Google Cloud SQL are lined up for development. ***
-- **Docker Support.** Each project is prepared for containerized execution using Yuniql base images. A dockerized database project is cheap way to run migration on any CI/CD platform.
-- **Cross-platform.** Works with Windows and major Linux distros.
-- **Open Source.** Released under Apache License version 2.0. Absolutely free for personal or commercial use.
-
-*** planned or being evaluated/developer/tested
 
 ## To dig deeper for advanced use cases
 
