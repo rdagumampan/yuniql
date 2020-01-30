@@ -131,24 +131,12 @@ docker run sqlserver-example -c "<your-connection-string>" -a --platform sqlserv
 * [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 
-## Supported databases
-
-* SQL Server
-* Azure SQL Database
-* PostgreSQL
-* MySQL
-* Amazon RDS - Aurora ***
-* Snowflake Data Warehouse ***
-* Azure SQL Data Warehouse ***
-
-*** planned or being evaluated/developer/tested
-
 ## Ask for help or contribute
 
 You may submit ideas for improvement or report a bug by [creating an issue](https://github.com/rdagumampan/yuniql/issues/new). <br>
 If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/community). Alternatively, tag [#yuniql](https://twitter.com/) on Twitter.
 
-## Track platform tests and docker builds
+## Supported databases and platform tests
 For running migration from docker container, [see instructions here](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-a-docker-container)
 
 |Platform|Build Status|Description|
@@ -158,6 +146,12 @@ For running migration from docker container, [see instructions here](https://git
 |MySql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7, v8.0|
 |Docker image linux-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
 |Docker imiage win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
+
+* Amazon RDS - Aurora ***
+* Snowflake Data Warehouse ***
+* Azure SQL Data Warehouse ***
+
+*** planned or being evaluated/developer/tested
 
 ## License
 
