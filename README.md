@@ -69,7 +69,7 @@ app.UseYuniql(traceService, new YuniqlConfiguration
 
 ## Working with Azure DevOps Pipelines Tasks
 
-![](images/screenshot-02.png)
+<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/yuniql-azure-pipelines/images/screenshot-02.png" width="700">
 
 This runs database migration with yuniql-cli.
 * `version`: The version of Yuniql CLI. If omitted, the latest version of yuniql-cli is installed. Visit the [releases](https://github.com/rdagumampan/yuniql/releases) to get an appropriate version. 
