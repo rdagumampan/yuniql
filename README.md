@@ -25,7 +25,7 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 ## Working with CLI
 Manage local db versions and run database migrations from your CLI tool. Perform local migration run and uncommitted runs to test your scripts. Detailed quick start and developer guides available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
 
-```bash
+```console
 choco install yuniql --version 0.328.0
 
 git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
@@ -36,7 +36,7 @@ yuniql run -c "<your-connection-string>" -a
 
 Alternative ways to install yuniql CLI.
 
-```bash
+```console
 #option 2: requires .NET Core 3.x installed
 dotnet tool install -g yuniql.cli
 
@@ -116,7 +116,7 @@ Run your database migration from Azure DevOps Pipelines. The tasks downloads pac
 ## Working with Docker Container
 Run your database migration thru a docker container. This is specially helpful on Linux environments and CI/CD pipelines running on Linux Agents as it facilitates your migration without having to worry any local installations or runtime dependencies. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container.
 
-```bash
+```console
 git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-docker
 cd c:\temp\yuniql-docker\samples\basic-sqlserver-sample
 
