@@ -11,7 +11,7 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
 ## Working with CLI Commands 
-Developer guide available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
+Manage local db versions and run test migrations with your CLI tool. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
 
 ```bash
 #option 1: requires ADMIN mode
@@ -44,7 +44,7 @@ yuniql -d | --debug
 ```
 
 ## Working with ASP.NET Core
-You can add the following code to `Startup.cs`. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core.
+Run your database migration when your ASP.NET Core host service starts up. This ensures that database is always at latest compatible state before operating the service. Applies to Worker and WebApp projects. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core.
 
 ```csharp
 dotnet add package Yuniql.AspNetCore
@@ -76,15 +76,16 @@ Run your database migration from Azure DevOps Pipelines. The tasks downloads pac
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/yuniql-azure-pipelines/images/screenshot-02.png" width="700">
 
-This runs database migration with yuniql-cli.
-* `version`: The version of Yuniql CLI. If omitted, the latest version of yuniql-cli is installed. Visit the [releases](https://github.com/rdagumampan/yuniql/releases) to get an appropriate version. 
-* `connectionString`: The connection string to your target database server.
-* `workspacePath`: The location of your version directories to run.
-* `targetPlatform`: The target database platform. Default is SqlServer.
-* `autoCreateDatabase`: When true, creates and configure the database in the target server for yuniql migrations.
-* `targetVersion`: The maximum target database schema version to run to.
-* `tokenKeyValuePair`: Token key/value pairs for token replacement.
-* `additionalArguments`: Additional CLI arguments
+## Working with Docker Container
+Run your database migration thru a docker container. This is specially helpful on Linux environments and CI/CD pipelines running on Linux Agents as it facilitates your migration without having to worry any local installations or runtime dependencies. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container.
+
+```bash
+git clone https://github.com/rdagumampan/yuniql.git c:\temp
+cd c:\temp\yuniql\samples\basic-sqlserver-sample
+
+docker build -t sqlserver-example .
+docker run sqlserver-example -c "<your-connection-string>" -a --platform sqlserver
+```
 
 ## To start using **`yuniql`** on Sql Server
 This an express guide to using yuniql-cli. Yuniql allows developers and DBAa to run migration steps from CLI, Azure DevOps Tasks, Docker or within .NET Core App. To get started, run these commands line by line via Command Prompt (CMD).
