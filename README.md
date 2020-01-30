@@ -23,10 +23,9 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 *** planned or being evaluated/developer/tested
 
 ## Working with CLI Commands 
-Manage local db versions and run test migrations with your CLI tool. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
+Manage local db versions and run database migrations from your CLI tool. Perform local migration run and uncommitted runs to test your scripts. Detailed quick start and developer guides available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
 
 ```bash
-#option 1: requires ADMIN mode
 choco install yuniql --version 0.328.0
 
 git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
@@ -34,6 +33,7 @@ cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
 
 yuniql run -c "<your-connection-string>" -a
 ```
+
 Alternative ways to install yuniql CLI.
 
 ```bash
@@ -88,17 +88,12 @@ docker build -t sqlserver-example .
 docker run sqlserver-example -c "<your-connection-string>" -a --platform sqlserver
 ```
 
-## Dig deeper with advanced use cases
+## Advanced use cases
 
-* [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
-* [How to migrate via ASP.NET Core](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core)
-* [How to migrate via Azure Devops](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops)
-* [How to migrate via Docker](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container)
 * [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
 * [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
 * [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
-* [Known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
-* [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
+* [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 
 ## Supported databases
 
@@ -107,15 +102,17 @@ docker run sqlserver-example -c "<your-connection-string>" -a --platform sqlserv
 * PostgreSQL
 * MySQL
 * Amazon RDS - Aurora ***
+* Snowflake Data Warehouse ***
+* Azure SQL Data Warehouse ***
 
 *** planned or being evaluated/developer/tested
 
-## To ask for help or contribute
+## Ask for help or contribute
 
 You may submit ideas for improvement or report a bug by [creating an issue](https://github.com/rdagumampan/yuniql/issues/new). <br>
 If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/community). Alternatively, tag [#yuniql](https://twitter.com/) on Twitter.
 
-## To track platform tests and docker builds
+## Track platform tests and docker builds
 For running migration from docker container, [see instructions here](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-a-docker-container)
 
 |Platform|Build Status|Description|
