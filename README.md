@@ -22,7 +22,7 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 
 *** planned or being evaluated/developer/tested
 
-## Working with CLI Commands 
+## Working with CLI
 Manage local db versions and run database migrations from your CLI tool. Perform local migration run and uncommitted runs to test your scripts. Detailed quick start and developer guides available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
 
 ```bash
@@ -70,6 +70,34 @@ app.UseYuniql(traceService, new YuniqlConfiguration
 		new KeyValuePair<string, string>("VwColumnPrefix4","Vw4")
 	}
 });
+```
+
+## Working with Console Application
+Run your database migration when Console App starts. Working sample is available here https://github.com/rdagumampan/yuniql/tree/master/samples/sqlserver-console-sample.
+ 
+```csharp
+static void Main(string[] args)
+{
+	//docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+	var traceService = new ConsoleTraceService { IsDebugEnabled = true };
+	var configuration = new YuniqlConfiguration
+	{
+		WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
+		ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
+		AutoCreateDatabase = true
+	};
+
+	var migrationServiceFactory = new MigrationServiceFactory(traceService);
+	var migrationService = migrationServiceFactory.Create();
+	migrationService.Initialize(configuration.ConnectionString);
+	migrationService.Run(
+		configuration.WorkspacePath,
+		configuration.TargetVersion,
+		configuration.AutoCreateDatabase,
+		configuration.Tokens,
+		configuration.VerifyOnly,
+		configuration.Delimiter);
+}
 ```
 
 ## Working with Azure DevOps Pipelines Tasks
