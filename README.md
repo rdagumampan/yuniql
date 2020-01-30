@@ -47,7 +47,7 @@ https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x6
 ## Working with ASP.NET Core
 Run your database migration when your ASP.NET Core host service starts up. This ensures that database is always at latest compatible state before operating the service. Applies to Worker and WebApp projects. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core.
 
-```csharp
+```console
 dotnet add package Yuniql.AspNetCore
 ```
 
