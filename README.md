@@ -10,60 +10,6 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
-## To start using **`yuniql`** on Sql Server
-This an express guide to using yuniql-cli. Yuniql allows developers and DBAa to run migration steps from CLI, Azure DevOps Tasks, Docker or within .NET Core App. To get started, run these commands line by line via Command Prompt (CMD).
-
-#### Prepare connection
-Set your db connection string in environment variable. This demo uses local SQL Server instance. For more connection string samples, visit https://www.connectionstrings.com/sql-server/.
-
-```bash
-SETX YUNIQL_CONNECTION_STRING "Server=.\;Database=VisitorDB;Trusted_Connection=True;"
-```
-#### Download samples
-```bash
-powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip -OutFile "c:\temp\yuniql-sqlserver-sample.zip"
-powershell Expand-Archive "c:\temp\yuniql-sqlserver-sample.zip" -DestinationPath "c:\temp\yuniql
-```
->`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/sqlserver-sample.zip) and extract to desired directory.
-
-#### Download `yuniql`
-```bash
-powershell Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip -OutFile  "c:\temp\yuniql-win-x64-latest.zip"
-powershell Expand-Archive "c:\temp\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql\sqlserver-sample"
-```
->`Expand-Archive` requires at least powershell v5.0+ running on your machine. You may also [download manually here](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip) and extract to desired directory.
-
-#### Run migration
-The following commands `yuniql` to discover the project directory, creates the target database if it doesn't exist and runs all migration steps in the order they are listed. These includes `.sql` files, directories, subdirectories, and csv files. Tokens are also replaced via `-k` parameters.
-```bash
-cd c:\temp\yuniql\sqlserver-sample
-dir
-
-yuniql run -a -k "VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4"
-yuniql info
-
-Version         Created                         CreatedBy
-v0.00           2019-11-03T16:29:36.0130000     DESKTOP-ULR8GDO\rdagumampan
-v1.00           2019-11-03T16:29:36.0600000     DESKTOP-ULR8GDO\rdagumampan
-v1.01           2019-11-03T16:29:36.1130000     DESKTOP-ULR8GDO\rdagumampan
-```
-
-#### Verify results
-Query tables with SSMS or your preferred SQL client. Noticed tgat `VwVisitorTokenized` carries the tokens passed in the CLI.
-```sql
-//SELECT * FROM [dbo].[Visitor]
-VisitorID   FirstName   LastName    Address  Email
------------ ----------- ----------- ------------------------------------------
-1000        Jack        Poole       Manila   jack.poole@never-exists.com
-1001        Diana       Churchill   Makati   diana.churchill@never-exists.com
-1002        Rebecca     Lyman       Rizal    rebecca.lyman@never-exists.com
-1003        Sam         Macdonald   Batangas sam.macdonald@never-exists.com
-1004        Matt        Paige       Laguna   matt.paige@never-exists.com
-```
-
-<br>
-<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/visitordb-screensot-ssms.png" width="700">
-
 ## Why yuniql?
 - **It's raw SQL.** Yuniql follows database-first approach to version your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
 - **It's .NET Core Native.** Released as a self-contained .NET Core 3.0 application. Yuniql doesn't require any dependencies or CLR installed on the developer machine or CI/CD server. For windows, `yuniql.exe` is ready-for-use on day 1.
@@ -76,68 +22,136 @@ VisitorID   FirstName   LastName    Address  Email
 
 *** planned or being evaluated/developer/tested
 
-## To start working with **`yuniql`** CLI
-See how it works here https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works
+## Working with CLI
+Manage local db versions and run database migrations from your CLI tool. Perform local migration run and uncommitted runs to test your scripts. Detailed quick start and developer guides available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
 
-```bash
-yuniql init
-yuniql init -p c:\temp\demo | --path c:\temp\demo
-yuniql vnext
-yuniql vnext -M | --major
-yuniql vnext -m | --minor
-yuniql vnext -f "your-script-file.sql"
-yuniql verify
-yuniql run
-yuniql run --platform postgresql | --platform mysql
-yuniql run -a true | --auto-create-db true
-yuniql run -p c:\temp\demo | --path c:\temp\demo
-yuniql run -t v1.05 | --target-version v1.05
-yuniql run -c "<connectiong-string>"
-yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"
-yuniql run -delimiter "|"
-yuniql erase
-yuniql -v | --version
-yuniql -h | --help
-yuniql -d | --debug
+```console
+choco install yuniql --version 0.328.0
+
+git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
+cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
+
+yuniql run -c "<your-connection-string>" -a
 ```
 
-## To dig deeper for advanced use cases
+Alternative ways to install yuniql CLI.
 
-* [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
-* [How to migrate via ASP.NET Core](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core)
-* [How to migrate via Azure Devops](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops)
-* [How to migrate via Docker](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container)
+```console
+#option 2: requires .NET Core 3.x installed
+dotnet tool install -g yuniql.cli
+
+#option 3: download directly, no client dependencies
+https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest.zip
+```
+
+## Working with ASP.NET Core
+Run your database migration when your ASP.NET Core host service starts up. This ensures that database is always at latest compatible state before operating the service. Applies to Worker and WebApp projects. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core.
+
+```console
+dotnet add package Yuniql.AspNetCore
+```
+
+```csharp
+using Yuniql.AspNetCore;
+...
+...
+
+//docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+var traceService = new ConsoleTraceService { IsDebugEnabled = true };
+app.UseYuniql(traceService, new YuniqlConfiguration
+{
+	WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
+	ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
+	AutoCreateDatabase = true,
+	Tokens = new List<KeyValuePair<string, string>> {
+		new KeyValuePair<string, string>("VwColumnPrefix1","Vw1"),
+		new KeyValuePair<string, string>("VwColumnPrefix2","Vw2"),
+		new KeyValuePair<string, string>("VwColumnPrefix3","Vw3"),
+		new KeyValuePair<string, string>("VwColumnPrefix4","Vw4")
+	}
+});
+```
+
+## Working with Console Application
+Run your database migration when Console App starts. Working sample is available here https://github.com/rdagumampan/yuniql/tree/master/samples/sqlserver-console-sample.
+ 
+```console
+dotnet add package Yuniql.Core
+```
+
+```csharp
+using Yuniql.Core;
+...
+...
+
+static void Main(string[] args)
+{
+	//docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+	var traceService = new ConsoleTraceService { IsDebugEnabled = true };
+	var configuration = new YuniqlConfiguration
+	{
+		WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
+		ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
+		AutoCreateDatabase = true
+	};
+
+	var migrationServiceFactory = new MigrationServiceFactory(traceService);
+	var migrationService = migrationServiceFactory.Create();
+	migrationService.Initialize(configuration.ConnectionString);
+	migrationService.Run(
+		configuration.WorkspacePath,
+		configuration.TargetVersion,
+		configuration.AutoCreateDatabase,
+		configuration.Tokens,
+		configuration.VerifyOnly,
+		configuration.Delimiter);
+}
+```
+
+## Working with Azure DevOps Pipelines Tasks
+Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how `Use .NET Core` or `Use Node` tasks works. Find Yuniql on [Azure DevOps MarketPlace](https://marketplace.visualstudio.com/items?itemName=rdagumampan.yuniql-azdevops-extensions). Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops.
+
+<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/yuniql-azure-pipelines/images/screenshot-02.png" width="700">
+
+## Working with Docker Container
+Run your database migration thru a docker container. This is specially helpful on Linux environments and CI/CD pipelines running on Linux Agents as it facilitates your migration without having to worry any local installations or runtime dependencies. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container.
+
+```console
+git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-docker
+cd c:\temp\yuniql-docker\samples\basic-sqlserver-sample
+
+docker build -t sqlserver-example .
+docker run sqlserver-example -c "<your-connection-string>" -a --platform sqlserver
+```
+
+## Advanced use cases
+
 * [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
 * [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
 * [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
-* [Known issues](https://github.com/rdagumampan/yuniql/wiki/Known-issues)
-* [Best practices](https://github.com/rdagumampan/yuniql/wiki/Best-practices)
+* [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 
-## Supported databases
-
-* SQL Server
-* Azure SQL Database
-* PostgreSQL
-* MySQL
-* Amazon RDS - Aurora ***
-
-*** planned or being evaluated/developer/tested
-
-## To ask for help or contribute
+## Ask for help or contribute
 
 You may submit ideas for improvement or report a bug by [creating an issue](https://github.com/rdagumampan/yuniql/issues/new). <br>
 If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/community). Alternatively, tag [#yuniql](https://twitter.com/) on Twitter.
 
-## To track platform tests and docker builds
+## Supported databases and platform tests
 For running migration from docker container, [see instructions here](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-a-docker-container)
 
 |Platform|Build Status|Description|
 |---|---|---|
-|SqlServer|[![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017, Azure SQL Database|
-|PostgreSql|[![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6, v12.1|
-|MySql|[![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7, v8.0|
+|SqlServer|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017, Azure SQL Database|
+|PostgreSql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6, v12.1|
+|MySql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7, v8.0|
 |Docker image linux-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
 |Docker imiage win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
+
+* Amazon RDS - Aurora ***
+* Snowflake Data Warehouse ***
+* Azure SQL Data Warehouse ***
+
+*** planned or being evaluated/developer/tested
 
 ## License
 
