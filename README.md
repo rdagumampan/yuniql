@@ -29,7 +29,7 @@ Manage local db versions and run database migrations from your CLI tool. Perform
 choco install yuniql --version 0.328.0
 ```
 
-#### Migrating SQL Server
+#### Run migrations for SQL Server
 
 ```console
 docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
@@ -44,7 +44,7 @@ yuniql run -a
 yuniql info
 ```
 
-#### Migrating PostgreSql and other non-sqlserver platforms
+#### Run migrations for PostgreSql, MySql and others
 
 ```console
 docker run -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
