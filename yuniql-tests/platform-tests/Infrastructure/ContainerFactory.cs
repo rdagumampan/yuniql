@@ -1,4 +1,5 @@
 ﻿using System;
+using Yuniql.Core;
 
 namespace Yuniql.PlatformTests
 {
@@ -8,9 +9,9 @@ namespace Yuniql.PlatformTests
         {
             return platform switch
             {
-                "sqlserver" => new SqlServerContainer(),
-                "postgresql" => new PostgreSqlContainer(),
-                "mysql" => new MySqlContainer(),
+                SUPPORTED_DATABASES.SQLSERVER => new SqlServerContainer(),
+                SUPPORTED_DATABASES.POSTGRESQL => new PostgreSqlContainer(),
+                SUPPORTED_DATABASES.MYSQL => new MySqlContainer(),
                 _ => throw new NotSupportedException(),
             };
         }

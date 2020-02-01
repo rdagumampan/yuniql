@@ -21,19 +21,19 @@ namespace Yuniql.CLI
         {
             switch (platform.ToLower())
             {
-                case "sqlserver":
+                case SUPPORTED_DATABASES.SQLSERVER:
                     {
                         var dataService = new SqlServerDataService(_traceService);
                         var bulkImportService = new SqlServerBulkImportService(_traceService);
                         return Create(dataService, bulkImportService);
                     }
-                case "postgresql":
+                case SUPPORTED_DATABASES.POSTGRESQL:
                     {
                         var dataService = new PostgreSqlDataService(_traceService);
                         var bulkImportService = new PostgreSqlBulkImportService(_traceService);
                         return Create(dataService, bulkImportService);
                     }
-                case "mysql":
+                case SUPPORTED_DATABASES.MYSQL:
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);

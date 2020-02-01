@@ -18,15 +18,15 @@ namespace Yuniql.PlatformTests
             var traceService = new FileTraceService();
             switch (platform.ToLower())
             {
-                case "sqlserver":
+                case SUPPORTED_DATABASES.SQLSERVER:
                     {
                         return new SqlServerTestDataService(new SqlServerDataService(traceService));
                     }
-                case "postgresql":
+                case SUPPORTED_DATABASES.POSTGRESQL:
                     {
                         return new PostgreSqlTestDataService(new PostgreSqlDataService(traceService));
                     }
-                case "mysql":
+                case SUPPORTED_DATABASES.MYSQL:
                     {
                         return new MySqlTestDataService(new MySqlDataService(traceService));
                     }

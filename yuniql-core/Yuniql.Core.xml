@@ -569,6 +569,26 @@
             <param name="assemblyName">The assembly name to load.</param>
             <returns></returns>
         </member>
+        <member name="T:Yuniql.Core.SUPPORTED_DATABASES">
+            <summary>
+            Global constants for identifying supported database platforms
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.SUPPORTED_DATABASES.SQLSERVER">
+            <summary>
+            SqlServer
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.SUPPORTED_DATABASES.POSTGRESQL">
+            <summary>
+            PostgreSql
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.SUPPORTED_DATABASES.MYSQL">
+            <summary>
+            MySql
+            </summary>
+        </member>
         <member name="T:Yuniql.Core.TokenReplacementService">
             <summary>
             Replaces tokens in the script using the pattern ${TOKEN_KEY}. 
