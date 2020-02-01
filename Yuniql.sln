@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.PostgreSql", "yuniql
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.SqlServer", "yuniql-platforms\sqlserver\Yuniql.SqlServer.csproj", "{8DA510CC-B99F-4A40-A2C3-BC6D6EFBC6F8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "platforms", "platforms", "{1E518201-3021-4406-AE54-3008CC1FF32B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BF5815B6-4EF6-47F9-9E1F-7C909448741B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +64,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{23C7412F-CF0C-4459-BF0F-D8D0C1463F15} = {BF5815B6-4EF6-47F9-9E1F-7C909448741B}
+		{533C16C6-96C1-4B46-B3CB-C8FC3F466ADB} = {BF5815B6-4EF6-47F9-9E1F-7C909448741B}
+		{1484AD89-C4B6-4E18-90DB-CC4994A4933E} = {1E518201-3021-4406-AE54-3008CC1FF32B}
+		{E42FAE78-570B-4718-AADF-B30F8678367B} = {1E518201-3021-4406-AE54-3008CC1FF32B}
+		{8DA510CC-B99F-4A40-A2C3-BC6D6EFBC6F8} = {1E518201-3021-4406-AE54-3008CC1FF32B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5C66EEC5-39B9-4275-98E1-7D9AFF8FC29C}
