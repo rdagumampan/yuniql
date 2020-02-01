@@ -13,8 +13,8 @@ namespace Yuniql.PlatformTests
         [AssemblyInitialize]
         public static void SetupInfrastrucuture(TestContext testContext)
         {
-            var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST);
-            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM);
+            var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_HOST);
+            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
 
             if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("LOCAL"))
             {
@@ -44,8 +44,8 @@ namespace Yuniql.PlatformTests
         [AssemblyCleanup]
         public static void TearDownInfrastructure()
         {
-            var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST);
-            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM);
+            var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_HOST);
+            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
 
             if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("LOCAL"))
             {

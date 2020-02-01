@@ -20,7 +20,7 @@ namespace Yuniql.PlatformTests
 
         public string CloneSampleWorkspace(string workingPath)
         {
-            var source = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_SAMPLEDB);
+            var source = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_SAMPLEDB);
             var destination = workingPath;
 
             foreach (string dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
@@ -43,18 +43,18 @@ namespace Yuniql.PlatformTests
             var databaseName = new DirectoryInfo(workspacePath).Name;
 
             //prepare a unique connection string for each test case
-            var connectionString = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_CONNECTION_STRING);
+            var connectionString = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_CONNECTION_STRING);
             connectionString = connectionString.Replace("yuniqldb", databaseName);
 
             return new TestConfiguration
             {
-                Platform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
+                Platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM),
                 ConnectionString = connectionString,
                 DatabaseName = databaseName,
                 WorkspacePath = workspacePath,
                 CliProcessPath = GetCliProcessFile(),
-                PluginsPath = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_PLUGINS),
-                TestAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST)
+                PluginsPath = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_PLUGINS),
+                TestAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_HOST)
             };
         }
 
@@ -68,18 +68,18 @@ namespace Yuniql.PlatformTests
             CloneSampleWorkspace(workspacePath);
 
             //prepare a unique connection string for each test case
-            var connectionString = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_CONNECTION_STRING);
+            var connectionString = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_CONNECTION_STRING);
             connectionString = connectionString.Replace("yuniqldb", databaseName);
 
             return new TestConfiguration
             {
-                Platform = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_TARGET_PLATFORM),
+                Platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM),
                 ConnectionString = connectionString,
                 DatabaseName = databaseName,
                 WorkspacePath = workspacePath,
                 CliProcessPath = GetCliProcessFile(),
-                PluginsPath = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_PLUGINS),
-                TestAgentHost = EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_HOST)
+                PluginsPath = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_PLUGINS),
+                TestAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_HOST)
             };
         }
 
@@ -87,10 +87,10 @@ namespace Yuniql.PlatformTests
         {
             //handle environment where tests are executed
             var isWindows = Environment.OSVersion.Platform == PlatformID.Win32NT;
-            var cliProcessFile = Path.Combine(EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_CLI), "yuniql.exe");
+            var cliProcessFile = Path.Combine(EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_CLI), "yuniql.exe");
             if (!isWindows)
             {
-                cliProcessFile = Path.Combine(EnvironmentHelper.GetEnvironmentVariable(EnvironmentVariableNames.YUNIQL_TEST_CLI), "yuniql");
+                cliProcessFile = Path.Combine(EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_CLI), "yuniql");
             }
 
             return cliProcessFile;

@@ -1,6 +1,6 @@
 ﻿namespace Yuniql.PlatformTests
 {
-    public class EnvironmentVariableNames
+    public class ENVIRONMENT_VARIABLE
     {
         public const string YUNIQL_PLUGINS = "YUNIQL_PLUGINS";
 
