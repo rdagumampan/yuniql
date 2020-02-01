@@ -1,26 +1,17 @@
 ﻿using Yuniql.Extensibility;
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using Yuniql.Core;
 
 namespace Yuniql.PlatformTests
 {
-    public class SqlServerTestDataService : ITestDataService
+    public class SqlServerTestDataService : TestDataServiceBase
     {
-        private readonly IDataService _dataService;
-
-        public SqlServerTestDataService(IDataService dataService)
+        public SqlServerTestDataService(IDataService dataService): base(dataService)
         {
-            this._dataService = dataService;
         }
-        public bool IsAtomicDDLSupported => _dataService.IsAtomicDDLSupported;
 
-        public bool IsSchemaSupported => _dataService.IsSchemaSupported;
-
-        public string GetConnectionString(string databaseName)
+        public override string GetConnectionString(string databaseName)
         {
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");
             if (string.IsNullOrEmpty(connectionString))
@@ -34,63 +25,7 @@ namespace Yuniql.PlatformTests
             return result.ConnectionString;
         }
 
-        public bool QuerySingleBool(string connectionString, string sqlStatement)
-        {
-            _dataService.Initialize(connectionString);
-            using (var connection = _dataService.CreateConnection().KeepOpen())
-            {
-                return connection.QuerySingleBool(sqlStatement);
-            }
-        }
-
-        public string QuerySingleString(string connectionString, string sqlStatement)
-        {
-            _dataService.Initialize(connectionString);
-            using (var connection = _dataService.CreateConnection().KeepOpen())
-            {
-                return connection.QuerySingleString(sqlStatement);
-            }
-        }
-
-        public string GetCurrentDbVersion(string connectionString)
-        {
-            _dataService.Initialize(connectionString);
-            var sqlStatement = _dataService.GetSqlForGetCurrentVersion();
-            using (var connection = _dataService.CreateConnection().KeepOpen())
-            {
-                return connection.QuerySingleString(commandText: sqlStatement);
-            }
-        }
-
-        public List<DbVersion> GetAllDbVersions(string connectionString)
-        {
-
-            _dataService.Initialize(connectionString);
-            var sqlStatement = _dataService.GetSqlForGetAllVersions();
-
-            var result = new List<DbVersion>();
-            using (var connection = _dataService.CreateConnection().KeepOpen())
-            {
-                var command = connection.CreateCommand(commandText: sqlStatement);
-
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var dbVersion = new DbVersion
-                    {
-                        Id = reader.GetInt16(0),
-                        Version = reader.GetString(1),
-                        DateInsertedUtc = reader.GetDateTime(2),
-                        LastUserId = reader.GetString(3)
-                    };
-                    result.Add(dbVersion);
-                }
-            }
-
-            return result;
-        }
-
-        public bool CheckIfDbExist(string connectionString)
+        public override bool CheckIfDbExist(string connectionString)
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             var sqlStatement = $"SELECT ISNULL(database_id, 0) FROM [sys].[databases] WHERE name = '{connectionStringBuilder.InitialCatalog}'";
@@ -99,23 +34,23 @@ namespace Yuniql.PlatformTests
             var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             masterConnectionStringBuilder.InitialCatalog = "master";
 
-            return QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
+            return base.QuerySingleBool(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
 
-        public bool CheckIfDbObjectExist(string connectionString, string objectName)
+        public override bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
             var sqlStatement = $"SELECT ISNULL(OBJECT_ID('{objectName}'), 0) AS ObjectID";
-            return QuerySingleBool(connectionString, sqlStatement);
+            return base.QuerySingleBool(connectionString, sqlStatement);
         }
 
-        public string GetSqlForCreateDbSchema(string schemaName)
+        public override string GetSqlForCreateDbSchema(string schemaName)
         {
             return $@"
 CREATE SCHEMA {schemaName};
 ";
         }
 
-        public string GetSqlForCreateDbObject(string scriptName)
+        public override string GetSqlForCreateDbObject(string scriptName)
         {
             return $@"
 CREATE PROC {scriptName}
@@ -125,7 +60,7 @@ GO
 ";
         }
 
-        public string GetSqlForCreateDbObjectWithError(string scriptName)
+        public override string GetSqlForCreateDbObjectWithError(string scriptName)
         {
             return $@"
 CREATE PROC [NONEXISTINGDB].[dbo].[{scriptName}]
@@ -134,7 +69,7 @@ AS
 GO
                 ";
         }
-        public string GetSqlForCreateDbObjectWithTokens(string objectName)
+        public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
             return $@"
 CREATE PROC {objectName}_${{Token1}}_${{Token2}}_${{Token3}}
@@ -143,7 +78,7 @@ AS
 ";
         }
 
-        public string GetSqlForCreateBulkTable(string tableName)
+        public override string GetSqlForCreateBulkTable(string tableName)
         {
             return $@"
 IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = '{tableName}'))
@@ -157,7 +92,7 @@ END
 ";
         }
 
-        public string GetSqlForSingleLine(string objectName)
+        public override string GetSqlForSingleLine(string objectName)
         {
             return $@"
 CREATE PROC {objectName}
@@ -167,7 +102,7 @@ GO
 ";
         }
 
-        public string GetSqlForSingleLineWithoutTerminator(string objectName)
+        public override string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
             return $@"
 CREATE PROC {objectName}
@@ -176,7 +111,7 @@ AS
 ";
         }
 
-        public string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
+        public override string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE PROC {objectName1}
@@ -195,7 +130,7 @@ AS
 ";
         }
 
-        public string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
+        public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE PROC {objectName1}
@@ -217,7 +152,7 @@ AS
 ";
         }
 
-        public string GetSqlForMultilineWithError(string objectName1, string objectName2)
+        public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
             return $@"
 CREATE TABLE {objectName1}(        
@@ -241,48 +176,19 @@ GO
 ";
         }
 
-        public void CreateScriptFile(string sqlFilePath, string sqlStatement)
+        public override void CreateScriptFile(string sqlFilePath, string sqlStatement)
         {
             using var sw = File.CreateText(sqlFilePath);
             sw.WriteLine(sqlStatement);
         }
 
-        public string GetSqlForCleanup()
+        public override string GetSqlForCleanup()
         {
             return @"
 DROP PROCEDURE script1;
 DROP PROCEDURE script2;
 DROP PROCEDURE script3;
 ";
-        }
-
-        public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName)
-        {
-            var results = new List<BulkTestDataRow>();
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var sqlStatement = $"SELECT * FROM {tableName};";
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        results.Add(new BulkTestDataRow
-                        {
-                            FirstName = !reader.IsDBNull(0) ? reader.GetString(0) : null,
-                            LastName = !reader.IsDBNull(1) ? reader.GetString(1) : null,
-                            BirthDate = !reader.IsDBNull(2) ? reader.GetDateTime(2) : new DateTime?()
-                        });
-                    }
-                }
-            }
-            return results;
         }
     }
 }

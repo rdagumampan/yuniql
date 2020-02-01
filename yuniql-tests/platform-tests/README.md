@@ -22,6 +22,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	```console
 	cd yuniql-cli
 	dotnet build
+	dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 	```
 
 ## Running platform tests for SqlServer
@@ -31,7 +32,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	```bash
 	SETX YUNIQL_TEST_TARGET_PLATFORM "sqlserver"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\sqlserver-sample"
+	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-sqlserver-sample"
 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"
@@ -50,12 +51,12 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 1. Configure your connection string
 
 	```bash
-	cd yuniql-platforms\postgresql\src
-	dotnet publish -c release -r win-x64 -o .\.plugins\postgresql
+	cd yuniql-platforms\postgresql
+	dotnet publish -c release -r win-x64
 
 	SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\yuniql-platforms\postgresql\samples"
+	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-postgresql-sample"
 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"
@@ -74,12 +75,12 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 1. Configure your connection string
 
 	```bash
-	cd yuniql-platforms\mysql\src
+	cd yuniql-platforms\mysql
 	dotnet publish -c release -r win-x64
 
 	SETX YUNIQL_TEST_TARGET_PLATFORM "mysql"
 	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\yuniql-platforms\mysql\samples"
+	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-mysql-sample"
 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"
@@ -91,6 +92,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	dotnet build
 	dotnet test -v n
 	```
+
 ## References
 - Access SqlServer database with SQL Server Management Studio (SSMS) tool<br>
 https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15

@@ -8,19 +8,20 @@ using System.Data;
 
 namespace Yuniql.PlatformTests
 {
-    public class MySqlTestDataService : ITestDataService
+    public class MySqlTestDataService : TestDataServiceBase
     {
         private readonly IDataService _dataService;
-        public MySqlTestDataService(IDataService dataService)
+
+        public MySqlTestDataService(IDataService dataService) : base(dataService)
         {
             this._dataService = dataService;
         }
 
-        public bool IsAtomicDDLSupported => _dataService.IsAtomicDDLSupported;
+        public override bool IsAtomicDDLSupported => _dataService.IsAtomicDDLSupported;
 
-        public bool IsSchemaSupported => _dataService.IsSchemaSupported;
+        public override bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
-        public string GetConnectionString(string databaseName)
+        public override string GetConnectionString(string databaseName)
         {
             var connectionString = EnvironmentHelper.GetEnvironmentVariable("YUNIQL_TEST_CONNECTION_STRING");
             if (string.IsNullOrEmpty(connectionString))
@@ -34,63 +35,7 @@ namespace Yuniql.PlatformTests
             return result.ConnectionString;
         }
 
-        public bool QuerySingleBool(string connectionString, string sqlStatement)
-        {
-            _dataService.Initialize(connectionString);
-            using (var connection = _dataService.CreateConnection().KeepOpen())
-            {
-                return connection.QuerySingleBool(sqlStatement);
-            }
-        }
-
-        public string QuerySingleString(string connectionString, string sqlStatement)
-        {
-            _dataService.Initialize(connectionString);
-            using (var connection = _dataService.CreateConnection().KeepOpen())
-            {
-                return connection.QuerySingleString(sqlStatement);
-            }
-        }
-
-        public string GetCurrentDbVersion(string connectionString)
-        {
-            _dataService.Initialize(connectionString);
-            var sqlStatement = _dataService.GetSqlForGetCurrentVersion();
-            using (var connection = _dataService.CreateConnection().KeepOpen())
-            {
-                return connection.QuerySingleString(commandText: sqlStatement);
-            }
-        }
-
-        public List<DbVersion> GetAllDbVersions(string connectionString)
-        {
-
-            _dataService.Initialize(connectionString);
-            var sqlStatement = _dataService.GetSqlForGetAllVersions();
-
-            var result = new List<DbVersion>();
-            using (var connection = _dataService.CreateConnection().KeepOpen())
-            {
-                var command = connection.CreateCommand(commandText: sqlStatement);
-
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    var dbVersion = new DbVersion
-                    {
-                        Id = reader.GetInt16(0),
-                        Version = reader.GetString(1),
-                        DateInsertedUtc = reader.GetDateTime(2),
-                        LastUserId = reader.GetString(3)
-                    };
-                    result.Add(dbVersion);
-                }
-            }
-
-            return result;
-        }
-
-        public bool CheckIfDbExist(string connectionString)
+        public override bool CheckIfDbExist(string connectionString)
         {
             //use the target user database to migrate, this is part of orig connection string
             var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
@@ -101,7 +46,7 @@ namespace Yuniql.PlatformTests
             return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
         }
 
-        public bool CheckIfDbObjectExist(string connectionString, string objectName)
+        public override bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
             //check from tables, im just lazy to figure out join :)
             var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
@@ -125,7 +70,7 @@ namespace Yuniql.PlatformTests
             return result;
         }
 
-        public string GetSqlForCreateDbObject(string objectName)
+        public override string GetSqlForCreateDbObject(string objectName)
         {
             return $@"
 CREATE TABLE {objectName} (
@@ -139,7 +84,7 @@ CREATE TABLE {objectName} (
         }
 
         //https://stackoverflow.com/questions/42436932/transactions-not-working-for-my-mysql-db
-        public string GetSqlForCreateDbObjectWithError(string objectName)
+        public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
             return $@"
 CREATE TABLE {objectName} (
@@ -152,7 +97,7 @@ CREATE TABLE {objectName} (
 ";
         }
 
-        public string GetSqlForCreateDbObjectWithTokens(string objectName)
+        public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
             return $@"
 CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
@@ -165,7 +110,7 @@ CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
 ";
         }
 
-        public string GetSqlForCreateBulkTable(string tableName)
+        public override string GetSqlForCreateBulkTable(string tableName)
         {
             return $@"
 CREATE TABLE {tableName}(
@@ -176,7 +121,7 @@ CREATE TABLE {tableName}(
 ";
         }
 
-        public string GetSqlForSingleLine(string objectName)
+        public override string GetSqlForSingleLine(string objectName)
         {
             return $@"
 CREATE TABLE {objectName} (
@@ -189,7 +134,7 @@ CREATE TABLE {objectName} (
 ";
         }
 
-        public string GetSqlForSingleLineWithoutTerminator(string objectName)
+        public override string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
             return $@"
 CREATE TABLE {objectName} (
@@ -202,7 +147,7 @@ CREATE TABLE {objectName} (
 ";
         }
 
-        public string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
+        public override string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE TABLE {objectName1} (
@@ -227,7 +172,7 @@ END
 ";
         }
 
-        public string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
+        public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE TABLE {objectName1} (
@@ -254,7 +199,7 @@ END;
 ";
         }
 
-        public string GetSqlForMultilineWithError(string objectName1, string objectName2)
+        public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
             return $@"
 CREATE TABLE {objectName1} (
@@ -273,13 +218,13 @@ SELECT 1/0;
 ";
         }
 
-        public void CreateScriptFile(string sqlFilePath, string sqlStatement)
+        public override void CreateScriptFile(string sqlFilePath, string sqlStatement)
         {
             using var sw = File.CreateText(sqlFilePath);
             sw.WriteLine(sqlStatement);
         }
 
-        public string GetSqlForCleanup()
+        public override string GetSqlForCleanup()
         {
             return @"
 DROP TABLE script1;
@@ -288,40 +233,11 @@ DROP TABLE script3;
 ";
         }
 
-        public string GetSqlForCreateDbSchema(string schemaName)
+        public override string GetSqlForCreateDbSchema(string schemaName)
         {
             return $@"
 CREATE SCHEMA {schemaName};
 ";
-        }
-
-        public List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName)
-        {
-            var results = new List<BulkTestDataRow>();
-            using (var connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-
-                var sqlStatement = $"SELECT * FROM {tableName};";
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
-                command.CommandTimeout = 0;
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        results.Add(new BulkTestDataRow
-                        {
-                            FirstName = !reader.IsDBNull(0) ? reader.GetString(0) : null,
-                            LastName = !reader.IsDBNull(1) ? reader.GetString(1) : null,
-                            BirthDate = !reader.IsDBNull(2) ? reader.GetDateTime(2) : new DateTime?()
-                        });
-                    }
-                }
-            }
-            return results;
         }
 
         private Tuple<string, string> GetObjectNameWithSchema(string objectName)
