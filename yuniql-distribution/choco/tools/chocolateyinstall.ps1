@@ -2,8 +2,8 @@ $packageName = $env:ChocolateyPackageName
 $version = $env:ChocolateyPackageVersion
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"    
 
-Write-Host "Installing $packageName v$version"
-Write-Host "toolsDir: $toolsDir"
+# Write-Host "Installing $packageName v$version"
+# Write-Host "toolsDir: $toolsDir"
 
 $packageArgs = @{
     packageName     = $packageName
@@ -13,12 +13,12 @@ $packageArgs = @{
     checksumType    = 'sha256'
 }
 
-Write-Host $packageArgs.packageName
-Write-Host $packageArgs.fileType
-Write-Host $packageArgs.url
-Write-Host $packageArgs.checksum
-Write-Host $packageArgs.checksumType
-Write-Host $packageArgs.unzipLocation
+# Write-Host $packageArgs.packageName
+# Write-Host $packageArgs.fileType
+# Write-Host $packageArgs.url
+# Write-Host $packageArgs.checksum
+# Write-Host $packageArgs.checksumType
+# Write-Host $packageArgs.unzipLocation
 
 Install-ChocolateyZipPackage `
   -PackageName $packageArgs.packageName `
@@ -32,15 +32,15 @@ Install-ChocolateyZipPackage `
 #https://github.com/chocolatey/choco/wiki/HelpersInstallChocolateyZipPackage
 
 $installPath = "$toolsDir\$packageName-$version\yuniql.exe"
-Write-Host "installPath: $installPath"
+# Write-Host "installPath: $installPath"
 
 $packageArgs = @{
     name    = $packageName
     path    = $installPath
 }
 
-Write-Host $packageArgs.name
-Write-Host $packageArgs.path
+# Write-Host $packageArgs.name
+# Write-Host $packageArgs.path
 
 Install-BinFile `
   -Name $packageArgs.name `
