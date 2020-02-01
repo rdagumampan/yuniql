@@ -4,7 +4,7 @@
 
 <img align="right" src="assets/yuniql-logo.png" width="150">
 
-**yuniql** (yuu-nee-kel) is a database schema versioning and migration engine for SqlServer, PostgreSql and others. Versions are organized as series of ordinary directories or folders. Scripts are stored transparently as plain old `.sql` files. Yuniql automates what normally done by hand and executes scripts in an orderly and transactional fashion.
+**yuniql** (yuu-nee-kel) is a database schema versioning and migration engine for SqlServer, PostgreSql and others. Versions are organized as series of ordinary directories or folders. Scripts are stored transparently as plain old `.sql` files. Yuniql automates what is normally done by hand and executes scripts in an orderly and transactional fashion.
 
 **yuniql** promotes and facilitates an end-to-end DB DevOps discipline. From schema versioning, to fresh database provisioning and releases via continuous delivery pipeline tasks.
 
