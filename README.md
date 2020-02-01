@@ -40,6 +40,22 @@ cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
 yuniql run -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" -a
 ```
 
+## Working with Azure DevOps Pipelines Tasks
+Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how `Use .NET Core` or `Use Node` tasks works. Find Yuniql on [Azure DevOps MarketPlace](https://marketplace.visualstudio.com/items?itemName=rdagumampan.yuniql-azdevops-extensions). Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops.
+
+<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/yuniql-azure-pipelines/images/screenshot-02.png" width="700">
+
+## Working with Docker Container
+Run your database migration thru a docker container. This is specially helpful on Linux environments and CI/CD pipelines running on Linux Agents as it facilitates your migration without having to worry any local installations or runtime dependencies. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container.
+
+```console
+git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-docker
+cd c:\temp\yuniql-docker\samples\basic-sqlserver-sample
+
+docker build -t sqlserver-example .
+docker run sqlserver-example -c "<your-connection-string>" -a --platform sqlserver
+```
+
 ## Working with ASP.NET Core
 Run your database migration when your ASP.NET Core host service starts up. This ensures that database is always at latest compatible state before operating the service. Applies to Worker and WebApp projects. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core.
 
@@ -102,22 +118,6 @@ static void Main(string[] args)
 		configuration.VerifyOnly,
 		configuration.Delimiter);
 }
-```
-
-## Working with Azure DevOps Pipelines Tasks
-Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how `Use .NET Core` or `Use Node` tasks works. Find Yuniql on [Azure DevOps MarketPlace](https://marketplace.visualstudio.com/items?itemName=rdagumampan.yuniql-azdevops-extensions). Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops.
-
-<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/yuniql-azure-pipelines/images/screenshot-02.png" width="700">
-
-## Working with Docker Container
-Run your database migration thru a docker container. This is specially helpful on Linux environments and CI/CD pipelines running on Linux Agents as it facilitates your migration without having to worry any local installations or runtime dependencies. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container.
-
-```console
-git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-docker
-cd c:\temp\yuniql-docker\samples\basic-sqlserver-sample
-
-docker build -t sqlserver-example .
-docker run sqlserver-example -c "<your-connection-string>" -a --platform sqlserver
 ```
 
 ## Advanced use cases
