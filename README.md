@@ -23,7 +23,7 @@ Yuniql promotes and facilitates an end-to-end database DevOps discipline. From s
 *** planned or being evaluated/developer/tested
 
 ## Working with CLI
-Manage local db versions and run database migrations from your CLI tool. Perform local migration run and uncommitted runs to test your scripts. Detailed quick start and developer guides available here https://github.com/rdagumampan/yuniql/wiki/Getting-started.
+Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://github.com/rdagumampan/yuniql/wiki/Install-yuniql
 
 ```console
 choco install yuniql --version 0.328.0
@@ -31,17 +31,9 @@ choco install yuniql --version 0.328.0
 git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
 cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
 
-yuniql run -c "<your-connection-string>" -a
-```
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 
-Alternative ways to install yuniql CLI.
-
-```console
-#option 2: requires .NET Core 3.x installed
-dotnet tool install -g yuniql.cli
-
-#option 3: download directly, no client dependencies
-https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest.zip
+yuniql run -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" -a
 ```
 
 ## Working with ASP.NET Core
@@ -73,7 +65,7 @@ app.UseYuniql(traceService, new YuniqlConfiguration
 ```
 
 ## Working with Console Application
-Run your database migration when Console App starts. Working sample is available here https://github.com/rdagumampan/yuniql/tree/master/samples/sqlserver-console-sample.
+Run your database migration when Console App starts. Developer guide available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-.NET-Core-Console-Application.
  
 ```console
 dotnet add package Yuniql.Core
