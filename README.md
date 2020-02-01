@@ -30,15 +30,13 @@ choco install yuniql --version 0.328.0
 ```
 
 ```console
-git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
-cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
-```
-
-```console
 docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 ```
 
 ```console
+git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
+cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
+
 yuniql run -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" -a
 ```
 
