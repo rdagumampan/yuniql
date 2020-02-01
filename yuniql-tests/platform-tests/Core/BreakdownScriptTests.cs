@@ -66,7 +66,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlObjectName = "Test_Object_1";
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.CreateSingleLineScript(sqlObjectName));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLine(sqlObjectName));
 
             //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
@@ -85,7 +85,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlObjectName = "Test_Object_1";
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.CreateSingleLineScriptWithoutTerminator(sqlObjectName));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLineWithoutTerminator(sqlObjectName));
 
             //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
@@ -108,7 +108,7 @@ namespace Yuniql.PlatformTests
             string sqlObjectName2 = "Test_Object_2";
             string sqlObjectName3 = "Test_Object_3";
 
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.CreateMultilineScriptWithoutTerminatorInLastLine(sqlObjectName1, sqlObjectName2, sqlObjectName3));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithoutTerminatorInLastLine(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
@@ -135,7 +135,7 @@ namespace Yuniql.PlatformTests
             string sqlObjectName2 = "Test_Object_2";
             string sqlObjectName3 = "Test_Object_3";
 
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.CreateMultilineScriptWithTerminatorInsideStatements(sqlObjectName1, sqlObjectName2, sqlObjectName3));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithTerminatorInsideStatements(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
@@ -159,7 +159,7 @@ namespace Yuniql.PlatformTests
             string sqlFileName = "Test_Single_Run_Failed_Script_Must_Rollback";
             string sqlObjectName1 = "Test_Object_1";
             string sqlObjectName2 = "Test_Object_2";
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.CreateMultilineScriptWithError(sqlObjectName1, sqlObjectName2));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithError(sqlObjectName1, sqlObjectName2));
 
             //act
             try

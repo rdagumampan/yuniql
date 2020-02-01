@@ -124,14 +124,14 @@ namespace Yuniql.PlatformTests
             return result;
         }
 
-        public string CreateDbSchemaScript(string schemaName)
+        public string GetSqlForCreateDbSchema(string schemaName)
         {
             return $@"
 CREATE SCHEMA {schemaName};
 ";
         }
 
-        public string CreateDbObjectScript(string objectName)
+        public string GetSqlForCreateDbObject(string objectName)
         {
             return $@"
 CREATE TABLE public.{objectName} (
@@ -144,7 +144,7 @@ CREATE TABLE public.{objectName} (
 ";
         }
 
-        public string CreateDbObjectScriptWithError(string objectName)
+        public string GetSqlForCreateDbObjectWithError(string objectName)
         {
             return $@"
 CREATE TABLE public.{objectName} (
@@ -157,7 +157,7 @@ CREATE TABLE public.{objectName} (
 ";
         }
 
-        public string CreateTokenizedDbObjectScript(string objectName)
+        public string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
             return $@"
 CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
@@ -170,7 +170,7 @@ CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
 ";
         }
 
-        public string CreateBulkTableScript(string tableName)
+        public string GetSqlForCreateBulkTable(string tableName)
         {
             return $@"
 CREATE TABLE {tableName}(
@@ -181,7 +181,7 @@ CREATE TABLE {tableName}(
 ";
         }
 
-        public string CreateSingleLineScript(string objectName)
+        public string GetSqlForSingleLine(string objectName)
         {
             return $@"
 CREATE TABLE public.{objectName} (
@@ -194,7 +194,7 @@ CREATE TABLE public.{objectName} (
 ";
         }
 
-        public string CreateSingleLineScriptWithoutTerminator(string objectName)
+        public string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
             return $@"
 CREATE TABLE public.{objectName} (
@@ -207,7 +207,7 @@ CREATE TABLE public.{objectName} (
 ";
         }
 
-        public string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
+        public string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE TABLE public.{objectName1} (
@@ -234,7 +234,7 @@ ${objectName3}$ LANGUAGE plpgsql
 ";
         }
 
-        public string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
+        public string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE TABLE public.{objectName1} (
@@ -263,7 +263,7 @@ ${objectName3}$ LANGUAGE plpgsql
 ";
         }
 
-        public string CreateMultilineScriptWithError(string objectName1, string objectName2)
+        public string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
             return $@"
 CREATE TABLE public.{objectName1} (
@@ -288,7 +288,7 @@ SELECT 1/0;
             sw.WriteLine(sqlStatement);
         }
 
-        public string CreateCleanupScript()
+        public string GetSqlForCleanup()
         {
             return @"
 DROP TABLE script1;

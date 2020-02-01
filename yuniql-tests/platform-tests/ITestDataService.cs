@@ -19,29 +19,29 @@ namespace Yuniql.PlatformTests
 
         bool CheckIfDbObjectExist(string connectionString, string objectName);
 
-        string CreateDbSchemaScript(string schemaName);
+        string GetSqlForCreateDbSchema(string schemaName);
 
-        string CreateDbObjectScript(string scriptName);
+        string GetSqlForCreateDbObject(string scriptName);
 
-        string CreateDbObjectScriptWithError(string objectName);
+        string GetSqlForCreateDbObjectWithError(string objectName);
 
-        string CreateTokenizedDbObjectScript(string objectName);
+        string GetSqlForCreateDbObjectWithTokens(string objectName);
 
-        string CreateBulkTableScript(string tableName);
+        string GetSqlForCreateBulkTable(string tableName);
 
-        string CreateSingleLineScript(string objectName);
+        string GetSqlForSingleLine(string objectName);
 
-        string CreateSingleLineScriptWithoutTerminator(string objectName);
+        string GetSqlForSingleLineWithoutTerminator(string objectName);
 
-        string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3);
+        string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3);
 
-        string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3);
+        string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3);
 
-        string CreateMultilineScriptWithError(string objectName1, string objectName2);
+        string GetSqlForMultilineWithError(string objectName1, string objectName2);
 
         void CreateScriptFile(string sqlFilePath, string sqlStatement);
 
-        string CreateCleanupScript();
+        string GetSqlForCleanup();
 
         bool IsAtomicDDLSupported { get; }
 

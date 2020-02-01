@@ -108,14 +108,14 @@ namespace Yuniql.PlatformTests
             return QuerySingleBool(connectionString, sqlStatement);
         }
 
-        public string CreateDbSchemaScript(string schemaName)
+        public string GetSqlForCreateDbSchema(string schemaName)
         {
             return $@"
 CREATE SCHEMA {schemaName};
 ";
         }
 
-        public string CreateDbObjectScript(string scriptName)
+        public string GetSqlForCreateDbObject(string scriptName)
         {
             return $@"
 CREATE PROC {scriptName}
@@ -125,7 +125,7 @@ GO
 ";
         }
 
-        public string CreateDbObjectScriptWithError(string scriptName)
+        public string GetSqlForCreateDbObjectWithError(string scriptName)
         {
             return $@"
 CREATE PROC [NONEXISTINGDB].[dbo].[{scriptName}]
@@ -134,7 +134,7 @@ AS
 GO
                 ";
         }
-        public string CreateTokenizedDbObjectScript(string objectName)
+        public string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
             return $@"
 CREATE PROC {objectName}_${{Token1}}_${{Token2}}_${{Token3}}
@@ -143,7 +143,7 @@ AS
 ";
         }
 
-        public string CreateBulkTableScript(string tableName)
+        public string GetSqlForCreateBulkTable(string tableName)
         {
             return $@"
 IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = '{tableName}'))
@@ -157,7 +157,7 @@ END
 ";
         }
 
-        public string CreateSingleLineScript(string objectName)
+        public string GetSqlForSingleLine(string objectName)
         {
             return $@"
 CREATE PROC {objectName}
@@ -167,7 +167,7 @@ GO
 ";
         }
 
-        public string CreateSingleLineScriptWithoutTerminator(string objectName)
+        public string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
             return $@"
 CREATE PROC {objectName}
@@ -176,7 +176,7 @@ AS
 ";
         }
 
-        public string CreateMultilineScriptWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
+        public string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE PROC {objectName1}
@@ -195,7 +195,7 @@ AS
 ";
         }
 
-        public string CreateMultilineScriptWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
+        public string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE PROC {objectName1}
@@ -217,7 +217,7 @@ AS
 ";
         }
 
-        public string CreateMultilineScriptWithError(string objectName1, string objectName2)
+        public string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
             return $@"
 CREATE TABLE {objectName1}(        
@@ -247,7 +247,7 @@ GO
             sw.WriteLine(sqlStatement);
         }
 
-        public string CreateCleanupScript()
+        public string GetSqlForCleanup()
         {
             return @"
 DROP PROCEDURE script1;
