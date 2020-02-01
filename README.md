@@ -55,7 +55,7 @@ SETX YUNIQL_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@s
 cd c:\temp\yuniql-cli\samples\basic-postgresql-sample
 
 yuniql run -a --platform postgresql
-yuniql info
+yuniql info --platform postgresql
 ```
 
 ## Working with Azure DevOps Pipelines Tasks
