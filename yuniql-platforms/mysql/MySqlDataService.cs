@@ -49,16 +49,16 @@ namespace Yuniql.MySql
             return new ConnectionInfo { DataSource = connectionStringBuilder.Server, Database = connectionStringBuilder.Database };
         }
 
-        public string GetCheckIfDatabaseExistsSql()
+        public string GetSqlForCheckIfDatabaseExists()
             => "SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';";
 
-        public string GetCreateDatabaseSql()
+        public string GetSqlForCreateDatabase()
             => "CREATE DATABASE {0};";
 
-        public string GetCheckIfDatabaseConfiguredSql()
+        public string GetSqlForCheckIfDatabaseConfigured()
             => "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = '__YuniqlDbVersion' LIMIT 1;";
 
-        public string GetConfigureDatabaseSql()
+        public string GetSqlForConfigureDatabase()
             => @"
                 CREATE TABLE __YuniqlDbVersion (
 	                Id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
@@ -71,13 +71,13 @@ namespace Yuniql.MySql
                 ) ENGINE=InnoDB;
             ";
 
-        public string GetGetCurrentVersionSql()
+        public string GetSqlForGetCurrentVersion()
             => "SELECT Version FROM __YuniqlDbVersion ORDER BY Id DESC LIMIT 1;";
 
-        public string GetGetAllVersionsSql()
+        public string GetSqlForGetAllVersions()
             => "SELECT Id, Version, DateInsertedUtc, LastUserId FROM __YuniqlDbVersion ORDER BY Version ASC;";
 
-        public string GetUpdateVersionSql()
+        public string GetSqlForUpdateVersion()
             => "INSERT INTO __YuniqlDbVersion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{0}', NOW(), NOW(), USER());";
     }
 }

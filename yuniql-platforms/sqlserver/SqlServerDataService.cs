@@ -54,16 +54,16 @@ namespace Yuniql.SqlServer
                 .ToList();
         }
 
-        public string GetCheckIfDatabaseExistsSql()
+        public string GetSqlForCheckIfDatabaseExists()
             => "SELECT ISNULL(database_id,0) FROM [sys].[databases] WHERE name = '{0}'";
 
-        public string GetCreateDatabaseSql()
+        public string GetSqlForCreateDatabase()
             => "CREATE DATABASE {0};";
 
-        public string GetCheckIfDatabaseConfiguredSql()
+        public string GetSqlForCheckIfDatabaseConfigured()
             => "SELECT ISNULL(object_id,0) FROM [sys].[tables] WHERE name = '__YuniqlDbVersion'";
 
-        public string GetConfigureDatabaseSql()
+        public string GetSqlForConfigureDatabase()
             => @"
                     IF OBJECT_ID('[dbo].[__YuniqlDbVersion]') IS NULL 
                     BEGIN
@@ -84,13 +84,13 @@ namespace Yuniql.SqlServer
                     END                
             ";
 
-        public string GetGetCurrentVersionSql()
+        public string GetSqlForGetCurrentVersion()
             => "SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY Id DESC;";
 
-        public string GetGetAllVersionsSql()
+        public string GetSqlForGetAllVersions()
             => "SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
 
-        public string GetUpdateVersionSql()
+        public string GetSqlForUpdateVersion()
             => "INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{0}');";
     }
 }

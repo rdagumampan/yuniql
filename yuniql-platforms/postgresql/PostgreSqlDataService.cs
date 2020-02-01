@@ -49,16 +49,16 @@ namespace Yuniql.PostgreSql
             return new ConnectionInfo { DataSource = connectionStringBuilder.Host, Database = connectionStringBuilder.Database };
         }
 
-        public string GetCheckIfDatabaseExistsSql()
+        public string GetSqlForCheckIfDatabaseExists()
             => "SELECT 1 from pg_database WHERE datname = '{0}';";
 
-        public string GetCreateDatabaseSql()
+        public string GetSqlForCreateDatabase()
             => "CREATE DATABASE {0};";
 
-        public string GetCheckIfDatabaseConfiguredSql()
+        public string GetSqlForCheckIfDatabaseConfigured()
             => "SELECT 1 FROM pg_tables WHERE  tablename = '__yuniqldbversion'";
 
-        public string GetConfigureDatabaseSql()
+        public string GetSqlForConfigureDatabase()
             => @"CREATE TABLE __YuniqlDbVersion(
                     Id SMALLSERIAL PRIMARY KEY NOT NULL,
                     Version VARCHAR(32) NOT NULL,
@@ -69,13 +69,13 @@ namespace Yuniql.PostgreSql
                     CONSTRAINT IX___YuniqlDbVersion UNIQUE(Version)
 	            );";
 
-        public string GetGetCurrentVersionSql()
+        public string GetSqlForGetCurrentVersion()
             => "SELECT Version FROM __yuniqldbversion ORDER BY Id DESC LIMIT 1;";
 
-        public string GetGetAllVersionsSql()
+        public string GetSqlForGetAllVersions()
             => "SELECT Id, Version, DateInsertedUtc, LastUserId FROM __yuniqldbversion ORDER BY Version ASC;";
 
-        public string GetUpdateVersionSql()
+        public string GetSqlForUpdateVersion()
             => "INSERT INTO __yuniqldbversion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{0}', NOW(), NOW(), user);";
     }
 }

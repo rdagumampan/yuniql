@@ -35,7 +35,7 @@ namespace Yuniql.Core
         /// <returns>Returns true when database already exists in the target host.</returns>
         public bool IsDatabaseExists(int? commandTimeout = null)
         {
-            var sqlStatement = string.Format(_dataService.GetCheckIfDatabaseExistsSql(), _dataService.GetConnectionInfo().Database);
+            var sqlStatement = string.Format(_dataService.GetSqlForCheckIfDatabaseExists(), _dataService.GetConnectionInfo().Database);
             using (var connection = _dataService.CreateMasterConnection())
             {
                 return connection.QuerySingleBool(
@@ -52,7 +52,7 @@ namespace Yuniql.Core
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         public void CreateDatabase(int? commandTimeout = null)
         {
-            var sqlStatement = string.Format(_dataService.GetCreateDatabaseSql(), _dataService.GetConnectionInfo().Database);
+            var sqlStatement = string.Format(_dataService.GetSqlForCreateDatabase(), _dataService.GetConnectionInfo().Database);
             using (var connection = _dataService.CreateMasterConnection())
             {
                 connection.ExecuteNonQuery(
@@ -70,7 +70,7 @@ namespace Yuniql.Core
         /// <returns>Returns true when version tracking table is already created.</returns>
         public bool IsDatabaseConfigured(int? commandTimeout = null)
         {
-            var sqlStatement = string.Format(_dataService.GetCheckIfDatabaseConfiguredSql(), _dataService.GetConnectionInfo().Database);
+            var sqlStatement = string.Format(_dataService.GetSqlForCheckIfDatabaseConfigured(), _dataService.GetConnectionInfo().Database);
             using (var connection = _dataService.CreateConnection())
             {
                 return connection.QuerySingleBool(
@@ -87,7 +87,7 @@ namespace Yuniql.Core
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         public void ConfigureDatabase(int? commandTimeout = null)
         {
-            var sqlStatement = _dataService.GetConfigureDatabaseSql();
+            var sqlStatement = _dataService.GetSqlForConfigureDatabase();
             using (var connection = _dataService.CreateConnection())
             {
                 connection.ExecuteNonQuery(
@@ -105,7 +105,7 @@ namespace Yuniql.Core
         /// <returns>Returns the latest version applied in the target database.</returns>
         public string GetCurrentVersion(int? commandTimeout = null)
         {
-            var sqlStatement = _dataService.GetGetCurrentVersionSql();
+            var sqlStatement = _dataService.GetSqlForGetCurrentVersion();
             using (var connection = _dataService.CreateConnection())
             {
                 return connection.QuerySingleString(
@@ -123,7 +123,7 @@ namespace Yuniql.Core
         /// <returns>All versions applied in the target database.</returns>
         public List<DbVersion> GetAllVersions(int? commandTimeout = null)
         {
-            var sqlStatement = _dataService.GetGetAllVersionsSql();
+            var sqlStatement = _dataService.GetSqlForGetAllVersions();
 
             if (null != _traceService)
                 _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
@@ -166,7 +166,7 @@ namespace Yuniql.Core
             string version,
             int? commandTimeout = null)
         {
-            var sqlStatement = string.Format(_dataService.GetUpdateVersionSql(), version);
+            var sqlStatement = string.Format(_dataService.GetSqlForUpdateVersion(), version);
 
             if (null != _traceService)
                 _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");

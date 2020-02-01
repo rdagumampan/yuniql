@@ -55,7 +55,7 @@ namespace Yuniql.PlatformTests
         public string GetCurrentDbVersion(string connectionString)
         {
             _dataService.Initialize(connectionString);
-            var sqlStatement = _dataService.GetGetCurrentVersionSql();
+            var sqlStatement = _dataService.GetSqlForGetCurrentVersion();
             using (var connection = _dataService.CreateConnection().KeepOpen())
             {
                 return connection.QuerySingleString(commandText: sqlStatement);
@@ -66,7 +66,7 @@ namespace Yuniql.PlatformTests
         {
 
             _dataService.Initialize(connectionString);
-            var sqlStatement = _dataService.GetGetAllVersionsSql();
+            var sqlStatement = _dataService.GetSqlForGetAllVersions();
 
             var result = new List<DbVersion>();
             using (var connection = _dataService.CreateConnection().KeepOpen())

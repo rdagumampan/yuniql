@@ -56,36 +56,36 @@ namespace Yuniql.Extensibility
         /// <summary>
         /// Returns the SQL statement to use for checking if the target database already exists
         /// </summary>
-        public string GetCheckIfDatabaseExistsSql();
+        public string GetSqlForCheckIfDatabaseExists();
 
         /// <summary>
         /// Returns the SQL statement to use for creating new database if --auto-createdb flag is set to true.
         /// </summary>
-        public string GetCreateDatabaseSql();
+        public string GetSqlForCreateDatabase();
 
         /// <summary>
         /// Returns the SQL statement to use for checking target database has been configured for migration tracking.
         /// </summary>
-        public string GetCheckIfDatabaseConfiguredSql();
+        public string GetSqlForCheckIfDatabaseConfigured();
 
         /// <summary>
         /// Returns the SQL statement to use for configuring the migration tracking table.
         /// </summary>
-        public string GetConfigureDatabaseSql();
+        public string GetSqlForConfigureDatabase();
 
         /// <summary>
         /// Returns the SQL statement to use for getting the latest migration version appplied in the target database.
         /// </summary>
-        public string GetGetCurrentVersionSql();
+        public string GetSqlForGetCurrentVersion();
 
         /// <summary>
         /// Returns the SQL statement to use for getting all versions applied in the target database.
         /// </summary>
-        public string GetGetAllVersionsSql();
+        public string GetSqlForGetAllVersions();
 
         /// <summary>
         /// Returns the SQL statement to use for updating migration tracking table.
         /// </summary>
-        public string GetUpdateVersionSql();
+        public string GetSqlForUpdateVersion();
     }
 };
