@@ -1,6 +1,6 @@
 DROP TABLE __YuniqlDbVersion;
-DROP TABLE employees;
 DROP TABLE dependents;
+DROP TABLE employees;
 DROP TABLE departments;
 DROP TABLE locations;
 DROP TABLE countries;
