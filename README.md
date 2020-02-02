@@ -10,7 +10,7 @@
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
->Image inspired by [Evolutionary Database Design](https://www.martinfowler.com/articles/evodb.html) by Martin Fowler and Pramod Sadalage.
+>Inspired by [Evolutionary Database Design](https://www.martinfowler.com/articles/evodb.html) by Martin Fowler and Pramod Sadalage.
 
 ## Why yuniql?
 - **It's raw SQL.** Yuniql follows database-first approach in versioning your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
