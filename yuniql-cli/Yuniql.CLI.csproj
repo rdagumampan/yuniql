@@ -13,7 +13,7 @@
     <Authors>Rodel E. Dagumampan</Authors>
     <Product>Yuniql.Cli</Product>
     <Description>
-      yuniql (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories. Scripts are stored transparently as plain old .sql files. yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion. Visit https://getyuniql.org to get started.
+      yuniql (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories. Scripts are stored transparently as plain old .sql files. yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion. Visit https://yuniql.io to get started.
 
       Install tool:
       $ dotnet tool install -g Yuniql.Cli

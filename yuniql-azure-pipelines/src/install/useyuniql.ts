@@ -7,12 +7,13 @@ async function run() {
     try {
         //get target version
         const version = taskLib.getInput('version', false);
-        console.log('input_version: ' + version);
+        console.log('yuniql/input_version: ' + version);
         if (version) {
             await installer.getYuniql(version, true);
         }
     }
     catch (error) {
+        console.log('yuniql/error: ' + error.message);
         taskLib.setResult(taskLib.TaskResult.Failed, error.message);
     }
 }

@@ -21,18 +21,18 @@ async function run() {
         const delimiter = taskLib.getInput('delimiter', false);
         const additionalArguments = taskLib.getInput('additionalArguments', false);
 
-        console.log('input_version: ' + versionSpec);
-        console.log('input_workspacePath: ' + workspacePath);
-        console.log('input_connectionString: ' + connectionString);
-        console.log('input_targetPlatform: ' + targetPlatform);
-        console.log('input_autoCreateDatabase: ' + autoCreateDatabase);
-        console.log('input_targetVersion: ' + targetVersion);
-        console.log('input_tokenKeyValuePair: ' + tokenKeyValuePair);
-        console.log('input_delimiter: ' + delimiter);
-        console.log('input_additionalArguments: ' + additionalArguments);
+        console.log('yuniql/input_version: ' + versionSpec);
+        console.log('yuniql/input_workspacePath: ' + workspacePath);
+        console.log('yuniql/input_connectionString: ' + connectionString);
+        console.log('yuniql/input_targetPlatform: ' + targetPlatform);
+        console.log('yuniql/input_autoCreateDatabase: ' + autoCreateDatabase);
+        console.log('yuniql/input_targetVersion: ' + targetVersion);
+        console.log('yuniql/input_tokenKeyValuePair: ' + tokenKeyValuePair);
+        console.log('yuniql/input_delimiter: ' + delimiter);
+        console.log('yuniql/input_additionalArguments: ' + additionalArguments);
 
-        console.log('var_osPlat: ' + osPlat);
-        console.log('var_osArch: ' + osArch);
+        console.log('yuniql/var_osPlat: ' + osPlat);
+        console.log('yuniql/var_osArch: ' + osArch);
 
         //picksup the version downloaded from install task
         let versionLocation: string = '';
@@ -45,10 +45,10 @@ async function run() {
 
         if (osPlat == 'win32') {
             var yuniqlBasePath = path.join(toolLib.findLocalTool('yuniql', versionLocation));
-            console.log('var_yuniqlBasePath: ' + yuniqlBasePath);
+            console.log('yuniql/var_yuniqlBasePath: ' + yuniqlBasePath);
 
             var yuniqlExecFilePath = path.join(yuniqlBasePath, 'yuniql.exe');
-            console.log('var_yuniqlExecFilePath: ' + yuniqlExecFilePath);
+            console.log('yuniql/var_yuniqlExecFilePath: ' + yuniqlExecFilePath);
 
             //set the plugin path
             // var pluginsPath = path.join(yuniqlBasePath, '.plugins');
@@ -103,8 +103,9 @@ async function run() {
             throw new Error(`Unsupported Agent OS '${osPlat}'`);
         }
     }
-    catch (err) {
-        tl.setResult(tl.TaskResult.Failed, err.message);
+    catch (error) {
+        console.log('yuniql/error: ' + error.message);
+        tl.setResult(tl.TaskResult.Failed, error.message);
     }
 }
 

@@ -4,7 +4,7 @@
   "version": "0.14.0",
   "name": "Yuniql",
   "publisher": "rdagumampan",
-  "description": "Disclaimer: This is in PREVIEW and NOT YET READY FOR PRODUCTION. Run database migrations and schema versioning with Yuniql. Supports SqlServer, PostgreSql, MySql and others. For developer guides and examples, visit https://getyuniql.org.",
+  "description": "Disclaimer: This is in PREVIEW RELEASE. Run database migrations and schema versioning with Yuniql. Supports SqlServer, PostgreSql, MySql and others. For samples and developer guide, visit https://yuniql.io.",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
@@ -60,7 +60,7 @@
   ],
   "links": {
     "overview": {
-      "uri": "https://getyuniql.org"
+      "uri": "https://yuniql.io"
     },
     "license": {
       "uri": "https://github.com/rdagumampan/yuniql/blob/master/LICENSE.md"
