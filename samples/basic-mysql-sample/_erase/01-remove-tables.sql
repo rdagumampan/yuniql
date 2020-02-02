@@ -1,3 +1,4 @@
+DROP TABLE __yuniqldbversion;
 DROP TABLE employees;
 DROP TABLE dependents;
 DROP TABLE departments;

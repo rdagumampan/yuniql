@@ -1,3 +1,4 @@
+DROP TABLE __YuniqlDbVersion;
 DROP TABLE employees CASCADE;
 DROP TABLE dependents CASCADE;
 DROP TABLE departments CASCADE;
