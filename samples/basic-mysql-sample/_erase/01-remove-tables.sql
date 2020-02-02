@@ -1,4 +1,4 @@
-DROP TABLE __yuniqldbversion;
+DROP TABLE __YuniqlDbVersion;
 DROP TABLE employees;
 DROP TABLE dependents;
 DROP TABLE departments;
