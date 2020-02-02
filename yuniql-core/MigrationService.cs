@@ -70,7 +70,7 @@ namespace Yuniql.Core
         /// <param name="workingPath">The directory path to migration project.</param>
         /// <param name="targetVersion">The maximum version to run to. When NULL, runs migration to the latest version found in the workspace path.</param>
         /// <param name="autoCreateDatabase">When TRUE, creates the database in the target host.</param>
-        /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
+        /// <param name="tokenKeyPairs">Token kev/value pairs to replace tokens in script files.</param>
         /// <param name="verifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
         /// <param name="delimiter">Delimeter character in the CSV bulk import files. When NULL, uses comma.</param>
         /// <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
@@ -348,6 +348,7 @@ namespace Yuniql.Core
             int? commandTimeout = null
         )
         {
+            //TODO: Filter out scripts when environment code is used
             var sqlScriptFiles = _directoryService.GetFiles(versionFullPath, "*.sql").ToList();
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {versionFullPath}");
             _traceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
