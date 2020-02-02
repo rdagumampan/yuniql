@@ -93,7 +93,7 @@
     },
     {
       "name": "additionalArguments",
-      "label": "Arguments",
+      "label": "Additional arguments",
       "type": "string",
       "defaultValue": "",
       "required": false,

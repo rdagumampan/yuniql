@@ -72,11 +72,11 @@ async function run() {
                 yuniql.arg(targetPlatform);
             }
 
-            if (autoCreateDatabase) {
+            if (autoCreateDatabase == "true") {
                 yuniql.arg('-a');
                 yuniql.arg(autoCreateDatabase);
             }
-
+            
             if (targetVersion && targetVersion.toLowerCase() != 'latest') {
                 yuniql.arg('-t');
                 yuniql.arg(targetVersion);

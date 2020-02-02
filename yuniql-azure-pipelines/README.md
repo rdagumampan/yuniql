@@ -1,8 +1,8 @@
 # Yuniql Azure Pipelines Tasks
 
-Run database migrations and schema versioning with Yuniql. Supports SqlServer, PostgreSql, MySql and others. For samples and developer guide, visit [https://yuniql.io](https://yuniql.io) and walk through [developer wiki](https://github.com/rdagumampan/yuniql/wiki).
+Run database migrations and schema versioning with Yuniql. Supports SqlServer, PostgreSql, MySql and others. For samples and developer guide, visit [https://yuniql.io](https://yuniql.io) and walk through our [developer wiki](https://github.com/rdagumampan/yuniql/wiki).
 
-**NOTE: This is a PREVIEW RELEASE. Please STAR or WATCH in GitHub for release updates. See https://github.com/rdagumampan/yuniql**
+**NOTE: This is a PREVIEW RELEASE. Please star or watch the project in GitHub for release updates. See https://github.com/rdagumampan/yuniql**
 
 ### Azure DevOps YAML Pipelines
 
@@ -32,21 +32,21 @@ steps:
 ![](images/screenshot-01.png)
 
 This downloads and installs the yuniql-cli.
-* `version`: The version of Yuniql CLI. If omitted, the latest version of yuniql-cli is installed. Visit the [releases](https://github.com/rdagumampan/yuniql/releases) to get an appropriate version. 
+* `Version`: The version of Yuniql CLI. If omitted, the latest version of yuniql-cli is installed. [Visit releases](https://github.com/rdagumampan/yuniql/releases) to get an appropriate version. 
 
 ### Run Yuniql Task
 
 ![](images/screenshot-02.png)
 
 This runs database migration with yuniql-cli.
-* `version`: The version of Yuniql CLI. If omitted, the latest version of yuniql-cli is installed. Visit the [releases](https://github.com/rdagumampan/yuniql/releases) to get an appropriate version. 
-* `connectionString`: The connection string to your target database server.
-* `workspacePath`: The location of your version directories to run.
-* `targetPlatform`: The target database platform. Default is SqlServer.
-* `autoCreateDatabase`: When true, creates and configure the database in the target server for yuniql migrations.
-* `targetVersion`: The maximum target database schema version to run to.
-* `tokenKeyValuePair`: Token key/value pairs for token replacement.
-* `additionalArguments`: Additional CLI arguments
+* `Version`: The version of Yuniql CLI. If omitted, the latest version of yuniql-cli is installed. [Visit releases](https://github.com/rdagumampan/yuniql/releases) to get an appropriate version. 
+* `Database connection string`: The connection string to your target database server.
+* `Target workspace directory`: The location of your version directories to run.
+* `Target platform`: The target database platform. Default is SqlServer.
+* `Aut-create target database`: When true, creates and configure the database in the target server for yuniql migrations.
+* `Target version`: The maximum target database schema version to run to.
+* `Token key/value pairs`: Token key/value pairs for token replacement.
+* `Additional arguments`: Additional CLI arguments
 
 ### License
 Copyright (C) 2019 Rodel E. Dagumampan
