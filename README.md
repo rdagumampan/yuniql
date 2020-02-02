@@ -10,6 +10,8 @@
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
+>Image inspired by [Evolutionary Database Design](https://www.martinfowler.com/articles/evodb.html) by Martin Fowler and Pramod Sadalage.
+
 ## Why yuniql?
 - **It's raw SQL.** Yuniql follows database-first approach in versioning your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
 - **It's .NET Core Native.** Released as a self-contained .NET Core 3.0 application. Yuniql doesn't require any dependencies or CLR installed on the developer machine or CI/CD server. For windows, `yuniql.exe` is ready-for-use on day 1.
@@ -184,6 +186,7 @@ Yuniql relies on many open-source projects and we would like to thanks:
 - [Npgsql](https://github.com/npgsql/npgsql) for PostgreSql drivers
 - [Shouldly](https://github.com/shouldly) for unit tests
 - [Moq](https://github.com/moq) for unit test mocks
+- [Evolutionary database design](https://www.martinfowler.com/articles/evodb.html) by Martin Fowler and Pramod Sadalage
 - Microsoft, Oracle, for everything in dotnetcore seems open source now :)
 - All the free devops tools! GitHub, AppVeyor, Docker Shields.io++
 
