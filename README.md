@@ -188,7 +188,7 @@ Yuniql relies on many open-source projects and we would like to thanks:
 - [Moq](https://github.com/moq) for unit test mocks
 - [Evolutionary database design](https://www.martinfowler.com/articles/evodb.html) by Martin Fowler and Pramod Sadalage
 - Microsoft, Oracle, for everything in dotnetcore seems open source now :)
-- All the free devops tools! [GitHub](http://github.com), [AppVeyor](https://www.appveyor.com/), [Docker](https://www.docker.com/) [Shields.io](https://shields.io/) ++
+- All the free devops tools! [GitHub](http://github.com), [AppVeyor](https://www.appveyor.com), [Docker](https://www.docker.com/), [Shields.io](https://shields.io/) ++
 
 ## Maintainers
 
