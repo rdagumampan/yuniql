@@ -55,13 +55,13 @@ namespace Yuniql.SqlServer
         }
 
         public string GetSqlForCheckIfDatabaseExists()
-            => "SELECT ISNULL(database_id,0) FROM [sys].[databases] WHERE name = '{0}'";
+            => @"SELECT ISNULL(database_id,0) FROM [sys].[databases] WHERE name = '{0}'";
 
         public string GetSqlForCreateDatabase()
-            => "CREATE DATABASE {0};";
+            => @"CREATE DATABASE [{0}];";
 
         public string GetSqlForCheckIfDatabaseConfigured()
-            => "SELECT ISNULL(object_id,0) FROM [sys].[tables] WHERE name = '__YuniqlDbVersion'";
+            => @"SELECT ISNULL(object_id,0) FROM [sys].[tables] WHERE name = '__YuniqlDbVersion'";
 
         public string GetSqlForConfigureDatabase()
             => @"
@@ -85,12 +85,12 @@ namespace Yuniql.SqlServer
             ";
 
         public string GetSqlForGetCurrentVersion()
-            => "SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY Id DESC;";
+            => @"SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY Id DESC;";
 
         public string GetSqlForGetAllVersions()
-            => "SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
+            => @"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
 
         public string GetSqlForUpdateVersion()
-            => "INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{0}');";
+            => @"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{0}');";
     }
 }

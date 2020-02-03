@@ -50,13 +50,13 @@ namespace Yuniql.PostgreSql
         }
 
         public string GetSqlForCheckIfDatabaseExists()
-            => "SELECT 1 from pg_database WHERE datname = '{0}';";
+            => @"SELECT 1 from pg_database WHERE datname = '{0}';";
 
         public string GetSqlForCreateDatabase()
-            => "CREATE DATABASE {0};";
+            => "CREATE DATABASE \"{0}\";";
 
         public string GetSqlForCheckIfDatabaseConfigured()
-            => "SELECT 1 FROM pg_tables WHERE  tablename = '__yuniqldbversion'";
+            => @"SELECT 1 FROM pg_tables WHERE  tablename = '__yuniqldbversion'";
 
         public string GetSqlForConfigureDatabase()
             => @"CREATE TABLE __YuniqlDbVersion(
@@ -70,12 +70,12 @@ namespace Yuniql.PostgreSql
 	            );";
 
         public string GetSqlForGetCurrentVersion()
-            => "SELECT Version FROM __yuniqldbversion ORDER BY Id DESC LIMIT 1;";
+            => @"SELECT Version FROM __yuniqldbversion ORDER BY Id DESC LIMIT 1;";
 
         public string GetSqlForGetAllVersions()
-            => "SELECT Id, Version, DateInsertedUtc, LastUserId FROM __yuniqldbversion ORDER BY Version ASC;";
+            => @"SELECT Id, Version, DateInsertedUtc, LastUserId FROM __yuniqldbversion ORDER BY Version ASC;";
 
         public string GetSqlForUpdateVersion()
-            => "INSERT INTO __yuniqldbversion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{0}', NOW(), NOW(), user);";
+            => @"INSERT INTO __yuniqldbversion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{0}', NOW(), NOW(), user);";
     }
 }

@@ -50,13 +50,13 @@ namespace Yuniql.MySql
         }
 
         public string GetSqlForCheckIfDatabaseExists()
-            => "SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';";
+            => @"SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';";
 
         public string GetSqlForCreateDatabase()
-            => "CREATE DATABASE {0};";
+            => @"CREATE DATABASE `{0}`;";
 
         public string GetSqlForCheckIfDatabaseConfigured()
-            => "SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = '__YuniqlDbVersion' LIMIT 1;";
+            => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = '__YuniqlDbVersion' LIMIT 1;";
 
         public string GetSqlForConfigureDatabase()
             => @"
@@ -72,12 +72,12 @@ namespace Yuniql.MySql
             ";
 
         public string GetSqlForGetCurrentVersion()
-            => "SELECT Version FROM __YuniqlDbVersion ORDER BY Id DESC LIMIT 1;";
+            => @"SELECT Version FROM __YuniqlDbVersion ORDER BY Id DESC LIMIT 1;";
 
         public string GetSqlForGetAllVersions()
-            => "SELECT Id, Version, DateInsertedUtc, LastUserId FROM __YuniqlDbVersion ORDER BY Version ASC;";
+            => @"SELECT Id, Version, DateInsertedUtc, LastUserId FROM __YuniqlDbVersion ORDER BY Version ASC;";
 
         public string GetSqlForUpdateVersion()
-            => "INSERT INTO __YuniqlDbVersion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{0}', NOW(), NOW(), USER());";
+            => @"INSERT INTO __YuniqlDbVersion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{0}', NOW(), NOW(), USER());";
     }
 }

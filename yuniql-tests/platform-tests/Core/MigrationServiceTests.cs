@@ -311,7 +311,7 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $".sql"), _testDataService.GetSqlForCreateBulkTable("TestCsv"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory,"Core"), "TestCsv.csv"), Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), "TestCsv.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), "TestCsv.csv"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00_error.sql"), _testDataService.GetSqlForCreateDbObjectWithError($"test_v1_00_error"));
 
             //act
@@ -452,6 +452,28 @@ namespace Yuniql.PlatformTests
 
             Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "user_created_folder"));
             Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_another_user_created_folder"));
+
+            //act
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
+            migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v0.00", autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00").ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void Test_Run_Dash_Character_In_Database_Name()
+        {
+            //arrange
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
+
+            //use database name with dash
+            var databaseName = "yuniqldb-raw-dev";
+            _testConfiguration.ConnectionString = _testConfiguration.ConnectionString.Replace(_testConfiguration.DatabaseName, databaseName);
+            _testConfiguration.DatabaseName = databaseName;
 
             //act
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
