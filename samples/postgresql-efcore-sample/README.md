@@ -1,5 +1,10 @@
 ## README
-The following example demonstrates how we can use yuniql to support raw SQL-based migrations in a Entity Framework Core (ef-core) code-first project. The project 
+The following example demonstrates how we can use yuniql to support raw SQL-based migrations in a Entity Framework Core (ef-core) code-first project. 
+
+In this sample, we have standard ef-core code-first project with models only and dbcontext. Then we generate the first migrations with `ef migrations add InitialCreate`. Then we generate the baseline version of database with `ef migrations script` and place it with yunql's `v0.00` version directory. From here, we run `yuniql run` to execute the migrations with the target database.
+
+To simulate changes, we create a new model class `TestClass` and add it into efcore's `yuniqldbContext`. We create efcore migrations step with `ef migrations add TestClass`. This produces a new migration class in `Migrations` directory. Then we generate the change script with `ef migrations script` and place it in yuniql's `v0.01`. From here, we run `yuniql run` to execute the migrations with the target database. Yuniql knows the least version so it will only execute `v0.01`.
+
 
 ## Install yuniql CLI
 https://github.com/rdagumampan/yuniql/wiki/Install-yuniql
@@ -83,13 +88,13 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 
 ```console
 dotnet ef migrations add TestClass
-dotnet ef migrations script 20200204203539_InitialCreate  -o c:\temp\yuniql-cli\samples\postgresql-efcore-sample\_db\v0.01\migrate.sql
+dotnet ef migrations script 20200204214045_InitialCreate  -o c:\temp\yuniql-cli\samples\postgresql-efcore-sample\_db\v0.01\migrate.sql
 
 yuniql run -p c:\temp\yuniql-cli\samples\postgresql-efcore-sample\_db --platform postgresql
 yuniql info --platform postgresql
 ```
 
-References
+## References
 https://docs.microsoft.com/en-gb/ef/core/get-started/?tabs=netcore-cli
 https://www.entityframeworktutorial.net/efcore/create-model-for-existing-database-in-ef-core.aspx
 https://www.entityframeworktutorial.net/efcore/cli-commands-for-ef-core-migration.aspx
