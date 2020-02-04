@@ -22,8 +22,6 @@ namespace efsample.Models
         public virtual DbSet<Jobs> Jobs { get; set; }
         public virtual DbSet<Locations> Locations { get; set; }
         public virtual DbSet<Regions> Regions { get; set; }
-        public virtual DbSet<Yuniqldbversion> Yuniqldbversion { get; set; }
-        public virtual DbSet<TestClass> TestClass { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -36,11 +34,6 @@ namespace efsample.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TestClass>(entity =>
-            {
-                entity.HasNoKey();
-            });
-
             modelBuilder.Entity<Countries>(entity =>
         {
             entity.HasKey(e => e.CountryId)
@@ -252,33 +245,6 @@ namespace efsample.Models
                 entity.Property(e => e.RegionName)
                     .HasColumnName("region_name")
                     .HasMaxLength(25);
-            });
-
-            modelBuilder.Entity<Yuniqldbversion>(entity =>
-            {
-                entity.ToTable("__yuniqldbversion");
-
-                entity.HasIndex(e => e.Version)
-                    .HasName("ix___yuniqldbversion")
-                    .IsUnique();
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Artifact).HasColumnName("artifact");
-
-                entity.Property(e => e.Dateinsertedutc).HasColumnName("dateinsertedutc");
-
-                entity.Property(e => e.Lastupdatedutc).HasColumnName("lastupdatedutc");
-
-                entity.Property(e => e.Lastuserid)
-                    .IsRequired()
-                    .HasColumnName("lastuserid")
-                    .HasMaxLength(128);
-
-                entity.Property(e => e.Version)
-                    .IsRequired()
-                    .HasColumnName("version")
-                    .HasMaxLength(32);
             });
 
             OnModelCreatingPartial(modelBuilder);
