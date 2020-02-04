@@ -1,0 +1,59 @@
+Server=awspostgresql.cdr6ceaqwm9c.us-west-2.rds.amazonaws.com;Port=5432;Database=yuniqldb;User Id=postgres;Password=ubGI1SKBwtExMlaOJDtj;
+
+## Install yuniql
+https://github.com/rdagumampan/yuniql/wiki/Install-yuniql
+
+choco install yuniql --version 0.328.0
+
+
+## Prepare dev database
+
+docker run -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
+SETX YUNIQL_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
+cd c:\temp\yuniql-cli\samples\basic-postgresql-sample
+
+yuniql run -a --platform postgresql
+yuniql info --platform postgresql
+
+## Install ef-core
+
+dotnet tool install --global dotnet-ef --version 3.0
+
+## Prepare test ef-core project
+
+cd c:\temp
+md ef-sample
+cd c:\temp\ef-sample
+
+md c:\temp\ef-sample\_db
+xcopy /E /I c:\temp\yuniql-cli\samples\basic-postgresql-sample c:\temp\ef-sample\_db
+
+dotnet new console -o efsample
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+dotnet ef dbcontext scaffold "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb" Npgsql.EntityFrameworkCore.PostgreSQL -o Models
+
+## Create database with ef-core
+
+dotnet tool install --global dotnet-ef
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+
+## Produce ef-core migration script, drop into new yuniql version directory
+
+dotnet ef migrations script -o c:\temp\ef-sample\_db\v0.01\migrate.sql
+
+## Run yuniql migrations
+
+yuniql run -p c:\temp\ef-sample\_db --platform postgresql
+
+## Test if ef produces anything, we expecting nothing here!
+
+dotnet ef migrations script -i -c yuniqldbContext -o c:\temp\ef-sample\_db\v0.02\migrate.sql
+
+References
+https://docs.microsoft.com/en-gb/ef/core/get-started/?tabs=netcore-cli
+https://www.entityframeworktutorial.net/efcore/create-model-for-existing-database-in-ef-core.aspx
+https://www.entityframeworktutorial.net/efcore/cli-commands-for-ef-core-migration.aspx
