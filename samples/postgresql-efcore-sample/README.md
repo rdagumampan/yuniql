@@ -97,7 +97,7 @@ Run this batch in Poweshell ISE or create a `migrate.ps1` file
 dotnet ef migrations list >> current_efversions.txt
 Get-Content -Path ".\current_efversions.txt"
 
-$fromVersion = Get-Content -Path ".\current_efversions.txt" | Select-Object -Last 2 | Select-Object -First 1
+$fromVersion = Get-Content -Path ".\current_efversions.txt" | Select-Object -Skip 1 | Select-Object -Last 2 | Select-Object -First 1
 Write-Host "Scripting migration from: $fromVersion"
 dotnet ef migrations script $fromVersion  -o c:\temp\yuniql-cli\samples\postgresql-efcore-sample\_db\v0.01\migrate.sql
 Remove-Item .\current_efversions.txt
