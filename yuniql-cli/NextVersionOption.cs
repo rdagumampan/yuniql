@@ -3,7 +3,7 @@
 namespace Yuniql.CLI
 {
     //yuniql vnext
-    [Verb("vnext", HelpText = "Increment to next version")]
+    [Verb("vnext", HelpText = "Increments to next version.")]
     public class NextVersionOption: BaseOption
     {
         //yuniql vnext -M | --major

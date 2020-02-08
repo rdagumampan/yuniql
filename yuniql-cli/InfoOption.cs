@@ -3,7 +3,7 @@
 namespace Yuniql.CLI
 {
     //yuniql info
-    [Verb("info", HelpText = "Shows the current version structure of target database")]
+    [Verb("info", HelpText = "Shows all the migrations applied to target database.")]
     public class InfoOption : BasePlatformOption
     {
     }

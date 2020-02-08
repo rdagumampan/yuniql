@@ -4,7 +4,7 @@ using System.Collections;
 namespace Yuniql.CLI
 {
     //yuniql init
-    [Verb("init", HelpText = "Initialize migration structure to target folder")]
+    [Verb("init", HelpText = "Initializes target directory with required directory structure.")]
     public class InitOption: BaseOption
     {
     }

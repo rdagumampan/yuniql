@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Yuniql.CLI
 {
     //yuniql verify
-    [Verb("verify", HelpText = "Runs migration steps but never commit any changes")]
+    [Verb("verify", HelpText = "Runs migration like the run command but all changes will not be committed.")]
     public class VerifyOption : BaseRunPlatformOption
     {
     }
