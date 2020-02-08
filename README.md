@@ -63,7 +63,7 @@ yuniql info --platform postgresql
 ## Working with Azure DevOps Pipelines Tasks
 Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how `Use .NET Core` or `Use Node` tasks works. Find Yuniql on [Azure DevOps MarketPlace](https://marketplace.visualstudio.com/items?itemName=rdagumampan.yuniql-azdevops-extensions). Developer guide is available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops.
 
-<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/yuniql-azure-pipelines/images/wiki-az-devops-task-all.png" width="700">
+<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-az-devops-task-all.png" width="700">
 
 ## Working with Docker Container
 Run your database migration thru a Docker container. This is specially helpful on Linux environments and CI/CD pipelines running on Linux Agents as it facilitates your migration without having to worry any local installations or runtime dependencies. Developer guide is available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container.
