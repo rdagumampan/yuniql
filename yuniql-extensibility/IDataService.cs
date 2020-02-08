@@ -84,8 +84,8 @@ namespace Yuniql.Extensibility
         public string GetSqlForGetAllVersions();
 
         /// <summary>
-        /// Returns the SQL statement to use for updating migration tracking table.
+        /// Returns the SQL statement to use for creating new entry into migration tracking table.
         /// </summary>
-        public string GetSqlForUpdateVersion();
+        public string GetSqlForInsertVersion();
     }
 };

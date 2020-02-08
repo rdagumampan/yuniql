@@ -300,7 +300,7 @@ namespace Yuniql.Core
 
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
-                        _configurationDataService.UpdateVersion(connection, transaction, versionName, commandTimeout: commandTimeout);
+                        _configurationDataService.InsertVersion(connection, transaction, versionName, commandTimeout: commandTimeout);
 
                         _traceService.Info($"Completed migration to version {versionDirectory}");
                     }

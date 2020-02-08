@@ -160,13 +160,13 @@ namespace Yuniql.Core
         /// <param name="transaction">An active transaction.</param>
         /// <param name="version">Migration version.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
-        public void UpdateVersion(
+        public void InsertVersion(
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
             int? commandTimeout = null)
         {
-            var sqlStatement = string.Format(_dataService.GetSqlForUpdateVersion(), version);
+            var sqlStatement = string.Format(_dataService.GetSqlForInsertVersion(), version);
 
             if (null != _traceService)
                 _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");

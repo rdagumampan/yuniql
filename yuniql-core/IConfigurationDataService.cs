@@ -58,7 +58,7 @@ namespace Yuniql.Core
         /// <param name="transaction">An active transaction.</param>
         /// <param name="version">Migration version.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
-        void UpdateVersion(
+        void InsertVersion(
             IDbConnection connection, 
             IDbTransaction transaction, 
             string version, 

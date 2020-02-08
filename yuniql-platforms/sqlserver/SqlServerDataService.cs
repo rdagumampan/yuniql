@@ -90,7 +90,7 @@ namespace Yuniql.SqlServer
         public string GetSqlForGetAllVersions()
             => @"SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
 
-        public string GetSqlForUpdateVersion()
+        public string GetSqlForInsertVersion()
             => @"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{0}');";
     }
 }

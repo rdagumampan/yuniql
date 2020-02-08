@@ -385,9 +385,9 @@
             Returns the SQL statement to use for getting all versions applied in the target database.
             </summary>
         </member>
-        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForUpdateVersion">
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForInsertVersion">
             <summary>
-            Returns the SQL statement to use for updating migration tracking table.
+            Returns the SQL statement to use for creating new entry into migration tracking table.
             </summary>
         </member>
         <member name="T:Yuniql.Extensibility.ITraceService">

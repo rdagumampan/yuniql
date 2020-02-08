@@ -53,7 +53,7 @@
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>All versions applied in the target database.</returns>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.UpdateVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32})">
             <summary>
             Creates new entry to version tracking table after all versions were successfully executed.
             </summary>
@@ -250,7 +250,7 @@
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>All versions applied in the target database.</returns>
         </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.UpdateVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.IConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32})">
             <summary>
             Creates new entry to version tracking table after all versions were successfully executed.
             </summary>

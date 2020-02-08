@@ -76,7 +76,7 @@ namespace Yuniql.PostgreSql
         public string GetSqlForGetAllVersions()
             => @"SELECT sequence_id, version, applied_on_utc, applied_by_user FROM __yuniqldbversion ORDER BY version ASC;";
 
-        public string GetSqlForUpdateVersion()
+        public string GetSqlForInsertVersion()
             => @"INSERT INTO __yuniqldbversion (version) VALUES ('{0}');";
     }
 }
