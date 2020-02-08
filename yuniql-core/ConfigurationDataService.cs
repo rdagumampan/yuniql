@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 using Yuniql.Extensibility;
 
 namespace Yuniql.Core
@@ -164,9 +165,13 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
-            int? commandTimeout = null)
+            int? commandTimeout = null,
+            string appliedByTool = null,
+            string appliedByToolVersion = null)
         {
-            var sqlStatement = string.Format(_dataService.GetSqlForInsertVersion(), version);
+            var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
+            var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? this.GetType().Assembly.GetName().Version.ToString() : appliedByToolVersion;
+            var sqlStatement = string.Format(_dataService.GetSqlForInsertVersion(), version, toolName, $"v{toolVersion}");
 
             if (null != _traceService)
                 _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");

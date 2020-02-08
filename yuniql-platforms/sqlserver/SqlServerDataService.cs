@@ -88,9 +88,9 @@ namespace Yuniql.SqlServer
             => @"SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY SequenceId DESC;";
 
         public string GetSqlForGetAllVersions()
-            => @"SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
+            => @"SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser, AppliedByTool, AppliedByToolVersion FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
 
         public string GetSqlForInsertVersion()
-            => @"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{0}');";
+            => @"INSERT INTO [dbo].[__YuniqlDbVersion] (Version, AppliedByTool, AppliedByToolVersion) VALUES ('{0}','{1}','{2}');";
     }
 }

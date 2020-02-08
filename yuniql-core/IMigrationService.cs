@@ -45,7 +45,9 @@ namespace Yuniql.Core
             bool? verifyOnly = null, 
             string delimiter = null,
             int? commandTimeout = null,
-            int? batchSize = null
+            int? batchSize = null,
+            string appliedByTool = null,
+            string appliedByToolVersion = null
         );
 
         /// <summary>

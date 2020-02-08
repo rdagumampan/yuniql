@@ -83,7 +83,9 @@ namespace Yuniql.Core
             bool? verifyOnly = false,
             string delimiter = null,
             int? commandTimeout = null,
-            int? batchSize = null
+            int? batchSize = null,
+            string appliedByTool = null,
+            string appliedByToolVersion = null
          )
         {
             //validate workspace structure
@@ -162,7 +164,7 @@ namespace Yuniql.Core
                             _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                             //runs all scripts int the vxx.xx folders and subfolders
-                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, batchSize: batchSize);
+                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, batchSize: batchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion);
 
                             //runs all scripts in the _draft folder and subfolders
                             RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout);
@@ -256,7 +258,9 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokens = null,
             string delimiter = null,
             int? commandTimeout = null,
-            int? batchSize = null
+            int? batchSize = null,
+            string appliedByTool = null,
+            string appliedByToolVersion = null
         )
         {
             //excludes all versions already executed
@@ -300,7 +304,10 @@ namespace Yuniql.Core
 
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
-                        _configurationDataService.InsertVersion(connection, transaction, versionName, commandTimeout: commandTimeout);
+                        _configurationDataService.InsertVersion(connection, transaction, versionName,
+                            commandTimeout: commandTimeout,
+                            appliedByTool: appliedByTool,
+                            appliedByToolVersion: appliedByToolVersion);
 
                         _traceService.Info($"Completed migration to version {versionDirectory}");
                     }

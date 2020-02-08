@@ -59,10 +59,12 @@ namespace Yuniql.Core
         /// <param name="version">Migration version.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         void InsertVersion(
-            IDbConnection connection, 
-            IDbTransaction transaction, 
-            string version, 
-            int? commandTimeout = null);
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string version,
+            int? commandTimeout = null,
+            string appliedByTool = null,
+            string appliedByToolVersion = null);
 
         /// <summary>
         /// Executes sql statement to target database.

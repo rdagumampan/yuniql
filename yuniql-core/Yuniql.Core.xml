@@ -53,7 +53,7 @@
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>All versions applied in the target database.</returns>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32},System.String,System.String)">
             <summary>
             Creates new entry to version tracking table after all versions were successfully executed.
             </summary>
@@ -250,7 +250,7 @@
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>All versions applied in the target database.</returns>
         </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.IConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32},System.String,System.String)">
             <summary>
             Creates new entry to version tracking table after all versions were successfully executed.
             </summary>
@@ -366,7 +366,7 @@
             Returns all migration versions applied in the target database
             </summary>
         </member>
-        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String)">
             <summary>
             Runs migrations by executing alls scripts in the workspace directory. 
             When CSV files are present also run bulk import operations to target database table having same file name.
@@ -506,7 +506,7 @@
             Returns all migration versions applied in the target database
             </summary>
         </member>
-        <member name="M:Yuniql.Core.MigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.MigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String)">
             <summary>
             Runs migrations by executing alls scripts in the workspace directory. 
             When CSV files are present also run bulk import operations to target database table having same file name.

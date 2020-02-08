@@ -32,7 +32,7 @@ namespace Yuniql.UnitTests
             configurationService.Setup(s => s.ConfigureDatabase(null));
             configurationService.Setup(s => s.GetAllVersions(null)).Returns(new List<DbVersion> { });
             configurationService.Setup(s => s.GetCurrentVersion(null)).Returns(string.Empty);
-            configurationService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", null));
+            configurationService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", null, null, null));
 
             configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 1", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
             configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
@@ -100,10 +100,10 @@ namespace Yuniql.UnitTests
                 directoryService.Object,
                 fileService.Object,
                 traceService.Object);
-            sut.Run(workingPath: @"c:\temp", 
-                targetVersion: "v0.00", 
-                autoCreateDatabase: true, 
-                tokenKeyPairs: tokenKeyPairs, 
+            sut.Run(workingPath: @"c:\temp",
+                targetVersion: "v0.00",
+                autoCreateDatabase: true,
+                tokenKeyPairs: tokenKeyPairs,
                 verifyOnly: false);
 
             //asset
@@ -115,7 +115,7 @@ namespace Yuniql.UnitTests
             configurationService.Verify(s => s.ConfigureDatabase(null));
             configurationService.Verify(s => s.GetAllVersions(null));
             configurationService.Verify(s => s.GetCurrentVersion(null));
-            configurationService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null));
+            configurationService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null, null, null));
 
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());
