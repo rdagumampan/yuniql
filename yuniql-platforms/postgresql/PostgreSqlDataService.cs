@@ -59,23 +59,24 @@ namespace Yuniql.PostgreSql
             => @"SELECT 1 FROM pg_tables WHERE  tablename = '__yuniqldbversion'";
 
         public string GetSqlForConfigureDatabase()
-            => @"CREATE TABLE __YuniqlDbVersion(
-                    Id SMALLSERIAL PRIMARY KEY NOT NULL,
-                    Version VARCHAR(32) NOT NULL,
-                    DateInsertedUtc TIMESTAMP NOT NULL,
-		            LastUpdatedUtc TIMESTAMP NOT NULL,
-                    LastUserId VARCHAR(128) NOT NULL,
-                    Artifact BYTEA NULL,
-                    CONSTRAINT IX___YuniqlDbVersion UNIQUE(Version)
+            => @"CREATE TABLE __yuniqldbversion(
+                    sequence_id  SMALLSERIAL PRIMARY KEY NOT NULL,
+                    version VARCHAR(512) NOT NULL,
+                    applied_on_utc TIMESTAMP NOT NULL DEFAULT(current_timestamp AT TIME ZONE 'UTC'),
+                    applied_by_user VARCHAR(32) NOT NULL DEFAULT(user),
+                    applied_by_tool VARCHAR(32) NULL,
+                    applied_by_tool_version VARCHAR(16) NULL,
+                    additional_artifacts BYTEA NULL,
+                    CONSTRAINT IX___yuniqldbversion UNIQUE(version)
 	            );";
 
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT Version FROM __yuniqldbversion ORDER BY Id DESC LIMIT 1;";
+            => @"SELECT version FROM __yuniqldbversion ORDER BY sequence_id DESC LIMIT 1;";
 
         public string GetSqlForGetAllVersions()
-            => @"SELECT Id, Version, DateInsertedUtc, LastUserId FROM __yuniqldbversion ORDER BY Version ASC;";
+            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user FROM __yuniqldbversion ORDER BY version ASC;";
 
         public string GetSqlForUpdateVersion()
-            => @"INSERT INTO __yuniqldbversion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{0}', NOW(), NOW(), user);";
+            => @"INSERT INTO __yuniqldbversion (version) VALUES ('{0}');";
     }
 }

@@ -214,7 +214,7 @@ namespace Yuniql.UnitTests
             environmentService.Setup(s => s.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")).Returns("sqlserver-connection-string");
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
-            migrationService.Setup(s => s.GetAllVersions()).Returns(new List<DbVersion> { new DbVersion { Version = "v0.00", DateInsertedUtc = DateTime.UtcNow, LastUserId = "user" } });
+            migrationService.Setup(s => s.GetAllVersions()).Returns(new List<DbVersion> { new DbVersion { Version = "v0.00", AppliedOnUtc = DateTime.UtcNow, AppliedByUser = "user" } });
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 

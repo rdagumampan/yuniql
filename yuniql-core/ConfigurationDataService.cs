@@ -141,10 +141,10 @@ namespace Yuniql.Core
                 {
                     var dbVersion = new DbVersion
                     {
-                        Id = reader.GetInt16(0),
+                        SequenceId = reader.GetInt16(0),
                         Version = reader.GetString(1),
-                        DateInsertedUtc = reader.GetDateTime(2),
-                        LastUserId = reader.GetString(3)
+                        AppliedOnUtc = reader.GetDateTime(2),
+                        AppliedByUser = reader.GetString(3)
                     };
                     result.Add(dbVersion);
                 }

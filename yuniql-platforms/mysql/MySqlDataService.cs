@@ -61,23 +61,24 @@ namespace Yuniql.MySql
         public string GetSqlForConfigureDatabase()
             => @"
                 CREATE TABLE __YuniqlDbVersion (
-	                Id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-	                Version VARCHAR(32) NOT NULL,
-	                DateInsertedUtc DATETIME NOT NULL,
-	                LastUpdatedUtc DATETIME NOT NULL,
-	                LastUserId VARCHAR(128) NOT NULL,
-	                Artifact BLOB NULL,
+	                SequenceId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	                Version VARCHAR(512) NOT NULL,
+	                AppliedOnUtc TIMESTAMP NOT NULL,
+	                AppliedByUser VARCHAR(32) NOT NULL,
+	                AppliedByTool VARCHAR(32) NULL,
+	                AppliedByToolVersion VARCHAR(16) NULL,
+	                AdditionalArtifacts BLOB NULL,
 	                CONSTRAINT IX___YuniqlDbVersion UNIQUE (Version)
                 ) ENGINE=InnoDB;
             ";
 
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT Version FROM __YuniqlDbVersion ORDER BY Id DESC LIMIT 1;";
+            => @"SELECT Version FROM __YuniqlDbVersion ORDER BY SequenceId DESC LIMIT 1;";
 
         public string GetSqlForGetAllVersions()
-            => @"SELECT Id, Version, DateInsertedUtc, LastUserId FROM __YuniqlDbVersion ORDER BY Version ASC;";
+            => @"SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser FROM __YuniqlDbVersion ORDER BY Version ASC;";
 
         public string GetSqlForUpdateVersion()
-            => @"INSERT INTO __YuniqlDbVersion (Version, DateInsertedUtc, LastUpdatedUtc, LastUserId) VALUES ('{0}', NOW(), NOW(), USER());";
+            => @"INSERT INTO __YuniqlDbVersion (Version, AppliedOnUtc, AppliedByUser) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER());";
     }
 }

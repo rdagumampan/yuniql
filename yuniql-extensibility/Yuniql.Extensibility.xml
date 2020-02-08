@@ -198,7 +198,7 @@
             Metadata information about migration version.
             </summary>
         </member>
-        <member name="P:Yuniql.Extensibility.DbVersion.Id">
+        <member name="P:Yuniql.Extensibility.DbVersion.SequenceId">
             <summary>
             Unique sequence id for the version.
             </summary>
@@ -208,19 +208,25 @@
             The version itself as reflected in the directory structure.
             </summary>
         </member>
-        <member name="P:Yuniql.Extensibility.DbVersion.DateInsertedUtc">
+        <member name="P:Yuniql.Extensibility.DbVersion.AppliedOnUtc">
             <summary>
             The date and time in UTC when migration was run.
             </summary>
         </member>
-        <member name="P:Yuniql.Extensibility.DbVersion.LastUserId">
+        <member name="P:Yuniql.Extensibility.DbVersion.AppliedByUser">
             <summary>
             The user id used when migration was performed.
             </summary>
         </member>
-        <member name="P:Yuniql.Extensibility.DbVersion.Comment">
+        <member name="P:Yuniql.Extensibility.DbVersion.AppliedByTool">
             <summary>
-            Some additional information on the version.
+            The version of client that executed the migration step.
+            This can be yuniql-cli, yuniql-aspnetcore, yuniql-core, yuniql-azdevops
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.DbVersion.AppliedByToolVersion">
+            <summary>
+            
             </summary>
         </member>
         <member name="T:Yuniql.Extensibility.DbVersionData">

@@ -67,28 +67,28 @@ namespace Yuniql.SqlServer
             => @"
                     IF OBJECT_ID('[dbo].[__YuniqlDbVersion]') IS NULL 
                     BEGIN
-	                    CREATE TABLE [dbo].[__YuniqlDbVersion](
-		                    [Id] [SMALLINT] IDENTITY(1,1),
-		                    [Version] [NVARCHAR](32) NOT NULL,
-		                    [DateInsertedUtc] [DATETIME] NOT NULL,
-		                    [LastUpdatedUtc] [DATETIME] NOT NULL,
-		                    [LastUserId] [NVARCHAR](128) NOT NULL,
-		                    [Artifact] [VARBINARY](MAX) NULL,
-		                    CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([Id] ASC),
-		                    CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED ([Version] ASC)
-	                    );
+                        CREATE TABLE [dbo].[__YuniqlDbVersion](
+	                        [SequenceId] [SMALLINT] IDENTITY(1,1) NOT NULL,
+	                        [Version] [NVARCHAR](512) NOT NULL,
+	                        [AppliedOnUtc] [DATETIME] NOT NULL,
+	                        [AppliedByUser] [NVARCHAR](32) NOT NULL,
+	                        [AppliedByTool] [NVARCHAR](32) NULL,
+	                        [AppliedByToolVersion] [NVARCHAR](16) NULL,
+	                        [AdditionalArtifacts] [VARBINARY](MAX) NULL,
+                         CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([SequenceId] ASC),
+                         CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED  ([Version] ASC
+                        ));
 
-	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_DateInsertedUtc]  DEFAULT (GETUTCDATE()) FOR [DateInsertedUtc];
-	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_LastUpdatedUtc]  DEFAULT (GETUTCDATE()) FOR [LastUpdatedUtc];
-	                    ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_LastUserId]  DEFAULT (SUSER_SNAME()) FOR [LastUserId];
+                        ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedOnUtc]  DEFAULT (GETUTCDATE()) FOR [AppliedOnUtc];
+                        ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedByUser]  DEFAULT (SUSER_SNAME()) FOR [AppliedByUser];
                     END                
             ";
 
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY Id DESC;";
+            => @"SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY SequenceId DESC;";
 
         public string GetSqlForGetAllVersions()
-            => @"SELECT Id, Version, DateInsertedUtc, LastUserId FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
+            => @"SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
 
         public string GetSqlForUpdateVersion()
             => @"INSERT INTO [dbo].[__YuniqlDbVersion] (Version) VALUES ('{0}');";

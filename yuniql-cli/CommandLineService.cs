@@ -224,7 +224,7 @@ namespace Yuniql.CLI
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");
                 versions.ForEach(v =>
                 {
-                    results.AppendLine($"{v.Version}\t\t{v.DateInsertedUtc.ToString("o")}\t{v.LastUserId}");
+                    results.AppendLine($"{v.Version}\t\t{v.AppliedOnUtc.ToString("o")}\t{v.AppliedByUser}");
                 });
 
                 Console.WriteLine(results.ToString());

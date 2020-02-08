@@ -10,7 +10,7 @@ namespace Yuniql.Extensibility
         /// <summary>
         /// Unique sequence id for the version.
         /// </summary>
-        public int Id { get; set; }
+        public int SequenceId { get; set; }
 
         /// <summary>
         /// The version itself as reflected in the directory structure.
@@ -20,16 +20,23 @@ namespace Yuniql.Extensibility
         /// <summary>
         /// The date and time in UTC when migration was run.
         /// </summary>
-        public DateTime DateInsertedUtc { get; set; }
+        public DateTime AppliedOnUtc { get; set; }
 
         /// <summary>
         /// The user id used when migration was performed.
         /// </summary>
-        public string LastUserId { get; set; }
+        public string AppliedByUser { get; set; }
 
         /// <summary>
-        /// Some additional information on the version.
+        /// The version of client that executed the migration step.
+        /// This can be yuniql-cli, yuniql-aspnetcore, yuniql-core, yuniql-azdevops
         /// </summary>
-        public string Comment { get; set; }
+        public string AppliedByTool { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string AppliedByToolVersion { get; set; }
+
     }
 }
