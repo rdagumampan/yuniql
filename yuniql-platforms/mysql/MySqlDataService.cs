@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using Yuniql.Extensibility;
 using MySql.Data.MySqlClient;
@@ -56,29 +55,29 @@ namespace Yuniql.MySql
             => @"CREATE DATABASE `{0}`;";
 
         public string GetSqlForCheckIfDatabaseConfigured()
-            => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = '__YuniqlDbVersion' LIMIT 1;";
+            => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = '__yuniqldbversion' LIMIT 1;";
 
         public string GetSqlForConfigureDatabase()
             => @"
-                CREATE TABLE __YuniqlDbVersion (
-	                SequenceId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-	                Version VARCHAR(512) NOT NULL,
-	                AppliedOnUtc TIMESTAMP NOT NULL,
-	                AppliedByUser VARCHAR(32) NOT NULL,
-	                AppliedByTool VARCHAR(32) NULL,
-	                AppliedByToolVersion VARCHAR(16) NULL,
-	                AdditionalArtifacts BLOB NULL,
-	                CONSTRAINT IX___YuniqlDbVersion UNIQUE (Version)
+                CREATE TABLE __yuniqldbversion (
+	                sequence_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	                version VARCHAR(512) NOT NULL,
+	                applied_on_utc TIMESTAMP NOT NULL,
+	                applied_by_user VARCHAR(32) NOT NULL,
+	                applied_by_tool VARCHAR(32) NULL,
+	                applied_by_tool_version VARCHAR(16) NULL,
+	                additional_artifacts BLOB NULL,
+	                CONSTRAINT ix___yuniqldbversion UNIQUE (version)
                 ) ENGINE=InnoDB;
             ";
 
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT Version FROM __YuniqlDbVersion ORDER BY SequenceId DESC LIMIT 1;";
+            => @"SELECT version FROM __yuniqldbversion ORDER BY sequence_id DESC LIMIT 1;";
 
         public string GetSqlForGetAllVersions()
-            => @"SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser FROM __YuniqlDbVersion ORDER BY Version ASC;";
+            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user FROM __yuniqldbversion ORDER BY version ASC;";
 
         public string GetSqlForUpdateVersion()
-            => @"INSERT INTO __YuniqlDbVersion (Version, AppliedOnUtc, AppliedByUser) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER());";
+            => @"INSERT INTO __yuniqldbversion (version, applied_on_utc, applied_by_user) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER());";
     }
 }

@@ -67,7 +67,7 @@ namespace Yuniql.PostgreSql
                     applied_by_tool VARCHAR(32) NULL,
                     applied_by_tool_version VARCHAR(16) NULL,
                     additional_artifacts BYTEA NULL,
-                    CONSTRAINT IX___yuniqldbversion UNIQUE(version)
+                    CONSTRAINT ix___yuniqldbversion UNIQUE(version)
 	            );";
 
         public string GetSqlForGetCurrentVersion()
