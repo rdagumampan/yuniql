@@ -61,11 +61,17 @@ namespace Yuniql.Core
                 .FirstOrDefault(f => new FileInfo(f).Name.ToLower() == fileName.ToLower());
         }
 
+        //TODO: improve this code!!!!
         public string[] FilterFiles(string workingPath, string environmentCode, List<string> files)
         {
-            var hasEnvironmentAwareDirectories = files.Any(f => {
-                var a = Path.GetDirectoryName(f).Substring(workingPath.Length).ToLower();
-                return a.Contains(ENVIRONMENT_CODE_PREFIX);
+            var rootParts = Split(new DirectoryInfo(workingPath)).ToList();
+            rootParts.Reverse();
+
+            var hasEnvironmentAwareDirectories = files.Any(f =>
+            {
+                var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).ToList();
+                fileParts.Reverse();
+                return fileParts.Skip(rootParts.Count).Any(a => a.StartsWith(ENVIRONMENT_CODE_PREFIX));
             });
 
             if (string.IsNullOrEmpty(environmentCode) && !hasEnvironmentAwareDirectories)
@@ -74,13 +80,17 @@ namespace Yuniql.Core
             //throws exception when no environment code passed but environment-aware directories are present
             if (string.IsNullOrEmpty(environmentCode) && hasEnvironmentAwareDirectories)
                 throw new YuniqlMigrationException("Found environment aware directories but no environment code passed. " +
-                    "See https://github.com/rdagumampan/yuniql/wiki/environment-aware-scripts.");  
+                    "See https://github.com/rdagumampan/yuniql/wiki/environment-aware-scripts.");
 
             //remove all script files from environment-aware directories except the target environment
             var sqlScriptFiles = new List<string>(files);
-            files.ForEach(f => {
-                var a = Path.GetDirectoryName(f).Substring(workingPath.Length).ToLower();
-                if (a.Contains(ENVIRONMENT_CODE_PREFIX) && !a.Contains($"{Path.DirectorySeparatorChar}{ENVIRONMENT_CODE_PREFIX}{environmentCode.ToLower()}"))
+            files.ForEach(f =>
+            {
+                var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).ToList();
+                fileParts.Reverse();
+
+                var foundFile = fileParts.Skip(rootParts.Count).FirstOrDefault(a => a.StartsWith(ENVIRONMENT_CODE_PREFIX) && a.ToLower()!= $"{ENVIRONMENT_CODE_PREFIX}{environmentCode}");
+                if (null != foundFile)
                     sqlScriptFiles.Remove(f);
             });
 

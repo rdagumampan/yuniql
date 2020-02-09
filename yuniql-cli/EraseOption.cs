@@ -16,7 +16,7 @@ namespace Yuniql.CLI
         [Option("--force", Required = false, HelpText = "Force execution of erase commands.")]
         public bool Force { get; set; }
 
-        [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts", Default = "")]
+        [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts")]
         public string Environment { get; set; } = "";
     }
 }

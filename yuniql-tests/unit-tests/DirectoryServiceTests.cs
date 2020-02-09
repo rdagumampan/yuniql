@@ -284,7 +284,7 @@ namespace Yuniql.UnitTests
             var result = sut.FilterFiles(basePath, null, files).ToList();
 
             //asset
-            result.Count.ShouldBe(2);
+            result.Count.ShouldBe(3);
             result[0].ShouldBe(script1);
             result[1].ShouldBe(script2);
             result[2].ShouldBe(script3);
