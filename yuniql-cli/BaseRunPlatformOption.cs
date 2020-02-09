@@ -22,5 +22,8 @@ namespace Yuniql.CLI
         //yuniql <command> --delimeter "," | --delimeter "|"
         [Option("delimiter", Required = false, HelpText = "Bulk import file delimiter", Default = ",")]
         public string Delimiter { get; set; } = ",";
+
+        [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts", Default = "")]
+        public string Environment { get; set; } = "";
     }
 }

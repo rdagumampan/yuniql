@@ -65,7 +65,7 @@ namespace Yuniql.UnitTests
             directoryService.Setup(s => s.GetFiles(@"c:\temp\_draft", "*.sql")).Returns(new string[] { @"c:\temp\_draft\sql_draft.sql" });
             directoryService.Setup(s => s.GetFiles(@"c:\temp\v0.00", "*.sql")).Returns(new string[] { @"c:\temp\v0.00\sql_v0_00.sql" });
 
-            directoryService.Setup(s => s.GetDirectories(@"c:\temp\v0.00", "*", SearchOption.AllDirectories)).Returns(new string[] { });
+            directoryService.Setup(s => s.GetAllDirectories(@"c:\temp\v0.00", "*")).Returns(new string[] { });
 
             directoryService.Setup(s => s.GetFiles(@"c:\temp\v0.00", "*.csv")).Returns(new string[] { @"c:\temp\v0.00\file.csv" });
 
@@ -126,7 +126,7 @@ namespace Yuniql.UnitTests
             directoryService.Verify(s => s.GetFiles(@"c:\temp\_post", "*.sql"));
             directoryService.Verify(s => s.GetFiles(@"c:\temp\_draft", "*.sql"));
             directoryService.Verify(s => s.GetFiles(@"c:\temp\v0.00", "*.sql"));
-            directoryService.Verify(s => s.GetDirectories(@"c:\temp\v0.00", "*", SearchOption.AllDirectories));
+            directoryService.Verify(s => s.GetAllDirectories(@"c:\temp\v0.00", "*"));
             directoryService.Verify(s => s.GetFiles(@"c:\temp\v0.00", "*.csv"));
 
             fileService.Verify(s => s.ReadAllText(@"c:\temp\_init\sql_init.sql"));

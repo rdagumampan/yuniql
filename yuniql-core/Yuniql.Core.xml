@@ -131,9 +131,9 @@
             <returns></returns>
         </member>
         <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.DirectoryService" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetDirectories(System.String,System.String,System.IO.SearchOption)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetFiles(System.String,System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetDirectories(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetAllDirectories(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetFiles(System.String,System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.Exists(System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetFileCaseInsensitive(System.String,System.String)" -->
         <member name="T:Yuniql.Core.EnvironmentService">
@@ -272,7 +272,7 @@
         </member>
         <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.IDirectoryService" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetDirectories(System.String,System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetDirectories(System.String,System.String,System.IO.SearchOption)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetAllDirectories(System.String,System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetFiles(System.String,System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.Exists(System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetFileCaseInsensitive(System.String,System.String)" -->
@@ -366,7 +366,7 @@
             Returns all migration versions applied in the target database
             </summary>
         </member>
-        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String)">
+        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
             <summary>
             Runs migrations by executing alls scripts in the workspace directory. 
             When CSV files are present also run bulk import operations to target database table having same file name.
@@ -506,7 +506,7 @@
             Returns all migration versions applied in the target database
             </summary>
         </member>
-        <member name="M:Yuniql.Core.MigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String)">
+        <member name="M:Yuniql.Core.MigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
             <summary>
             Runs migrations by executing alls scripts in the workspace directory. 
             When CSV files are present also run bulk import operations to target database table having same file name.

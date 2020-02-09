@@ -47,7 +47,8 @@ namespace Yuniql.Core
             int? commandTimeout = null,
             int? batchSize = null,
             string appliedByTool = null,
-            string appliedByToolVersion = null
+            string appliedByToolVersion = null,
+            string environmentCode = null
         );
 
         /// <summary>

@@ -15,12 +15,14 @@ namespace Yuniql.Core
         /// <summary>
         /// Wraps <see cref="Directory.GetDirectories"./>
         /// </summary>
-        string[] GetDirectories(string path, string searchPattern, SearchOption searchOption);
+        string[] GetAllDirectories(string path, string searchPattern);
 
         /// <summary>
         /// Wraps <see cref="Directory.GetFiles"./>
         /// </summary>
         string[] GetFiles(string path, string searchPattern);
+
+        string[] GetAllFiles(string path, string searchPattern);
 
         /// <summary>
         /// Wraps <see cref="Directory.Exists"./>

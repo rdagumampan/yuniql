@@ -85,7 +85,8 @@ namespace Yuniql.Core
             int? commandTimeout = null,
             int? batchSize = null,
             string appliedByTool = null,
-            string appliedByToolVersion = null
+            string appliedByToolVersion = null,
+            string environmentCode = null
          )
         {
             //validate workspace structure
@@ -216,7 +217,8 @@ namespace Yuniql.Core
             int? commandTimeout = null
         )
         {
-            var sqlScriptFiles = _directoryService.GetFiles(workingPath, "*.sql").ToList();
+            var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
+
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {workingPath}");
             _traceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
 
@@ -289,7 +291,7 @@ namespace Yuniql.Core
                     try
                     {
                         //run scripts in all sub-directories
-                        var versionSubDirectories = _directoryService.GetDirectories(versionDirectory, "*", SearchOption.AllDirectories).ToList();
+                        var versionSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList();
                         versionSubDirectories.Sort();
                         versionSubDirectories.ForEach(versionSubDirectory =>
                         {
