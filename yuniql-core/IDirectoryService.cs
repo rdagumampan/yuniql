@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Yuniql.Core
 {
@@ -37,8 +38,8 @@ namespace Yuniql.Core
         /// </summary>
         string GetFileCaseInsensitive(string path, string fileName);
 
-        string[] FilterFiles(string[] files, string environmentCode);
+        string[] FilterFiles(string workingPath, string environmentCode, List<string> files);
 
-        string[] FilterDirectories(string[] directories, string environmentCode);
+        string[] FilterDirectories(string workingPath, string environmentCode, List<string> directories);
     }
 }

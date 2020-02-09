@@ -60,7 +60,8 @@ namespace Yuniql.Core
         void Erase(
             string workingPath,
             List<KeyValuePair<string, string>> tokens = null,
-            int? commandTimeout = null
+            int? commandTimeout = null,
+            string environmentCode = null
         );
     }
 }

@@ -130,12 +130,41 @@
             <param name="traceService">Trace service provider where trace messages will be written.</param>
             <returns></returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.DirectoryService" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetDirectories(System.String,System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetAllDirectories(System.String,System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetFiles(System.String,System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.Exists(System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.DirectoryService.GetFileCaseInsensitive(System.String,System.String)" -->
+        <member name="T:Yuniql.Core.DirectoryService">
+            <summary>
+            Wraps usage of <see cref="T:System.IO.Directory"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.DirectoryService.GetDirectories(System.String,System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.GetDirectories(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.DirectoryService.GetAllDirectories(System.String,System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.GetDirectories(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.DirectoryService.GetFiles(System.String,System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.GetFiles(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.DirectoryService.GetAllFiles(System.String,System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.GetFiles(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.DirectoryService.Exists(System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.Exists(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.DirectoryService.GetFileCaseInsensitive(System.String,System.String)">
+            <summary>
+            Returns case insensitive file fullname
+            </summary>
+        </member>
         <member name="T:Yuniql.Core.EnvironmentService">
             <summary>
             Helper class for extracting environment variables.
@@ -274,6 +303,7 @@
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetDirectories(System.String,System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetAllDirectories(System.String,System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetFiles(System.String,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetAllFiles(System.String,System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.Exists(System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetFileCaseInsensitive(System.String,System.String)" -->
         <member name="T:Yuniql.Core.IEnvironmentService">
@@ -380,7 +410,7 @@
             <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
             <param name="batchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
         </member>
-        <member name="M:Yuniql.Core.IMigrationService.Erase(System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.IMigrationService.Erase(System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String)">
             <summary>
             Executes erase scripts presentin _erase directory and subdirectories.
             </summary>
@@ -520,7 +550,7 @@
             <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
             <param name="batchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
         </member>
-        <member name="M:Yuniql.Core.MigrationService.Erase(System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.MigrationService.Erase(System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String)">
             <summary>
             Executes erase scripts presentin _erase directory and subdirectories.
             </summary>

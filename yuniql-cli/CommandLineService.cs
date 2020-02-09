@@ -273,7 +273,7 @@ namespace Yuniql.CLI
                 //run all erase scripts
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                migrationService.Erase(opts.Path, tokens, opts.CommandTimeout);
+                migrationService.Erase(opts.Path, tokens, opts.CommandTimeout, opts.Environment);
             }
             catch (Exception ex)
             {

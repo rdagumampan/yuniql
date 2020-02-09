@@ -202,7 +202,7 @@ namespace Yuniql.UnitTests
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), DefaultConstants.CommandTimeoutSecs));
+                ), DefaultConstants.CommandTimeoutSecs, null));
         }
 
         [TestMethod]
