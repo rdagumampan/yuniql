@@ -22,6 +22,9 @@ namespace Yuniql.Core
         /// </summary>
         string[] GetFiles(string path, string searchPattern);
 
+        /// <summary>
+        /// Wraps <see cref="Directory.GetFiles"./>
+        /// </summary>
         string[] GetAllFiles(string path, string searchPattern);
 
         /// <summary>
@@ -33,5 +36,9 @@ namespace Yuniql.Core
         /// Wraps <see cref="Directory.GetFiles"./>
         /// </summary>
         string GetFileCaseInsensitive(string path, string fileName);
+
+        string[] FilterFiles(string[] files, string environmentCode);
+
+        string[] FilterDirectories(string[] directories, string environmentCode);
     }
 }

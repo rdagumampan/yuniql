@@ -58,5 +58,15 @@ namespace Yuniql.Core
                 .ToList()
                 .FirstOrDefault(f => new FileInfo(f).Name.ToLower() == fileName.ToLower());
         }
+
+        public string[] FilterFiles(string[] files, string environmentCode)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public string[] FilterDirectories(string[] directories, string environmentCode)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
