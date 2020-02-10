@@ -134,7 +134,8 @@ namespace Yuniql.CLI
                     commandTimeout: opts.CommandTimeout,
                     batchSize: null,
                     appliedByTool: toolName,
-                    appliedByToolVersion: toolVersion
+                    appliedByToolVersion: toolVersion,
+                    environmentCode: opts.Environment
                     );
             }
             catch (Exception ex)
@@ -192,7 +193,11 @@ namespace Yuniql.CLI
                     verifyOnly: true,
                     delimiter: opts.Delimiter,
                     commandTimeout: opts.CommandTimeout,
-                    batchSize: null);
+                    batchSize: null,
+                    appliedByTool: toolName,
+                    appliedByToolVersion: toolVersion,
+                    environmentCode: opts.Environment
+                    );
 
                 _traceService.Info("Verification run successful.");
             }
