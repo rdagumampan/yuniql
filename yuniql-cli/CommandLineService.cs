@@ -183,6 +183,10 @@ namespace Yuniql.CLI
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
+                var toolName = "yuniql-cli";
+                var toolVersion = this.GetType().Assembly.GetName().Version.ToString();
+
+                //run the migration
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 migrationService.Run(
