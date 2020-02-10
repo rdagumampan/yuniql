@@ -620,9 +620,9 @@ namespace Yuniql.PlatformTests
             migrationService.Run(_testConfiguration.WorkspacePath, "v0.00", autoCreateDatabase: true, environmentCode: "test");
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_01").ShouldBeFalse();
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_02").ShouldBeFalse();
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_03").ShouldBeFalse();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_02").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_03").ShouldBeTrue();
 
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_dev").ShouldBeFalse();
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_test_01").ShouldBeTrue();
