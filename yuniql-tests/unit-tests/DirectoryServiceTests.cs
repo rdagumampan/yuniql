@@ -12,7 +12,7 @@ namespace Yuniql.UnitTests
     public class DirectoryServiceTests
     {
         [TestMethod]
-        public void Test_Filter_Files_No_Environment_Aware_Directory()
+        public void Test_Filter_Files_No_Environment_Aware_Directory_Present()
         {
             //arrange
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", "_init");
@@ -70,7 +70,7 @@ namespace Yuniql.UnitTests
         }
 
         [TestMethod]
-        public void Test_Filter_Files_Root_Files_And_Test_Environment_Scripts()
+        public void Test_Filter_Files_Mixed_Files_And_Environment_Aware_Scripts()
         {
             //arrange
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", "_init");
@@ -97,7 +97,7 @@ namespace Yuniql.UnitTests
         }
 
         [TestMethod]
-        public void Test_Filter_Files_Root_Files_And_Sub_Direcotry_And_Test_Environment_Scripts()
+        public void Test_Filter_Files_Mixed_Files_And_Environment_Aware_Scripts_In_SubDirectory()
         {
             //arrange
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", "_init");
@@ -182,7 +182,7 @@ namespace Yuniql.UnitTests
         }
 
         [TestMethod]
-        public void Test_Filter_Files_with_Script_FileNames_Have_Environment_Aware_Token()
+        public void Test_Filter_Files_with_Script_FileNames_Have_Environment_Aware_Token_Underscore()
         {
             //arrange
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", "_init");
@@ -265,7 +265,7 @@ namespace Yuniql.UnitTests
         }
 
         [TestMethod]
-        public void Test_Filter_Files_Directories_With_Code()
+        public void Test_Filter_Files_Directories_With_Environment_Code_Passed()
         {
             //arrange
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", "_init");
