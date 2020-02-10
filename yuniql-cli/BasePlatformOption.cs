@@ -5,7 +5,7 @@ namespace Yuniql.CLI
     public class BasePlatformOption: BaseOption
     {
         //yuniql <command> -d | --debug
-        [Option(longName: "platform", Required = false, HelpText = "Target database platform", Default = "sqlserver")]
+        [Option(longName: "platform", Required = false, HelpText = "Target database platform.", Default = "sqlserver")]
         public string Platform { get; set; }
 
         //yuniql <command> --plugins-path "," | --plugins-path "|"
@@ -13,7 +13,7 @@ namespace Yuniql.CLI
         public string PluginsPath { get; set; }
 
         //yuniql <command> -c "<connectiong-string>"
-        [Option('c', "connection-string", Required = false, HelpText = "Connection string to target database server instance")]
+        [Option('c', "connection-string", Required = false, HelpText = "Connection string to target database server instance.")]
         public string ConnectionString { get; set; }
 
         //yuniql <command> --command-timeout""
