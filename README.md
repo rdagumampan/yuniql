@@ -24,7 +24,7 @@
 Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://github.com/rdagumampan/yuniql/wiki/Install-yuniql
 
 ```console
-choco install yuniql --version 0.328.0
+choco install yuniql --version 0.350.0
 ```
 
 ### Run migrations for SQL Server
