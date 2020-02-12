@@ -140,7 +140,7 @@ static void Main(string[] args)
 
 * [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
 * [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
-* [How to apply environment-aware scripts](https://github.com/rdagumampan/yuniql/wiki/Environment-aware-scripts)
+* [How to apply migrations in dev but different in production](https://github.com/rdagumampan/yuniql/wiki/Environment-aware-scripts)
 * [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 
@@ -160,9 +160,9 @@ For running migration from docker container, [see instructions here](https://git
 |Docker image linux-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
 |Docker imiage win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
 
-* Amazon RDS - Aurora ***
+* Amazon RDS Aurora ***
 * Snowflake Data Warehouse ***
-* Azure SQL Data Warehouse ***
+* Azure Synapse Analytics (Azure DW)***
 
 *** planned or being evaluated/developer/tested
 
