@@ -141,6 +141,7 @@ static void Main(string[] args)
 * [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
 * [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
 * [How to apply migrations in dev but different in production](https://github.com/rdagumampan/yuniql/wiki/Environment-aware-scripts)
+* [How to use with entity framework core (ef-core) code-first migrations](https://github.com/rdagumampan/yuniql/tree/master/samples/postgresql-efcore-sample)
 * [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 
