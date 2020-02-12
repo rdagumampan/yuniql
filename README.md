@@ -1,6 +1,6 @@
 # yuniql ![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql?style=flat-square&logo=appveyor) [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql/build/tests) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql?style=flat-square&logo=gitter&color=orange)](https://gitter.im/yuniql/yuniql) [![Download latest build](https://img.shields.io/badge/Download-win--x64-green?style=flat-square&logo=windows)](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip) [![Download latest build](https://img.shields.io/badge/Download-docker--images-green?style=flat-square&logo=docker)](https://hub.docker.com/r/rdagumampan/yuniql)
 
->*** LATEST UPDATE: Alpha version `v0.350.0` has been released. This release covers all the major features expected to be part of `v1.0`. Try out with samples described below.
+>*** LATEST UPDATE FEB-12-2020: Alpha version `v0.350.0` has been released! This release covers all the major features expected to be part of `v1.0`. Try out with samples described below.
 
 <img align="right" src="assets/yuniql-logo.png" width="150">
 
