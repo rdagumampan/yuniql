@@ -5,5 +5,5 @@ in verifying that this package's contents are trustworthy.
 $ powershell "Get-FileHash yuniql-cli-win-x64-latest.zip | Format-List"
 
 Algorithm : SHA256
-Hash      : 49A596B99873CAE6B94852177B0D8F7F020607800A9A26FDB28C1EE3A21227B3
-Path      : C:\temp\yuniql-cli-win-x64-latest.zip
+Hash      : 4FB9A62DBC48FABFD936D4F6A1499D78417A49D109CFCA71ABB776C20D53DE77
+Path      : C:\temp\choco\yuniql-cli-win-x64-latest.zip

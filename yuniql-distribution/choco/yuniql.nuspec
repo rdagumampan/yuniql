@@ -26,6 +26,7 @@ yuniql vnext -f "your-script-file.sql"
 yuniql verify
 yuniql run
 yuniql run -c "<connectiong-string>"
+yuniql run -c "<connectiong-string>" --environment DEV
 yuniql run --platform postgresql | --platform mysql
 yuniql run -a true | --auto-create-db true
 yuniql run -p c:\temp\demo | --path c:\temp\demo

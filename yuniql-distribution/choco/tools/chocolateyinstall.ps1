@@ -9,7 +9,7 @@ $packageArgs = @{
     packageName     = $packageName
     url             = 'https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest.zip'
     unzipLocation   =  $toolsDir
-    checksum        = '49A596B99873CAE6B94852177B0D8F7F020607800A9A26FDB28C1EE3A21227B3'
+    checksum        = '4FB9A62DBC48FABFD936D4F6A1499D78417A49D109CFCA71ABB776C20D53DE77'
     checksumType    = 'sha256'
 }
 

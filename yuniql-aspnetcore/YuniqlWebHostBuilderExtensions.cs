@@ -45,7 +45,10 @@ namespace Yuniql.AspNetCore
                 configuration.VerifyOnly,
                 configuration.Delimiter,
                 configuration.BatchSize,
-                configuration.CommandTimeout);
+                configuration.CommandTimeout,
+                configuration.ApplyByTool,
+                configuration.ApplyByToolVersion,
+                configuration.Environment);
 
             return builder;
         }
@@ -78,7 +81,10 @@ namespace Yuniql.AspNetCore
                 configuration.VerifyOnly,
                 configuration.Delimiter,
                 configuration.BatchSize,
-                configuration.CommandTimeout);
+                configuration.CommandTimeout,
+                configuration.ApplyByTool,
+                configuration.ApplyByToolVersion,
+                configuration.Environment);
 
             return builder;
         }

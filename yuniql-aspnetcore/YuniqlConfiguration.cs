@@ -65,5 +65,22 @@ namespace Yuniql.AspNetCore
         /// Use this when you are investigating some failed migrations.
         /// </summary>
         public bool DebugTraceMode { get; set; } = false;
+
+        /// <summary>
+        /// Describes the source of migration applied to target database.
+        /// This is defaulted to yuniql-aspnetcore and its readonly property
+        /// </summary>
+        public string ApplyByTool { get { return "yuniql-aspnetcore"; } }
+
+        /// <summary>
+        /// Describes the version of source of migration applied to target database.
+        /// </summary>
+        public string ApplyByToolVersion { get { return typeof(YuniqlConfiguration).Assembly.GetName().Version.ToString(); } }
+
+        /// <summary>
+        /// Environment to target when running migration with environment-aware scripts.
+        /// See https://github.com/rdagumampan/yuniql/wiki/environment-aware-scripts
+        /// </summary>
+        public string Environment { get; set; } = null;
     }
 }

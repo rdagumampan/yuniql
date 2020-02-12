@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Yuniql.AspNetCore" Version="0.326.0" />
-    <PackageReference Include="Yuniql.PostgreSql" Version="0.326.0" />
+    <PackageReference Include="Yuniql.AspNetCore" Version="0.350.0" />
+    <PackageReference Include="Yuniql.PostgreSql" Version="0.350.0" />
   </ItemGroup>
 
 </Project>
