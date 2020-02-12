@@ -4,17 +4,15 @@
     <id>yuniql</id>
     <version>$version$</version>
     <title>Yuniql</title>
-    <summary>Schema versioning and database migration tool for sql server, postgresql and others. </summary>
+    <summary>An open source schema versioning and database migration engine for SqlServer, PostgreSql and others.</summary>
     <description><![CDATA[    
-yuniql (yuu-nee-kel) is a schema versioning and database migration tool for sql server and others. Versions are organized as series of ordinary directories or folders. Scripts are stored transparently as plain old .sql files. Yuniql simply automates what you would normally do by hand and executes scripts in an orderly and transactional fashion.
+Run database migrations and schema versioning with Yuniql. Supports SqlServer, PostgreSql, MySql and others. For samples and developer guide, walk through our [wiki documentation](https://github.com/rdagumampan/yuniql/wiki).
 
-Yuniql promotes and facilitates an end-to-end database DevOps discipline. From schema versioning, to fresh database provisioning and releases via continuous delivery pipeline tasks.
+**NOTE: This is a PREVIEW RELEASE. Stay tuned for latest features and releases, star or watch project yuniql on Github. See  https://github.com/rdagumampan/yuniql**
 
-![screenshot](https://raw.githubusercontent.com/rdagumampan/yuniql/master/assets/wiki-evodb-01.png)
+![screenshot](https://rawcdn.githack.com/rdagumampan/yuniql/a141e5b5aeda60511d67707ef2d230f81df7807b/assets/wiki-evodb-01.png)
 
-** NOTE: This is in PREVIEW and NOT YET READY FOR PRODUCTION. Please star or watch in GitHub for release updates. See https://github.com/rdagumampan/yuniql**
-
-## Supported CLI Commands
+### Supported CLI Commands
 
 ```bash
 yuniql init
@@ -25,8 +23,8 @@ yuniql vnext -m | --minor
 yuniql vnext -f "your-script-file.sql"
 yuniql verify
 yuniql run
-yuniql run -c "<connectiong-string>"
-yuniql run -c "<connectiong-string>" --environment DEV
+yuniql run -c "your-connectiong-string"
+yuniql run -c "your-connectiong-string" --environment DEV
 yuniql run --platform postgresql | --platform mysql
 yuniql run -a true | --auto-create-db true
 yuniql run -p c:\temp\demo | --path c:\temp\demo
@@ -38,6 +36,18 @@ yuniql -v | --version
 yuniql -h | --help
 yuniql -d | --debug
 ```
+
+### License
+Copyright (C) 2019 Rodel E. Dagumampan
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+### Found bugs?
+
+Help us improve further please [create an issue](https://github.com/rdagumampan/yuniql/issues/new).
+
 ]]>
 </description>
     <authors>Rodel E. Dagumampan</authors>
@@ -48,14 +58,13 @@ yuniql -d | --debug
     <docsUrl>https://github.com/rdagumampan/yuniql/wiki</docsUrl>
     <bugTrackerUrl>https://github.com/rdagumampan/yuniql/issues</bugTrackerUrl>
     <licenseUrl>https://github.com/rdagumampan/yuniql/blob/master/LICENSE.md</licenseUrl>
-    <iconUrl>https://raw.githubusercontent.com/rdagumampan/yuniql/master/assets/favicon.png</iconUrl>
+    <iconUrl>https://rawcdn.githack.com/rdagumampan/yuniql/a141e5b5aeda60511d67707ef2d230f81df7807b/assets/favicon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <copyright>Copyright 2019 Rodel E. Dagumampan</copyright>
-    <tags>yuniql database migration cli devops</tags>
+    <tags>yuniql database migration devops</tags>
     <releaseNotes>https://github.com/rdagumampan/yuniql/wiki/Release-notes</releaseNotes>
   </metadata>
   <files>
-    <file src="favicon.png" target="images" />
     <file src="tools\**" target="tools" />
-    <file src="legal\**" target="legal" />  </files>
+  </files>
 </package>

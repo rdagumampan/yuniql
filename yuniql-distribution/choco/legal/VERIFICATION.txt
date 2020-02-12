@@ -1,9 +1,0 @@
-﻿VERIFICATION
-Verification is intended to assist the Chocolatey moderators and community
-in verifying that this package's contents are trustworthy.
- 
-$ powershell "Get-FileHash yuniql-cli-win-x64-latest.zip | Format-List"
-
-Algorithm : SHA256
-Hash      : 4FB9A62DBC48FABFD936D4F6A1499D78417A49D109CFCA71ABB776C20D53DE77
-Path      : C:\temp\choco\yuniql-cli-win-x64-latest.zip

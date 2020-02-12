@@ -1,0 +1,25 @@
+INF   2020-02-12T06:46:35.2331364Z   Started migration from C:\play\yuniql\samples\basic-sqlserver-sample.
+INF   2020-02-12T06:46:35.2555949Z   No explicit target version requested. We'll use latest available locally v0.00 on C:\play\yuniql\samples\basic-sqlserver-sample.
+INF   2020-02-12T06:46:35.5796137Z   Target database does not exist. Creating database yuniqldb on localhost,1400.
+INF   2020-02-12T06:46:36.4269051Z   Created database yuniqldb on localhost,1400.
+INF   2020-02-12T06:46:36.5684222Z   Target database yuniqldb on localhost,1400 not yet configured for migration.
+INF   2020-02-12T06:46:36.6116350Z   Configured database migration support for yuniqldb on localhost,1400.
+INF   2020-02-12T06:46:36.6326926Z   Found the 0 script files on C:\play\yuniql\samples\basic-sqlserver-sample\_init
+INF   2020-02-12T06:46:36.6379363Z   
+INF   2020-02-12T06:46:36.6431549Z   Executed script files on C:\play\yuniql\samples\basic-sqlserver-sample\_init
+INF   2020-02-12T06:46:36.6500634Z   Found the 0 script files on C:\play\yuniql\samples\basic-sqlserver-sample\_pre
+INF   2020-02-12T06:46:36.6551462Z   
+INF   2020-02-12T06:46:36.6602986Z   Executed script files on C:\play\yuniql\samples\basic-sqlserver-sample\_pre
+INF   2020-02-12T06:46:36.6692055Z   Found the 2 script files on C:\play\yuniql\samples\basic-sqlserver-sample\v0.00
+INF   2020-02-12T06:46:36.6767387Z   01-setup-tables.sql\r\n\t02-setup-data.sql
+INF   2020-02-12T06:46:36.7130240Z   Executed script file C:\play\yuniql\samples\basic-sqlserver-sample\v0.00\01-setup-tables.sql.
+INF   2020-02-12T06:46:36.7612587Z   Executed script file C:\play\yuniql\samples\basic-sqlserver-sample\v0.00\02-setup-data.sql.
+INF   2020-02-12T06:46:36.7726632Z   Found the 0 bulk files on C:\play\yuniql\samples\basic-sqlserver-sample\v0.00
+INF   2020-02-12T06:46:36.7802723Z   
+INF   2020-02-12T06:46:36.7911350Z   Completed migration to version C:\play\yuniql\samples\basic-sqlserver-sample\v0.00
+INF   2020-02-12T06:46:36.7988665Z   Found the 0 script files on C:\play\yuniql\samples\basic-sqlserver-sample\_draft
+INF   2020-02-12T06:46:36.8051863Z   
+INF   2020-02-12T06:46:36.8112459Z   Executed script files on C:\play\yuniql\samples\basic-sqlserver-sample\_draft
+INF   2020-02-12T06:46:36.8180185Z   Found the 0 script files on C:\play\yuniql\samples\basic-sqlserver-sample\_post
+INF   2020-02-12T06:46:36.8243004Z   
+INF   2020-02-12T06:46:36.8329876Z   Executed script files on C:\play\yuniql\samples\basic-sqlserver-sample\_post
