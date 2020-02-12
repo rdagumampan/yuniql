@@ -4,9 +4,7 @@
 
 <img align="right" src="assets/yuniql-logo.png" width="150">
 
-**yuniql** (yuu-nee-kel) is a database schema versioning and migration engine for SqlServer, PostgreSql and others. Versions are organized as series of ordinary directories or folders. Scripts are stored transparently as plain old `.sql` files. Yuniql automates what is normally done by hand and executes scripts in an orderly and transactional fashion.
-
-**yuniql** promotes and facilitates an end-to-end DB DevOps discipline. From schema versioning, to fresh database provisioning and releases via continuous delivery pipeline tasks.
+**yuniql** (yuu-nee-kel) is an open source schema versioning and database migration engine for SqlServer, PostgreSql and others. Improve your Data Platform DevOps discipline with repeatable deployment, plain SQL scripts, bulk import, integrated CI/CD pipelines, and Docker-based migrations.
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
 
@@ -17,18 +15,16 @@
 - **It's .NET Core Native.** Released as a self-contained .NET Core 3.0 application. Yuniql doesn't require any dependencies or CLR installed on the developer machine or CI/CD server. For windows, `yuniql.exe` is ready-for-use on day 1.
 - **Bulk Import CSV.** Load up your master data and lookup tables from CSV files. A powerful feature when provisioning fresh developer databases or when taking large block of master data as part of a new version.
 - **DevOps Friendly.** Azure Pipeline Tasks available in the Market Place. `Use Yuniql` task acquires a specific version of the Yuniql. `Run Yuniql` task runs database migrations with Yuniql CLI using version acquired earlier.
-- **Cloud Ready.** Platform tested for Azure SQL Database. Plugins for Amazon RDS and Google Cloud SQL are lined up for development. ***
+- **Cloud Ready.** Platform tested for Azure SQL Database, Amazon RDS and Google Cloud SQL. Plugins for Snowflake, Aurora and Azure Synapse Analytics are lined up for development.
 - **Docker Support.** Each project is prepared for containerized execution using Yuniql base images. A dockerized database project is cheap way to run migration on any CI/CD platform.
 - **Cross-platform.** Works with Windows and major Linux distros.
 - **Open Source.** Released under Apache License version 2.0. Absolutely free for personal or commercial use.
-
-*** planned or being evaluated/developer/tested
 
 ## Working with CLI
 Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://github.com/rdagumampan/yuniql/wiki/Install-yuniql
 
 ```console
-choco install yuniql --version 0.350.0
+choco install yuniql --version 0.328.0
 ```
 
 ### Run migrations for SQL Server
@@ -144,7 +140,8 @@ static void Main(string[] args)
 
 * [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
 * [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
-* [How to apply environment-aware scripts](https://github.com/rdagumampan/yuniql/wiki/Environment-aware-scripts)
+* [How to apply migrations in dev but different in production](https://github.com/rdagumampan/yuniql/wiki/Environment-aware-scripts)
+* [How to use with entity framework core (ef-core) code-first migrations](https://github.com/rdagumampan/yuniql/tree/master/samples/postgresql-efcore-sample)
 * [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
 * [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
 
@@ -164,9 +161,9 @@ For running migration from docker container, [see instructions here](https://git
 |Docker image linux-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
 |Docker imiage win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
 
-* Amazon RDS - Aurora ***
+* Amazon RDS Aurora ***
 * Snowflake Data Warehouse ***
-* Azure SQL Data Warehouse ***
+* Azure Synapse Analytics (Azure DW)***
 
 *** planned or being evaluated/developer/tested
 
