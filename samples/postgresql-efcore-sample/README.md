@@ -10,7 +10,7 @@ To simulate changes, we create a new model class `TestClass` and add it into efc
 https://github.com/rdagumampan/yuniql/wiki/Install-yuniql
 
 ```powershell
-choco install yuniql --version 0.328.0
+choco install yuniql --version 0.350.0
 ```
 
 ## Install ef-core CLI

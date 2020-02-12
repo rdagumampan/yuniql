@@ -1,7 +1,7 @@
 ## Install yuniql
 https://github.com/rdagumampan/yuniql/wiki/Install-yuniql
 
-choco install yuniql --version 0.328.0
+choco install yuniql --version 0.350.0
 
 ## Clone samples
 git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
