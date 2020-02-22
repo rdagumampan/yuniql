@@ -13,7 +13,7 @@ namespace Yuniql.CLI
         public IEnumerable<string> Tokens { get; set; } = new List<string>();
 
         //yuniql erase --force 
-        [Option("--force", Required = false, HelpText = "Force execution of erase commands.")]
+        [Option("force", Required = false, HelpText = "Force execution of erase commands.")]
         public bool Force { get; set; }
 
         [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts.")]
