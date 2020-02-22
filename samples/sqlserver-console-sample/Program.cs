@@ -43,7 +43,8 @@ namespace console_sample
             var currentDbVersion = migrationService.GetCurrentVersion();
             if(currentDbVersion != requiredDbVersion)
             {
-                throw new ApplicationException($"Startup failed. Application requires database version {requiredDbVersion} but current version is {currentDbVersion}." +
+                throw new ApplicationException($"Startup failed. " +
+                    $"Application requires database version {requiredDbVersion} but current version is {currentDbVersion}." +
                     $"Deploy the latest compatible schema version of database and run again.");
             }
         }
