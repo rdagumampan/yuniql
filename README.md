@@ -21,7 +21,7 @@
 - **Open Source.** Released under Apache License version 2.0. Absolutely free for personal or commercial use.
 
 ## Working with CLI
-Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://github.com/rdagumampan/yuniql/wiki/Install-yuniql
+Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://yuniql.io/docs/install-yuniql
 
 ```console
 choco install yuniql --version 0.350.0
@@ -57,12 +57,12 @@ yuniql info --platform postgresql
 ```
 
 ## Working with Azure DevOps Pipelines Tasks
-Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how `Use .NET Core` or `Use Node` tasks works. Find Yuniql on [Azure DevOps MarketPlace](https://marketplace.visualstudio.com/items?itemName=rdagumampan.yuniql-azdevops-extensions). Developer guide is available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-Azure-Devops.
+Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how `Use .NET Core` or `Use Node` tasks works. Find Yuniql on [Azure DevOps MarketPlace](https://marketplace.visualstudio.com/items?itemName=rdagumampan.yuniql-azdevops-extensions). Developer guide is available here https://yuniql.io/docs/migrate-via-azure-devops-pipelines.
 
 <img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-az-devops-task-all.png">
 
 ## Working with Docker Container
-Run your database migration thru a Docker container. This is specially helpful on Linux environments and CI/CD pipelines running on Linux Agents as it facilitates your migration without having to worry any local installations or runtime dependencies. Developer guide is available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-docker-container.
+Run your database migration thru a Docker container. This is specially helpful on Linux environments and CI/CD pipelines running on Linux Agents as it facilitates your migration without having to worry any local installations or runtime dependencies. Developer guide is available here https://yuniql.io/docs/migrate-via-docker-container.
 
 ```console
 git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-docker
@@ -73,7 +73,7 @@ docker run sqlserver-example -c "<your-connection-string>" -a --platform sqlserv
 ```
 
 ## Working with ASP.NET Core
-Run your database migration when your ASP.NET Core host service starts up. This ensures that database is always at latest compatible state before operating the service. Applies to Worker and WebApp projects. Developer guide is available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-ASP.NET-Core.
+Run your database migration when your ASP.NET Core host service starts up. This ensures that database is always at latest compatible state before operating the service. Applies to Worker and WebApp projects. Developer guide is available here https://yuniql.io/docs/migrate-via-aspnetcore-application.
 
 ```console
 dotnet add package Yuniql.AspNetCore
@@ -101,7 +101,7 @@ app.UseYuniql(traceService, new YuniqlConfiguration
 ```
 
 ## Working with Console Application
-Run your database migration when Console App starts. Developer guide is available here https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-.NET-Core-Console-Application.
+Run your database migration when Console App starts. Developer guide is available here https://yuniql.io/docs/migrate-via-netcore-console-application.
  
 ```console
 dotnet add package Yuniql.Core
@@ -138,12 +138,11 @@ static void Main(string[] args)
 
 ## Advanced use cases
 
-* [How to bulk import data](https://github.com/rdagumampan/yuniql/wiki/How-to-bulk-import-data-during-migration)
-* [How to replace tokens in script files](https://github.com/rdagumampan/yuniql/wiki/How-to-apply-token-replacement)
-* [How to apply migrations in dev but different in production](https://github.com/rdagumampan/yuniql/wiki/Environment-aware-scripts)
-* [How to use with entity framework core (ef-core) code-first migrations](https://github.com/rdagumampan/yuniql/tree/master/samples/postgresql-efcore-sample)
-* [How to version your database](https://github.com/rdagumampan/yuniql/wiki/How-to-baseline-your-database)
-* [How yuniql works](https://github.com/rdagumampan/yuniql/wiki/How-yuniql-works)
+* [How to bulk import CSV master data](https://yuniql.io/docs/bulk-import-csv-master-data/)
+* [How to replace tokens in script files](https://yuniql.io/docs/token-replacement/)
+* [How to run environment-aware migrations](https://yuniql.io/docs/environment-aware-scripts/)
+* [How to baseline your database](https://yuniql.io/docs/baseline-database/)
+* [How yuniql works](https://yuniql.io/docs/how-yuniql-works/)
 
 ## Ask for help or contribute
 
@@ -151,7 +150,7 @@ You may submit ideas for improvement or report a bug by [creating an issue](http
 If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/community). Alternatively, tag [#yuniql](https://twitter.com/) on Twitter.
 
 ## Supported databases and platform tests
-For running migration from docker container, [see instructions here](https://github.com/rdagumampan/yuniql/wiki/How-to-run-migration-from-a-docker-container)
+For running migration from docker container, [see instructions here](https://yuniql.io/docs/migrate-via-docker-container/)
 
 |Platform|Build Status|Description|
 |---|---|---|

@@ -98,7 +98,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15
 - Access PostgreSql database with pgAdmin tool<br>
 https://www.pgadmin.org/download/
-- Access PostgreSql database with phpMyAdmin tool<br>
+- Access MySql database with phpMyAdmin tool<br>
 https://www.phpmyadmin.net/
 
 ## Found bugs?
