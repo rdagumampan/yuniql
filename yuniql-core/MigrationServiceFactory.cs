@@ -12,7 +12,7 @@ namespace Yuniql.Core
         private readonly ITraceService _traceService;
 
         /// <summary>
-        /// 
+        /// An instance of <see cref="MigrationServiceFactory"/>
         /// </summary>
         /// <param name="traceService"></param>
         public MigrationServiceFactory(
