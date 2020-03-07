@@ -483,5 +483,34 @@ namespace Yuniql.PlatformTests
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00").ShouldBeTrue();
         }
+
+        [TestMethod]
+        public void Test_Draft_Always_Executed()
+        {
+            //arrange
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
+
+            //act
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
+            migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, null, autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00").ShouldBeTrue();
+
+            //arrange
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_draft"), $"test_draft_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_01"));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_draft"), $"test_draft_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_02"));
+
+            //act - runs the _draft again
+            migrationService.Run(_testConfiguration.WorkspacePath, null, autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_draft_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_draft_02").ShouldBeTrue();
+        }
+
     }
 }

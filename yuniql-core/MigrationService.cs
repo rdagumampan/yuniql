@@ -7,6 +7,9 @@ using System.IO;
 
 namespace Yuniql.Core
 {
+    /// <summary>
+    /// Runs migrations by executing alls scripts in the workspace directory. 
+    /// </summary>
     public class MigrationService : IMigrationService
     {
         private readonly ILocalVersionService _localVersionService;
@@ -18,6 +21,17 @@ namespace Yuniql.Core
         private readonly ITraceService _traceService;
         private readonly IConfigurationDataService _configurationDataService;
 
+        /// <summary>
+        /// Creates an instance of <see cref="MigrationService"/>
+        /// </summary>
+        /// <param name="localVersionService">An instance of <see cref="ILocalVersionService"/></param>
+        /// <param name="dataService">An instance of <see cref="IDataService"/></param>
+        /// <param name="bulkImportService">An instance of <see cref="IBulkImportService"/></param>
+        /// <param name="configurationDataService">An instance of <see cref="IConfigurationDataService"/></param>
+        /// <param name="tokenReplacementService">An instance of <see cref="ITokenReplacementService"/></param>
+        /// <param name="directoryService">An instannce of <see cref="IDirectoryService"/></param>
+        /// <param name="fileService">An instance of <see cref="IFileService"/></param>
+        /// <param name="traceService">An instance of <see cref="ITraceService"/> </param>
         public MigrationService(
             ILocalVersionService localVersionService,
             IDataService dataService,
@@ -38,6 +52,11 @@ namespace Yuniql.Core
             this._configurationDataService = configurationDataService;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <param name="commandTimeout"></param>
         public void Initialize(
             string connectionString,
             int? commandTimeout = null)
@@ -140,6 +159,7 @@ namespace Yuniql.Core
                 .OrderBy(v => v)
                 .ToList();
 
+            //checks if target database already runs the latest version and skips work if it already is
             var targeDatabaseLatest = IsTargetDatabaseLatest(targetVersion);
             if (!targeDatabaseLatest)
             {
@@ -159,7 +179,6 @@ namespace Yuniql.Core
                                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
                             }
 
-                            //checks if target database already runs the latest version and skips work if it already is
                             //runs all scripts in the _pre folder and subfolders
                             RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
                             _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
@@ -187,13 +206,47 @@ namespace Yuniql.Core
                             transaction.Rollback();
                             throw;
                         }
-
                     }
                 }
             }
             else
             {
-                _traceService.Info($"Target database runs the latest version already. No changes made at {targetDatabaseName} on {targetDatabaseServer}.");
+                //enclose all executions in a single transaction
+                using (var connection = _dataService.CreateConnection())
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            //runs all scripts in the _pre folder and subfolders
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                            _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
+
+                            //runs all scripts in the _draft folder and subfolders
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                            _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
+
+                            //runs all scripts in the _post folder and subfolders
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                            _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
+
+                            //when true, the execution is an uncommitted transaction 
+                            //and only for purpose of testing if all can go well when it run to the target environment
+                            if (verifyOnly.HasValue && verifyOnly == true)
+                                transaction.Rollback();
+                            else
+                                transaction.Commit();
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
+                    }
+                }
+
+                _traceService.Info($"Target database runs the latest version already. Scripts in _pre, _draft and _post are executed.");
             }
         }
 
