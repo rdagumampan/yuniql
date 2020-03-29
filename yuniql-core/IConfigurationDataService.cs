@@ -27,20 +27,22 @@ namespace Yuniql.Core
         /// </summary>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>Returns true when version tracking table is already created.</returns>
-        bool IsDatabaseConfigured(int? commandTimeout = null);
+        bool IsDatabaseConfigured(string schemaName, string tableName, int? commandTimeout = null);
+
+        void CreateSchema(string schemaName, int? commandTimeout = null);
 
         /// <summary>
         /// Creates migration version tracking table in the target database.
         /// </summary>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
-        void ConfigureDatabase(int? commandTimeout = null);
+        void ConfigureDatabase(string schemaName, string tableName, int? commandTimeout = null);
 
         /// <summary>
         /// Returns the latest version applied in the target database.
         /// </summary>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>Returns the latest version applied in the target database.</returns>
-        string GetCurrentVersion(int? commandTimeout = null);
+        string GetCurrentVersion(string schemaName, string tableName, int? commandTimeout = null);
 
 
         /// <summary>
@@ -48,7 +50,7 @@ namespace Yuniql.Core
         /// </summary>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>All versions applied in the target database.</returns>
-        List<DbVersion> GetAllVersions(int? commandTimeout = null);
+        List<DbVersion> GetAllVersions(string schemaName, string tableName, int? commandTimeout = null);
 
 
         /// <summary>
@@ -62,6 +64,8 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
+            string schemaName,
+            string tableName,
             int? commandTimeout = null,
             string appliedByTool = null,
             string appliedByToolVersion = null);

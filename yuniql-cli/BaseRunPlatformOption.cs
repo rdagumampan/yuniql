@@ -25,5 +25,11 @@ namespace Yuniql.CLI
 
         [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts.")]
         public string Environment { get; set; }
+
+        [Option("table", Required = false, HelpText = "Table name for schema versions table.")]
+        public string Table { get; set; }
+
+        [Option("schema", Required = false, HelpText = "Schema name for schema versions table.")]
+        public string Schema { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Data;
 using Yuniql.Extensibility;
 using MySql.Data.MySqlClient;
+using System;
 
 namespace Yuniql.MySql
 {
@@ -23,6 +24,10 @@ namespace Yuniql.MySql
         public bool IsAtomicDDLSupported => false;
 
         public bool IsSchemaSupported { get; } = false;
+
+        public string TableName { get; set; } = "__yuniqldbversion";
+
+        public string SchemaName { get; set; } = "public";
 
         public IDbConnection CreateConnection()
         {
@@ -49,17 +54,20 @@ namespace Yuniql.MySql
         }
 
         public string GetSqlForCheckIfDatabaseExists()
-            => @"SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';";
+            => @"SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${YUNIQL_DB_NAME}';";
 
         public string GetSqlForCreateDatabase()
-            => @"CREATE DATABASE `{0}`;";
+            => @"CREATE DATABASE `${YUNIQL_DB_NAME}`;";
+
+        public string GetSqlForCreateSchema()
+            => throw new NotSupportedException("Custom schema is not supported in MySql.");
 
         public string GetSqlForCheckIfDatabaseConfigured()
-            => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = '__yuniqldbversion' LIMIT 1;";
+            => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_SCHEMA_NAME}' AND TABLE_NAME = '${YUNIQL_TABLE_NAME}' LIMIT 1;";
 
         public string GetSqlForConfigureDatabase()
             => @"
-                CREATE TABLE __yuniqldbversion (
+                CREATE TABLE ${YUNIQL_TABLE_NAME} (
 	                sequence_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	                version VARCHAR(512) NOT NULL,
 	                applied_on_utc TIMESTAMP NOT NULL,
@@ -72,12 +80,12 @@ namespace Yuniql.MySql
             ";
 
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT version FROM __yuniqldbversion ORDER BY sequence_id DESC LIMIT 1;";
+            => @"SELECT version FROM ${YUNIQL_TABLE_NAME} ORDER BY sequence_id DESC LIMIT 1;";
 
         public string GetSqlForGetAllVersions()
-            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version FROM __yuniqldbversion ORDER BY version ASC;";
+            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
 
         public string GetSqlForInsertVersion()
-            => @"INSERT INTO __yuniqldbversion (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER(), '{1}', '{2}');";
+            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER(), '{1}', '{2}');";
     }
 }

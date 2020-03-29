@@ -5,7 +5,7 @@
     </assembly>
     <members>
         <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.ConfigurationDataService" -->
-        <member name="M:Yuniql.Core.ConfigurationDataService.#ctor(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.ITraceService)">
+        <member name="M:Yuniql.Core.ConfigurationDataService.#ctor(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.ITraceService,Yuniql.Core.ITokenReplacementService)">
             <summary>
             Creates new instance of ConfigurationDataService
             </summary>
@@ -26,34 +26,34 @@
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.IsDatabaseConfigured(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationDataService.IsDatabaseConfigured(System.String,System.String,System.Nullable{System.Int32})">
             <summary>
             Returns true when migration version tracking table is already created.
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>Returns true when version tracking table is already created.</returns>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.ConfigureDatabase(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationDataService.ConfigureDatabase(System.String,System.String,System.Nullable{System.Int32})">
             <summary>
             Creates migration version tracking table in the target database.
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.GetCurrentVersion(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationDataService.GetCurrentVersion(System.String,System.String,System.Nullable{System.Int32})">
             <summary>
             Returns the latest version applied in the target database.
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>Returns the latest version applied in the target database.</returns>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.GetAllVersions(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationDataService.GetAllVersions(System.String,System.String,System.Nullable{System.Int32})">
             <summary>
             Returns all versions applied in the target database.
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>All versions applied in the target database.</returns>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32},System.String,System.String)">
+        <member name="M:Yuniql.Core.ConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String)">
             <summary>
             Creates new entry to version tracking table after all versions were successfully executed.
             </summary>
@@ -252,34 +252,34 @@
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
         </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.IsDatabaseConfigured(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.IConfigurationDataService.IsDatabaseConfigured(System.String,System.String,System.Nullable{System.Int32})">
             <summary>
             Returns true when migration version tracking table is already created.
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>Returns true when version tracking table is already created.</returns>
         </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.ConfigureDatabase(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.IConfigurationDataService.ConfigureDatabase(System.String,System.String,System.Nullable{System.Int32})">
             <summary>
             Creates migration version tracking table in the target database.
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
         </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.GetCurrentVersion(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.IConfigurationDataService.GetCurrentVersion(System.String,System.String,System.Nullable{System.Int32})">
             <summary>
             Returns the latest version applied in the target database.
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>Returns the latest version applied in the target database.</returns>
         </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.GetAllVersions(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.IConfigurationDataService.GetAllVersions(System.String,System.String,System.Nullable{System.Int32})">
             <summary>
             Returns all versions applied in the target database.
             </summary>
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>All versions applied in the target database.</returns>
         </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Nullable{System.Int32},System.String,System.String)">
+        <member name="M:Yuniql.Core.IConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String)">
             <summary>
             Creates new entry to version tracking table after all versions were successfully executed.
             </summary>
@@ -386,17 +386,17 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IMigrationService.Initialize(System.String,System.Nullable{System.Int32})" -->
-        <member name="M:Yuniql.Core.IMigrationService.GetCurrentVersion">
+        <member name="M:Yuniql.Core.IMigrationService.GetCurrentVersion(System.String,System.String)">
             <summary>
             Returns the current migration version applied in target database.
             </summary>
         </member>
-        <member name="M:Yuniql.Core.IMigrationService.GetAllVersions">
+        <member name="M:Yuniql.Core.IMigrationService.GetAllVersions(System.String,System.String)">
             <summary>
             Returns all migration versions applied in the target database
             </summary>
         </member>
-        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
             <summary>
             Runs migrations by executing alls scripts in the workspace directory. 
             When CSV files are present also run bulk import operations to target database table having same file name.
@@ -526,17 +526,42 @@
             </summary>
             <param name="workingPath">The directory path where yuniql operations are executed from.</param>
         </member>
-        <member name="M:Yuniql.Core.MigrationService.GetCurrentVersion">
+        <member name="T:Yuniql.Core.MigrationService">
+            <summary>
+            Runs migrations by executing alls scripts in the workspace directory. 
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IConfigurationDataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Creates an instance of <see cref="T:Yuniql.Core.MigrationService"/>
+            </summary>
+            <param name="localVersionService">An instance of <see cref="T:Yuniql.Core.ILocalVersionService"/></param>
+            <param name="dataService">An instance of <see cref="T:Yuniql.Extensibility.IDataService"/></param>
+            <param name="bulkImportService">An instance of <see cref="T:Yuniql.Extensibility.IBulkImportService"/></param>
+            <param name="configurationDataService">An instance of <see cref="T:Yuniql.Core.IConfigurationDataService"/></param>
+            <param name="tokenReplacementService">An instance of <see cref="T:Yuniql.Core.ITokenReplacementService"/></param>
+            <param name="directoryService">An instannce of <see cref="T:Yuniql.Core.IDirectoryService"/></param>
+            <param name="fileService">An instance of <see cref="T:Yuniql.Core.IFileService"/></param>
+            <param name="traceService">An instance of <see cref="T:Yuniql.Extensibility.ITraceService"/> </param>
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.Initialize(System.String,System.Nullable{System.Int32})">
+            <summary>
+            
+            </summary>
+            <param name="connectionString"></param>
+            <param name="commandTimeout"></param>
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.GetCurrentVersion(System.String,System.String)">
             <summary>
             Returns the current migration version applied in target database.
             </summary>
         </member>
-        <member name="M:Yuniql.Core.MigrationService.GetAllVersions">
+        <member name="M:Yuniql.Core.MigrationService.GetAllVersions(System.String,System.String)">
             <summary>
             Returns all migration versions applied in the target database
             </summary>
         </member>
-        <member name="M:Yuniql.Core.MigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.MigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
             <summary>
             Runs migrations by executing alls scripts in the workspace directory. 
             When CSV files are present also run bulk import operations to target database table having same file name.
@@ -565,7 +590,7 @@
         </member>
         <member name="M:Yuniql.Core.MigrationServiceFactory.#ctor(Yuniql.Extensibility.ITraceService)">
             <summary>
-            
+            An instance of <see cref="T:Yuniql.Core.MigrationServiceFactory"/>
             </summary>
             <param name="traceService"></param>
         </member>

@@ -45,6 +45,10 @@ namespace Yuniql.Extensibility
         /// </summary>
         bool IsSchemaSupported { get; }
 
+        string SchemaName { get; }
+
+        string TableName { get; }
+
         /// <summary>
         /// Breaks down statement using terminator word supported by target database.
         /// For example, SQL Sevrer uses GO to split statements from single file.
@@ -62,6 +66,8 @@ namespace Yuniql.Extensibility
         /// Returns the SQL statement to use for creating new database if --auto-createdb flag is set to true.
         /// </summary>
         public string GetSqlForCreateDatabase();
+
+        public string GetSqlForCreateSchema();
 
         /// <summary>
         /// Returns the SQL statement to use for checking target database has been configured for migration tracking.

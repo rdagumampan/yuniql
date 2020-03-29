@@ -98,7 +98,7 @@ namespace Yuniql.CLI
                 //if no target platform provided, we default into sqlserver
                 if (string.IsNullOrEmpty(opts.Platform))
                 {
-                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM));
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
                     if (string.IsNullOrEmpty(opts.Platform))
                     {
                         opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
@@ -134,6 +134,8 @@ namespace Yuniql.CLI
                     tokens: tokens,
                     verifyOnly: false,
                     delimiter: opts.Delimiter,
+                    schemaName: opts.Schema,
+                    tableName: opts.Table,
                     commandTimeout: opts.CommandTimeout,
                     batchSize: null,
                     appliedByTool: toolName,
@@ -165,7 +167,7 @@ namespace Yuniql.CLI
                 //if no target platform provided, we default into sqlserver
                 if (string.IsNullOrEmpty(opts.Platform))
                 {
-                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM));
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
                     if (string.IsNullOrEmpty(opts.Platform))
                     {
                         opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
@@ -202,6 +204,8 @@ namespace Yuniql.CLI
                     tokens: tokens,
                     verifyOnly: true,
                     delimiter: opts.Delimiter,
+                    schemaName: opts.Schema,
+                    tableName: opts.Table,
                     commandTimeout: opts.CommandTimeout,
                     batchSize: null,
                     appliedByTool: toolName,
@@ -227,7 +231,7 @@ namespace Yuniql.CLI
                 //if no target platform provided, we default into sqlserver
                 if (string.IsNullOrEmpty(opts.Platform))
                 {
-                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM));
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
                     if (string.IsNullOrEmpty(opts.Platform))
                     {
                         opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
@@ -243,7 +247,7 @@ namespace Yuniql.CLI
                 //get all exsiting db versions
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                var versions = migrationService.GetAllVersions();
+                var versions = migrationService.GetAllVersions(opts.Schema, opts.Table);
 
                 var results = new StringBuilder();
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");
@@ -283,7 +287,7 @@ namespace Yuniql.CLI
                 //if no target platform provided, we default into sqlserver
                 if (string.IsNullOrEmpty(opts.Platform))
                 {
-                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM));
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
                     if (string.IsNullOrEmpty(opts.Platform))
                     {
                         opts.Platform = SUPPORTED_DATABASES.SQLSERVER;

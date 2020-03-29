@@ -18,12 +18,12 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns the current migration version applied in target database.
         /// </summary>
-        string GetCurrentVersion();
+        string GetCurrentVersion(string schemaName = null, string tableName = null);
 
         /// <summary>
         /// Returns all migration versions applied in the target database
         /// </summary>
-        List<DbVersion> GetAllVersions();
+        List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null);
 
         /// <summary>
         /// Runs migrations by executing alls scripts in the workspace directory. 
@@ -44,6 +44,8 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokens = null, 
             bool? verifyOnly = null, 
             string delimiter = null,
+            string schemaName = null, 
+            string tableName = null,
             int? commandTimeout = null,
             int? batchSize = null,
             string appliedByTool = null,

@@ -69,17 +69,17 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns the current migration version applied in target database.
         /// </summary>
-        public string GetCurrentVersion()
+        public string GetCurrentVersion(string schemaName = null, string tableName = null)
         {
-            return _configurationDataService.GetCurrentVersion();
+            return _configurationDataService.GetCurrentVersion(schemaName, tableName);
         }
 
         /// <summary>
         /// Returns all migration versions applied in the target database
         /// </summary>
-        public List<DbVersion> GetAllVersions()
+        public List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null)
         {
-            return _configurationDataService.GetAllVersions();
+            return _configurationDataService.GetAllVersions(schemaName, tableName);
         }
 
         /// <summary>
@@ -101,6 +101,8 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             bool? verifyOnly = false,
             string delimiter = null,
+            string schemaName = null,
+            string tableName = null,
             int? commandTimeout = null,
             int? batchSize = null,
             string appliedByTool = null,
@@ -146,21 +148,28 @@ namespace Yuniql.Core
             }
 
             //check if database has been pre-configured to support migration and setup when its not
-            var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured();
+            var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured(schemaName, tableName);
             if (!targetDatabaseConfigured)
             {
+                if (null != schemaName && !_dataService.SchemaName.Equals(schemaName))
+                {
+                    _traceService.Info($"Target schema does not exist. Creating schema {schemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
+                    _configurationDataService.CreateSchema(schemaName);
+                    _traceService.Info($"Created schema {schemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
+                }
+
                 _traceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");
-                _configurationDataService.ConfigureDatabase();
+                _configurationDataService.ConfigureDatabase(schemaName, tableName);
                 _traceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
-            var dbVersions = _configurationDataService.GetAllVersions()
+            var dbVersions = _configurationDataService.GetAllVersions(schemaName, tableName)
                 .Select(dv => dv.Version)
                 .OrderBy(v => v)
                 .ToList();
 
             //checks if target database already runs the latest version and skips work if it already is
-            var targeDatabaseLatest = IsTargetDatabaseLatest(targetVersion);
+            var targeDatabaseLatest = IsTargetDatabaseLatest(targetVersion, schemaName, tableName);
             if (!targeDatabaseLatest)
             {
                 //enclose all executions in a single transaction
@@ -184,7 +193,7 @@ namespace Yuniql.Core
                             _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                             //runs all scripts int the vxx.xx folders and subfolders
-                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, batchSize: batchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
+                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimiter: delimiter, schemaName: schemaName, tableName: tableName, commandTimeout: commandTimeout, batchSize: batchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
 
                             //runs all scripts in the _draft folder and subfolders
                             RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
@@ -250,9 +259,9 @@ namespace Yuniql.Core
             }
         }
 
-        private bool IsTargetDatabaseLatest(string targetVersion)
+        private bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null)
         {
-            var dbcv = _configurationDataService.GetCurrentVersion();
+            var dbcv = _configurationDataService.GetCurrentVersion(schemaName, tableName);
             if (string.IsNullOrEmpty(dbcv)) return false;
 
             var cv = new LocalVersion(dbcv);
@@ -271,6 +280,7 @@ namespace Yuniql.Core
             string environmentCode = null
         )
         {
+            //extract and filter out scripts when environment code is used
             var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
             sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {workingPath}");
@@ -313,6 +323,8 @@ namespace Yuniql.Core
             string targetVersion,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string delimiter = null,
+            string schemaName = null,
+            string tableName = null,
             int? commandTimeout = null,
             int? batchSize = null,
             string appliedByTool = null,
@@ -366,6 +378,8 @@ namespace Yuniql.Core
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
                         _configurationDataService.InsertVersion(connection, transaction, versionName,
+                            schemaName: schemaName,
+                            tableName: tableName,
                             commandTimeout: commandTimeout,
                             appliedByTool: appliedByTool,
                             appliedByToolVersion: appliedByToolVersion);
@@ -396,7 +410,7 @@ namespace Yuniql.Core
             string environmentCode = null
         )
         {
-            //execute all script files in the version folder
+            //extract and filter out scripts when environment code is used
             var bulkFiles = _directoryService.GetFiles(scriptDirectory, "*.csv").ToList();
             bulkFiles = _directoryService.FilterFiles(workingPath, environmentCode, bulkFiles).ToList();
             _traceService.Info($"Found the {bulkFiles.Count} bulk files on {scriptDirectory}");
@@ -420,7 +434,7 @@ namespace Yuniql.Core
             string environmentCode = null
         )
         {
-            //TODO: Filter out scripts when environment code is used
+            //extract and filter out scripts when environment code is used
             var sqlScriptFiles = _directoryService.GetFiles(scriptDirectory, "*.sql").ToList();
             sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {scriptDirectory}");
