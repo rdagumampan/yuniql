@@ -23,13 +23,16 @@ namespace Yuniql.CLI
         [Option("delimiter", Required = false, HelpText = "Bulk import file delimiter.", Default = ",")]
         public string Delimiter { get; set; } = ",";
 
+        //yuniql <command> --environment "DEV" | --environment "PROD"
         [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts.")]
         public string Environment { get; set; }
 
-        [Option("table", Required = false, HelpText = "Table name for schema versions table.")]
-        public string Table { get; set; }
-
+        //yuniql <command> --schema "yuniql" 
         [Option("schema", Required = false, HelpText = "Schema name for schema versions table.")]
         public string Schema { get; set; }
+
+        //yuniql <command> --table "__yuniqlschemaversions" 
+        [Option("table", Required = false, HelpText = "Table name for schema versions table.")]
+        public string Table { get; set; }
     }
 }
