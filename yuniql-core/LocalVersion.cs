@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Yuniql.Core
 {
@@ -7,6 +8,8 @@ namespace Yuniql.Core
     /// </summary>
     public class LocalVersion
     {
+        private const int Maxlength = 512;
+
         public LocalVersion()
         {
         }
@@ -17,8 +20,22 @@ namespace Yuniql.Core
         /// <param name="targetVersion">The target version in format v{Major}.{Minor}. Example v1.01 or v2.00.</param>
         public LocalVersion(string targetVersion)
         {
-            Major = Convert.ToInt32(targetVersion.Substring(1, targetVersion.IndexOf(".") - 1));
-            Minor = Convert.ToInt32(targetVersion.Substring(targetVersion.IndexOf(".") + 1));
+            if (targetVersion.Length > Maxlength)
+            {
+                throw new YuniqlMigrationException(@$"Invalid format of version directory ""{targetVersion}"". Exceeded maxlength {Maxlength}");
+            }
+
+            string versionPattern = @"^v(?<major>\d+)\.(?<minor>\d\d)(?<label>.*)$";
+            Match versionMatch = Regex.Match(targetVersion, versionPattern);
+
+            if (!versionMatch.Success)
+            {
+                throw new YuniqlMigrationException(@$"Invalid format of version directory ""{targetVersion}"". Expected format is ""vx.xx*""");
+            }
+
+            Major = Convert.ToInt32(versionMatch.Groups["major"].Value);
+            Minor = Convert.ToInt32(versionMatch.Groups["minor"].Value);
+            Label = versionMatch.Groups["label"].Value;
         }
 
         /// <summary>
@@ -32,6 +49,11 @@ namespace Yuniql.Core
         public int Minor { get; set; }
 
         /// <summary>
+        /// Returns the label part of version.
+        /// </summary>
+        public string Label { get; set; }
+
+        /// <summary>
         /// Retuns verion in v{Major}.{Minor} format.
         /// Example v0.00 for baseline version.
         /// </summary>
@@ -39,7 +61,7 @@ namespace Yuniql.Core
         {
             get
             {
-                return $"v{Major}.{Minor.ToString("00")}";
+                return $"v{Major}.{Minor.ToString("00")}{Label}";
             }
         }
     }
