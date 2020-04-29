@@ -140,7 +140,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute run function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
+                _traceService.Error($"Failed to execute run function. {Environment.NewLine}{ex.ToString()}");
                 throw;
             }
 
