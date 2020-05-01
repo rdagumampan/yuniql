@@ -156,7 +156,7 @@ namespace Yuniql.Core
             var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured(schemaName, tableName);
             if (!targetDatabaseConfigured)
             {
-                if (null != schemaName && !_dataService.SchemaName.Equals(schemaName))
+                if (_dataService.IsSchemaSupported && null != schemaName && !_dataService.SchemaName.Equals(schemaName))
                 {
                     _traceService.Info($"Target schema does not exist. Creating schema {schemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
                     _configurationDataService.CreateSchema(schemaName);

@@ -485,7 +485,7 @@ namespace Yuniql.PlatformTests
         }
 
         [TestMethod]
-        public void Test_Draft_Always_Executed()
+        public void Test_Run_Draft_Always_Executed()
         {
             //arrange
             var localVersionService = new LocalVersionService(_traceService);

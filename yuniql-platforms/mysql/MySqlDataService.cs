@@ -27,7 +27,7 @@ namespace Yuniql.MySql
 
         public string TableName { get; set; } = "__yuniqldbversion";
 
-        public string SchemaName { get; set; } = "public";
+        public string SchemaName { get; set; }
 
         public IDbConnection CreateConnection()
         {
@@ -63,7 +63,7 @@ namespace Yuniql.MySql
             => throw new NotSupportedException("Custom schema is not supported in MySql.");
 
         public string GetSqlForCheckIfDatabaseConfigured()
-            => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_SCHEMA_NAME}' AND TABLE_NAME = '${YUNIQL_TABLE_NAME}' LIMIT 1;";
+            => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_DB_NAME}' AND TABLE_NAME = '${YUNIQL_TABLE_NAME}' LIMIT 1;";
 
         public string GetSqlForConfigureDatabase()
             => @"
