@@ -8,17 +8,25 @@ namespace Yuniql.PlatformTests
 {
     public abstract class TestDataServiceBase : ITestDataService
     {
-        private IDataService _dataService;
+        private readonly IDataService _dataService;
+        private readonly ITokenReplacementService _tokenReplacementService;
 
-        public TestDataServiceBase(IDataService dataService)
+        public TestDataServiceBase(
+            IDataService dataService,
+            ITokenReplacementService tokenReplacementService)
         {
             this._dataService = dataService;
+            this._tokenReplacementService = tokenReplacementService;
         }
 
-        public virtual bool IsAtomicDDLSupported => true;
+        public virtual bool IsAtomicDDLSupported => _dataService.IsAtomicDDLSupported;
 
-        public virtual bool IsSchemaSupported => true;
+        public virtual bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
+        public virtual string TableName => _dataService.TableName;
+
+        public virtual string SchemaName => _dataService.SchemaName;
+        
         public virtual bool QuerySingleBool(string connectionString, string sqlStatement)
         {
             _dataService.Initialize(connectionString);
@@ -40,7 +48,7 @@ namespace Yuniql.PlatformTests
         public virtual string GetCurrentDbVersion(string connectionString)
         {
             _dataService.Initialize(connectionString);
-            var sqlStatement = _dataService.GetSqlForGetCurrentVersion();
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetCurrentVersion(), _dataService.SchemaName, _dataService.TableName);
             using (var connection = _dataService.CreateConnection().KeepOpen())
             {
                 return connection.QuerySingleString(commandText: sqlStatement);
@@ -50,7 +58,7 @@ namespace Yuniql.PlatformTests
         public virtual List<DbVersion> GetAllDbVersions(string connectionString)
         {
             _dataService.Initialize(connectionString);
-            var sqlStatement = _dataService.GetSqlForGetAllVersions();
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetAllVersions(), _dataService.SchemaName, _dataService.TableName);
 
             var result = new List<DbVersion>();
             using (var connection = _dataService.CreateConnection().KeepOpen())
@@ -132,5 +140,17 @@ namespace Yuniql.PlatformTests
         public abstract string GetSqlForSingleLine(string objectName);
 
         public abstract string GetSqlForSingleLineWithoutTerminator(string objectName);
+
+        private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
+        {
+            var tokens = new List<KeyValuePair<string, string>> {
+             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_SCHEMA_NAME, schemaName ?? _dataService.SchemaName),
+             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_TABLE_NAME, tableName?? _dataService.TableName)
+            };
+
+            return _tokenReplacementService.Replace(tokens, sqlStatement);
+        }
+
     }
 }

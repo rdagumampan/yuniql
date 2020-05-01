@@ -214,7 +214,7 @@ namespace Yuniql.UnitTests
             environmentService.Setup(s => s.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")).Returns("sqlserver-connection-string");
             var localVersionService = new Mock<ILocalVersionService>();
             var migrationService = new Mock<IMigrationService>();
-            migrationService.Setup(s => s.GetAllVersions()).Returns(new List<DbVersion> { new DbVersion { Version = "v0.00", AppliedOnUtc = DateTime.UtcNow, AppliedByUser = "user" } });
+            migrationService.Setup(s => s.GetAllVersions(null, null)).Returns(new List<DbVersion> { new DbVersion { Version = "v0.00", AppliedOnUtc = DateTime.UtcNow, AppliedByUser = "user" } });
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
@@ -225,7 +225,7 @@ namespace Yuniql.UnitTests
 
             //assert
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
-            migrationService.Verify(s => s.GetAllVersions());
+            migrationService.Verify(s => s.GetAllVersions(null, null));
         }
 
         [TestMethod]
@@ -254,7 +254,7 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DefaultConstants.Delimiter, null, null, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
         }
 
         [TestMethod]
@@ -288,7 +288,7 @@ namespace Yuniql.UnitTests
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), true, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
+                ), true, DefaultConstants.Delimiter, null, null, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
         }
 
 
@@ -318,7 +318,7 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DefaultConstants.Delimiter, null, null, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
         }
 
         [TestMethod]
@@ -352,7 +352,7 @@ namespace Yuniql.UnitTests
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), false, DefaultConstants.Delimiter, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
+                ), false, DefaultConstants.Delimiter, null, null, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
         }
     }
 }

@@ -41,7 +41,7 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 2. Run the platform tests
 	
 	```console
-	cd yuniql-platformtests
+	cd yuniql-tests
 	dotnet build
 	dotnet test -v n
 	```
