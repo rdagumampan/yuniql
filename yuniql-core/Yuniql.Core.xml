@@ -435,7 +435,7 @@
         <member name="M:Yuniql.Core.ILocalVersionService.Validate(System.String)">
             <summary>
             Validates the baseline directory structure. The following directories are always required to be present in the workspace else the migration would fail.
-            Required folders are _init, _pre, v0.00*, _draft, _post, and _erase.
+            Required folders are _init, _pre, v0.00, _draft, _post, and _erase.
             </summary>
             <param name="workingPath">The directory path where yuniql operations are executed from.</param>
         </member>
@@ -536,6 +536,11 @@
         <member name="P:Yuniql.Core.LocalVersion.Minor">
             <summary>
             Returns the minor part of version.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.LocalVersion.Label">
+            <summary>
+            Returns the label part of version.
             </summary>
         </member>
         <member name="P:Yuniql.Core.LocalVersion.SemVersion">

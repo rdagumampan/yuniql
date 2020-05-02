@@ -124,7 +124,7 @@ namespace Yuniql.Core
                 throw new NotSupportedException("Yuniql.Verify is not supported in the target platform. " +
                     "The feature requires support for atomic DDL operations. " +
                     "An atomic DDL operations ensures creation of tables, views and other objects and data are rolledback in case of error. " +
-                    "For more information see WIKI.");
+                    "For more information see https://yuniql.io/docs/.");
             }
 
             //when no target version specified, we use the latest local version 
@@ -138,11 +138,11 @@ namespace Yuniql.Core
             var targetDatabaseName = connectionInfo.Database;
             var targetDatabaseServer = connectionInfo.DataSource;
 
-            //create the database, we need this to be outside of the transaction scope
-            //in an event of failure, users have to manually drop the auto-created database
+            //we try to auto-create the database, we need this to be outside of the transaction scope
+            //in an event of failure, users have to manually drop the auto-created database!
+            //we only check if the db exists when --auto-create-db is true
             if (autoCreateDatabase.HasValue && autoCreateDatabase == true)
             {
-                //we only check if the db exists when --auto-create-db is true
                 var targetDatabaseExists = _configurationDataService.IsDatabaseExists();
                 if (!targetDatabaseExists)
                 {
@@ -156,6 +156,7 @@ namespace Yuniql.Core
             var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured(schemaName, tableName);
             if (!targetDatabaseConfigured)
             {
+                //create custom schema when user supplied and only if platform supports it
                 if (_dataService.IsSchemaSupported && null != schemaName && !_dataService.SchemaName.Equals(schemaName))
                 {
                     _traceService.Info($"Target schema does not exist. Creating schema {schemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
@@ -163,6 +164,7 @@ namespace Yuniql.Core
                     _traceService.Info($"Created schema {schemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
                 }
 
+                //create empty versions tracking table
                 _traceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");
                 _configurationDataService.ConfigureDatabase(schemaName, tableName);
                 _traceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
@@ -177,6 +179,7 @@ namespace Yuniql.Core
             var targeDatabaseLatest = IsTargetDatabaseLatest(targetVersion);
             if (!targeDatabaseLatest)
             {
+                //create a shared open connection to entire migration run
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
@@ -185,7 +188,6 @@ namespace Yuniql.Core
                     if (_dataService.IsAtomicDDLSupported)
                     {
                         _traceService.Debug(@$"Target platform fully supports transactions. Migration will run in single transaction.");
-
                         using (var transaction = connection.BeginTransaction())
                         {
                             try
@@ -209,26 +211,68 @@ namespace Yuniql.Core
                     }
                     else //otherwise don't use transactions
                     {
-                        _traceService.Info(@$"Target platform doesn't reliably support transactions for all commands. Migration will not run in single transaction. Any failure during the migration can prevent automatic completing of migration.");
-
                         try
                         {
+                            _traceService.Info($"Target platform doesn't reliably support transactions for all commands. " +
+                                $"Migration will not run in single transaction. " +
+                                $"Any failure during the migration can prevent automatic completing of migration.");
                             RunInternal(connection, null);
                         }
                         catch (Exception)
                         {
-                            _traceService.Error("Migration was not running in transaction, therefore roll back of target database to its previous state is not possible. Migration need to be completed manually! Running of Yuniql again, might cause that some scripts will be executed twice!");
+                            _traceService.Error("Migration was not running in transaction, therefore roll back of target database to its previous state is not possible. " +
+                                "Migration need to be completed manually! Running of Yuniql again, might cause that some scripts will be executed twice!");
                             throw;
                         }
                     }
                 }
             }
-            else
+            else //runs all scripts files inside _draft on every yuniql run regardless of state of target database
             {
-                _traceService.Info($"Target database runs the latest version already. No changes made at {targetDatabaseName} on {targetDatabaseServer}.");
+                //enclose all executions in a single transaction
+                using (var connection = _dataService.CreateConnection())
+                {
+                    connection.Open();
+
+                    //enclose all executions in a single transaction in case platform supports it
+                    if (_dataService.IsAtomicDDLSupported)
+                    {
+                        _traceService.Debug(@$"Target platform fully supports transactions. Migration will run in single transaction.");
+                        using (var transaction = connection.BeginTransaction())
+                        {
+                            try
+                            {
+                                RunDraftInternal(connection, transaction);
+                                transaction.Commit();
+                            }
+                            catch (Exception)
+                            {
+                                transaction.Rollback();
+                                throw;
+                            }
+                        }
+                    }
+                    else //otherwise don't use transactions
+                    {
+                        try
+                        {
+                            _traceService.Info($"Target platform doesn't reliably support transactions for all commands. " +
+                                $"Migration will not run in single transaction. " +
+                                $"Any failure during the migration can prevent automatic completing of migration.");
+                            RunDraftInternal(connection, null);
+                        }
+                        catch (Exception)
+                        {
+                            _traceService.Error("Migration was not running in transaction, therefore roll back of target database to its previous state is not possible. " +
+                                "Migration need to be completed manually! Running of Yuniql again, might cause that some scripts will be executed twice!");
+                            throw;
+                        }
+                    }
+                    _traceService.Info($"Target database runs the latest version already. Scripts in _pre, _draft and _post are executed.");
+                }
             }
 
-            //Local method
+            //local method
             void RunInternal(IDbConnection connection, IDbTransaction transaction)
             {
                 //check if database has been pre-configured and execute init scripts
@@ -246,6 +290,21 @@ namespace Yuniql.Core
 
                 //runs all scripts int the vxx.xx folders and subfolders
                 RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, batchSize: batchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
+
+                //runs all scripts in the _draft folder and subfolders
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
+
+                //runs all scripts in the _post folder and subfolders
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
+            }
+
+            void RunDraftInternal(IDbConnection connection, IDbTransaction transaction)
+            {
+                //runs all scripts in the _pre folder and subfolders
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts in the _draft folder and subfolders
                 RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
@@ -298,7 +357,6 @@ namespace Yuniql.Core
                 {
                     //replace tokens with values from the cli
                     sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
-
                     _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
 
                     _configurationDataService.ExecuteSql(
@@ -479,7 +537,7 @@ namespace Yuniql.Core
             string environmentCode = null
         )
         {
-            //enclose all executions in a single transaction
+            //create a shared open connection to entire migration run
             using (var connection = _dataService.CreateConnection())
             {
                 connection.KeepOpen();
@@ -506,9 +564,18 @@ namespace Yuniql.Core
                 }
                 else //otherwise don't use transactions
                 {
-                    //runs all scripts in the _erase folder
-                    RunNonVersionScripts(connection, null, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DefaultConstants.Delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
-                    _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
+                    try
+                    {
+                        //runs all scripts in the _erase folder
+                        RunNonVersionScripts(connection, null, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DefaultConstants.Delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                        _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
+                    }
+                    catch (Exception)
+                    {
+                        _traceService.Error("Migration was not running in transaction, therefore roll back of target database to its previous state is not possible. " +
+                            "Migration need to be completed manually! Running of Yuniql again, might cause that some scripts will be executed twice!");
+                        throw;
+                    }
                 }
             }
         }
