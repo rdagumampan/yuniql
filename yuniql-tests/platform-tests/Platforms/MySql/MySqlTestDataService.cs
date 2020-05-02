@@ -10,16 +10,9 @@ namespace Yuniql.PlatformTests
 {
     public class MySqlTestDataService : TestDataServiceBase
     {
-        private readonly IDataService _dataService;
-
-        public MySqlTestDataService(IDataService dataService) : base(dataService)
+        public MySqlTestDataService(IDataService dataService, ITokenReplacementService tokenReplacementService) : base(dataService, tokenReplacementService)
         {
-            this._dataService = dataService;
         }
-
-        public override bool IsAtomicDDLSupported => _dataService.IsAtomicDDLSupported;
-
-        public override bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
         public override string GetConnectionString(string databaseName)
         {

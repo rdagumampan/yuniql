@@ -7,6 +7,9 @@ using System.IO;
 
 namespace Yuniql.Core
 {
+    /// <summary>
+    /// Runs migrations by executing alls scripts in the workspace directory. 
+    /// </summary>
     public class MigrationService : IMigrationService
     {
         private readonly ILocalVersionService _localVersionService;
@@ -18,6 +21,17 @@ namespace Yuniql.Core
         private readonly ITraceService _traceService;
         private readonly IConfigurationDataService _configurationDataService;
 
+        /// <summary>
+        /// Creates an instance of <see cref="MigrationService"/>
+        /// </summary>
+        /// <param name="localVersionService">An instance of <see cref="ILocalVersionService"/></param>
+        /// <param name="dataService">An instance of <see cref="IDataService"/></param>
+        /// <param name="bulkImportService">An instance of <see cref="IBulkImportService"/></param>
+        /// <param name="configurationDataService">An instance of <see cref="IConfigurationDataService"/></param>
+        /// <param name="tokenReplacementService">An instance of <see cref="ITokenReplacementService"/></param>
+        /// <param name="directoryService">An instannce of <see cref="IDirectoryService"/></param>
+        /// <param name="fileService">An instance of <see cref="IFileService"/></param>
+        /// <param name="traceService">An instance of <see cref="ITraceService"/> </param>
         public MigrationService(
             ILocalVersionService localVersionService,
             IDataService dataService,
@@ -38,6 +52,11 @@ namespace Yuniql.Core
             this._configurationDataService = configurationDataService;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <param name="commandTimeout"></param>
         public void Initialize(
             string connectionString,
             int? commandTimeout = null)
@@ -50,17 +69,17 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns the current migration version applied in target database.
         /// </summary>
-        public string GetCurrentVersion()
+        public string GetCurrentVersion(string schemaName = null, string tableName = null)
         {
-            return _configurationDataService.GetCurrentVersion();
+            return _configurationDataService.GetCurrentVersion(schemaName, tableName);
         }
 
         /// <summary>
         /// Returns all migration versions applied in the target database
         /// </summary>
-        public List<DbVersion> GetAllVersions()
+        public List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null)
         {
-            return _configurationDataService.GetAllVersions();
+            return _configurationDataService.GetAllVersions(schemaName, tableName);
         }
 
         /// <summary>
@@ -73,8 +92,13 @@ namespace Yuniql.Core
         /// <param name="tokenKeyPairs">Token kev/value pairs to replace tokens in script files.</param>
         /// <param name="verifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
         /// <param name="delimiter">Delimeter character in the CSV bulk import files. When NULL, uses comma.</param>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
         /// <param name="batchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
+        /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
+        /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
+        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
         public void Run(
             string workingPath,
             string targetVersion = null,
@@ -82,6 +106,8 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             bool? verifyOnly = false,
             string delimiter = null,
+            string schemaName = null,
+            string tableName = null,
             int? commandTimeout = null,
             int? batchSize = null,
             string appliedByTool = null,
@@ -127,19 +153,27 @@ namespace Yuniql.Core
             }
 
             //check if database has been pre-configured to support migration and setup when its not
-            var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured();
+            var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured(schemaName, tableName);
             if (!targetDatabaseConfigured)
             {
+                if (_dataService.IsSchemaSupported && null != schemaName && !_dataService.SchemaName.Equals(schemaName))
+                {
+                    _traceService.Info($"Target schema does not exist. Creating schema {schemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
+                    _configurationDataService.CreateSchema(schemaName);
+                    _traceService.Info($"Created schema {schemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
+                }
+
                 _traceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");
-                _configurationDataService.ConfigureDatabase();
+                _configurationDataService.ConfigureDatabase(schemaName, tableName);
                 _traceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
-            var dbVersions = _configurationDataService.GetAllVersions()
+            var dbVersions = _configurationDataService.GetAllVersions(schemaName, tableName)
                 .Select(dv => dv.Version)
                 .OrderBy(v => v)
                 .ToList();
 
+            //checks if target database already runs the latest version and skips work if it already is
             var targeDatabaseLatest = IsTargetDatabaseLatest(targetVersion);
             if (!targeDatabaseLatest)
             {
@@ -223,9 +257,9 @@ namespace Yuniql.Core
             }
         }
 
-        private bool IsTargetDatabaseLatest(string targetVersion)
+        private bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null)
         {
-            var dbcv = _configurationDataService.GetCurrentVersion();
+            var dbcv = _configurationDataService.GetCurrentVersion(schemaName, tableName);
             if (string.IsNullOrEmpty(dbcv)) return false;
 
             var cv = new LocalVersion(dbcv);
@@ -244,6 +278,7 @@ namespace Yuniql.Core
             string environmentCode = null
         )
         {
+            //extract and filter out scripts when environment code is used
             var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
             sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {workingPath}");
@@ -286,6 +321,8 @@ namespace Yuniql.Core
             string targetVersion,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string delimiter = null,
+            string schemaName = null,
+            string tableName = null,
             int? commandTimeout = null,
             int? batchSize = null,
             string appliedByTool = null,
@@ -339,6 +376,8 @@ namespace Yuniql.Core
                         //update db version
                         var versionName = new DirectoryInfo(versionDirectory).Name;
                         _configurationDataService.InsertVersion(connection, transaction, versionName,
+                            schemaName: schemaName,
+                            tableName: tableName,
                             commandTimeout: commandTimeout,
                             appliedByTool: appliedByTool,
                             appliedByToolVersion: appliedByToolVersion);
@@ -369,7 +408,7 @@ namespace Yuniql.Core
             string environmentCode = null
         )
         {
-            //execute all script files in the version folder
+            //extract and filter out scripts when environment code is used
             var bulkFiles = _directoryService.GetFiles(scriptDirectory, "*.csv").ToList();
             bulkFiles = _directoryService.FilterFiles(workingPath, environmentCode, bulkFiles).ToList();
             _traceService.Info($"Found the {bulkFiles.Count} bulk files on {scriptDirectory}");
@@ -393,7 +432,7 @@ namespace Yuniql.Core
             string environmentCode = null
         )
         {
-            //TODO: Filter out scripts when environment code is used
+            //extract and filter out scripts when environment code is used
             var sqlScriptFiles = _directoryService.GetFiles(scriptDirectory, "*.sql").ToList();
             sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
             _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {scriptDirectory}");
@@ -430,8 +469,9 @@ namespace Yuniql.Core
         /// Executes erase scripts presentin _erase directory and subdirectories.
         /// </summary>
         /// <param name="workingPath">The directory path to migration project.</param>
-        /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
+        /// <param name="tokenKeyPairs">Token kev/value pairs to replace tokens in script files.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
         public void Erase(
             string workingPath,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,

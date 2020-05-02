@@ -1,8 +1,8 @@
-DROP TABLE __yuniqldbversion CASCADE;
-DROP TABLE employees CASCADE;
-DROP TABLE dependents CASCADE;
-DROP TABLE departments CASCADE;
-DROP TABLE locations CASCADE;
-DROP TABLE countries CASCADE;
-DROP TABLE regions CASCADE;
-DROP TABLE jobs CASCADE;
+DROP TABLE IF EXISTS __yuniqldbversion;
+DROP TABLE IF EXISTS dependents;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS departments;
+DROP TABLE IF EXISTS locations;
+DROP TABLE IF EXISTS countries;
+DROP TABLE IF EXISTS regions;
+DROP TABLE IF EXISTS jobs;
