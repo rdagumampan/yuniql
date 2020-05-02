@@ -545,6 +545,7 @@ namespace Yuniql.Core
                 //enclose all executions in a single transaction in case platform supports it
                 if (_dataService.IsAtomicDDLSupported)
                 {
+                    _traceService.Debug(@$"Target platform fully supports transactions. Migration will run in single transaction.");
                     using (var transaction = connection.BeginTransaction())
                     {
                         try
@@ -566,6 +567,10 @@ namespace Yuniql.Core
                 {
                     try
                     {
+                        _traceService.Info($"Target platform doesn't reliably support transactions for all commands. " +
+                            $"Migration will not run in single transaction. " +
+                            $"Any failure during the migration can prevent automatic completing of migration.");
+
                         //runs all scripts in the _erase folder
                         RunNonVersionScripts(connection, null, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DefaultConstants.Delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
                         _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
