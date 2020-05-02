@@ -144,9 +144,9 @@ namespace Yuniql.PlatformTests
         private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
         {
             var tokens = new List<KeyValuePair<string, string>> {
-             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
-             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_SCHEMA_NAME, schemaName ?? _dataService.SchemaName),
-             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_TABLE_NAME, tableName?? _dataService.TableName)
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName ?? _dataService.SchemaName),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, tableName?? _dataService.TableName)
             };
 
             return _tokenReplacementService.Replace(tokens, sqlStatement);

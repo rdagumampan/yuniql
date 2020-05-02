@@ -36,9 +36,9 @@ namespace Yuniql.Core
         private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
         {
             var tokens = new List<KeyValuePair<string, string>> {
-             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
-             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_SCHEMA_NAME, schemaName ?? _dataService.SchemaName),
-             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_TABLE_NAME, tableName?? _dataService.TableName)
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName ?? _dataService.SchemaName),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, tableName?? _dataService.TableName)
             };
 
             return _tokenReplacementService.Replace(tokens, sqlStatement);
@@ -52,7 +52,7 @@ namespace Yuniql.Core
         public bool IsDatabaseExists(int? commandTimeout = null)
         {
             var tokens = new List<KeyValuePair<string, string>> {
-             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
             };
             var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCheckIfDatabaseExists());
             using (var connection = _dataService.CreateMasterConnection())
@@ -72,7 +72,7 @@ namespace Yuniql.Core
         public void CreateDatabase(int? commandTimeout = null)
         {
             var tokens = new List<KeyValuePair<string, string>> {
-             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
             };
             var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCreateDatabase());
             using (var connection = _dataService.CreateMasterConnection())
@@ -93,7 +93,7 @@ namespace Yuniql.Core
         public void CreateSchema(string schemaName, int? commandTimeout = null)
         {
             var tokens = new List<KeyValuePair<string, string>> {
-             new KeyValuePair<string, string>(CONSTANTS.YUNIQL_SCHEMA_NAME, schemaName),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName),
             };
             var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCreateSchema());
             using (var connection = _dataService.CreateConnection())

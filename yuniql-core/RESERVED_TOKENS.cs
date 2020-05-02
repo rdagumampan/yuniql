@@ -3,7 +3,7 @@
     /// <summary>
     /// Global constants used for token replacement in sql statements
     /// </summary>
-    public static class CONSTANTS {
+    public static class RESERVED_TOKENS {
 
         /// <summary>
         /// Token for target database name
