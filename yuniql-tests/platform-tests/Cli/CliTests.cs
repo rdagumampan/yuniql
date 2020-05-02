@@ -114,7 +114,7 @@ namespace Yuniql.PlatformTests
         [DataRow("verify", "-d --command-timeout 10")]
         [DataRow("verify", "-d --environment DEV")]
         [DataRow("verify", "-d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        public void Test_Cli_verify_with_Custom_Schema(string command, string arguments)
+        public void Test_Cli_verify_With_Custom_Schema(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
