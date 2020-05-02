@@ -434,7 +434,7 @@ namespace Yuniql.PlatformTests
             exception.Message.Contains("At least one Yuniql directory is missing in your project.").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_init")} / Missing").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_pre")} / Found").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00")} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00*")} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_draft")} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_post")} / Missing").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_erase")} / Found").ShouldBeTrue();

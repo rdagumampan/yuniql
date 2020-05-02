@@ -1,6 +1,7 @@
 ﻿# How to run platform tests
 
 Platform tests verifies that yuniql works on the target RDMBS platform. The following guide describes how to run for SqlServer, PostgreSql and MySql.
+The tests automatically deploy a Docker container and perform tests against it. The container is also destroyed when tests completed.
 
 ## Pre-requisites
 
@@ -94,6 +95,11 @@ Platform tests verifies that yuniql works on the target RDMBS platform. The foll
 	```
 
 ## References
+- Reccomended VS Code Extensions
+	- MySql by Jun Han
+	- SQL Tools - Database Tools by Matheus Teixeira
+	- SQL Server by Microsoft
+
 - Access SqlServer database with SQL Server Management Studio (SSMS) tool<br>
 https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15
 
