@@ -2,6 +2,7 @@
 using System.IO;
 using System;
 using Yuniql.Core;
+using Yuniql.Extensibility;
 
 namespace Yuniql.PlatformTests
 {

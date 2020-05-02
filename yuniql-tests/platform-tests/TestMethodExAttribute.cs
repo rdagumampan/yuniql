@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Yuniql.Core;
+using Yuniql.Extensibility;
 
 namespace Yuniql.PlatformTests
 {

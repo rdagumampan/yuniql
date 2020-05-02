@@ -1,7 +1,9 @@
 ﻿# How to run platform tests
 
 Platform tests verifies that yuniql works on the target RDMBS platform. The following guide describes how to run for SqlServer, PostgreSql and MySql.
-The tests automatically deploy a Docker container and perform tests against it. The container is also destroyed when tests completed.
+The tests automatically deploy a Docker container and perform tests against it. The container is also destroyed when tests completed. 
+
+>IMPORTANT: When running tests, you must always republish the CLI project to run the tests with latest build. If you missed this, you may be runnig integration tests but uses old version of the yuniql.exe.
 
 ## Pre-requisites
 
@@ -18,17 +20,17 @@ The tests automatically deploy a Docker container and perform tests against it. 
 |YUNIQL_TEST_CLI|The directory where yuniql CLI is placed.|
 |YUNIQL_TEST_HOST|The location where tests is executed. Value can be `LOCAL`, `APPVEYOR`. Default is `LOCAL`. A `LOCAL` run will always use Docker containers for test server.|
 
-## Build the Yuniql CLI locally
+## Running platform tests for SqlServer
+
+1. Always start by publishing Yuniql CLI (yuniql.exe) locally
 
 	```console
-	cd yuniql-cli
+	cd C:\play\yuniql\yuniql-cli
 	dotnet build
 	dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 	```
 
-## Running platform tests for SqlServer
-
-1. Configure your connection string
+2. Configure your connection string
 
 	```bash
 	SETX YUNIQL_TEST_TARGET_PLATFORM "sqlserver"
@@ -39,7 +41,10 @@ The tests automatically deploy a Docker container and perform tests against it. 
 	SETX YUNIQL_TEST_HOST "LOCAL"
 	```
 
-2. Run the platform tests
+	>You can also run the batch file `setup_test_envs_sqlserver.bat` register all these variables.
+	>The batch file is placed in `yuniql-tests\platform-tests` directory.
+
+3. Run the platform tests
 	
 	```console
 	cd C:\play\yuniql\yuniql-tests\platform-tests
@@ -62,6 +67,9 @@ The tests automatically deploy a Docker container and perform tests against it. 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"
 	```
+
+	>You can also run the batch file `setup_test_envs_mysql.bat` register all these variables.
+	>The batch file is placed in `yuniql-tests\platform-tests` directory.
 
 2. Run the platform tests
 	
@@ -86,6 +94,10 @@ The tests automatically deploy a Docker container and perform tests against it. 
 	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 	SETX YUNIQL_TEST_HOST "LOCAL"
 	```
+
+	>You can also run the batch file `setup_test_envs_mysql.bat` register all these variables.
+	>The batch file is placed in `yuniql-tests\platform-tests` directory.
+
 2. Run the platform tests
 	
 	```console
@@ -95,19 +107,20 @@ The tests automatically deploy a Docker container and perform tests against it. 
 	```
 
 ## References
-- Reccomended VS Code Extensions
+- Reccomended VS Code Extensions or browsing Test Databases
 	- MySql by Jun Han
 	- SQL Tools - Database Tools by Matheus Teixeira
 	- SQL Server by Microsoft
 
-- Access SqlServer database with SQL Server Management Studio (SSMS) tool<br>
-https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15
+- Other Database Management GUI
+	- Access SqlServer database with SQL Server Management Studio (SSMS) tool<br>
+	https://docs.microsoft.com/en-us/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver15
 
-- Access PostgreSql database with pgAdmin tool<br>
-https://www.pgadmin.org/download/
+	- Access PostgreSql database with pgAdmin tool<br>
+	https://www.pgadmin.org/download/
 
-- Access MySql database with phpMyAdmin tool<br>
-https://www.phpmyadmin.net/
+	- Access MySql database with phpMyAdmin tool<br>
+	https://www.phpmyadmin.net/
 
 ## Found bugs?
 Help us improve further please [create an issue](https://github.com/rdagumampan/yuniql/issues/new).

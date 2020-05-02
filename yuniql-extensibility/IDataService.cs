@@ -45,8 +45,16 @@ namespace Yuniql.Extensibility
         /// </summary>
         bool IsSchemaSupported { get; }
 
+        /// <summary>
+        /// Default schema name for schema versions table. Leave it null if database doesn't support schema.
+        /// For example its dbo in SqlServer and public in PostgreSql
+        /// </summary>
         string SchemaName { get; }
 
+        /// <summary>
+        /// Table name for schema versions table.
+        /// When implementing a new platform, its reccommended to use __yuniqldbversion as default value
+        /// </summary>
         string TableName { get; }
 
         /// <summary>
