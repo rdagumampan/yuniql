@@ -150,26 +150,6 @@
             <param name="traceService">Trace service provider where trace messages will be written.</param>
             <returns></returns>
         </member>
-        <member name="T:Yuniql.Core.CONSTANTS">
-            <summary>
-            Global constants used for token replacement in sql statements
-            </summary>
-        </member>
-        <member name="F:Yuniql.Core.CONSTANTS.YUNIQL_DB_NAME">
-            <summary>
-            Token for target database name
-            </summary>
-        </member>
-        <member name="F:Yuniql.Core.CONSTANTS.YUNIQL_SCHEMA_NAME">
-            <summary>
-            Token for schema name to store schema version tracking table.
-            </summary>
-        </member>
-        <member name="F:Yuniql.Core.CONSTANTS.YUNIQL_TABLE_NAME">
-            <summary>
-            Token for table name to store schem version tracking data.
-            </summary>
-        </member>
         <member name="T:Yuniql.Core.DirectoryService">
             <summary>
             Wraps usage of <see cref="T:System.IO.Directory"/>
@@ -700,6 +680,26 @@
             <param name="assemblyName">The assembly name to load.</param>
             <returns></returns>
         </member>
+        <member name="T:Yuniql.Core.RESERVED_TOKENS">
+            <summary>
+            Global constants used for token replacement in sql statements
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_DB_NAME">
+            <summary>
+            Token for target database name
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_SCHEMA_NAME">
+            <summary>
+            Token for schema name to store schema version tracking table.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_TABLE_NAME">
+            <summary>
+            Token for table name to store schem version tracking data.
+            </summary>
+        </member>
         <member name="T:Yuniql.Core.SUPPORTED_DATABASES">
             <summary>
             Global constants for identifying supported database platforms
@@ -850,6 +850,26 @@
             </summary>
             <param name="message">The exception message.</param>
             <param name="innerException">The exception captured prior to this exception.</param>
+        </member>
+        <member name="T:Yuniql.Extensibility.DEFAULT_CONSTANTS">
+            <summary>
+            Globa default values.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS">
+            <summary>
+            Default command timeout in seconds.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.DEFAULT_CONSTANTS.BULK_BATCH_SIZE">
+            <summary>
+            Default batch size of bulk load operations.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.DEFAULT_CONSTANTS.BULK_DELIMITER">
+            <summary>
+            Default CSV file delimiter.
+            </summary>
         </member>
     </members>
 </doc>

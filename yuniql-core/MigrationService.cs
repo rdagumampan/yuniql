@@ -551,7 +551,7 @@ namespace Yuniql.Core
                         try
                         {
                             //runs all scripts in the _erase folder
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DefaultConstants.Delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DEFAULT_CONSTANTS.BULK_DELIMITER, commandTimeout: commandTimeout, environmentCode: environmentCode);
                             _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
 
                             transaction.Commit();
@@ -572,7 +572,7 @@ namespace Yuniql.Core
                             $"Any failure during the migration can prevent automatic completing of migration.");
 
                         //runs all scripts in the _erase folder
-                        RunNonVersionScripts(connection, null, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DefaultConstants.Delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                        RunNonVersionScripts(connection, null, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DEFAULT_CONSTANTS.BULK_DELIMITER, commandTimeout: commandTimeout, environmentCode: environmentCode);
                         _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
                     }
                     catch (Exception)

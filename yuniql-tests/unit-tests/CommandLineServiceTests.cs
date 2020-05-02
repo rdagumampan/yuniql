@@ -196,13 +196,13 @@ namespace Yuniql.UnitTests
             sut.RunEraseOption(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
             migrationService.Verify(s => s.Erase(@"c:\temp\yuniql",
                    It.Is<List<KeyValuePair<string, string>>>(x =>
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), DefaultConstants.CommandTimeoutSecs, null));
+                ), DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, null));
         }
 
         [TestMethod]
@@ -224,7 +224,7 @@ namespace Yuniql.UnitTests
             sut.RunInfoOption(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
             migrationService.Verify(s => s.GetAllVersions(null, null));
         }
 
@@ -253,8 +253,8 @@ namespace Yuniql.UnitTests
             var toolName = "yuniql-cli";
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DefaultConstants.Delimiter, null, null, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DEFAULT_CONSTANTS.BULK_DELIMITER, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, null, toolName, toolVersion, null));
         }
 
         [TestMethod]
@@ -282,13 +282,13 @@ namespace Yuniql.UnitTests
             var toolName = "yuniql-cli";
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
             migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false,
                 It.Is<List<KeyValuePair<string, string>>>(x =>
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), true, DefaultConstants.Delimiter, null, null, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
+                ), true, DEFAULT_CONSTANTS.BULK_DELIMITER, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, null, toolName, toolVersion, null));
         }
 
 
@@ -317,8 +317,8 @@ namespace Yuniql.UnitTests
             var toolName = "yuniql-cli";
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DefaultConstants.Delimiter, null, null, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DEFAULT_CONSTANTS.BULK_DELIMITER, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, null, toolName, toolVersion, null));
         }
 
         [TestMethod]
@@ -346,13 +346,13 @@ namespace Yuniql.UnitTests
             var toolName = "yuniql-cli";
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DefaultConstants.CommandTimeoutSecs));
+            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
             migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false,
                 It.Is<List<KeyValuePair<string, string>>>(x =>
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), false, DefaultConstants.Delimiter, null, null, DefaultConstants.CommandTimeoutSecs, null, toolName, toolVersion, null));
+                ), false, DEFAULT_CONSTANTS.BULK_DELIMITER, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, null, toolName, toolVersion, null));
         }
     }
 }

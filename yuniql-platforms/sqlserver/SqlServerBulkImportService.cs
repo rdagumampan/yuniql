@@ -101,8 +101,8 @@ namespace Yuniql.SqlServer
             using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
             {
                 sqlBulkCopy.DestinationTableName = $"[{schemaName}].[{tableName}]";
-                sqlBulkCopy.BulkCopyTimeout = commandTimeout.HasValue ? commandTimeout.Value : DefaultConstants.CommandTimeoutSecs;
-                sqlBulkCopy.BatchSize = batchSize.HasValue ? batchSize.Value : DefaultConstants.BatchSize;
+                sqlBulkCopy.BulkCopyTimeout = commandTimeout.HasValue ? commandTimeout.Value : DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS;
+                sqlBulkCopy.BatchSize = batchSize.HasValue ? batchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE;
                 sqlBulkCopy.EnableStreaming = true;
                 sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
                 foreach (var column in dataTable.Columns)

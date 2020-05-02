@@ -54,7 +54,7 @@ namespace Yuniql.UnitTests
             dataService.Setup(s => s.BreakStatements("SELECT 'v0.00'")).Returns(new List<string> { "SELECT 'v0.00'" });
 
             var bulkImportService = new Mock<IBulkImportService>();
-            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv", DefaultConstants.Delimiter, DefaultConstants.BatchSize, DefaultConstants.CommandTimeoutSecs));
+            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv", DEFAULT_CONSTANTS.BULK_DELIMITER, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
 
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
@@ -236,7 +236,7 @@ namespace Yuniql.UnitTests
             dataService.Setup(s => s.BreakStatements("SELECT 'v0.00'")).Returns(new List<string> { "SELECT 'v0.00'" });
 
             var bulkImportService = new Mock<IBulkImportService>();
-            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv", DefaultConstants.Delimiter, DefaultConstants.BatchSize, DefaultConstants.CommandTimeoutSecs));
+            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv", DEFAULT_CONSTANTS.BULK_DELIMITER, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
 
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
