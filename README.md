@@ -147,7 +147,7 @@ static void Main(string[] args)
 ## Contributing & asking for help
 
 Please submit ideas for improvement or report a bug by [creating an issue](https://github.com/rdagumampan/yuniql/issues/new). <br>
-If you have questions, talk to us on [gitter chat](https://gitter.im/yuniql/community). Alternatively, tag [#yuniql](https://twitter.com/) on Twitter.
+Alternatively, tag [#yuniql](https://twitter.com/) on Twitter or drop me a message rdagumampanATgmail.com.
 
 If this is your first time to participate in an open source initiative, you may look at issues labeled as [first timer friendly issues](https://github.com/rdagumampan/yuniql/issues?q=is%3Aissue+is%3Aopen+label%3Afirst-timers-friendly). If you found an interesting case, you can fork this repository, clone to your dev machine, create a local branch, and make Pull Requests (PR) so I can review and merge your changes.
 
