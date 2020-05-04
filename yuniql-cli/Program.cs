@@ -67,6 +67,11 @@ namespace Yuniql
                     traceService.IsDebugEnabled = opts.Debug;
                     return commandLineService.RunRebaseOption(opts);
                 },
+                (ArchiveOption opts) =>
+                {
+                    traceService.IsDebugEnabled = opts.Debug;
+                    return commandLineService.RunArchiveOption(opts);
+                },
                 errs => 1);
         }
     }
