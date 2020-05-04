@@ -320,5 +320,10 @@ namespace Yuniql.CLI
         {
             throw new NotImplementedException("Not yet implemented, stay tune!");
         }
+
+        public object RunArchiveOption(ArchiveOption Opts) 
+        {
+            throw new NotImplementedException("Not yet implemented, stay tune!");
+        }
     }
 }

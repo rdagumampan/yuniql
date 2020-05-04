@@ -5,8 +5,9 @@ WORKDIR /code
 #copy local files into app or clone github repo
 COPY ./yuniql-cli ./yuniql-cli
 COPY ./yuniql-core ./yuniql-core
+COPY ./yuniql-platforms ./yuniql-platforms
 COPY ./yuniql-extensibility ./yuniql-extensibility
-COPY ./yuniql-platformtests ./yuniql-platformtests
+COPY ./yuniql-tests/platform-tests ./yuniql-tests/platform-tests
 
 #RUN git clone https://github.com/rdagumampan/yuniql.git /code
 

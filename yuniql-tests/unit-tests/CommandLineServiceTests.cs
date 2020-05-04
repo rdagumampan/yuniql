@@ -177,6 +177,26 @@ namespace Yuniql.UnitTests
         }
 
         [TestMethod]
+        public void Test_Archive_Option_Throws_Not_Implemented_Exception()
+        {
+            //arrange
+            var traceService = new Mock<ITraceService>();
+            var environmentService = new Mock<IEnvironmentService>();
+            var localVersionService = new Mock<ILocalVersionService>();
+            var migrationService = new Mock<IMigrationService>();
+            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
+            migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
+
+            //act
+            Assert.ThrowsException<NotImplementedException>(() =>
+            {
+                var option = new ArchiveOption { };
+                var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+                sut.RunArchiveOption(option);
+            });            
+        }
+
+        [TestMethod]
         public void Test_Erase_Option_No_Explicit_Options()
         {
             //arrange
