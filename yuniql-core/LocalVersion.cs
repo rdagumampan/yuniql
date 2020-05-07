@@ -8,7 +8,7 @@ namespace Yuniql.Core
     /// </summary>
     public class LocalVersion
     {
-        private const int Maxlength = 512;
+        private const int Maxlength = 190;
 
         public LocalVersion()
         {
