@@ -69,7 +69,7 @@ namespace Yuniql.Core
 
             var hasEnvironmentAwareDirectories = files.Any(f =>
             {
-                var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).ToList();
+                var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).Where(x=> !x.Equals("_transaction", System.StringComparison.InvariantCultureIgnoreCase)).ToList();
                 fileParts.Reverse();
                 return fileParts.Skip(rootParts.Count).Any(a => a.StartsWith(ENVIRONMENT_CODE_PREFIX));
             });
@@ -86,7 +86,7 @@ namespace Yuniql.Core
             var sqlScriptFiles = new List<string>(files);
             files.ForEach(f =>
             {
-                var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).ToList();
+                var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).Where(x => !x.Equals("_transaction", System.StringComparison.InvariantCultureIgnoreCase)).ToList();
                 fileParts.Reverse();
 
                 var foundFile = fileParts.Skip(rootParts.Count).FirstOrDefault(a => a.StartsWith(ENVIRONMENT_CODE_PREFIX) && a.ToLower()!= $"{ENVIRONMENT_CODE_PREFIX}{environmentCode}");
