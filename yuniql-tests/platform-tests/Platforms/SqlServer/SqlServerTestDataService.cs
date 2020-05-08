@@ -2,12 +2,13 @@
 using System;
 using System.Data.SqlClient;
 using System.IO;
+using Yuniql.Core;
 
 namespace Yuniql.PlatformTests
 {
     public class SqlServerTestDataService : TestDataServiceBase
     {
-        public SqlServerTestDataService(IDataService dataService): base(dataService)
+        public SqlServerTestDataService(IDataService dataService, ITokenReplacementService tokenReplacementService) : base(dataService, tokenReplacementService)
         {
         }
 

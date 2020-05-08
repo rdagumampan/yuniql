@@ -151,14 +151,7 @@ yuniqlx.exe
                 .Select(x => new DirectoryInfo(x).Name)
                 .Select(x =>
                 {
-                    int majorVersion = Convert.ToInt32(x.Substring(1, x.IndexOf(".") - 1));
-                    int minorVersion = Convert.ToInt32(x.Substring(x.IndexOf(".") + 1));
-                    var r = new LocalVersion
-                    {
-                        Major = majorVersion,
-                        Minor = minorVersion
-                    };
-
+                    var r = new LocalVersion(x);
                     return r;
                 })
                 .OrderBy(x => x.SemVersion)
@@ -233,15 +226,17 @@ yuniqlx.exe
 
         /// <summary>
         /// Validates the baseline directory structure. The following directories are always required to be present in the workspace else the migration would fail.
-        /// Required folders are _init, _pre, v0.00, _draft, _post, and _erase.
+        /// Required folders are _init, _pre, v0.00*, _draft, _post, and _erase.
         /// </summary>
         /// <param name="workingPath">The directory path where yuniql operations are executed from.</param>
         public void Validate(string workingPath)
         {
+            string versionZeroDirectory = Directory.GetDirectories(workingPath, "v0.00*").FirstOrDefault();
+
             var directories = new List<KeyValuePair<string, bool>> {
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_init"), Directory.Exists(Path.Combine(workingPath, "_init"))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_pre"), Directory.Exists(Path.Combine(workingPath, "_pre"))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00"), Directory.Exists(Path.Combine(workingPath, "v0.00"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00*"), versionZeroDirectory != null),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_draft"), Directory.Exists(Path.Combine(workingPath, "_draft"))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_post"), Directory.Exists(Path.Combine(workingPath, "_post"))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_erase"), Directory.Exists(Path.Combine(workingPath, "_erase"))),

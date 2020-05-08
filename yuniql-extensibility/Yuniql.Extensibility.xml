@@ -249,26 +249,6 @@
             Serialized BLOB of all scripts executed in the version.
             </summary>
         </member>
-        <member name="T:Yuniql.Extensibility.DefaultConstants">
-            <summary>
-            Globa default values.
-            </summary>
-        </member>
-        <member name="F:Yuniql.Extensibility.DefaultConstants.CommandTimeoutSecs">
-            <summary>
-            Default command timeout in seconds.
-            </summary>
-        </member>
-        <member name="F:Yuniql.Extensibility.DefaultConstants.BatchSize">
-            <summary>
-            Default batch size of bulk load operations.
-            </summary>
-        </member>
-        <member name="F:Yuniql.Extensibility.DefaultConstants.Delimiter">
-            <summary>
-            Default CSV file delimiter.
-            </summary>
-        </member>
         <member name="T:Yuniql.Extensibility.EnvironmentHelper">
             <summary>
             Helper class for extracting environment variables.
@@ -345,6 +325,18 @@
             <summary>
             Returns true if the database platform or version supports Schema within the database.
             MySql version below 8.0 are known to not support Schema.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.IDataService.SchemaName">
+            <summary>
+            Default schema name for schema versions table. Leave it null if database doesn't support schema.
+            For example its dbo in SqlServer and public in PostgreSql
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.IDataService.TableName">
+            <summary>
+            Table name for schema versions table.
+            When implementing a new platform, its reccommended to use __yuniqldbversion as default value
             </summary>
         </member>
         <member name="M:Yuniql.Extensibility.IDataService.BreakStatements(System.String)">

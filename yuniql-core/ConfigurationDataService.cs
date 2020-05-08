@@ -14,6 +14,7 @@ namespace Yuniql.Core
     {
         private readonly IDataService _dataService;
         private readonly ITraceService _traceService;
+        private readonly ITokenReplacementService _tokenReplacementService;
 
         /// <summary>
         /// Creates new instance of ConfigurationDataService
@@ -21,12 +22,26 @@ namespace Yuniql.Core
         /// <param name="dataService">An instance of implementation of <see cref="IDataService"/>. 
         /// Each database platform implements IDataService.</param>
         /// <param name="traceService">Trace service provider where trace messages will be written.</param>
+        /// <param name="tokenReplacementService"></param>
         public ConfigurationDataService(
             IDataService dataService,
-            ITraceService traceService)
+            ITraceService traceService,
+            ITokenReplacementService tokenReplacementService)
         {
             this._dataService = dataService;
             this._traceService = traceService;
+            _tokenReplacementService = tokenReplacementService;
+        }
+
+        private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
+        {
+            var tokens = new List<KeyValuePair<string, string>> {
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName ?? _dataService.SchemaName),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, tableName?? _dataService.TableName)
+            };
+
+            return _tokenReplacementService.Replace(tokens, sqlStatement);
         }
 
         /// <summary>
@@ -36,7 +51,10 @@ namespace Yuniql.Core
         /// <returns>Returns true when database already exists in the target host.</returns>
         public bool IsDatabaseExists(int? commandTimeout = null)
         {
-            var sqlStatement = string.Format(_dataService.GetSqlForCheckIfDatabaseExists(), _dataService.GetConnectionInfo().Database);
+            var tokens = new List<KeyValuePair<string, string>> {
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+            };
+            var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCheckIfDatabaseExists());
             using (var connection = _dataService.CreateMasterConnection())
             {
                 return connection.QuerySingleBool(
@@ -53,8 +71,32 @@ namespace Yuniql.Core
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         public void CreateDatabase(int? commandTimeout = null)
         {
-            var sqlStatement = string.Format(_dataService.GetSqlForCreateDatabase(), _dataService.GetConnectionInfo().Database);
+            var tokens = new List<KeyValuePair<string, string>> {
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+            };
+            var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCreateDatabase());
             using (var connection = _dataService.CreateMasterConnection())
+            {
+                connection.ExecuteNonQuery(
+                    commandText: sqlStatement,
+                    commandTimeout: commandTimeout,
+                    transaction: null,
+                    traceService: _traceService);
+            }
+        }
+
+        /// <summary>
+        /// Creates schema in target databases.
+        /// </summary>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        public void CreateSchema(string schemaName, int? commandTimeout = null)
+        {
+            var tokens = new List<KeyValuePair<string, string>> {
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName),
+            };
+            var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCreateSchema());
+            using (var connection = _dataService.CreateConnection())
             {
                 connection.ExecuteNonQuery(
                     commandText: sqlStatement,
@@ -67,11 +109,16 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns true when migration version tracking table is already created.
         /// </summary>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>Returns true when version tracking table is already created.</returns>
-        public bool IsDatabaseConfigured(int? commandTimeout = null)
+        public bool IsDatabaseConfigured(
+            string schemaName = null,
+            string tableName = null,
+            int? commandTimeout = null)
         {
-            var sqlStatement = string.Format(_dataService.GetSqlForCheckIfDatabaseConfigured(), _dataService.GetConnectionInfo().Database);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForCheckIfDatabaseConfigured(), schemaName, tableName);
             using (var connection = _dataService.CreateConnection())
             {
                 return connection.QuerySingleBool(
@@ -85,10 +132,15 @@ namespace Yuniql.Core
         /// <summary>
         /// Creates migration version tracking table in the target database.
         /// </summary>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
-        public void ConfigureDatabase(int? commandTimeout = null)
+        public void ConfigureDatabase(
+            string schemaName = null,
+            string tableName = null,
+            int? commandTimeout = null)
         {
-            var sqlStatement = _dataService.GetSqlForConfigureDatabase();
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForConfigureDatabase(), schemaName, tableName);
             using (var connection = _dataService.CreateConnection())
             {
                 connection.ExecuteNonQuery(
@@ -102,11 +154,16 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns the latest version applied in the target database.
         /// </summary>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>Returns the latest version applied in the target database.</returns>
-        public string GetCurrentVersion(int? commandTimeout = null)
+        public string GetCurrentVersion(
+            string schemaName = null,
+            string tableName = null,
+            int? commandTimeout = null)
         {
-            var sqlStatement = _dataService.GetSqlForGetCurrentVersion();
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetCurrentVersion(), schemaName, tableName);
             using (var connection = _dataService.CreateConnection())
             {
                 return connection.QuerySingleString(
@@ -120,11 +177,16 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns all versions applied in the target database.
         /// </summary>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>All versions applied in the target database.</returns>
-        public List<DbVersion> GetAllVersions(int? commandTimeout = null)
+        public List<DbVersion> GetAllVersions(
+            string schemaName = null,
+            string tableName = null,
+            int? commandTimeout = null)
         {
-            var sqlStatement = _dataService.GetSqlForGetAllVersions();
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetAllVersions(), schemaName, tableName);
 
             if (null != _traceService)
                 _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
@@ -160,18 +222,24 @@ namespace Yuniql.Core
         /// <param name="connection">Connection to target database. Connection will be open automatically.</param>
         /// <param name="transaction">An active transaction.</param>
         /// <param name="version">Migration version.</param>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
+        /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
         public void InsertVersion(
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
+            string schemaName = null,
+            string tableName = null,
             int? commandTimeout = null,
             string appliedByTool = null,
             string appliedByToolVersion = null)
         {
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? this.GetType().Assembly.GetName().Version.ToString() : appliedByToolVersion;
-            var sqlStatement = string.Format(_dataService.GetSqlForInsertVersion(), version, toolName, $"v{toolVersion}");
+            var sqlStatement = string.Format(GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), schemaName, tableName), version, toolName, $"v{toolVersion}");
 
             if (null != _traceService)
                 _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");

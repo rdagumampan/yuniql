@@ -4,5 +4,25 @@
         <name>Yuniql.SqlServer</name>
     </assembly>
     <members>
+        <member name="T:Yuniql.SqlServer.DEFAULT_CONSTANTS">
+            <summary>
+            Globa default values.
+            </summary>
+        </member>
+        <member name="F:Yuniql.SqlServer.DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS">
+            <summary>
+            Default command timeout in seconds.
+            </summary>
+        </member>
+        <member name="F:Yuniql.SqlServer.DEFAULT_CONSTANTS.BULK_BATCH_SIZE">
+            <summary>
+            Default batch size of bulk load operations.
+            </summary>
+        </member>
+        <member name="F:Yuniql.SqlServer.DEFAULT_CONSTANTS.BULK_DELIMITER">
+            <summary>
+            Default CSV file delimiter.
+            </summary>
+        </member>
     </members>
 </doc>

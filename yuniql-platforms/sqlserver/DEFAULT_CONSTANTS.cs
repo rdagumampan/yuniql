@@ -1,23 +1,23 @@
-﻿namespace Yuniql.Extensibility
+﻿namespace Yuniql.SqlServer
 {
     /// <summary>
     /// Globa default values.
     /// </summary>
-    public static class DefaultConstants {
+    public static class DEFAULT_CONSTANTS {
 
         /// <summary>
         /// Default command timeout in seconds.
         /// </summary>
-        public const int CommandTimeoutSecs = 30;
+        public const int COMMAND_TIMEOUT_SECS = 30;
 
         /// <summary>
         /// Default batch size of bulk load operations.
         /// </summary>
-        public const int BatchSize = 0;
+        public const int BULK_BATCH_SIZE = 0;
         
         /// <summary>
         /// Default CSV file delimiter.
         /// </summary>
-        public const string Delimiter = ",";
+        public const string BULK_DELIMITER = ",";
     }
 };

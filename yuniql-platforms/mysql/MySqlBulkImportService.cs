@@ -69,7 +69,7 @@ namespace Yuniql.MySql
                     string[] fieldData = csvReader.ReadFields();
                     for (int i = 0; i < fieldData.Length; i++)
                     {
-                        if (fieldData[i] == "")
+                        if (fieldData[i] == "" || fieldData[i] == "NULL")
                         {
                             fieldData[i] = null;
                         }
