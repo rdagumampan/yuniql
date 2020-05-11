@@ -52,7 +52,7 @@ The tests automatically deploy a Docker container and perform tests against it. 
 	dotnet test -v n
 	```
 
-## Running platform tests for PostgreSql plugin
+## Running platform tests for PostgreSql
 
 1. Configure your connection string
 
@@ -79,7 +79,7 @@ The tests automatically deploy a Docker container and perform tests against it. 
 	dotnet test -v n
 	```
 
-## Running platform tests for MySql plugin
+## Running platform tests for MySql
 
 1. Configure your connection string
 

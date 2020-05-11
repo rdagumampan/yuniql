@@ -505,6 +505,8 @@ namespace Yuniql.Core
                 //update db version
                 var versionName = new DirectoryInfo(versionDirectory).Name;
                 _configurationDataService.InsertVersion(connection, transaction, versionName,
+                    schemaName: schemaName,
+                    tableName: tableName,
                     commandTimeout: commandTimeout,
                     appliedByTool: appliedByTool,
                     appliedByToolVersion: appliedByToolVersion);

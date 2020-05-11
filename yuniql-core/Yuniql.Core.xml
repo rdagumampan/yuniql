@@ -128,6 +128,17 @@
             <param name="traceService">Trace service provider where trace messages will be written.</param>
             <returns></returns>
         </member>
+        <member name="M:Yuniql.Core.ConnectionExtensions.QueryHasRow(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Executes SQL statement against the active connection and returns scalar value in boolean if at least 1 rows returned.
+            </summary>
+            <param name="connection">An active connection.</param>
+            <param name="commandText">The sql statement to execute with the active connection.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+            <returns></returns>
+        </member>
         <member name="M:Yuniql.Core.ConnectionExtensions.QuerySingleBool(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
             <summary>
             Executes SQL statement against the active connection and returns scalar value in boolean.
@@ -718,6 +729,11 @@
         <member name="F:Yuniql.Core.SUPPORTED_DATABASES.MYSQL">
             <summary>
             MySql
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.SUPPORTED_DATABASES.SNOWFLAKE">
+            <summary>
+            Snowflake
             </summary>
         </member>
         <member name="T:Yuniql.Core.TokenReplacementService">
