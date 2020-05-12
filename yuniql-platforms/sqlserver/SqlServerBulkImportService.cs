@@ -2,6 +2,7 @@
 using System.Data;
 using System.IO;
 using Yuniql.Extensibility;
+using Yuniql.Extensibility.BulkCsvParser;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.SqlServer

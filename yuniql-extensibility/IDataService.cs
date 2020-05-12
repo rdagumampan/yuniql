@@ -46,6 +46,12 @@ namespace Yuniql.Extensibility
         bool IsSchemaSupported { get; }
 
         /// <summary>
+        /// Returns true if the database platform or version supports batch sql statements.
+        /// For example, SQL Server uses GO word as default batch terminator while Snowflow uses semicolon (;).
+        /// </summary>
+        bool IsBatchSqlSupported { get; }
+
+        /// <summary>
         /// Default schema name for schema versions table. Leave it null if database doesn't support schema.
         /// For example its dbo in SqlServer and public in PostgreSql
         /// </summary>

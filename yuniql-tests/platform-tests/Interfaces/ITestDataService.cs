@@ -47,6 +47,8 @@ namespace Yuniql.PlatformTests
 
         bool IsSchemaSupported { get; }
 
+        bool IsBatchSqlSupported { get; }
+
         string TableName { get;}
 
         string SchemaName { get; }

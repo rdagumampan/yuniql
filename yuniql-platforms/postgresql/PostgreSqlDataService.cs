@@ -20,6 +20,8 @@ namespace Yuniql.PostgreSql
 
         public bool IsSchemaSupported { get; } = true;
 
+        public bool IsBatchSqlSupported { get; } = false;
+
         public string TableName { get; set; } = "__yuniqldbversion";
 
         public string SchemaName { get; set; } = "public";

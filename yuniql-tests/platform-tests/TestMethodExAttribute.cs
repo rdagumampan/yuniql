@@ -14,6 +14,7 @@ namespace Yuniql.PlatformTests
             var testDataServiceFactory = new TestDataServiceFactory();
             var testDataService = testDataServiceFactory.Create(platform);
 
+            //Ignores test methods with [TestMethodExAttribute (Requires = "IsAtomicDDLSupported")] attribute
             if (this.Requires.Contains(nameof(testDataService.IsAtomicDDLSupported)) && !testDataService.IsAtomicDDLSupported)
             {
                 var message = $"Target database platform or version does not support atomic DDL operations. " +
@@ -28,7 +29,22 @@ namespace Yuniql.PlatformTests
                 };
             }
 
+            //Ignores test methods with [TestMethodExAttribute (Requires = "IsSchemaSupported")] attribute
             if (this.Requires.Contains(nameof(testDataService.IsSchemaSupported)) && !testDataService.IsSchemaSupported)
+            {
+                var message = $"Target database platform or version does not support schema within the same database.";
+                return new[]
+                {
+                    new TestResult
+                    {
+                        Outcome = UnitTestOutcome.NotRunnable,
+                        LogOutput = message
+                    }
+                };
+            }
+
+            //Ignores test methods with [TestMethodExAttribute (Requires = "IsBatchSqlSupported")] attribute
+            if (this.Requires.Contains(nameof(testDataService.IsBatchSqlSupported)) && !testDataService.IsBatchSqlSupported)
             {
                 var message = $"Target database platform or version does not support schema within the same database.";
                 return new[]

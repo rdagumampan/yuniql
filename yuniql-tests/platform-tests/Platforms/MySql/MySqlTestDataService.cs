@@ -1,10 +1,9 @@
 ﻿using Yuniql.Extensibility;
-using System.Collections.Generic;
 using System.IO;
 using MySql.Data.MySqlClient;
 using System;
 using Yuniql.Core;
-using System.Data;
+using Yuniql.MySql;
 
 namespace Yuniql.PlatformTests
 {
@@ -116,99 +115,32 @@ CREATE TABLE {tableName}(
 
         public override string GetSqlForSingleLine(string objectName)
         {
-            return $@"
-CREATE TABLE {objectName} (
-	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-) ENGINE=InnoDB;
-";
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(MySqlDataService)}.{nameof(MySqlDataService.IsBatchSqlSupported)}");
         }
 
         public override string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
-            return $@"
-CREATE TABLE {objectName} (
-	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-) ENGINE=InnoDB
-";
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(MySqlDataService)}.{nameof(MySqlDataService.IsBatchSqlSupported)}");
         }
 
         public override string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
-            return $@"
-CREATE TABLE {objectName1} (
-	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-) ENGINE=InnoDB;
-
-CREATE VIEW {objectName2} AS
-SELECT VisitorId, FirstName, LastName, Address, Email
-FROM  {objectName1};
-
-CREATE FUNCTION {objectName3} ()
-RETURNS INT DETERMINISTIC
-BEGIN
-    DECLARE total INT;   
-    SELECT COUNT(*) INTO total FROM {objectName1};
-    RETURN total;
-END
-";
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(MySqlDataService)}.{nameof(MySqlDataService.IsBatchSqlSupported)}");
         }
 
         public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
-            return $@"
-CREATE TABLE {objectName1} (
-	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-) ENGINE=InnoDB;
-
-CREATE VIEW {objectName2} AS
-SELECT VisitorId, FirstName, LastName, Address, Email
-FROM  {objectName1};
-
-CREATE FUNCTION {objectName3} ()
-RETURNS INT DETERMINISTIC
-BEGIN   
-    DECLARE total INT;   -- this is a comment with terminator ; as part of the sentence;
-    
-    /*;this is a comment with terminator ; as part of the sentence*/
-    SELECT COUNT(*) INTO total FROM {objectName1};
-    RETURN total;
-END;
-";
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(MySqlDataService)}.{nameof(MySqlDataService.IsBatchSqlSupported)}");
         }
 
         public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
-            return $@"
-CREATE TABLE {objectName1} (
-	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-) ENGINE=InnoDB;
-
-CREATE VIEW {objectName2} AS
-SELECT VisitorId, FirstName, LastName, Address, Email
-FROM  {objectName1};
-
-SELECT 1/0;
-";
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(MySqlDataService)}.{nameof(MySqlDataService.IsBatchSqlSupported)}");
         }
 
         public override void CreateScriptFile(string sqlFilePath, string sqlStatement)

@@ -23,6 +23,8 @@ namespace Yuniql.PlatformTests
 
         public virtual bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
+        public virtual bool IsBatchSqlSupported => _dataService.IsBatchSqlSupported;
+
         public virtual string TableName => _dataService.TableName;
 
         public virtual string SchemaName => _dataService.SchemaName;
