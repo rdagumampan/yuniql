@@ -358,7 +358,7 @@ namespace Yuniql.Core
                             {
                                 try
                                 {
-                                    RunVersionScriptsInternal(scriptSubDirectories, transactionDirectory, versionDirectory);
+                                    RunVersionScriptsInternal(transaction, scriptSubDirectories, transactionDirectory, versionDirectory);
 
                                     transaction.Commit();
 
@@ -374,7 +374,7 @@ namespace Yuniql.Core
                         }
                         else //run scripts without transaction
                         {
-                            RunVersionScriptsInternal(scriptSubDirectories, versionDirectory, versionDirectory);
+                            RunVersionScriptsInternal(transaction, scriptSubDirectories, versionDirectory, versionDirectory);
                         }
                     }
                     catch (Exception)
@@ -389,7 +389,7 @@ namespace Yuniql.Core
                 _traceService.Info($"Target database is updated. No migration step executed at {connectionInfo.Database} on {connectionInfo.DataSource}.");
             }
 
-            void RunVersionScriptsInternal(List<string> scriptSubDirectories, string scriptDirectory, string versionDirectory)
+            void RunVersionScriptsInternal(IDbTransaction transaction, List<string> scriptSubDirectories, string scriptDirectory, string versionDirectory)
             {
                 scriptSubDirectories.Sort();
                 scriptSubDirectories.ForEach(scriptSubDirectory =>
