@@ -1,4 +1,4 @@
-﻿namespace Yuniql.CLI
+﻿namespace Yuniql.Core
 {
     public class ENVIRONMENT_VARIABLE
     {

@@ -31,6 +31,7 @@
     <ProjectReference Include="..\..\yuniql-cli\Yuniql.CLI.csproj" />
     <ProjectReference Include="..\..\yuniql-core\Yuniql.Core.csproj" />
     <ProjectReference Include="..\..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
+    <ProjectReference Include="..\platform-tests\Yuniql.PlatformTests.csproj" />
   </ItemGroup>
 
 </Project>

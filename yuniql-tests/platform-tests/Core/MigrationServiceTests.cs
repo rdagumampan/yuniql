@@ -434,7 +434,7 @@ namespace Yuniql.PlatformTests
             exception.Message.Contains("At least one Yuniql directory is missing in your project.").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_init")} / Missing").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_pre")} / Found").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00")} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00*")} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_draft")} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_post")} / Missing").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_erase")} / Found").ShouldBeTrue();
@@ -485,14 +485,14 @@ namespace Yuniql.PlatformTests
         }
 
         [TestMethod]
-        public void Test_Draft_Always_Executed()
+        public void Test_Run_Draft_Always_Executed()
         {
             //arrange
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
-            //act
+            //act, run with _draft is empty at this point
             var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
             migrationService.Initialize(_testConfiguration.ConnectionString);
             migrationService.Run(_testConfiguration.WorkspacePath, null, autoCreateDatabase: true);
@@ -504,7 +504,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_draft"), $"test_draft_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_01"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_draft"), $"test_draft_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_02"));
 
-            //act - runs the _draft again
+            //act - runs again with _draft holding two script files
             migrationService.Run(_testConfiguration.WorkspacePath, null, autoCreateDatabase: true);
 
             //assert

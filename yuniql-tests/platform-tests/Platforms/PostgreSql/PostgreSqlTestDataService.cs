@@ -2,12 +2,13 @@
 using System.IO;
 using Npgsql;
 using System;
+using Yuniql.Core;
 
 namespace Yuniql.PlatformTests
 {
     public class PostgreSqlTestDataService : TestDataServiceBase
     {
-        public PostgreSqlTestDataService(IDataService dataService): base(dataService)
+        public PostgreSqlTestDataService(IDataService dataService, ITokenReplacementService tokenReplacementService) : base(dataService, tokenReplacementService)
         {
         }
 
