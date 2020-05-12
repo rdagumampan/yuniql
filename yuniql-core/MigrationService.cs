@@ -143,57 +143,83 @@ namespace Yuniql.Core
             var targeDatabaseLatest = IsTargetDatabaseLatest(targetVersion);
             if (!targeDatabaseLatest)
             {
-                //enclose all executions in a single transaction
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = connection.BeginTransaction())
+
+                    //enclose all executions in a single transaction in case platform supports it
+                    if (_dataService.IsAtomicDDLSupported)
                     {
+                        _traceService.Debug(@$"Target platform fully supports transactions. Migration will run in single transaction.");
+
+                        using (var transaction = connection.BeginTransaction())
+                        {
+                            try
+                            {
+                                RunInternal(connection, transaction);
+
+                                //when true, the execution is an uncommitted transaction 
+                                //and only for purpose of testing if all can go well when it run to the target environment
+                                if (verifyOnly.HasValue && verifyOnly == true)
+                                    transaction.Rollback();
+                                else
+                                    transaction.Commit();
+                            }
+                            catch (Exception)
+                            {
+                                _traceService.Error("Target database will be rolled back to its previous state.");
+                                transaction.Rollback();
+                                throw;
+                            }
+                        }
+                    }
+                    else //otherwise don't use transactions
+                    {
+                        _traceService.Info(@$"Target platform doesn't reliably support transactions for all commands. Migration will not run in single transaction. Any failure during the migration can prevent automatic completing of migration.");
+
                         try
                         {
-                            //check if database has been pre-configured and execute init scripts
-                            if (!targetDatabaseConfigured)
-                            {
-                                //runs all scripts in the _init folder
-                                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
-                                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
-                            }
-
-                            //checks if target database already runs the latest version and skips work if it already is
-                            //runs all scripts in the _pre folder and subfolders
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
-                            _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
-
-                            //runs all scripts int the vxx.xx folders and subfolders
-                            RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, batchSize: batchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
-
-                            //runs all scripts in the _draft folder and subfolders
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
-                            _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
-
-                            //runs all scripts in the _post folder and subfolders
-                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
-                            _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
-
-                            //when true, the execution is an uncommitted transaction 
-                            //and only for purpose of testing if all can go well when it run to the target environment
-                            if (verifyOnly.HasValue && verifyOnly == true)
-                                transaction.Rollback();
-                            else
-                                transaction.Commit();
+                            RunInternal(connection, null);
                         }
                         catch (Exception)
                         {
-                            transaction.Rollback();
+                            _traceService.Error("Migration was not running in transaction, therefore roll back of target database to its previous state is not possible. Migration need to be completed manually! Running of Yuniql again, might cause that some scripts will be executed twice!");
                             throw;
                         }
-
                     }
                 }
             }
             else
             {
                 _traceService.Info($"Target database runs the latest version already. No changes made at {targetDatabaseName} on {targetDatabaseServer}.");
+            }
+
+            //Local method
+            void RunInternal(IDbConnection connection, IDbTransaction transaction)
+            {
+                //check if database has been pre-configured and execute init scripts
+                if (!targetDatabaseConfigured)
+                {
+                    //runs all scripts in the _init folder
+                    RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                    _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
+                }
+
+                //checks if target database already runs the latest version and skips work if it already is
+                //runs all scripts in the _pre folder and subfolders
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
+
+                //runs all scripts int the vxx.xx folders and subfolders
+                RunVersionScripts(connection, transaction, dbVersions, workingPath, targetVersion, tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, batchSize: batchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
+
+                //runs all scripts in the _draft folder and subfolders
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
+
+                //runs all scripts in the _post folder and subfolders
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, delimiter: delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
             }
         }
 
@@ -417,21 +443,32 @@ namespace Yuniql.Core
             using (var connection = _dataService.CreateConnection())
             {
                 connection.KeepOpen();
-                using (var transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        //runs all scripts in the _erase folder
-                        RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DefaultConstants.Delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
-                        _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
 
-                        transaction.Commit();
-                    }
-                    catch (Exception)
+                //enclose all executions in a single transaction in case platform supports it
+                if (_dataService.IsAtomicDDLSupported)
+                {
+                    using (var transaction = connection.BeginTransaction())
                     {
-                        transaction.Rollback();
-                        throw;
+                        try
+                        {
+                            //runs all scripts in the _erase folder
+                            RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DefaultConstants.Delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                            _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
+
+                            transaction.Commit();
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
                     }
+                }
+                else //otherwise don't use transactions
+                {
+                    //runs all scripts in the _erase folder
+                    RunNonVersionScripts(connection, null, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, delimiter: DefaultConstants.Delimiter, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                    _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
                 }
             }
         }
