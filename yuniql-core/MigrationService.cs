@@ -319,31 +319,63 @@ namespace Yuniql.Core
                     try
                     {
                         //run scripts in all sub-directories
-                        var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList();
-                        scriptSubDirectories.Sort();
-                        scriptSubDirectories.ForEach(scriptSubDirectory =>
+                        List<string> scriptSubDirectories = null;
+
+                        //check for transaction directory
+                        bool isExplicitTransactionDefined = false;
+                        string transactionDirectory = Path.Combine(versionDirectory, "_transaction");
+                        if (_directoryService.Exists(transactionDirectory))
                         {
-                            //run all scripts in the current version folder
-                            RunSqlScripts(connection, transaction, workingPath, scriptSubDirectory, tokenKeyPairs, commandTimeout, environmentCode);
+                            if (_dataService.IsAtomicDDLSupported)
+                            {
+                                throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" can't contain ""_transaction"" subdirectory for selected target platform, because the whole migration is already running in single transaction.");
+                            }
+                            if (_directoryService.GetDirectories(versionDirectory, "*").Count() > 1)
+                            {
+                                throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""_transaction"" subdirectory can't contain other subdirectories");
+                            }
+                            else if (_directoryService.GetFiles(versionDirectory, "*.*").Count() > 0)
+                            {
+                                throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""_transaction"" subdirectory can't contain files");
+                            }
 
-                            //import csv files into tables of the the same filename as the csv
-                            RunBulkImport(connection, transaction, workingPath, scriptSubDirectory, delimiter, batchSize, commandTimeout, environmentCode);
-                        });
+                            isExplicitTransactionDefined = true;
+                            scriptSubDirectories = _directoryService.GetAllDirectories(transactionDirectory, "*").ToList();
+                        }
+                        else
+                        {
+                            scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList();
+                        }
 
-                        //run all scripts in the current version folder
-                        RunSqlScripts(connection, transaction, workingPath, versionDirectory, tokenKeyPairs, commandTimeout, environmentCode);
+                        if (isExplicitTransactionDefined)
+                        {
+                            string versionName = new DirectoryInfo(versionDirectory).Name;
 
-                        //import csv files into tables of the the same filename as the csv
-                        RunBulkImport(connection, transaction, workingPath, versionDirectory, delimiter, batchSize, commandTimeout, environmentCode);
+                            //run scripts within a single transaction
+                            _traceService.Info(@$"The ""_transaction"" directory has been detected and therefore ""{versionName}"" version scripts will run in single transaction. The rollback will not be reliable in case the version scripts contain commands causing implicit commit (e.g. DDL)!");
 
-                        //update db version
-                        var versionName = new DirectoryInfo(versionDirectory).Name;
-                        _configurationDataService.InsertVersion(connection, transaction, versionName,
-                            commandTimeout: commandTimeout,
-                            appliedByTool: appliedByTool,
-                            appliedByToolVersion: appliedByToolVersion);
+                            using (var transaction = connection.BeginTransaction())
+                            {
+                                try
+                                {
+                                    RunVersionScriptsInternal(scriptSubDirectories, versionDirectory);
 
-                        _traceService.Info($"Completed migration to version {versionDirectory}");
+                                    transaction.Commit();
+
+                                    _traceService.Info(@$"Target database has been commited after running ""{versionName}"" version scripts.");
+                                }
+                                catch (Exception)
+                                {
+                                    _traceService.Error(@$"Target database will be rolled back to the state before running ""{versionName}"" version scripts.");
+                                    transaction.Rollback();
+                                    throw;
+                                }
+                            }
+                        }
+                        else //run scripts without transaction
+                        {
+                            RunVersionScriptsInternal(scriptSubDirectories, versionDirectory);
+                        }
                     }
                     catch (Exception)
                     {
@@ -355,6 +387,34 @@ namespace Yuniql.Core
             {
                 var connectionInfo = _dataService.GetConnectionInfo();
                 _traceService.Info($"Target database is updated. No migration step executed at {connectionInfo.Database} on {connectionInfo.DataSource}.");
+            }
+
+            void RunVersionScriptsInternal(List<string> scriptSubDirectories, string versionDirectory)
+            {
+                scriptSubDirectories.Sort();
+                scriptSubDirectories.ForEach(scriptSubDirectory =>
+                {
+                    //run all scripts in the current version folder
+                    RunSqlScripts(connection, transaction, workingPath, scriptSubDirectory, tokenKeyPairs, commandTimeout, environmentCode);
+
+                    //import csv files into tables of the the same filename as the csv
+                    RunBulkImport(connection, transaction, workingPath, scriptSubDirectory, delimiter, batchSize, commandTimeout, environmentCode);
+                });
+
+                //run all scripts in the current version folder
+                RunSqlScripts(connection, transaction, workingPath, versionDirectory, tokenKeyPairs, commandTimeout, environmentCode);
+
+                //import csv files into tables of the the same filename as the csv
+                RunBulkImport(connection, transaction, workingPath, versionDirectory, delimiter, batchSize, commandTimeout, environmentCode);
+
+                //update db version
+                var versionName = new DirectoryInfo(versionDirectory).Name;
+                _configurationDataService.InsertVersion(connection, transaction, versionName,
+                    commandTimeout: commandTimeout,
+                    appliedByTool: appliedByTool,
+                    appliedByToolVersion: appliedByToolVersion);
+
+                _traceService.Info($"Completed migration to version {versionDirectory}");
             }
         }
 
