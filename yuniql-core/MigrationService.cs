@@ -358,7 +358,7 @@ namespace Yuniql.Core
                             {
                                 try
                                 {
-                                    RunVersionScriptsInternal(scriptSubDirectories, versionDirectory);
+                                    RunVersionScriptsInternal(scriptSubDirectories, transactionDirectory, versionDirectory);
 
                                     transaction.Commit();
 
@@ -374,7 +374,7 @@ namespace Yuniql.Core
                         }
                         else //run scripts without transaction
                         {
-                            RunVersionScriptsInternal(scriptSubDirectories, versionDirectory);
+                            RunVersionScriptsInternal(scriptSubDirectories, versionDirectory, versionDirectory);
                         }
                     }
                     catch (Exception)
@@ -389,7 +389,7 @@ namespace Yuniql.Core
                 _traceService.Info($"Target database is updated. No migration step executed at {connectionInfo.Database} on {connectionInfo.DataSource}.");
             }
 
-            void RunVersionScriptsInternal(List<string> scriptSubDirectories, string versionDirectory)
+            void RunVersionScriptsInternal(List<string> scriptSubDirectories, string scriptDirectory, string versionDirectory)
             {
                 scriptSubDirectories.Sort();
                 scriptSubDirectories.ForEach(scriptSubDirectory =>
@@ -402,10 +402,10 @@ namespace Yuniql.Core
                 });
 
                 //run all scripts in the current version folder
-                RunSqlScripts(connection, transaction, workingPath, versionDirectory, tokenKeyPairs, commandTimeout, environmentCode);
+                RunSqlScripts(connection, transaction, workingPath, scriptDirectory, tokenKeyPairs, commandTimeout, environmentCode);
 
                 //import csv files into tables of the the same filename as the csv
-                RunBulkImport(connection, transaction, workingPath, versionDirectory, delimiter, batchSize, commandTimeout, environmentCode);
+                RunBulkImport(connection, transaction, workingPath, scriptDirectory, delimiter, batchSize, commandTimeout, environmentCode);
 
                 //update db version
                 var versionName = new DirectoryInfo(versionDirectory).Name;
