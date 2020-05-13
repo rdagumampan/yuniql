@@ -63,8 +63,24 @@ namespace Yuniql.Core
         /// <summary>
         /// Enrich trace messages with raw sql statements and more verbose diagnostic messages.
         /// Use this when you are investigating some failed migrations.
-        /// </summary>
+        /// </summary
         public bool DebugTraceMode { get; set; } = false;
+
+        /// <summary>
+        /// Environment code for environment-aware scripts.
+        /// </summary>
+        public string Environment { get; set; }
+
+        /// <summary>
+        /// Schema name for schema versions table. When empty, uses the default schema in the target data platform. 
+        /// For example, dbo for SqlServer and public for PostgreSql
+        /// </summary>
+        public string Schema { get; set; }
+
+        /// <summary>
+        /// Table name for schema versions table. When empty, uses __yuniqldbversion.
+        /// </summary>
+        public string Table { get; set; }
     }
 
 }

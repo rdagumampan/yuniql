@@ -47,6 +47,10 @@ namespace Yuniql.PlatformTests
 
         bool IsSchemaSupported { get; }
 
+        string TableName { get;}
+
+        string SchemaName { get; }
+
         List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName);
     }
 }

@@ -93,26 +93,29 @@ namespace Yuniql.CLI
                     var workingPath = _environmentService.GetCurrentDirectory();
                     opts.Path = workingPath;
                 }
+                _traceService.Info($"Started migration from {opts.Path}.");
 
                 //if no target platform provided, we default into sqlserver
                 if (string.IsNullOrEmpty(opts.Platform))
                 {
-                    opts.Platform = "sqlserver";
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
+                    if (string.IsNullOrEmpty(opts.Platform))
+                    {
+                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
+                    }
                 }
 
-                _traceService.Info($"Started migration from {opts.Path}.");
+                //if no connection string provided, we default into environment variable or throw exception
+                if (string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
+                }
 
                 //if no target version specified, we capture the latest from local folder structure
                 if (string.IsNullOrEmpty(opts.TargetVersion))
                 {
                     opts.TargetVersion = _localVersionService.GetLatestVersion(opts.Path);
                     _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
-                }
-
-                //if no connection string provided, we default into environment variable or throw exception
-                if (string.IsNullOrEmpty(opts.ConnectionString))
-                {
-                    opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
                 //parse tokens
@@ -131,6 +134,8 @@ namespace Yuniql.CLI
                     tokens: tokens,
                     verifyOnly: false,
                     delimiter: opts.Delimiter,
+                    schemaName: opts.Schema,
+                    tableName: opts.Table,
                     commandTimeout: opts.CommandTimeout,
                     batchSize: null,
                     appliedByTool: toolName,
@@ -157,26 +162,29 @@ namespace Yuniql.CLI
                     var workingPath = _environmentService.GetCurrentDirectory();
                     opts.Path = workingPath;
                 }
+                _traceService.Info($"Started verifcation from {opts.Path}.");
 
                 //if no target platform provided, we default into sqlserver
                 if (string.IsNullOrEmpty(opts.Platform))
                 {
-                    opts.Platform = "sqlserver";
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
+                    if (string.IsNullOrEmpty(opts.Platform))
+                    {
+                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
+                    }
                 }
 
-                _traceService.Info($"Started verifcation from {opts.Path}.");
+                //if no connection string provided, we default into environment variable or throw exception
+                if (string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
+                }
 
                 //if no target version specified, we capture the latest from local folder structure
                 if (string.IsNullOrEmpty(opts.TargetVersion))
                 {
                     opts.TargetVersion = _localVersionService.GetLatestVersion(opts.Path);
                     _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
-                }
-
-                //if no connection string provided, we default into environment variable or throw exception
-                if (string.IsNullOrEmpty(opts.ConnectionString))
-                {
-                    opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
                 }
 
                 //parse tokens
@@ -196,6 +204,8 @@ namespace Yuniql.CLI
                     tokens: tokens,
                     verifyOnly: true,
                     delimiter: opts.Delimiter,
+                    schemaName: opts.Schema,
+                    tableName: opts.Table,
                     commandTimeout: opts.CommandTimeout,
                     batchSize: null,
                     appliedByTool: toolName,
@@ -218,22 +228,26 @@ namespace Yuniql.CLI
         {
             try
             {
-                //if no connection string provided, we default into environment variable or throw exception
-                if (string.IsNullOrEmpty(opts.ConnectionString))
-                {
-                    opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
-                }
-
                 //if no target platform provided, we default into sqlserver
                 if (string.IsNullOrEmpty(opts.Platform))
                 {
-                    opts.Platform = "sqlserver";
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
+                    if (string.IsNullOrEmpty(opts.Platform))
+                    {
+                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
+                    }
+                }
+
+                //if no connection string provided, we default into environment variable or throw exception
+                if (string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
                 }
 
                 //get all exsiting db versions
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                var versions = migrationService.GetAllVersions();
+                var versions = migrationService.GetAllVersions(opts.Schema, opts.Table);
 
                 var results = new StringBuilder();
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");
@@ -264,16 +278,20 @@ namespace Yuniql.CLI
                     opts.Path = workingPath;
                 }
 
-                //if no target platform provided, we default into sqlserver
-                if (string.IsNullOrEmpty(opts.Platform))
-                {
-                    opts.Platform = "sqlserver";
-                }
-
                 //if no connection string provided, we default into environment variable or throw exception
                 if (string.IsNullOrEmpty(opts.ConnectionString))
                 {
-                    opts.ConnectionString = _environmentService.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING");
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
+                }
+
+                //if no target platform provided, we default into sqlserver
+                if (string.IsNullOrEmpty(opts.Platform))
+                {
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
+                    if (string.IsNullOrEmpty(opts.Platform))
+                    {
+                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
+                    }
                 }
 
                 //parse tokens
@@ -299,6 +317,11 @@ namespace Yuniql.CLI
         }
 
         public object RunRebaseOption(RebaseOption opts)
+        {
+            throw new NotImplementedException("Not yet implemented, stay tune!");
+        }
+
+        public object RunArchiveOption(ArchiveOption Opts) 
         {
             throw new NotImplementedException("Not yet implemented, stay tune!");
         }

@@ -18,12 +18,12 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns the current migration version applied in target database.
         /// </summary>
-        string GetCurrentVersion();
+        string GetCurrentVersion(string schemaName = null, string tableName = null);
 
         /// <summary>
         /// Returns all migration versions applied in the target database
         /// </summary>
-        List<DbVersion> GetAllVersions();
+        List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null);
 
         /// <summary>
         /// Runs migrations by executing alls scripts in the workspace directory. 
@@ -35,8 +35,13 @@ namespace Yuniql.Core
         /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
         /// <param name="verifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
         /// <param name="delimiter">Delimeter character in the CSV bulk import files. When NULL, uses comma.</param>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
         /// <param name="batchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
+        /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
+        /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
+        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
         void Run(
             string workingPath, 
             string targetVersion = null, 
@@ -44,6 +49,8 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokens = null, 
             bool? verifyOnly = null, 
             string delimiter = null,
+            string schemaName = null, 
+            string tableName = null,
             int? commandTimeout = null,
             int? batchSize = null,
             string appliedByTool = null,
@@ -57,6 +64,7 @@ namespace Yuniql.Core
         /// <param name="workingPath">The directory path to migration project.</param>
         /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
         void Erase(
             string workingPath,
             List<KeyValuePair<string, string>> tokens = null,
