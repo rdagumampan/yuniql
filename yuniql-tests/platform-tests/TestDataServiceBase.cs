@@ -143,6 +143,8 @@ namespace Yuniql.PlatformTests
 
         public abstract string GetSqlForSingleLineWithoutTerminator(string objectName);
 
+        public abstract string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3);
+
         private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
         {
             var tokens = new List<KeyValuePair<string, string>> {

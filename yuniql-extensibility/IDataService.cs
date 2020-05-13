@@ -81,6 +81,10 @@ namespace Yuniql.Extensibility
         /// </summary>
         public string GetSqlForCreateDatabase();
 
+        /// <summary>
+        /// Returns the SQL statement to use for creating schema if the target database supports schemas.
+        /// </summary>
+        /// <returns></returns>
         public string GetSqlForCreateSchema();
 
         /// <summary>

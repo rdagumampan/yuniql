@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Yuniql.Extensibility.SqlBatchParser
@@ -8,10 +9,14 @@ namespace Yuniql.Extensibility.SqlBatchParser
     public class SqlBatchParser : ISqlBatchParser
     {
         private readonly ISqlBatchLineAnalyzer _sqlBatchLineAnalyzer;
+        private readonly ICommentAnalyzer _commentAnalyzer;
 
-        public SqlBatchParser(ISqlBatchLineAnalyzer sqlBatchLineAnalyzer)
+        public SqlBatchParser(
+            ISqlBatchLineAnalyzer sqlBatchLineAnalyzer,
+            ICommentAnalyzer commentAnalyzer)
         {
             this._sqlBatchLineAnalyzer = sqlBatchLineAnalyzer;
+            this._commentAnalyzer = commentAnalyzer;
         }
 
         public List<SqlStatement> Parse(string sqlStatementRaw)
@@ -22,6 +27,9 @@ namespace Yuniql.Extensibility.SqlBatchParser
         public List<SqlStatement> Parse(string sqlStatementRaw, SqlBatchParserOption parseOption)
         {
             var sqlStatements = new List<SqlStatement>();
+
+            //extrat all comments
+            var commentBlocks = _commentAnalyzer.Run(sqlStatementRaw); 
 
             using (var sr = new StringReader(sqlStatementRaw))
             {
@@ -42,6 +50,14 @@ namespace Yuniql.Extensibility.SqlBatchParser
                     }
                     else
                     {
+                        //check if current line is within a multi-line comment block
+                        if (commentBlocks.Any(c => (currentPositionNumber + Environment.NewLine.Length) >= c.Start 
+                            && (currentPositionNumber + sqlStatementBuilder.Length) <= c.End))
+                        {
+                            sqlStatementBuilder.AppendLine(line);
+                            continue;
+                        }
+
                         //strip entire line for cases such as GO in sql server
                         //but keep the line to cases like semi-colon (;) in snowflake and other platforms
                         var stripLineLength = (_sqlBatchLineAnalyzer.IsRequireWholeLineStripped ? line.Length + Environment.NewLine.Length : 0);

@@ -131,6 +131,12 @@ CREATE TABLE {tableName}(
                 $"See {nameof(MySqlDataService)}.{nameof(MySqlDataService.IsBatchSqlSupported)}");
         }
 
+        public override string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3)
+        {
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(MySqlDataService)}.{nameof(MySqlDataService.IsBatchSqlSupported)}");
+        }
+
         public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             throw new NotSupportedException($"Batching statements is not supported in this platform. " +

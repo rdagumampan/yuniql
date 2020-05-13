@@ -39,6 +39,8 @@ namespace Yuniql.PlatformTests
 
         string GetSqlForMultilineWithError(string objectName1, string objectName2);
 
+        string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3);
+
         void CreateScriptFile(string sqlFilePath, string sqlStatement);
 
         string GetSqlForCleanup();
