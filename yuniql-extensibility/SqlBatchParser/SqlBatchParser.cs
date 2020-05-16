@@ -8,13 +8,16 @@ namespace Yuniql.Extensibility.SqlBatchParser
 {
     public class SqlBatchParser : ISqlBatchParser
     {
+        private readonly ITraceService _traceService;
         private readonly ISqlBatchLineAnalyzer _sqlBatchLineAnalyzer;
         private readonly ICommentAnalyzer _commentAnalyzer;
 
         public SqlBatchParser(
+            ITraceService traceService,
             ISqlBatchLineAnalyzer sqlBatchLineAnalyzer,
             ICommentAnalyzer commentAnalyzer)
         {
+            this._traceService = traceService;
             this._sqlBatchLineAnalyzer = sqlBatchLineAnalyzer;
             this._commentAnalyzer = commentAnalyzer;
         }
@@ -29,7 +32,11 @@ namespace Yuniql.Extensibility.SqlBatchParser
             var sqlStatements = new List<SqlStatement>();
 
             //extrat all comments
-            var commentBlocks = _commentAnalyzer.Run(sqlStatementRaw); 
+            var commentBlocks = _commentAnalyzer.Run(sqlStatementRaw);
+
+            commentBlocks.ForEach(s=> {
+                _traceService.Debug($"text: {s.Text}, positionStart: {s.Start}, positionEnd: {s.End}");
+            });
 
             using (var sr = new StringReader(sqlStatementRaw))
             {
@@ -51,11 +58,15 @@ namespace Yuniql.Extensibility.SqlBatchParser
                     else
                     {
                         //check if current line is within a multi-line comment block
-                        Console.WriteLine($"line: {line}, line.Lenth: {line.Length}, sqlStatementBuilder.Length: {sqlStatementBuilder.Length}, envNewLine.Length: {Environment.NewLine.Length}");
-                        Console.WriteLine($"line: {line}, positionStart: {currentPositionNumber + Environment.NewLine.Length}, positionEnd: {currentPositionNumber + sqlStatementBuilder.Length}");
-                        if (commentBlocks.Any(c => (currentPositionNumber + Environment.NewLine.Length) >= c.Start 
-                            && (currentPositionNumber + sqlStatementBuilder.Length) <= c.End))
+                        _traceService.Debug($"line: {line}, line.Lenth: {line.Length}, sqlStatementBuilder.Length: {sqlStatementBuilder.Length}, envNewLine.Length: {Environment.NewLine.Length}");
+                        _traceService.Debug($"line: {line}, positionStart: {currentPositionNumber + Environment.NewLine.Length}, positionEnd: {currentPositionNumber + sqlStatementBuilder.Length}");
+
+                        var foundInCommentBlock = commentBlocks.FirstOrDefault(c => 
+                                                    (currentPositionNumber + Environment.NewLine.Length) >= c.Start && 
+                                                    (currentPositionNumber + sqlStatementBuilder.Length) <= c.End);
+                        if (null != foundInCommentBlock)
                         {
+                            _traceService.Debug($"Line {line} found inside comment block. Will continue building the sql statement.");
                             sqlStatementBuilder.AppendLine(line);
                             continue;
                         }

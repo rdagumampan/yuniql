@@ -55,7 +55,7 @@ namespace Yuniql.SqlServer
 
         public List<string> BreakStatements(string sqlStatementRaw)
         {
-            var sqlBatchParser = new SqlBatchParser(new GoSqlBatchLineAnalyzer(), new CStyleCommentAnalyzer());
+            var sqlBatchParser = new SqlBatchParser(_traceService, new GoSqlBatchLineAnalyzer(), new CStyleCommentAnalyzer());
             return sqlBatchParser.Parse(sqlStatementRaw).Select(s => s.BatchText).ToList();
         }
 
