@@ -565,12 +565,13 @@ namespace Yuniql.Core
                 var sqlStatements = _dataService.BreakStatements(sqlStatementRaw)
                     .Where(s => !string.IsNullOrWhiteSpace(s))
                     .ToList();
-                ;
+
+                _traceService.Debug($"Sql file was split into {sqlStatements.Count} batches");
                 sqlStatements.ForEach(sqlStatement =>
                 {
                     sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
 
-                    _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
+                    //_traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
                     _configurationDataService.ExecuteSql(
                         connection: connection,
                         commandText: sqlStatement,

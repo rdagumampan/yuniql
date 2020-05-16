@@ -12,7 +12,15 @@ namespace Yuniql.Extensibility.SqlBatchParser
             var resultList = new List<CommentAnalyzerResult>();
             try
             {
-                var regex = new Regex(@"/\*(?>(?:(?!\*/|/\*).)*)(?>(?:/\*(?>(?:(?!\*/|/\*).)*)\*/(?>(?:(?!\*/|/\*).)*))*).*?\*/|--.*?\r?[\n]", RegexOptions.Singleline | RegexOptions.CultureInvariant);
+                //all comments
+                var regex = new Regex(@"/\*(?>(?:(?!\*/|/\*).)*)(?>(?:/\*(?>(?:(?!\*/|/\*).)*)\*/(?>(?:(?!\*/|/\*).)*))*).*?\*/|--.*?\r?[\n]", RegexOptions.Singleline | RegexOptions.CultureInvariant   |  RegexOptions.IgnorePatternWhitespace);
+
+                ////block comments
+                //var regex = new Regex(@"/\*(.*?)\*/?\r?[\n]", RegexOptions.Singleline | RegexOptions.CultureInvariant);
+
+                ////inline comments
+                ////var regex = new Regex(@"--(.*?)\r?\n", RegexOptions.Singleline | RegexOptions.CultureInvariant);
+
                 var match = regex.Match(sqlStatementRaw);
                 while (match.Success)
                 {
