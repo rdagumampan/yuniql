@@ -51,7 +51,7 @@ namespace Yuniql.Extensibility.SqlBatchParser
                     else
                     {
                         //check if current line is within a multi-line comment block
-                        Console.WriteLine($"line: {line}, line.Lenth: {line.Length}, sqlStatementBuilder.Length: {sqlStatementBuilder.Length}, envNewLine.Length: {Environment.NewLine.Length}")
+                        Console.WriteLine($"line: {line}, line.Lenth: {line.Length}, sqlStatementBuilder.Length: {sqlStatementBuilder.Length}, envNewLine.Length: {Environment.NewLine.Length}");
                         Console.WriteLine($"line: {line}, positionStart: {currentPositionNumber + Environment.NewLine.Length}, positionEnd: {currentPositionNumber + sqlStatementBuilder.Length}");
                         if (commentBlocks.Any(c => (currentPositionNumber + Environment.NewLine.Length) >= c.Start 
                             && (currentPositionNumber + sqlStatementBuilder.Length) <= c.End))
