@@ -34,8 +34,9 @@ namespace Yuniql.Extensibility.SqlBatchParser
             //extrat all comments
             var commentBlocks = _commentAnalyzer.Run(sqlStatementRaw);
 
-            commentBlocks.ForEach(s=> {
-                _traceService.Debug($"text: {s.Text}, positionStart: {s.Start}, positionEnd: {s.End}");
+            commentBlocks.ForEach(s =>
+            {
+                _traceService.Debug($"commentText: {s.Text}, startPosition: {s.Start}, stopPosition: {s.End}");
             });
 
             using (var sr = new StringReader(sqlStatementRaw))
@@ -58,15 +59,16 @@ namespace Yuniql.Extensibility.SqlBatchParser
                     else
                     {
                         //check if current line is within a multi-line comment block
-                        _traceService.Debug($"line: {line}, line.Lenth: {line.Length}, sqlStatementBuilder.Length: {sqlStatementBuilder.Length}, envNewLine.Length: {Environment.NewLine.Length}");
-                        _traceService.Debug($"line: {line}, positionStart: {currentPositionNumber + Environment.NewLine.Length}, positionEnd: {currentPositionNumber + sqlStatementBuilder.Length}");
+                        //batch sepator inside comment should not break the batches but should continue building the batch statement
+                        var batchSeparatorStartPosition = currentPositionNumber + Environment.NewLine.Length;
+                        var batchSeparatorStopPosition = currentPositionNumber + line.Length;
+                        _traceService.Debug($"Line text: {line}, line.Length: {line.Length}, sqlStatementBuilder.Length: {sqlStatementBuilder.Length}, envNewLine.Length: {Environment.NewLine.Length}");
+                        _traceService.Debug($"Line text: {line}, startPosition: {batchSeparatorStartPosition}, stopPosition: {batchSeparatorStopPosition}");
 
-                        var foundInCommentBlock = commentBlocks.FirstOrDefault(c => 
-                                                    (currentPositionNumber + Environment.NewLine.Length) >= c.Start && 
-                                                    (currentPositionNumber + sqlStatementBuilder.Length) <= c.End);
+                        var foundInCommentBlock = commentBlocks.FirstOrDefault(c => c.Start <= batchSeparatorStartPosition && batchSeparatorStopPosition <= c.End);
                         if (null != foundInCommentBlock)
                         {
-                            _traceService.Debug($"Line {line} found inside comment block. Will continue building the sql statement.");
+                            _traceService.Debug($"Bath separator {line} found inside comment block. Will continue building the sql statement.");
                             sqlStatementBuilder.AppendLine(line);
                             continue;
                         }
@@ -97,7 +99,7 @@ namespace Yuniql.Extensibility.SqlBatchParser
                 }
 
                 //handle left overs when the last bacth doesn't contain the bacth separator
-                if(sqlStatementBuilder.Length > 0)
+                if (sqlStatementBuilder.Length > 0)
                 {
                     currentPositionNumber = currentPositionNumber + sqlStatementBuilder.Length;
                     sqlStatements.Add(new SqlStatement
