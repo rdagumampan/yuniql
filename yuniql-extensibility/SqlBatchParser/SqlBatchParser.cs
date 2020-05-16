@@ -55,6 +55,10 @@ namespace Yuniql.Extensibility.SqlBatchParser
                     if (!result.IsMatched)
                     {
                         sqlStatementBuilder.AppendLine(line);
+
+                        //update position tracker
+                        currentLineNumber++;
+                        currentPositionNumber += line.Length + Environment.NewLine.Length;
                     }
                     else
                     {
@@ -65,37 +69,43 @@ namespace Yuniql.Extensibility.SqlBatchParser
                         _traceService.Debug($"Line text: {line}, line.Length: {line.Length}, sqlStatementBuilder.Length: {sqlStatementBuilder.Length}, envNewLine.Length: {Environment.NewLine.Length}");
                         _traceService.Debug($"Line text: {line}, startPosition: {batchSeparatorStartPosition}, stopPosition: {batchSeparatorStopPosition}");
 
-                        var foundInCommentBlock = commentBlocks.FirstOrDefault(c => c.Start <= batchSeparatorStartPosition && batchSeparatorStopPosition <= c.End);
+                        var foundInCommentBlock = commentBlocks.FirstOrDefault(c => c.Start <= batchSeparatorStartPosition && c.End >= batchSeparatorStopPosition);
                         if (null != foundInCommentBlock)
                         {
                             _traceService.Debug($"Bath separator {line} found inside comment block. Will continue building the sql statement.");
                             sqlStatementBuilder.AppendLine(line);
-                            continue;
+
+                            //update position tracker
+                            currentLineNumber++;
+                            currentPositionNumber +=line.Length + Environment.NewLine.Length;
                         }
-
-                        //strip entire line for cases such as GO in sql server
-                        //but keep the line to cases like semi-colon (;) in snowflake and other platforms
-                        var stripLineLength = (_sqlBatchLineAnalyzer.IsRequireWholeLineStripped ? line.Length + Environment.NewLine.Length : 0);
-                        if (!_sqlBatchLineAnalyzer.IsRequireWholeLineStripped)
+                        else
                         {
-                            sqlStatementBuilder.AppendLine(line);
+                            //strip entire line for cases such as GO in sql server
+                            //but keep the line to cases like semi-colon (;) in snowflake and other platforms
+                            var strippedLineLength = (_sqlBatchLineAnalyzer.IsRequireWholeLineStripped ? line.Length : 0);
+                            if (!_sqlBatchLineAnalyzer.IsRequireWholeLineStripped)
+                            {
+                                sqlStatementBuilder.AppendLine(line);
+                            }
+
+                            sqlStatements.Add(new SqlStatement
+                            {
+                                BatchNo = currentBatchNumber,
+                                BatchText = sqlStatementBuilder.ToString().Trim(),
+                                Length = sqlStatementBuilder.Length,
+                                Start = currentPositionNumber,
+                                End = currentPositionNumber + sqlStatementBuilder.Length - Environment.NewLine.Length
+                            });
+
+                            //update position tracker
+                            currentBatchNumber++;
+                            currentPositionNumber += line.Length + strippedLineLength + Environment.NewLine.Length;
+
+                            //starts a new batch
+                            sqlStatementBuilder.Clear();
                         }
-
-                        sqlStatements.Add(new SqlStatement
-                        {
-                            BatchNo = currentBatchNumber,
-                            BatchText = sqlStatementBuilder.ToString().Trim(),
-                            Length = sqlStatementBuilder.Length,
-                            Start = currentPositionNumber,
-                            End = currentPositionNumber + sqlStatementBuilder.Length - Environment.NewLine.Length
-                        });
-
-                        currentBatchNumber++;
-                        currentPositionNumber = currentPositionNumber + sqlStatementBuilder.Length + stripLineLength;
-                        sqlStatementBuilder.Clear();
                     }
-
-                    currentLineNumber++;
                 }
 
                 //handle left overs when the last bacth doesn't contain the bacth separator
