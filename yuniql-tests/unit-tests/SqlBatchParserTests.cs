@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Shouldly;
 using Yuniql.Extensibility;
 using Yuniql.Extensibility.SqlBatchParser;
 
@@ -40,9 +41,10 @@ AS
 
             //act
             var sut = new SqlBatchParser(traceService.Object, new GoSqlBatchLineAnalyzer(), new CStyleCommentAnalyzer());
-            sut.Parse(sqlStatementRaw);
+            var results = sut.Parse(sqlStatementRaw);
 
             //assert
+            results.Count.ShouldBe(3);
         }
     }
 }
