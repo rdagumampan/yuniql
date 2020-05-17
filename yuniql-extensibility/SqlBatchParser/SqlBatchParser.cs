@@ -41,7 +41,7 @@ namespace Yuniql.Extensibility.SqlBatchParser
             commentBlocks.ForEach(s =>
             {
                 _traceService.Debug($"commentText.byteCount: {Encoding.UTF8.GetByteCount(s.Text)}");
-                _traceService.Debug($"commentText: {s.Text}, startPosition: {s.Start}, stopPosition: {s.End}");
+                _traceService.Debug($"commentText: {s.Text}, {Environment.NewLine}startPosition: {s.Start}, stopPosition: {s.End}");
             });
 
             using (var sr = new StringReader(sqlStatementRaw))

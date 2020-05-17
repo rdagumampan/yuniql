@@ -49,14 +49,24 @@ namespace Yuniql.Extensibility.SqlBatchParser
                                 (?(LEVEL)(?!))             # if level exists then fail
                                 \*/";
 
-            var regex = new Regex($"{nestedMultiLineBlockCommentPattern}|{singleLineBlockCommentPattern}|{inlineDashDashCommentPattern}|{inlineDashDashCommentsOnLastLinePattern}", RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            //skip single and double quoted expressions
+            var literalsAndQuotedValues = @"('(('')|[^'])*')";
+
+            var regex = new Regex($"{nestedMultiLineBlockCommentPattern}|{singleLineBlockCommentPattern}|{inlineDashDashCommentPattern}|{inlineDashDashCommentsOnLastLinePattern}|{literalsAndQuotedValues}", RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Compiled);
             var match = regex.Match(sqlStatementRaw);
             while (match.Success)
             {
-                var commentBlock = new CommentAnalyzerResult { Text = match.Value, Start = match.Index, End = match.Index + match.Length };
-                resultList.Add(commentBlock);
+                if (!match.Value.StartsWith("--") && !match.Value.StartsWith("/*"))
+                {
+                    match = match.NextMatch();
+                }
+                else
+                {
+                    var commentBlock = new CommentAnalyzerResult { Text = match.Value, Start = match.Index, End = match.Index + match.Length };
+                    resultList.Add(commentBlock);
 
-                match = match.NextMatch();
+                    match = match.NextMatch();
+                }
             }
 
             return resultList;
