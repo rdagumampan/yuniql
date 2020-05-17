@@ -13,7 +13,7 @@ namespace Yuniql.Extensibility.SqlBatchParser
 
             //all comments
             //https://stackoverflow.com/questions/7690380/regular-expression-to-match-all-comments-in-a-t-sql-script/33947706#33947706
-            var regex = new Regex(@"/\*(?>(?:(?!\*/|/\*).)*)(?>(?:/\*(?>(?:(?!\*/|/\*).)*)\*/(?>(?:(?!\*/|/\*).)*))*).*?\*/|--.*?\r?[\n]", RegexOptions.Singleline | RegexOptions.CultureInvariant);
+            var regex = new Regex(@"/\*(?>(?:(?!\*/|/\*).)*)(?>(?:/\*(?>(?:(?!\*/|/\*).)*)\*/(?>(?:(?!\*/|/\*).)*))*).*?\*/|--.*?\r?[\n]", RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             ////block comments
             //var regex = new Regex(@"/\*(.*?)\*/?\r?[\n]", RegexOptions.Singleline | RegexOptions.CultureInvariant);

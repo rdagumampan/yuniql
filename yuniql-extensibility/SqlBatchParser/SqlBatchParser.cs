@@ -35,8 +35,10 @@ namespace Yuniql.Extensibility.SqlBatchParser
             var commentBlocks = _commentAnalyzer.Run(sqlStatementRaw);
 
             _traceService.Debug($"Environment.OSVersion.Platform: {Environment.OSVersion.Platform}, {Environment.OSVersion.VersionString}");
-            _traceService.Debug($"Environment.NewLine.byteCount: {Encoding.UTF8.GetByteCount(Environment.NewLine)}");
-            _traceService.Debug($"sqlStatementRaw.byteCount: {Encoding.UTF8.GetByteCount(sqlStatementRaw)}");
+            _traceService.Debug($"Environment.NewLine.UTF8.byteCount: {Encoding.UTF8.GetByteCount(Environment.NewLine)}");
+            _traceService.Debug($"sqlStatementRaw.UTF8.byteCount: {Encoding.UTF8.GetByteCount(sqlStatementRaw)}");
+            _traceService.Debug($"Environment.NewLine.Unicode.byteCount: {Encoding.Unicode.GetByteCount(Environment.NewLine)}");
+            _traceService.Debug($"sqlStatementRaw.Unicode.byteCount: {Encoding.Unicode.GetByteCount(sqlStatementRaw)}");
             commentBlocks.ForEach(s =>
             {
                 _traceService.Debug($"commentText.byteCount: {Encoding.UTF8.GetByteCount(s.Text)}");
