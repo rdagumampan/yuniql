@@ -34,6 +34,7 @@ namespace Yuniql.Extensibility.SqlBatchParser
             //extrat all comments
             var commentBlocks = _commentAnalyzer.Run(sqlStatementRaw);
 
+            _traceService.Debug($"Environment.OSVersion.Platform: {Environment.OSVersion.Platform}, {Environment.OSVersion.VersionString}");
             _traceService.Debug($"Environment.NewLine.byteCount: {Encoding.UTF8.GetByteCount(Environment.NewLine)}");
             _traceService.Debug($"sqlStatementRaw.byteCount: {Encoding.UTF8.GetByteCount(sqlStatementRaw)}");
             commentBlocks.ForEach(s =>
