@@ -9,14 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Cli\CliTests.cs" />
-    <Compile Remove="Core\BulkImportServiceTests.cs" />
-    <Compile Remove="Core\EnvironmentAwareScriptTests.cs" />
-    <Compile Remove="Core\LocalVersionServiceTests.cs" />
-    <Compile Remove="Core\MigrationServiceTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Docker.DotNet" Version="3.125.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />

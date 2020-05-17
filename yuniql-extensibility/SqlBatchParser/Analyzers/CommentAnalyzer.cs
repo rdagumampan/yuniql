@@ -5,27 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace Yuniql.Extensibility.SqlBatchParser
 {
-    public class CStyleCommentAnalyzer : ICommentAnalyzer
+    public class CommentAnalyzer : ICommentAnalyzer
     {
-        public List<CommentAnalyzerResult> Run1(string sqlStatementRaw)
-        {
-            var resultList = new List<CommentAnalyzerResult>();
-
-            //track all comment formats --, /*/ or multiline neested comment blocks /* /**/ */
-            //https://stackoverflow.com/questions/7690380/regular-expression-to-match-all-comments-in-a-t-sql-script/33947706#33947706
-            var regex = new Regex(@"/\*(?>(?:(?!\*/|/\*).)*)(?>(?:/\*(?>(?:(?!\*/|/\*).)*)\*/(?>(?:(?!\*/|/\*).)*))*).*?\*/|--.*?\r?[\n]", RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-            var match = regex.Match(sqlStatementRaw);
-            while (match.Success)
-            {
-                var commentBlock = new CommentAnalyzerResult { Text = match.Value, Start = match.Index, End = match.Index + match.Length };
-                resultList.Add(commentBlock);
-                match = match.NextMatch();
-            }
-
-            return resultList;
-        }
-
         public List<CommentAnalyzerResult> Run(string sqlStatementRaw)
         {
             var resultList = new List<CommentAnalyzerResult>();
@@ -37,7 +18,7 @@ namespace Yuniql.Extensibility.SqlBatchParser
             //single line block comments
             var singleLineBlockCommentPattern = @"/\*(.*?)\*/?\r?[\n]";
 
-            //multi line block comments            
+            //multi line block comments
             var nestedMultiLineBlockCommentPattern = @"/\*
                                 (?>
                                 /\*  (?<LEVEL>)     # on opening push level
@@ -52,7 +33,8 @@ namespace Yuniql.Extensibility.SqlBatchParser
             //skip single and double quoted expressions
             var literalsAndQuotedValues = @"('(('')|[^'])*')";
 
-            var regex = new Regex($"{nestedMultiLineBlockCommentPattern}|{singleLineBlockCommentPattern}|{inlineDashDashCommentPattern}|{inlineDashDashCommentsOnLastLinePattern}|{literalsAndQuotedValues}", RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            var regex = new Regex($"{nestedMultiLineBlockCommentPattern}|{singleLineBlockCommentPattern}|{inlineDashDashCommentPattern}|{inlineDashDashCommentsOnLastLinePattern}|{literalsAndQuotedValues}", RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            //var regex = new Regex($"{allPattern}|{literalsAndQuotedValues}", RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
             var match = regex.Match(sqlStatementRaw);
             while (match.Success)
             {
