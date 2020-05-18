@@ -36,12 +36,24 @@ namespace Yuniql.Core
         void ConfigureDatabase(int? commandTimeout = null);
 
         /// <summary>
+        /// Updates migration version tracking table in the target database..
+        /// </summary>
+        /// <returns>True if target database was updated, otherwise returns false</returns>
+        bool UpdateDatabaseConfiguration();
+       
+        /// <summary>
         /// Returns the latest version applied in the target database.
         /// </summary>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>Returns the latest version applied in the target database.</returns>
         string GetCurrentVersion(int? commandTimeout = null);
 
+        /// <summary>
+        /// Returns all versions applied in the target database.
+        /// </summary>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <returns>All versions applied in the target database.</returns>
+        public List<DbVersion> GetAllAppliedVersions(int? commandTimeout = null);
 
         /// <summary>
         /// Returns all versions applied in the target database.
@@ -58,13 +70,19 @@ namespace Yuniql.Core
         /// <param name="transaction">An active transaction.</param>
         /// <param name="version">Migration version.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="appliedByTool">The applied by tool.</param>
+        /// <param name="appliedByToolVersion">The applied by tool version.</param>
+        /// <param name="failedScriptPath">The failed script path.</param>
+        /// <param name="failedScriptError">The failed script error.</param>
         void InsertVersion(
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
             int? commandTimeout = null,
             string appliedByTool = null,
-            string appliedByToolVersion = null);
+            string appliedByToolVersion = null,
+            string failedScriptPath = null,
+            string failedScriptError = null);
 
         /// <summary>
         /// Executes sql statement to target database.

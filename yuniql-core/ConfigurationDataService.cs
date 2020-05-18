@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Linq;
 using System.Reflection;
 using Yuniql.Extensibility;
 
@@ -100,6 +102,21 @@ namespace Yuniql.Core
         }
 
         /// <summary>
+        /// Updates migration version tracking table in the target database..
+        /// </summary>
+        /// <returns>
+        /// True if target database was updated, otherwise returns false
+        /// </returns>
+        public bool UpdateDatabaseConfiguration()
+        {
+            using (var connection = _dataService.CreateConnection())
+            {
+                connection.KeepOpen();
+                return _dataService.UpdateDatabaseConfiguration(connection, _traceService);
+            }
+        }
+
+        /// <summary>
         /// Returns the latest version applied in the target database.
         /// </summary>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
@@ -122,6 +139,16 @@ namespace Yuniql.Core
         /// </summary>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>All versions applied in the target database.</returns>
+        public List<DbVersion> GetAllAppliedVersions(int? commandTimeout = null)
+        {
+            return this.GetAllVersions(commandTimeout).Where(x=>x.StatusId == StatusId.Succeeded).ToList();
+        }
+
+        /// <summary>
+        /// Returns all versions in the target database.
+        /// </summary>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <returns>All versions in the target database.</returns>
         public List<DbVersion> GetAllVersions(int? commandTimeout = null)
         {
             var sqlStatement = _dataService.GetSqlForGetAllVersions();
@@ -140,13 +167,32 @@ namespace Yuniql.Core
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    var dbVersion = new DbVersion
+                    DbVersion dbVersion;
+
+                    if (_dataService.IsAtomicDDLSupported)
                     {
-                        SequenceId = reader.GetInt16(0),
-                        Version = reader.GetString(1),
-                        AppliedOnUtc = reader.GetDateTime(2),
-                        AppliedByUser = reader.GetString(3)
-                    };
+                        dbVersion = new DbVersion
+                        {
+                            SequenceId = reader.GetInt16(0),
+                            Version = reader.GetString(1),
+                            AppliedOnUtc = reader.GetDateTime(2),
+                            AppliedByUser = reader.GetString(3)
+                        };
+                    }
+                    else
+                    {
+                        dbVersion = new DbVersion
+                        {
+                            SequenceId = reader.GetInt16(0),
+                            Version = reader.GetString(1),
+                            AppliedOnUtc = reader.GetDateTime(2),
+                            AppliedByUser = reader.GetString(3),
+                            StatusId = (StatusId) reader.GetInt32(6),
+                            FailedScriptPath = reader.GetValue(7) as string,
+                            FailedScriptError = reader.GetValue(8) as string
+                        };
+                    }
+
                     result.Add(dbVersion);
                 }
             }
@@ -161,18 +207,48 @@ namespace Yuniql.Core
         /// <param name="transaction">An active transaction.</param>
         /// <param name="version">Migration version.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="appliedByTool">The applied by tool.</param>
+        /// <param name="appliedByToolVersion">The applied by tool version.</param>
+        /// <param name="failedScriptPath">The failed script path.</param>
+        /// <param name="failedScriptError">The failed script error.</param>
         public void InsertVersion(
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
             int? commandTimeout = null,
             string appliedByTool = null,
-            string appliedByToolVersion = null)
+            string appliedByToolVersion = null,
+            string failedScriptPath = null,
+            string failedScriptError = null
+            )
         {
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? this.GetType().Assembly.GetName().Version.ToString() : appliedByToolVersion;
-            var sqlStatement = string.Format(_dataService.GetSqlForInsertVersion(), version, toolName, $"v{toolVersion}");
+            StatusId statusId = string.IsNullOrEmpty(failedScriptPath) ? StatusId.Succeeded : StatusId.Failed;
 
+            IDbParameters dbParameters = null;
+            string sqlStatement;
+
+            //in case database supports non transactional flow
+            if (_dataService is INonTransactionalFlow nonTransactionalDataService)
+            {
+                sqlStatement = string.Format(nonTransactionalDataService.GetSqlForUpsertVersion(), version, toolName, $"v{toolVersion}", (int) statusId);
+
+                //Using of db parameters is important and a good practice, otherwise the errors containing SQL specific characters like "'" would need to be escaped in more complicated manner
+                dbParameters = _dataService.CreateDbParameters();
+                dbParameters.AddParameter("failedScriptPath", failedScriptPath);
+                dbParameters.AddParameter("failedScriptError", failedScriptError);
+            }
+            else
+            {
+                if (statusId == StatusId.Failed)
+                {
+                    throw new NotSupportedException(@$"The non-transactional flow is not supported by this platform.");
+                }
+
+                sqlStatement = string.Format(_dataService.GetSqlForInsertVersion(), version, toolName, $"v{toolVersion}");
+            }
+            
             if (null != _traceService)
                 _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
 
@@ -181,7 +257,11 @@ namespace Yuniql.Core
                 .CreateCommand(
                 commandText: sqlStatement,
                 commandTimeout: commandTimeout,
-                transaction: transaction);
+                transaction: transaction
+                );
+
+            dbParameters?.CopyToDataParameterCollection(command.Parameters);
+
             command.ExecuteNonQuery();
         }
 

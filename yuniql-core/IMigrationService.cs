@@ -26,7 +26,7 @@ namespace Yuniql.Core
         List<DbVersion> GetAllVersions();
 
         /// <summary>
-        /// Runs migrations by executing alls scripts in the workspace directory. 
+        /// Runs migrations by executing alls scripts in the workspace directory.
         /// When CSV files are present also run bulk import operations to target database table having same file name.
         /// </summary>
         /// <param name="workingPath">The directory path to migration project.</param>
@@ -37,6 +37,10 @@ namespace Yuniql.Core
         /// <param name="delimiter">Delimeter character in the CSV bulk import files. When NULL, uses comma.</param>
         /// <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
         /// <param name="batchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
+        /// <param name="appliedByTool">The applied by tool.</param>
+        /// <param name="appliedByToolVersion">The applied by tool version.</param>
+        /// <param name="environmentCode">The environment code.</param>
+        /// <param name="resumeFromFailure">The resume from failure.</param>
         void Run(
             string workingPath, 
             string targetVersion = null, 
@@ -48,7 +52,8 @@ namespace Yuniql.Core
             int? batchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string environmentCode = null
+            string environmentCode = null,
+            NonTransactionalResolvingOption? resumeFromFailure = null
         );
 
         /// <summary>
