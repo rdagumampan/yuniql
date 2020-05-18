@@ -2,21 +2,21 @@
 {
     public interface ICommandLineService
     {
-        object RunInitOption(InitOption opts);
+        int RunInitOption(InitOption opts);
 
-        object IncrementVersion(NextVersionOption opts);
+        int IncrementVersion(NextVersionOption opts);
 
-        object RunMigration(RunOption opts);
+        int RunMigration(RunOption opts);
 
-        object RunVerify(VerifyOption opts);
+        int RunVerify(VerifyOption opts);
 
-        object RunInfoOption(InfoOption opts);
+        int RunInfoOption(InfoOption opts);
 
-        object RunEraseOption(EraseOption opts);
+        int RunEraseOption(EraseOption opts);
 
-        object RunBaselineOption(BaselineOption opts);
+        int RunBaselineOption(BaselineOption opts);
 
-        object RunRebaseOption(RebaseOption opts);
+        int RunRebaseOption(RebaseOption opts);
 
     }
 }

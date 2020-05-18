@@ -26,7 +26,7 @@ namespace Yuniql.CLI
             this._migrationServiceFactory = migrationServiceFactory;
         }
 
-        public object RunInitOption(InitOption opts)
+        public int RunInitOption(InitOption opts)
         {
             try
             {
@@ -46,13 +46,13 @@ namespace Yuniql.CLI
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute init function. {Environment.NewLine}{ex.ToString()}");
-                throw;
+                return 1;
             }
 
             return 0;
         }
 
-        public object IncrementVersion(NextVersionOption opts)
+        public int IncrementVersion(NextVersionOption opts)
         {
             try
             {
@@ -77,13 +77,13 @@ namespace Yuniql.CLI
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute vnext function. {Environment.NewLine}{ex.ToString()}");
-                throw;
+                return 1;
             }
 
             return 0;
         }
 
-        public object RunMigration(RunOption opts)
+        public int RunMigration(RunOption opts)
         {
             try
             {
@@ -146,13 +146,13 @@ namespace Yuniql.CLI
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute run function. {Environment.NewLine}{ex.ToString()}");
-                throw;
+                return 1;
             }
 
             return 0;
         }
 
-        public object RunVerify(VerifyOption opts)
+        public int RunVerify(VerifyOption opts)
         {
             try
             {
@@ -218,13 +218,13 @@ namespace Yuniql.CLI
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute verification function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
-                throw;
+                return 1;
             }
 
             return 0;
         }
 
-        public object RunInfoOption(InfoOption opts)
+        public int RunInfoOption(InfoOption opts)
         {
             try
             {
@@ -261,13 +261,13 @@ namespace Yuniql.CLI
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
-                throw;
+                return 1;
             }
 
             return 0;
         }
 
-        public object RunEraseOption(EraseOption opts)
+        public int RunEraseOption(EraseOption opts)
         {
             try
             {
@@ -305,25 +305,55 @@ namespace Yuniql.CLI
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
-                throw;
+                return 1;
             }
 
             return 0;
         }
 
-        public object RunBaselineOption(BaselineOption opts)
+        public int RunBaselineOption(BaselineOption opts)
         {
-            throw new NotImplementedException("Not yet implemented, stay tune!");
+            try
+            {
+                throw new NotImplementedException("Not yet implemented, stay tune!");
+            }
+            catch (Exception ex)
+            {
+                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
+                return 1;
+            }
+
+            return 0;
         }
 
-        public object RunRebaseOption(RebaseOption opts)
+        public int RunRebaseOption(RebaseOption opts)
         {
-            throw new NotImplementedException("Not yet implemented, stay tune!");
+            try
+            {
+                throw new NotImplementedException("Not yet implemented, stay tune!");
+            }
+            catch (Exception ex)
+            {
+                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
+                return 1;
+            }
+
+            return 0;
         }
 
-        public object RunArchiveOption(ArchiveOption Opts) 
+        public int RunArchiveOption(ArchiveOption Opts)
         {
-            throw new NotImplementedException("Not yet implemented, stay tune!");
+            try
+            {
+                throw new NotImplementedException("Not yet implemented, stay tune!");
+            }
+            catch (Exception ex)
+            {
+                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
+                return 1;
+            }
+
+            return 0;
         }
     }
 }
