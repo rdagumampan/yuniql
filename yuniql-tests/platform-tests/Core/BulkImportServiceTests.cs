@@ -416,5 +416,54 @@ namespace Yuniql.PlatformTests
                 && t.BirthDate == r.BirthDate
             )).ShouldBeTrue();
         }
+
+
+        [TestMethod]
+        public void Test_Bulk_Import_With_Null_Word_Value()
+        {
+            //arrange - prepare bulk destination table
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
+
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvNullWordValue.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvNullWordValue"));
+
+            //act
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
+            migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvNullWordValue").ShouldBeTrue();
+
+            //arrange - add new minor version with csv files
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullWordValue.csv"), Path.Combine(v101Directory, "TestCsvNullWordValue.csv"));
+
+            //act
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvNullWordValue").ShouldBeTrue();
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvNullWordValue");
+            var testDataRows = new List<BulkTestDataRow>
+            {
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = null },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = null },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = null },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = null },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = null },
+            };
+
+            results.Count.ShouldBe(5);
+            testDataRows.All(t => results.Exists(r =>
+                t.FirstName == r.FirstName
+                && t.LastName == r.LastName
+                && t.BirthDate == r.BirthDate
+            )).ShouldBeTrue();
+        }
     }
 }

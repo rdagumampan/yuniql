@@ -53,6 +53,18 @@ namespace Yuniql.Extensibility
         bool IsSchemaSupported { get; }
 
         /// <summary>
+        /// Default schema name for schema versions table. Leave it null if database doesn't support schema.
+        /// For example its dbo in SqlServer and public in PostgreSql
+        /// </summary>
+        string SchemaName { get; }
+
+        /// <summary>
+        /// Table name for schema versions table.
+        /// When implementing a new platform, its reccommended to use __yuniqldbversion as default value
+        /// </summary>
+        string TableName { get; }
+
+        /// <summary>
         /// Breaks down statement using terminator word supported by target database.
         /// For example, SQL Sevrer uses GO to split statements from single file.
         /// </summary>
@@ -69,6 +81,8 @@ namespace Yuniql.Extensibility
         /// Returns the SQL statement to use for creating new database if --auto-createdb flag is set to true.
         /// </summary>
         public string GetSqlForCreateDatabase();
+
+        public string GetSqlForCreateSchema();
 
         /// <summary>
         /// Returns the SQL statement to use for checking target database has been configured for migration tracking.

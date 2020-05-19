@@ -56,6 +56,10 @@ namespace Yuniql.SqlServer
 
         public bool IsSchemaSupported { get; } = true;
 
+        public string TableName { get; set; } = "__yuniqldbversion";
+
+        public string SchemaName { get; set; } = "dbo";
+
         //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
         public List<string> BreakStatements(string sqlStatementRaw)
         {
@@ -65,19 +69,22 @@ namespace Yuniql.SqlServer
         }
 
         public string GetSqlForCheckIfDatabaseExists()
-            => @"SELECT ISNULL(database_id,0) FROM [sys].[databases] WHERE name = '{0}'";
+            => @"SELECT ISNULL(database_id, 0) FROM [sys].[databases] WHERE name = '${YUNIQL_DB_NAME}'";
 
         public string GetSqlForCreateDatabase()
-            => @"CREATE DATABASE [{0}];";
+            => @"CREATE DATABASE [${YUNIQL_DB_NAME}];";
+
+        public string GetSqlForCreateSchema()
+            => @"CREATE SCHEMA [${YUNIQL_SCHEMA_NAME}];";
 
         public string GetSqlForCheckIfDatabaseConfigured()
-            => @"SELECT ISNULL(object_id,0) FROM [sys].[tables] WHERE name = '__YuniqlDbVersion'";
+            => @"SELECT ISNULL(OBJECT_ID('[${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]'), 0)";
 
         public string GetSqlForConfigureDatabase()
             => @"
-                    IF OBJECT_ID('[dbo].[__YuniqlDbVersion]') IS NULL 
+                    IF OBJECT_ID('[${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]') IS NULL 
                     BEGIN
-                        CREATE TABLE [dbo].[__YuniqlDbVersion](
+                        CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
 	                        [SequenceId] [SMALLINT] IDENTITY(1,1) NOT NULL,
 	                        [Version] [NVARCHAR](512) NOT NULL,
 	                        [AppliedOnUtc] [DATETIME] NOT NULL,
@@ -89,19 +96,19 @@ namespace Yuniql.SqlServer
                          CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED  ([Version] ASC
                         ));
 
-                        ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedOnUtc]  DEFAULT (GETUTCDATE()) FOR [AppliedOnUtc];
-                        ALTER TABLE [dbo].[__YuniqlDbVersion] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedByUser]  DEFAULT (SUSER_SNAME()) FOR [AppliedByUser];
+                        ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedOnUtc]  DEFAULT (GETUTCDATE()) FOR [AppliedOnUtc];
+                        ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedByUser]  DEFAULT (SUSER_SNAME()) FOR [AppliedByUser];
                     END                
             ";
 
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT TOP 1 Version FROM [dbo].[__YuniqlDbVersion] ORDER BY SequenceId DESC;";
+            => @"SELECT TOP 1 Version FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY SequenceId DESC;";
 
         public string GetSqlForGetAllVersions()
-            => @"SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser, AppliedByTool, AppliedByToolVersion FROM [dbo].[__YuniqlDbVersion] ORDER BY Version ASC;";
+            => @"SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser, AppliedByTool, AppliedByToolVersion FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY Version ASC;";
 
         public string GetSqlForInsertVersion()
-            => @"INSERT INTO [dbo].[__YuniqlDbVersion] (Version, AppliedByTool, AppliedByToolVersion) VALUES ('{0}','{1}','{2}');";
+            => @"INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion) VALUES ('{0}','{1}','{2}');";
 
         /// <summary>
         /// Updates the database migration tracking table.

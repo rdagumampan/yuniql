@@ -26,6 +26,10 @@ namespace Yuniql.MySql
 
         public bool IsSchemaSupported { get; } = false;
 
+        public string TableName { get; set; } = "__yuniqldbversion";
+
+        public string SchemaName { get; set; }
+
         public IDbConnection CreateConnection()
         {
             return new MySqlConnection(_connectionString);
@@ -60,17 +64,20 @@ namespace Yuniql.MySql
         }
 
         public string GetSqlForCheckIfDatabaseExists()
-            => @"SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';";
+            => @"SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${YUNIQL_DB_NAME}';";
 
         public string GetSqlForCreateDatabase()
-            => @"CREATE DATABASE `{0}`;";
+            => @"CREATE DATABASE `${YUNIQL_DB_NAME}`;";
+
+        public string GetSqlForCreateSchema()
+            => throw new NotSupportedException("Custom schema is not supported in MySql.");
 
         public string GetSqlForCheckIfDatabaseConfigured()
-            => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{0}' AND TABLE_NAME = '__yuniqldbversion' LIMIT 1;";
+            => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_DB_NAME}' AND TABLE_NAME = '${YUNIQL_TABLE_NAME}' LIMIT 1;";
 
         public string GetSqlForConfigureDatabase()
             => @"
-                CREATE TABLE __yuniqldbversion (
+                CREATE TABLE ${YUNIQL_TABLE_NAME} (
 	                sequence_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	                version VARCHAR(190) NOT NULL,
 	                applied_on_utc TIMESTAMP NOT NULL,
@@ -86,16 +93,17 @@ namespace Yuniql.MySql
             ";
 
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT version FROM __yuniqldbversion WHERE status_id = 1 ORDER BY sequence_id DESC LIMIT 1;";
+            => @"SELECT version FROM ${YUNIQL_TABLE_NAME} WHERE status_id = 1 ORDER BY sequence_id DESC LIMIT 1;";
 
         public string GetSqlForGetAllVersions()
-            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error FROM __yuniqldbversion ORDER BY version ASC;";
+            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
+
 
         public string GetSqlForInsertVersion()
     => throw new NotSupportedException("Not supported for current target platform");
 
         public string GetSqlForUpsertVersion()
-    => @"INSERT INTO __yuniqldbversion (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER(), '{1}', '{2}', '{3}', @failedScriptPath, @failedScriptError)
+    => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER(), '{1}', '{2}', '{3}', @failedScriptPath, @failedScriptError)
 ON DUPLICATE KEY UPDATE
 applied_on_utc = VALUES(applied_on_utc),
 applied_by_user = VALUES(applied_by_user),
@@ -124,19 +132,19 @@ failed_script_error = VALUES(failed_script_error);";
             //Add new columns into old version of table
             if (!columnsTableRows.ContainsKey("status_id"))
             {
-                this.ExecuteNonQuery(dbConnection, "ALTER TABLE __yuniqldbversion ADD COLUMN status_id INT NOT NULL DEFAULT 1 COMMENT '1 - Succeeded, 2 - Failed'", traceService);
+                this.ExecuteNonQuery(dbConnection, "ALTER TABLE ${YUNIQL_TABLE_NAME} ADD COLUMN status_id INT NOT NULL DEFAULT 1 COMMENT '1 - Succeeded, 2 - Failed'", traceService);
                 databaseUpdated = true;
             }
 
             if (!columnsTableRows.ContainsKey("failed_script_path"))
             {
-                this.ExecuteNonQuery(dbConnection, "ALTER TABLE __yuniqldbversion ADD COLUMN failed_script_path VARCHAR(4000) NULL", traceService);
+                this.ExecuteNonQuery(dbConnection, "ALTER TABLE ${YUNIQL_TABLE_NAME} ADD COLUMN failed_script_path VARCHAR(4000) NULL", traceService);
                 databaseUpdated = true;
             }
 
             if (!columnsTableRows.ContainsKey("failed_script_error"))
             {
-                this.ExecuteNonQuery(dbConnection, "ALTER TABLE __yuniqldbversion ADD COLUMN failed_script_error VARCHAR(4000) NULL", traceService);
+                this.ExecuteNonQuery(dbConnection, "ALTER TABLE ${YUNIQL_TABLE_NAME} ADD COLUMN failed_script_error VARCHAR(4000) NULL", traceService);
                 databaseUpdated = true;
             }
 
@@ -146,7 +154,7 @@ failed_script_error = VALUES(failed_script_error);";
         private DataTable GetVersionTableColumns(IDbConnection dbConnection, ITraceService traceService = null)
         {
             MySqlCommand dbCommand = (MySqlCommand) dbConnection.CreateCommand();
-            dbCommand.CommandText = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '__yuniqldbversion' AND table_schema = DATABASE()";
+            dbCommand.CommandText = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '${YUNIQL_TABLE_NAME}' AND table_schema = DATABASE()";
             
             return this.FillDataTable(dbCommand, traceService);
         }

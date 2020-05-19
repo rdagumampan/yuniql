@@ -20,6 +20,10 @@ namespace Yuniql.PostgreSql
 
         public bool IsSchemaSupported { get; } = true;
 
+        public string TableName { get; set; } = "__yuniqldbversion";
+
+        public string SchemaName { get; set; } = "public";
+
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
@@ -60,16 +64,19 @@ namespace Yuniql.PostgreSql
         }
 
         public string GetSqlForCheckIfDatabaseExists()
-            => @"SELECT 1 from pg_database WHERE datname = '{0}';";
+            => @"SELECT 1 from pg_database WHERE datname = '${YUNIQL_DB_NAME}';";
 
         public string GetSqlForCreateDatabase()
-            => "CREATE DATABASE \"{0}\";";
+            => "CREATE DATABASE \"${YUNIQL_DB_NAME}\";";
+
+        public string GetSqlForCreateSchema()
+            => "CREATE SCHEMA \"${YUNIQL_SCHEMA_NAME}\";";
 
         public string GetSqlForCheckIfDatabaseConfigured()
-            => @"SELECT 1 FROM pg_tables WHERE  tablename = '__yuniqldbversion'";
+            => @"SELECT 1 FROM pg_tables WHERE  tablename = '${YUNIQL_TABLE_NAME}'";
 
         public string GetSqlForConfigureDatabase()
-            => @"CREATE TABLE __yuniqldbversion(
+            => @"CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
                     sequence_id  SMALLSERIAL PRIMARY KEY NOT NULL,
                     version VARCHAR(512) NOT NULL,
                     applied_on_utc TIMESTAMP NOT NULL DEFAULT(current_timestamp AT TIME ZONE 'UTC'),
@@ -81,13 +88,13 @@ namespace Yuniql.PostgreSql
 	            );";
 
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT version FROM __yuniqldbversion ORDER BY sequence_id DESC LIMIT 1;";
+            => @"SELECT version FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} ORDER BY sequence_id DESC LIMIT 1;";
 
         public string GetSqlForGetAllVersions()
-            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version FROM __yuniqldbversion ORDER BY version ASC;";
+            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
 
         public string GetSqlForInsertVersion()
-            => @"INSERT INTO __yuniqldbversion (version, applied_by_tool, applied_by_tool_version) VALUES ('{0}', '{1}', '{2}');";
+            => @"INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version) VALUES ('{0}', '{1}', '{2}');";
 
         /// <summary>
         /// Updates the database migration tracking table.

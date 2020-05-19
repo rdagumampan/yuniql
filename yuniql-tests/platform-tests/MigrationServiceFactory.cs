@@ -52,7 +52,7 @@ namespace Yuniql.PlatformTests
             var directoryService = new DirectoryService();
             var fileService = new FileService();
 
-            var configurationService = new ConfigurationDataService(dataService, _traceService);
+            var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
 
             var migrationService = new MigrationService(
                 localVersionService,

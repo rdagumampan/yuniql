@@ -12,7 +12,7 @@ namespace Yuniql.Core
         private readonly ITraceService _traceService;
 
         /// <summary>
-        /// 
+        /// An instance of <see cref="MigrationServiceFactory"/>
         /// </summary>
         /// <param name="traceService"></param>
         public MigrationServiceFactory(
@@ -50,7 +50,7 @@ namespace Yuniql.Core
             var directoryService = new DirectoryService();
             var fileService = new FileService();
 
-            var configurationService = new ConfigurationDataService(dataService, _traceService);
+            var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
 
             var migrationService = new MigrationService(
                 localVersionService,

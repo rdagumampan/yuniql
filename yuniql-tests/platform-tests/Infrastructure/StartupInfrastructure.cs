@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Yuniql.Core;
+using Yuniql.Extensibility;
 
 namespace Yuniql.PlatformTests
 {
@@ -13,8 +12,8 @@ namespace Yuniql.PlatformTests
         [AssemblyInitialize]
         public static void SetupInfrastrucuture(TestContext testContext)
         {
-            var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_HOST);
-            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
+            var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_HOST);
+            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
 
             if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("LOCAL"))
             {
@@ -44,8 +43,8 @@ namespace Yuniql.PlatformTests
         [AssemblyCleanup]
         public static void TearDownInfrastructure()
         {
-            var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_HOST);
-            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
+            var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_HOST);
+            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
 
             if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("LOCAL"))
             {
