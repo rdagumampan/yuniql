@@ -203,7 +203,7 @@ namespace Yuniql.Core
             string tableName = null,
             int? commandTimeout = null)
         {
-            return this.GetAllVersions(commandTimeout).Where(x=>x.StatusId == StatusId.Succeeded).ToList();
+            return this.GetAllVersions(schemaName, tableName, commandTimeout).Where(x=>x.StatusId == StatusId.Succeeded).ToList();
         }
 
         /// <summary>

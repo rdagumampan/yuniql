@@ -64,9 +64,11 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns all versions applied in the target database.
         /// </summary>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>All versions applied in the target database.</returns>
-        public List<DbVersion> GetAllAppliedVersions(int? commandTimeout = null);
+        public List<DbVersion> GetAllAppliedVersions(string schemaName, string tableName, int? commandTimeout = null);
 
         /// <summary>
         /// Returns all versions applied in the target database.

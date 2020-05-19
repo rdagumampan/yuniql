@@ -191,7 +191,7 @@ namespace Yuniql.Core
                 }
             }
 
-            IList<DbVersion> allVersions = _configurationDataService.GetAllVersions();
+            IList<DbVersion> allVersions = _configurationDataService.GetAllVersions(schemaName, tableName);
 
             NonTransactionalContext nonTransactionalContext = null;
 
@@ -512,7 +512,7 @@ namespace Yuniql.Core
                             {
                                 try
                                 {
-                                    RunVersionScriptsInternal(transaction, scriptSubDirectories, versionDirectory);
+                                    RunVersionScriptsInternal(transaction, scriptSubDirectories, transactionDirectory, versionDirectory, schemaName, tableName);
 
                                     transaction.Commit();
 
@@ -528,7 +528,7 @@ namespace Yuniql.Core
                         }
                         else //run scripts without transaction
                         {
-                            RunVersionScriptsInternal(transaction, scriptSubDirectories, versionDirectory, versionDirectory);
+                            RunVersionScriptsInternal(transaction, scriptSubDirectories, versionDirectory, versionDirectory, schemaName, tableName);
                         }
                     }
                     catch (Exception)
@@ -543,7 +543,7 @@ namespace Yuniql.Core
                 _traceService.Info($"Target database is updated. No migration step executed at {connectionInfo.Database} on {connectionInfo.DataSource}.");
             }
 
-            void RunVersionScriptsInternal(IDbTransaction transaction, List<string> scriptSubDirectories, string scriptDirectory, string versionDirectory)
+            void RunVersionScriptsInternal(IDbTransaction transaction, List<string> scriptSubDirectories, string scriptDirectory, string versionDirectory, string schemaName, string tableName)
             {
                 try
                 {
@@ -553,14 +553,14 @@ namespace Yuniql.Core
                     scriptSubDirectories.ForEach(scriptSubDirectory =>
                     {
                         //run all scripts in the current version folder
-                        RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, scriptSubDirectory, tokenKeyPairs, commandTimeout, environmentCode, appliedByTool, appliedByToolVersion);
+                        RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, scriptSubDirectory, schemaName, tableName, tokenKeyPairs, commandTimeout, environmentCode, appliedByTool, appliedByToolVersion);
 
                         //import csv files into tables of the the same filename as the csv
                         RunBulkImport(connection, transaction, workingPath, scriptSubDirectory, delimiter, batchSize, commandTimeout, environmentCode);
                     });
 
                     //run all scripts in the current version folder
-                    RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, scriptDirectory, tokenKeyPairs, commandTimeout, environmentCode, appliedByTool, appliedByToolVersion);
+                    RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, scriptDirectory, schemaName, tableName, tokenKeyPairs, commandTimeout, environmentCode, appliedByTool, appliedByToolVersion);
 
                     //import csv files into tables of the the same filename as the csv
                     RunBulkImport(connection, transaction, workingPath, scriptDirectory, delimiter, batchSize, commandTimeout, environmentCode);
@@ -615,6 +615,8 @@ namespace Yuniql.Core
             string version,
             string workingPath,
             string scriptDirectory,
+            string schemaName,
+            string tableName,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             int? commandTimeout = null,
             string environmentCode = null,
@@ -689,6 +691,8 @@ namespace Yuniql.Core
                 {
                     //update db version to failed
                     _configurationDataService.InsertVersion(connection, transaction, version,
+                        schemaName,
+                        tableName,
                         commandTimeout: commandTimeout,
                         appliedByTool: appliedByTool,
                         appliedByToolVersion: appliedByToolVersion,
