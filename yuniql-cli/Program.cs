@@ -9,7 +9,7 @@ namespace Yuniql
         //https://github.com/commandlineparser/commandline
         //https://github.com/dotnet/command-line-api
 
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
             var environmentService = new EnvironmentService();
             var traceService = new FileTraceService();
@@ -17,7 +17,7 @@ namespace Yuniql
             var migrationServiceFactory = new CLI.MigrationServiceFactory(traceService);
             var commandLineService = new CommandLineService(migrationServiceFactory, localVersionService, environmentService, traceService);
 
-            Parser.Default.ParseArguments<
+            var resultCode = Parser.Default.ParseArguments<
                 InitOption,
                 RunOption,
                 NextVersionOption,
@@ -73,6 +73,8 @@ namespace Yuniql
                     return commandLineService.RunArchiveOption(opts);
                 },
                 errs => 1);
+
+            return resultCode;
         }
     }
 }
