@@ -23,6 +23,8 @@ namespace Yuniql.PlatformTests
 
         public virtual bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
+        public virtual bool IsBatchSqlSupported => _dataService.IsBatchSqlSupported;
+
         public virtual string TableName => _dataService.TableName;
 
         public virtual string SchemaName => _dataService.SchemaName;
@@ -140,6 +142,8 @@ namespace Yuniql.PlatformTests
         public abstract string GetSqlForSingleLine(string objectName);
 
         public abstract string GetSqlForSingleLineWithoutTerminator(string objectName);
+
+        public abstract string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3);
 
         private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
         {

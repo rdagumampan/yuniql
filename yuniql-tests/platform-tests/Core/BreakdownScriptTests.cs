@@ -25,7 +25,7 @@ namespace Yuniql.PlatformTests
             _testDataService = testDataServiceFactory.Create(_testConfiguration.Platform);
 
             //create data service factory for migration proper
-            _traceService = new FileTraceService();
+            _traceService = new FileTraceService { IsDebugEnabled = true };
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
         }
 
@@ -36,8 +36,8 @@ namespace Yuniql.PlatformTests
                 Directory.Delete(_testConfiguration.WorkspacePath, true);
         }
 
-        [TestMethod]
-        public void Test_SingleLine_Run_Empty_Script()
+        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
+        public void Test_Create_SingleLine_Empty_Script()
         {
             //arrange
             var localVersionService = new LocalVersionService(_traceService);
@@ -57,8 +57,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "Test_Single_Run_Empty").ShouldBeFalse();
         }
 
-        [TestMethod]
-        public void Test_Create_SingleLine_Script()
+        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
+        public void Test_Create_SingleLine_Script_With_Terminator()
         {
             //arrange
             var localVersionService = new LocalVersionService(_traceService);
@@ -76,7 +76,8 @@ namespace Yuniql.PlatformTests
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName}").ShouldBeTrue();
         }
-        [TestMethod]
+
+        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
         public void Test_Create_SingleLine_Script_Without_Terminator()
         {
             //arrange
@@ -95,7 +96,8 @@ namespace Yuniql.PlatformTests
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName}").ShouldBeTrue();
         }
-        [TestMethod]
+
+        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
         public void Test_Create_Multiline_Script_Without_Terminator_In_LastLine()
         {
             //arrange
@@ -121,7 +123,34 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName3}").ShouldBeTrue();
         }
 
-        [TestMethod]
+        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
+        public void Test_Create_Multiline_Script_With_Terminator_In_Comment_Block()
+        {
+            //arrange
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+
+            string sqlFileName = "Test_Single_Run_Single_Standard";
+            string sqlObjectName1 = "Test_Object_1";
+            string sqlObjectName2 = "Test_Object_2";
+            string sqlObjectName3 = "Test_Object_3";
+
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithTerminatorInCommentBlock(sqlObjectName1, sqlObjectName2, sqlObjectName3));
+
+            //act
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
+            migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName1}").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName2}").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName3}").ShouldBeTrue();
+        }
+
+
+        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
 
         public void Test_Create_Multiline_Script_With_Terminator_Inside_Statements()
         {
@@ -148,7 +177,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName3}").ShouldBeTrue();
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLSupported")]
+        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
         public void Test_Create_Multiline_Script_With_Error_Must_Rollback()
         {
             //arrange

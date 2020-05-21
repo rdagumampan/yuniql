@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Yuniql.Extensibility;
+using Yuniql.Extensibility.SqlBatchParser;
 
 namespace Yuniql.SqlServer
 {
@@ -46,16 +47,16 @@ namespace Yuniql.SqlServer
 
         public bool IsSchemaSupported { get; } = true;
 
+        public bool IsBatchSqlSupported { get; } = true;
+
         public string TableName { get; set; } = "__yuniqldbversion";
 
         public string SchemaName { get; set; } = "dbo";
 
-        //https://stackoverflow.com/questions/25563876/executing-sql-batch-containing-go-statements-in-c-sharp/25564722#25564722
         public List<string> BreakStatements(string sqlStatementRaw)
         {
-            return Regex.Split(sqlStatementRaw, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase)
-                .Where(s => !string.IsNullOrWhiteSpace(s))
-                .ToList();
+            var sqlBatchParser = new SqlBatchParser(_traceService, new GoSqlBatchLineAnalyzer(), new CommentAnalyzer());
+            return sqlBatchParser.Parse(sqlStatementRaw).Select(s => s.BatchText).ToList();
         }
 
         public string GetSqlForCheckIfDatabaseExists()

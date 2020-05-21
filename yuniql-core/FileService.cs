@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 
 namespace Yuniql.Core
 {
@@ -14,7 +15,7 @@ namespace Yuniql.Core
         /// <returns>Returns the path of file created.</returns>
         public string ReadAllText(string path)
         {
-            return File.ReadAllText(path);
+            return File.ReadAllText(path, Encoding.UTF8);
         }
 
         /// <summary>

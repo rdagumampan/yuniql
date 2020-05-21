@@ -131,6 +131,34 @@ AS
 ";
         }
 
+        public override string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3)
+        {
+            return $@"
+--GO inline comment
+CREATE PROC {objectName1}
+AS
+    SELECT 1;
+GO
+
+/*
+GO in inline comment block
+*/
+
+CREATE PROC {objectName2}
+AS
+    SELECT 1;
+GO
+
+/* multiline comment block
+GO
+*/
+
+CREATE PROC {objectName3}
+AS
+    SELECT 1;
+";
+        }
+
         public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"

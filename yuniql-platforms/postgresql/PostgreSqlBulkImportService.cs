@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Npgsql;
 using System;
 using System.Linq;
+using Yuniql.Extensibility.BulkCsvParser;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.PostgreSql

@@ -30,7 +30,7 @@ namespace Yuniql.PlatformTests
             _testDataService = testDataServiceFactory.Create(_testConfiguration.Platform);
 
             //create data service factory for migration proper
-            _traceService = new FileTraceService();
+            _traceService = new FileTraceService { IsDebugEnabled = true };
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
         }
 

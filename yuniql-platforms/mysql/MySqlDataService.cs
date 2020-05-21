@@ -25,6 +25,8 @@ namespace Yuniql.MySql
 
         public bool IsSchemaSupported { get; } = false;
 
+        public bool IsBatchSqlSupported { get; } = false;
+
         public string TableName { get; set; } = "__yuniqldbversion";
 
         public string SchemaName { get; set; }

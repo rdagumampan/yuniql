@@ -3,6 +3,7 @@ using System.IO;
 using Npgsql;
 using System;
 using Yuniql.Core;
+using Yuniql.PostgreSql;
 
 namespace Yuniql.PlatformTests
 {
@@ -119,103 +120,38 @@ CREATE TABLE {tableName}(
 
         public override string GetSqlForSingleLine(string objectName)
         {
-            return $@"
-CREATE TABLE public.{objectName} (
-	VisitorID SERIAL NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-);
-";
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
         }
 
         public override string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
-            return $@"
-CREATE TABLE public.{objectName} (
-	VisitorID SERIAL NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-)
-";
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
         }
 
         public override string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
-            return $@"
-CREATE TABLE public.{objectName1} (
-	VisitorID SERIAL NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-);
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
+        }
 
-CREATE VIEW public.{objectName2} AS
-SELECT VisitorId, FirstName, LastName, Address, Email
-FROM  public.{objectName1};
-
-CREATE OR REPLACE FUNCTION public.{objectName3} ()
-RETURNS integer AS ${objectName3}$
-declare
-	total integer;
-BEGIN
-   SELECT count(*) into total FROM public.{objectName1};
-   RETURN total;
-END;
-${objectName3}$ LANGUAGE plpgsql
-";
+        public override string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3)
+        {
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
         }
 
         public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
-            return $@"
-CREATE TABLE public.{objectName1} (
-	VisitorID SERIAL NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-);
-
-CREATE VIEW public.{objectName2} AS
-SELECT VisitorId, FirstName, LastName, Address, Email
-FROM  public.{objectName1};
-
-CREATE OR REPLACE FUNCTION public.{objectName3} ()
-RETURNS integer AS ${objectName3}$
-declare
-	total integer;
-BEGIN
-    --this is a comment with terminator ; as part of the sentence;
-    --;this is a comment with terminator ; as part of the sentence
-   SELECT count(*) into total FROM public.{objectName1};
-   RETURN total;
-END;
-${objectName3}$ LANGUAGE plpgsql
-";
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
         }
 
         public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
-            return $@"
-CREATE TABLE public.{objectName1} (
-	VisitorID SERIAL NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
-);
-
-CREATE VIEW public.{objectName2} AS
-SELECT VisitorId, FirstName, LastName, Address, Email
-FROM  public.{objectName1};
-
-SELECT 1/0;
-";
+            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
+                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
         }
 
         public override void CreateScriptFile(string sqlFilePath, string sqlStatement)
