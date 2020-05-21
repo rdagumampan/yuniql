@@ -31,12 +31,12 @@ namespace Yuniql.PostgreSql
             IDbConnection connection,
             IDbTransaction transaction,
             string fileFullPath,
-            string delimiter = null,
+            string bulkSeparator = null,
             int? batchSize = null,
             int? commandTimeout = null)
         {
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(fileFullPath, delimiter);
+            var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
 
             //check if a non-default dbo schema is used
             var schemaName = "public";
@@ -51,15 +51,15 @@ namespace Yuniql.PostgreSql
             BulkCopyWithDataTable(connection, transaction, schemaName, tableName, dataTable);
         }
 
-        private DataTable ParseCsvFile(string csvFileFullPath, string delimeter)
+        private DataTable ParseCsvFile(string csvFileFullPath, string bulkSeparator)
         {
-            if (string.IsNullOrEmpty(delimeter))
-                delimeter = ",";
+            if (string.IsNullOrEmpty(bulkSeparator))
+                bulkSeparator = ",";
 
             var csvDatatable = new DataTable();
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
-                csvReader.Delimiters = (new string[] { delimeter });
+                csvReader.Separators = (new string[] { bulkSeparator });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 string[] csvColumns = csvReader.ReadFields();

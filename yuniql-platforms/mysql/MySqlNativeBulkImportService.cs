@@ -27,7 +27,7 @@ namespace Yuniql.MySql
             IDbConnection connection,
             IDbTransaction transaction,
             string fileFullPath,
-            string delimiter = null,
+            string bulkSeparator = null,
             int? batchSize = null,
             int? commandTimeout = null)
         {
@@ -38,7 +38,7 @@ namespace Yuniql.MySql
             var bulkLoader = new MySqlBulkLoader(connection as MySqlConnection);
             bulkLoader.Local = true;
             bulkLoader.TableName = tableName;
-            bulkLoader.FieldTerminator = delimiter;
+            bulkLoader.FieldTerminator = bulkSeparator;
             bulkLoader.LineTerminator = "\n";
             bulkLoader.FileName = fileFullPath;
             bulkLoader.NumberOfLinesToSkip = 1;

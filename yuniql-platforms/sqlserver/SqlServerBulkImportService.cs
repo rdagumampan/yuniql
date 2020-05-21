@@ -26,7 +26,7 @@ namespace Yuniql.SqlServer
             IDbConnection connection,
             IDbTransaction transaction,
             string fileFullPath,
-            string delimiter = null,
+            string bulkSeparator = null,
             int? batchSize = null,
             int? commandTimeout = null)
         {
@@ -40,7 +40,7 @@ namespace Yuniql.SqlServer
             }
 
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(fileFullPath, delimiter);
+            var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(
@@ -55,15 +55,15 @@ namespace Yuniql.SqlServer
 
         private DataTable ParseCsvFile(
             string csvFileFullPath,
-            string delimiter = null)
+            string bulkSeparator = null)
         {
-            if (string.IsNullOrEmpty(delimiter))
-                delimiter = ",";
+            if (string.IsNullOrEmpty(bulkSeparator))
+                bulkSeparator = ",";
 
             var csvDatatable = new DataTable();
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
-                csvReader.Delimiters = (new string[] { delimiter });
+                csvReader.Separators = (new string[] { bulkSeparator });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 string[] csvColumns = csvReader.ReadFields();

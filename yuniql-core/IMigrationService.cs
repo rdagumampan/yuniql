@@ -34,7 +34,7 @@ namespace Yuniql.Core
         /// <param name="autoCreateDatabase">When TRUE, creates the database in the target host.</param>
         /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
         /// <param name="verifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
-        /// <param name="delimiter">Delimeter character in the CSV bulk import files. When NULL, uses comma.</param>
+        /// <param name="bulkSeparator">Bulk file values separator character in the CSV bulk import files. When NULL, uses comma.</param>
         /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
         /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
@@ -48,7 +48,7 @@ namespace Yuniql.Core
             bool? autoCreateDatabase = null, 
             List<KeyValuePair<string, string>> tokens = null, 
             bool? verifyOnly = null, 
-            string delimiter = null,
+            string bulkSeparator = null,
             string schemaName = null, 
             string tableName = null,
             int? commandTimeout = null,

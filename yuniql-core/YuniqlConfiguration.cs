@@ -44,9 +44,9 @@ namespace Yuniql.Core
         public bool VerifyOnly { get; set; }
 
         /// <summary>
-        /// Delimter to use when parsing CSV bulk import files. Default is comma ",".
+        /// Bulk file values separator  to use when parsing CSV bulk import files. Default is comma ",".
         /// </summary>
-        public string Delimiter { get; set; } = ",";
+        public string BulkSeparator  { get; set; } = ",";
 
         /// <summary>
         /// The size of each batch when performing bulk load. Default is 100 rows.

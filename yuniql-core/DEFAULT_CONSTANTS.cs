@@ -16,8 +16,8 @@
         public const int BULK_BATCH_SIZE = 0;
         
         /// <summary>
-        /// Default CSV file delimiter.
+        /// Default CSV file bulk file values separator.
         /// </summary>
-        public const string BULK_DELIMITER = ",";
+        public const string BULK_SEPARATOR = ",";
     }
 };

@@ -30,7 +30,7 @@ yuniql run -a true | --auto-create-db true
 yuniql run -p c:\temp\demo | --path c:\temp\demo
 yuniql run -t v1.05 | --target-version v1.05
 yuniql run -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3"
-yuniql run -delimiter "|"
+yuniql run --bulk-separator "|"
 yuniql erase
 yuniql -v | --version
 yuniql -h | --help
