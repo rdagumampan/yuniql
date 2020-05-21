@@ -37,7 +37,7 @@ namespace console_sample
                 configuration.AutoCreateDatabase,
                 configuration.Tokens,
                 configuration.VerifyOnly,
-                configuration.Delimiter);
+                configuration.BulkSeparator);
 
             var requiredDbVersion = "v1.01";
             var currentDbVersion = migrationService.GetCurrentVersion();

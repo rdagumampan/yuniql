@@ -9,7 +9,7 @@ using System.IO;
 namespace Yuniql.Extensibility.BulkCsvParser
 {
     /// <summary>
-    /// Parses comma-delimited text files.
+    /// Parses comma-separated text files.
     /// </summary>
     /// <remarks>
     /// Based on <code>Microsoft.VisualBasic.FileIO.TextFieldParser</code>.
@@ -22,7 +22,7 @@ namespace Yuniql.Extensibility.BulkCsvParser
         private int peekedEmptyLineCount = 0;
         private long lineNumber = 0;
 
-        private char delimiterChar = ',';
+        private char separatorChar = ',';
         private char quoteChar = '"';
         private char quoteEscapeChar = '"';
 
@@ -109,8 +109,8 @@ namespace Yuniql.Extensibility.BulkCsvParser
                 startIndex = nextStartIndex;
             }
 
-            // If the last char is the delimiter, then we need to add an extra empty field.
-            if (line.Length == 0 || line[line.Length - 1] == delimiterChar)
+            // If the last char is the separator, then we need to add an extra empty field.
+            if (line.Length == 0 || line[line.Length - 1] == separatorChar)
             {
                 fields.Add(string.Empty);
             }
@@ -135,11 +135,11 @@ namespace Yuniql.Extensibility.BulkCsvParser
             }
 
             string field;
-            var delimiterIndex = line.IndexOf(delimiterChar, startIndex);
-            if (delimiterIndex >= 0)
+            var separatorIndex = line.IndexOf(separatorChar, startIndex);
+            if (separatorIndex >= 0)
             {
-                field = line.Substring(startIndex, delimiterIndex - startIndex);
-                nextStartIndex = delimiterIndex + 1;
+                field = line.Substring(startIndex, separatorIndex - startIndex);
+                nextStartIndex = separatorIndex + 1;
             }
             else
             {
@@ -213,7 +213,7 @@ namespace Yuniql.Extensibility.BulkCsvParser
                 {
                     isMalformed = false;
                 }
-                else if (line[i] == delimiterChar)
+                else if (line[i] == separatorChar)
                 {
                     isMalformed = false;
                 }
@@ -233,13 +233,13 @@ namespace Yuniql.Extensibility.BulkCsvParser
 
                     // The VB parser allows extra whitespace after the closing quote.
                     // And if that happens at the end of the file, this causes an extra blank space to be added.
-                    int nextDelimiterOrEolIndex = line.IndexOfAny(new char[] { delimiterChar, '\r', '\n' }, i);
-                    int remainingFieldLength = (nextDelimiterOrEolIndex >= 0 ? nextDelimiterOrEolIndex : line.Length) - i;
+                    int nextSeparatorOrEolIndex = line.IndexOfAny(new char[] { separatorChar, '\r', '\n' }, i);
+                    int remainingFieldLength = (nextSeparatorOrEolIndex >= 0 ? nextSeparatorOrEolIndex : line.Length) - i;
                     var isAllRemainingWhitespace = string.IsNullOrWhiteSpace(line.Substring(i, remainingFieldLength));
                     if (isAllRemainingWhitespace)
                     {
                         isMalformed = false;
-                        i = nextDelimiterOrEolIndex;
+                        i = nextSeparatorOrEolIndex;
                         if (i < 0)
                         {
                             line += ',';
@@ -491,57 +491,57 @@ namespace Yuniql.Extensibility.BulkCsvParser
         public bool CompatibilityMode { get; set; } = false;
 
         /// <summary>
-        /// Defines the delimiters for a text file.
+        /// Defines the separators or separators for a text file.
         /// Default is a comma.
         /// </summary>
         /// <remarks>
         /// This is defined as an array of strings for compatibility with <code>Microsoft.VisualBasic.FileIO.TextFieldParser</code>,
-        /// but this parser only supports one single-character delimiter.
+        /// but this parser only supports one single-character separator.
         /// </remarks>
-        /// <exception cref="ArgumentException">A delimiter value is set to a newline character, an empty string, or null.</exception>
-        /// <exception cref="NotSupportedException">The delimiters are set to an array that does not contain exactly one element with exactly one character.</exception>
-        public string[] Delimiters
+        /// <exception cref="ArgumentException">A separator value is set to a newline character, an empty string, or null.</exception>
+        /// <exception cref="NotSupportedException">The separators are set to an array that does not contain exactly one element with exactly one character.</exception>
+        public string[] Separators
         {
             get
             {
-                return new string[] { delimiterChar.ToString(CultureInfo.InvariantCulture) };
+                return new string[] { separatorChar.ToString(CultureInfo.InvariantCulture) };
             }
             set
             {
                 if (value == null || !value.Any())
                 {
-                    throw new NotSupportedException("This parser requires a delimiter");
+                    throw new NotSupportedException("This parser requires a separator");
                 }
                 if (value.Length > 1)
                 {
-                    throw new NotSupportedException("This parser does not support multiple delimiters.");
+                    throw new NotSupportedException("This parser does not support multiple separators.");
                 }
 
-                var delimiterString = value.Single();
-                if (string.IsNullOrEmpty(delimiterString))
+                var separatorString = value.Single();
+                if (string.IsNullOrEmpty(separatorString))
                 {
-                    throw new ArgumentException("A delimiter cannot be null or an empty string.");
+                    throw new ArgumentException("A separator cannot be null or an empty string.");
                 }
-                if (delimiterString.Length > 1)
+                if (separatorString.Length > 1)
                 {
-                    throw new NotSupportedException("This parser does not support a delimiter with multiple characters.");
+                    throw new NotSupportedException("This parser does not support a separator with multiple characters.");
                 }
-                SetDelimiter(delimiterString.Single());
+                SetSeparator(separatorString.Single());
             }
         }
 
         /// <summary>
-        /// Sets the delimiter character used by this parser.
+        /// Sets the separator character used by this parser.
         /// Default is a comma.
         /// </summary>
-        /// <exception cref="ArgumentException">The delimiter character is set to a newline character.</exception>
-        public void SetDelimiter(char delimiterChar)
+        /// <exception cref="ArgumentException">The separator character is set to a newline character.</exception>
+        public void SetSeparator(char separatorChar)
         {
-            if (delimiterChar == '\n' || delimiterChar == '\r')
+            if (separatorChar == '\n' || separatorChar == '\r')
             {
-                throw new ArgumentException("This parser does not support delimiters that contain end-of-line characters");
+                throw new ArgumentException("This parser does not support separators that contain end-of-line characters");
             }
-            this.delimiterChar = delimiterChar;
+            this.separatorChar = separatorChar;
         }
 
         /// <summary>

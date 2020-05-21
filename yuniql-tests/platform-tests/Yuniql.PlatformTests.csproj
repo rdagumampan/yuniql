@@ -38,7 +38,7 @@
     <None Update="Core\TestCsvUtf8.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Core\TestCsvPipeDelimited.csv">
+    <None Update="Core\TestCsvPipeSeparated.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Core\TestCsv.csv">
