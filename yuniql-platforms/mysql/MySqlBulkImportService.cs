@@ -27,7 +27,7 @@ namespace Yuniql.MySql
             IDbTransaction transaction,
             string fileFullPath,
             string bulkSeparator = null,
-            int? batchSize = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
             //extract destination table name, mysql is case sensitive!
@@ -37,7 +37,7 @@ namespace Yuniql.MySql
             var dataTable = ParseCsvFile(connection, fileFullPath, tableName, bulkSeparator);
 
             //save the csv data into staging sql table
-            BulkCopyWithDataTable(connection, transaction, tableName, dataTable);
+            BulkCopyWithDataTable(connection, transaction, bulkBatchSize, tableName, dataTable);
         }
 
         private DataTable ParseCsvFile(
@@ -89,6 +89,7 @@ namespace Yuniql.MySql
         private void BulkCopyWithDataTable(
             IDbConnection connection, 
             IDbTransaction transaction,
+            int? bulkBatchSize,
             string tableName,
             DataTable dataTable)
         {
@@ -102,7 +103,7 @@ namespace Yuniql.MySql
 
                 using (var adapter = new MySqlDataAdapter(cmd))
                 {
-                    adapter.UpdateBatchSize = 10000;
+                    adapter.UpdateBatchSize = bulkBatchSize.HasValue ? bulkBatchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE; ;
                     using (var cb = new MySqlCommandBuilder(adapter))
                     {
                         cb.SetAllValues = true;

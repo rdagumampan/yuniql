@@ -1,4 +1,4 @@
-﻿namespace Yuniql.SqlServer
+﻿namespace Yuniql.Extensibility
 {
     /// <summary>
     /// Globa default values.

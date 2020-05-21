@@ -27,7 +27,7 @@ namespace Yuniql.SqlServer
             IDbTransaction transaction,
             string fileFullPath,
             string bulkSeparator = null,
-            int? batchSize = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
             //check if a non-default dbo schema is used
@@ -49,7 +49,7 @@ namespace Yuniql.SqlServer
                 schemaName,
                 tableName,
                 dataTable,
-                batchSize,
+                bulkBatchSize,
                 commandTimeout);
         }
 
@@ -96,14 +96,14 @@ namespace Yuniql.SqlServer
             string schemaName,
             string tableName,
             DataTable dataTable,
-            int? batchSize = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
             using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
             {
                 sqlBulkCopy.DestinationTableName = $"[{schemaName}].[{tableName}]";
                 sqlBulkCopy.BulkCopyTimeout = commandTimeout.HasValue ? commandTimeout.Value : DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS;
-                sqlBulkCopy.BatchSize = batchSize.HasValue ? batchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE;
+                sqlBulkCopy.BatchSize = bulkBatchSize.HasValue ? bulkBatchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE;
                 sqlBulkCopy.EnableStreaming = true;
                 sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
                 foreach (var column in dataTable.Columns)

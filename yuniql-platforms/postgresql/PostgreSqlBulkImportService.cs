@@ -32,7 +32,7 @@ namespace Yuniql.PostgreSql
             IDbTransaction transaction,
             string fileFullPath,
             string bulkSeparator = null,
-            int? batchSize = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
             //read csv file and load into data table

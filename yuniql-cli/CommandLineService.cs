@@ -137,7 +137,7 @@ namespace Yuniql.CLI
                     schemaName: opts.Schema,
                     tableName: opts.Table,
                     commandTimeout: opts.CommandTimeout,
-                    batchSize: null,
+                    bulkBatchSize: opts.BulkBatchSize,
                     appliedByTool: toolName,
                     appliedByToolVersion: toolVersion,
                     environmentCode: opts.Environment
@@ -207,7 +207,7 @@ namespace Yuniql.CLI
                     schemaName: opts.Schema,
                     tableName: opts.Table,
                     commandTimeout: opts.CommandTimeout,
-                    batchSize: null,
+                    bulkBatchSize: opts.BulkBatchSize,
                     appliedByTool: toolName,
                     appliedByToolVersion: toolVersion,
                     environmentCode: opts.Environment

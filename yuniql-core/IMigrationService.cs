@@ -38,7 +38,7 @@ namespace Yuniql.Core
         /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
         /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
-        /// <param name="batchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
+        /// <param name="bulkBatchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
         /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
@@ -52,7 +52,7 @@ namespace Yuniql.Core
             string schemaName = null, 
             string tableName = null,
             int? commandTimeout = null,
-            int? batchSize = null,
+            int? bulkBatchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null
