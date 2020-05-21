@@ -5,6 +5,7 @@ using Yuniql.CLI;
 using Moq;
 using Yuniql.Extensibility;
 using Yuniql.Core;
+using Shouldly;
 
 namespace Yuniql.UnitTests
 {
@@ -148,12 +149,12 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            Assert.ThrowsException<NotImplementedException>(() =>
-            {
-                var option = new BaselineOption { };
-                var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-                sut.RunBaselineOption(option);
-            });
+            var option = new BaselineOption { };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var returnCode = sut.RunBaselineOption(option);
+
+            //assert
+            returnCode.ShouldNotBe(0);
         }
 
         [TestMethod]
@@ -168,9 +169,11 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            Assert.ThrowsException<NotImplementedException>(() =>
-            {
-            });
+            var option = new RebaseOption { };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var returnCode = sut.RunRebaseOption(option);
+
+            returnCode.ShouldNotBe(0);
         }
 
         [TestMethod]
@@ -185,12 +188,12 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            Assert.ThrowsException<NotImplementedException>(() =>
-            {
-                var option = new ArchiveOption { };
-                var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-                sut.RunArchiveOption(option);
-            });            
+            var option = new ArchiveOption { };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var returnCode = sut.RunArchiveOption(option);
+
+            //assert
+            returnCode.ShouldNotBe(0);
         }
 
         [TestMethod]
