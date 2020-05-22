@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Yuniql.Extensibility;
 using Yuniql.Extensibility.SqlBatchParser;
 
@@ -35,6 +34,11 @@ namespace Yuniql.SqlServer
             masterConnectionStringBuilder.InitialCatalog = "master";
 
             return new SqlConnection(masterConnectionStringBuilder.ConnectionString);
+        }
+
+        public IDbParameters CreateDbParameters()
+        {
+            throw new NotImplementedException("This platform doesn't support Db parameters yet");
         }
 
         public ConnectionInfo GetConnectionInfo()
@@ -100,5 +104,17 @@ namespace Yuniql.SqlServer
 
         public string GetSqlForInsertVersion()
             => @"INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion) VALUES ('{0}','{1}','{2}');";
+
+        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null)
+        {
+            //no need to update tracking table as the structure has no been changed so far
+            return false;
+        }
+
+        public bool TryParseErrorFromException(Exception exc, out string result)
+        {
+            result = null;
+            return false;
+        }
     }
 }

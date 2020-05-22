@@ -38,5 +38,19 @@ namespace Yuniql.Extensibility
         /// </summary>
         public string AppliedByToolVersion { get; set; }
 
+        /// <summary>
+        /// Gets or sets the status id.
+        /// </summary>
+        public StatusId StatusId { get; set; } = StatusId.Succeeded;
+
+        /// <summary>
+        /// Gets or sets the failed script path.
+        /// </summary>
+        public string FailedScriptPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the failed script error.
+        /// </summary>
+        public string FailedScriptError { get; set; }
     }
 }

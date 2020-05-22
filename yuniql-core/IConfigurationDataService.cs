@@ -47,6 +47,12 @@ namespace Yuniql.Core
         void ConfigureDatabase(string schemaName, string tableName, int? commandTimeout = null);
 
         /// <summary>
+        /// Updates migration version tracking table in the target database..
+        /// </summary>
+        /// <returns>True if target database was updated, otherwise returns false</returns>
+        bool UpdateDatabaseConfiguration();
+       
+        /// <summary>
         /// Returns the latest version applied in the target database.
         /// </summary>
         /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
@@ -55,6 +61,14 @@ namespace Yuniql.Core
         /// <returns>Returns the latest version applied in the target database.</returns>
         string GetCurrentVersion(string schemaName, string tableName, int? commandTimeout = null);
 
+        /// <summary>
+        /// Returns all versions applied in the target database.
+        /// </summary>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <returns>All versions applied in the target database.</returns>
+        public List<DbVersion> GetAllAppliedVersions(string schemaName, string tableName, int? commandTimeout = null);
 
         /// <summary>
         /// Returns all versions applied in the target database.
@@ -77,6 +91,8 @@ namespace Yuniql.Core
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
+        /// <param name="failedScriptPath">The failed script path.</param>
+        /// <param name="failedScriptError">The failed script error.</param>
         void InsertVersion(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -85,7 +101,9 @@ namespace Yuniql.Core
             string tableName,
             int? commandTimeout = null,
             string appliedByTool = null,
-            string appliedByToolVersion = null);
+            string appliedByToolVersion = null,
+            string failedScriptPath = null,
+            string failedScriptError = null);
 
         /// <summary>
         /// Executes sql statement to target database.

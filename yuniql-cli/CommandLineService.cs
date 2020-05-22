@@ -140,7 +140,8 @@ namespace Yuniql.CLI
                     bulkBatchSize: opts.BulkBatchSize,
                     appliedByTool: toolName,
                     appliedByToolVersion: toolVersion,
-                    environmentCode: opts.Environment
+                    environmentCode: opts.Environment,
+                    opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?) null
                     );
             }
             catch (Exception ex)
@@ -210,7 +211,8 @@ namespace Yuniql.CLI
                     bulkBatchSize: opts.BulkBatchSize,
                     appliedByTool: toolName,
                     appliedByToolVersion: toolVersion,
-                    environmentCode: opts.Environment
+                    environmentCode: opts.Environment,
+                    null
                     );
 
                 _traceService.Info("Verification run successful.");

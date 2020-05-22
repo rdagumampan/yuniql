@@ -42,6 +42,7 @@ namespace Yuniql.Core
         /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
+        /// <param name="resumeFromFailure">The resume from failure.</param>
         void Run(
             string workingPath, 
             string targetVersion = null, 
@@ -55,7 +56,8 @@ namespace Yuniql.Core
             int? bulkBatchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string environmentCode = null
+            string environmentCode = null,
+            NonTransactionalResolvingOption? resumeFromFailure = null
         );
 
         /// <summary>
