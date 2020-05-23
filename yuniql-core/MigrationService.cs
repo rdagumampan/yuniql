@@ -358,6 +358,7 @@ namespace Yuniql.Core
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
             }
 
+            //local method
             void RunDraftInternal(IDbConnection connection, IDbTransaction transaction)
             {
                 //runs all scripts in the _pre folder and subfolders

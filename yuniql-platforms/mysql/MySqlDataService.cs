@@ -45,10 +45,6 @@ namespace Yuniql.MySql
             return new MySqlConnection(masterConnectionStringBuilder.ConnectionString);
         }
 
-        /// <summary>
-        /// Creates empty Db parameters.
-        /// </summary>
-        /// <returns></returns>
         public IDbParameters CreateDbParameters()
         {
             return new MySqlParameters();
@@ -100,29 +96,21 @@ namespace Yuniql.MySql
         public string GetSqlForGetAllVersions()
             => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
 
-
         public string GetSqlForInsertVersion()
-    => throw new NotSupportedException("Not supported for current target platform");
+            => throw new NotSupportedException("Not supported for current target platform");
 
         public string GetSqlForUpsertVersion()
-    => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER(), '{1}', '{2}', '{3}', @failedScriptPath, @failedScriptError)
-ON DUPLICATE KEY UPDATE
-applied_on_utc = VALUES(applied_on_utc),
-applied_by_user = VALUES(applied_by_user),
-applied_by_tool = VALUES(applied_by_tool),
-applied_by_tool_version = VALUES(applied_by_tool_version),
-status_id = VALUES(status_id),
-failed_script_path = VALUES(failed_script_path),
-failed_script_error = VALUES(failed_script_error);";
+            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER(), '{1}', '{2}', '{3}', @failedScriptPath, @failedScriptError)
+                    ON DUPLICATE KEY UPDATE
+                    applied_on_utc = VALUES(applied_on_utc),
+                    applied_by_user = VALUES(applied_by_user),
+                    applied_by_tool = VALUES(applied_by_tool),
+                    applied_by_tool_version = VALUES(applied_by_tool_version),
+                    status_id = VALUES(status_id),
+                    failed_script_path = VALUES(failed_script_path),
+                    failed_script_error = VALUES(failed_script_error);
+            ";
 
-        /// <summary>
-        /// Updates the database migration tracking table.
-        /// </summary>
-        /// <param name="dbConnection">The database connection.</param>
-        /// <param name="traceService">The trace service.</param>
-        /// <returns>
-        /// True if target database was updated, otherwise returns false
-        /// </returns>
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null)
         {
             DataTable columnsTable = GetVersionTableColumns(dbConnection, traceService);
@@ -134,19 +122,19 @@ failed_script_error = VALUES(failed_script_error);";
             //Add new columns into old version of table
             if (!columnsTableRows.ContainsKey("status_id"))
             {
-                this.ExecuteNonQuery(dbConnection, "ALTER TABLE ${YUNIQL_TABLE_NAME} ADD COLUMN status_id INT NOT NULL DEFAULT 1 COMMENT '1 - Succeeded, 2 - Failed'", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {this.TableName} ADD COLUMN status_id INT NOT NULL DEFAULT 1 COMMENT '1 - Succeeded, 2 - Failed'", traceService);
                 databaseUpdated = true;
             }
 
             if (!columnsTableRows.ContainsKey("failed_script_path"))
             {
-                this.ExecuteNonQuery(dbConnection, "ALTER TABLE ${YUNIQL_TABLE_NAME} ADD COLUMN failed_script_path VARCHAR(4000) NULL", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {this.TableName} ADD COLUMN failed_script_path VARCHAR(4000) NULL", traceService);
                 databaseUpdated = true;
             }
 
             if (!columnsTableRows.ContainsKey("failed_script_error"))
             {
-                this.ExecuteNonQuery(dbConnection, "ALTER TABLE ${YUNIQL_TABLE_NAME} ADD COLUMN failed_script_error VARCHAR(4000) NULL", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {this.TableName} ADD COLUMN failed_script_error VARCHAR(4000) NULL", traceService);
                 databaseUpdated = true;
             }
 
@@ -156,7 +144,7 @@ failed_script_error = VALUES(failed_script_error);";
         private DataTable GetVersionTableColumns(IDbConnection dbConnection, ITraceService traceService = null)
         {
             MySqlCommand dbCommand = (MySqlCommand) dbConnection.CreateCommand();
-            dbCommand.CommandText = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '${YUNIQL_TABLE_NAME}' AND table_schema = DATABASE()";
+            dbCommand.CommandText = $"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{this.TableName}' AND table_schema = DATABASE()";
             
             return this.FillDataTable(dbCommand, traceService);
         }
@@ -184,14 +172,6 @@ failed_script_error = VALUES(failed_script_error);";
             return dbCommand.ExecuteNonQuery();
         }
 
-        /// <summary>
-        /// Try parses error from database specific exception.
-        /// </summary>
-        /// <param name="exc">The exc.</param>
-        /// <param name="result">The parsed error.</param>
-        /// <returns>
-        /// True, if the parsing was sucessfull otherwise false
-        /// </returns>
         public bool TryParseErrorFromException(Exception exc, out string result)
         {
             if (exc is MySqlException mySqlException)

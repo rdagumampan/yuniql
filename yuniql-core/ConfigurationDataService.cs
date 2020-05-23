@@ -303,7 +303,7 @@ namespace Yuniql.Core
             //in case database supports non transactional flow
             if (_dataService is INonTransactionalFlow nonTransactionalDataService)
             {
-                sqlStatement = string.Format(GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), schemaName, tableName), version, DateTime.UtcNow, toolName, $"v{toolVersion}", (int)statusId);
+                sqlStatement = string.Format(GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), schemaName, tableName) , version, toolName, $"v{toolVersion}", (int) statusId);
 
                 //Using of db parameters is important and a good practice, otherwise the errors containing SQL specific characters like "'" would need to be escaped in more complicated manner
                 dbParameters = _dataService.CreateDbParameters();
@@ -317,9 +317,9 @@ namespace Yuniql.Core
                     throw new NotSupportedException(@$"The non-transactional flow is not supported by this platform.");
                 }
 
-                sqlStatement = string.Format(GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), schemaName, tableName), version, DateTime.UtcNow, toolName, $"v{toolVersion}");
+                sqlStatement = string.Format(GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), schemaName, tableName), version, toolName, $"v{toolVersion}");
             }
-
+            
             if (null != _traceService)
                 _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
 
