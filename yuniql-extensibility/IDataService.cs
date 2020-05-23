@@ -125,7 +125,7 @@ namespace Yuniql.Extensibility
         /// <param name="dbConnection">The database connection.</param>
         /// <param name="traceService">The trace service.</param>
         /// <returns>True if target database was updated, otherwise returns false</returns>
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null);
+        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null);
 
         /// <summary>
         /// Try parses error from database specific exception.

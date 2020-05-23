@@ -111,9 +111,9 @@ namespace Yuniql.MySql
                     failed_script_error = VALUES(failed_script_error);
             ";
 
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null)
+        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)
         {
-            DataTable columnsTable = GetVersionTableColumns(dbConnection, traceService);
+            DataTable columnsTable = GetVersionTableColumns(dbConnection, traceService, tableName);
 
             var columnsTableRows = columnsTable.Rows.Cast<DataRow>().Select(x => new { ColumnName = x.Field<string>("COLUMN_NAME"), ColumnType = x.Field<string>("COLUMN_TYPE") }).ToDictionary(x => x.ColumnName, StringComparer.OrdinalIgnoreCase);
 
@@ -122,30 +122,30 @@ namespace Yuniql.MySql
             //Add new columns into old version of table
             if (!columnsTableRows.ContainsKey("status_id"))
             {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {this.TableName} ADD COLUMN status_id INT NOT NULL DEFAULT 1 COMMENT '1 - Succeeded, 2 - Failed'", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {tableName ?? this.TableName} ADD COLUMN status_id INT NOT NULL DEFAULT 1 COMMENT '1 - Succeeded, 2 - Failed'", traceService);
                 databaseUpdated = true;
             }
 
             if (!columnsTableRows.ContainsKey("failed_script_path"))
             {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {this.TableName} ADD COLUMN failed_script_path VARCHAR(4000) NULL", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {tableName ?? this.TableName} ADD COLUMN failed_script_path VARCHAR(4000) NULL", traceService);
                 databaseUpdated = true;
             }
 
             if (!columnsTableRows.ContainsKey("failed_script_error"))
             {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {this.TableName} ADD COLUMN failed_script_error VARCHAR(4000) NULL", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {tableName ?? this.TableName} ADD COLUMN failed_script_error VARCHAR(4000) NULL", traceService);
                 databaseUpdated = true;
             }
 
             return databaseUpdated;
         }
 
-        private DataTable GetVersionTableColumns(IDbConnection dbConnection, ITraceService traceService = null)
+        private DataTable GetVersionTableColumns(IDbConnection dbConnection, ITraceService traceService = null, string tableName = null)
         {
-            MySqlCommand dbCommand = (MySqlCommand) dbConnection.CreateCommand();
-            dbCommand.CommandText = $"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{this.TableName}' AND table_schema = DATABASE()";
-            
+            MySqlCommand dbCommand = (MySqlCommand)dbConnection.CreateCommand();
+            dbCommand.CommandText = $"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{tableName ?? this.TableName}' AND table_schema = DATABASE()";
+
             return this.FillDataTable(dbCommand, traceService);
         }
 
@@ -172,9 +172,9 @@ namespace Yuniql.MySql
             return dbCommand.ExecuteNonQuery();
         }
 
-        public bool TryParseErrorFromException(Exception exc, out string result)
+        public bool TryParseErrorFromException(Exception exception, out string result)
         {
-            if (exc is MySqlException mySqlException)
+            if (exception is MySqlException mySqlException)
             {
                 result = $"(0x{mySqlException.ErrorCode:X}): Error Code: {mySqlException.Number}. {mySqlException.Message}";
                 return true;

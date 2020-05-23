@@ -42,14 +42,14 @@ namespace Yuniql.CLI
                     _localVersionService.Init(opts.Path);
                     _traceService.Info($"Initialized {opts.Path}.");
                 }
+
+                return 0;
             }
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute init function. {Environment.NewLine}{ex.ToString()}");
                 return 1;
             }
-
-            return 0;
         }
 
         public int IncrementVersion(NextVersionOption opts)
@@ -73,14 +73,14 @@ namespace Yuniql.CLI
                     var nextVersion = _localVersionService.IncrementMinorVersion(opts.Path, opts.File);
                     _traceService.Info($"New minor version created {nextVersion} on {opts.Path}.");
                 }
+
+                return 0;
             }
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute vnext function. {Environment.NewLine}{ex.ToString()}");
                 return 1;
             }
-
-            return 0;
         }
 
         public int RunMigration(RunOption opts)
@@ -143,14 +143,13 @@ namespace Yuniql.CLI
                     environmentCode: opts.Environment,
                     opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?) null
                     );
+                return 0;
             }
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute run function. {Environment.NewLine}{ex.ToString()}");
                 return 1;
             }
-
-            return 0;
         }
 
         public int RunVerify(VerifyOption opts)
@@ -216,14 +215,13 @@ namespace Yuniql.CLI
                     );
 
                 _traceService.Info("Verification run successful.");
+                return 0;
             }
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute verification function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
                 return 1;
             }
-
-            return 0;
         }
 
         public int RunInfoOption(InfoOption opts)
@@ -259,14 +257,13 @@ namespace Yuniql.CLI
                 });
 
                 Console.WriteLine(results.ToString());
+                return 0;
             }
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
                 return 1;
             }
-
-            return 0;
         }
 
         public int RunEraseOption(EraseOption opts)
@@ -303,14 +300,14 @@ namespace Yuniql.CLI
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 migrationService.Erase(opts.Path, tokens, opts.CommandTimeout, opts.Environment);
+
+                return 0;
             }
             catch (Exception ex)
             {
                 _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
                 return 1;
             }
-
-            return 0;
         }
 
         public int RunBaselineOption(BaselineOption opts)
@@ -324,8 +321,6 @@ namespace Yuniql.CLI
                 _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
                 return 1;
             }
-
-            return 0;
         }
 
         public int RunRebaseOption(RebaseOption opts)
@@ -339,8 +334,6 @@ namespace Yuniql.CLI
                 _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
                 return 1;
             }
-
-            return 0;
         }
 
         public int RunArchiveOption(ArchiveOption Opts)
@@ -354,8 +347,6 @@ namespace Yuniql.CLI
                 _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
                 return 1;
             }
-
-            return 0;
         }
     }
 }

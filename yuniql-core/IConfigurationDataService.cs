@@ -50,8 +50,8 @@ namespace Yuniql.Core
         /// Updates migration version tracking table in the target database..
         /// </summary>
         /// <returns>True if target database was updated, otherwise returns false</returns>
-        bool UpdateDatabaseConfiguration();
-       
+        bool UpdateDatabaseConfiguration(string schemaName, string tableName, int? commandTimeout = null);
+
         /// <summary>
         /// Returns the latest version applied in the target database.
         /// </summary>

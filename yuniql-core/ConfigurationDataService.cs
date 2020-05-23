@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
-using System.Reflection;
 using Yuniql.Extensibility;
 
 namespace Yuniql.Core
@@ -159,12 +157,15 @@ namespace Yuniql.Core
         /// <returns>
         /// True if target database was updated, otherwise returns false
         /// </returns>
-        public bool UpdateDatabaseConfiguration()
+        public bool UpdateDatabaseConfiguration(
+            string schemaName = null,
+            string tableName = null,
+            int? commandTimeout = null)
         {
             using (var connection = _dataService.CreateConnection())
             {
                 connection.KeepOpen();
-                return _dataService.UpdateDatabaseConfiguration(connection, _traceService);
+                return _dataService.UpdateDatabaseConfiguration(connection, _traceService, schemaName, tableName);
             }
         }
 
@@ -203,7 +204,8 @@ namespace Yuniql.Core
             string tableName = null,
             int? commandTimeout = null)
         {
-            return this.GetAllVersions(schemaName, tableName, commandTimeout).Where(x=>x.StatusId == StatusId.Succeeded).ToList();
+            return this.GetAllVersions(schemaName, tableName, commandTimeout)
+                .Where(x => x.StatusId == StatusId.Succeeded).ToList();
         }
 
         /// <summary>
@@ -219,9 +221,7 @@ namespace Yuniql.Core
             int? commandTimeout = null)
         {
             var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetAllVersions(), schemaName, tableName);
-
-            if (null != _traceService)
-                _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
+            _traceService?.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
 
             var result = new List<DbVersion>();
             using (var connection = _dataService.CreateConnection().KeepOpen())
@@ -234,30 +234,22 @@ namespace Yuniql.Core
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    DbVersion dbVersion;
+                    var dbVersion = new DbVersion
+                    {
+                        SequenceId = reader.GetInt16(0),
+                        Version = reader.GetString(1),
+                        AppliedOnUtc = reader.GetDateTime(2),
+                        AppliedByUser = reader.GetString(3),
+                        AppliedByTool = reader.GetString(4),
+                        AppliedByToolVersion = reader.GetString(5)
+                    };
 
-                    if (_dataService.IsAtomicDDLSupported)
+                    //fill up with information only available for platforms not supporting transactional ddl
+                    if (!_dataService.IsAtomicDDLSupported)
                     {
-                        dbVersion = new DbVersion
-                        {
-                            SequenceId = reader.GetInt16(0),
-                            Version = reader.GetString(1),
-                            AppliedOnUtc = reader.GetDateTime(2),
-                            AppliedByUser = reader.GetString(3)
-                        };
-                    }
-                    else
-                    {
-                        dbVersion = new DbVersion
-                        {
-                            SequenceId = reader.GetInt16(0),
-                            Version = reader.GetString(1),
-                            AppliedOnUtc = reader.GetDateTime(2),
-                            AppliedByUser = reader.GetString(3),
-                            StatusId = (StatusId) reader.GetInt32(6),
-                            FailedScriptPath = reader.GetValue(7) as string,
-                            FailedScriptError = reader.GetValue(8) as string
-                        };
+                        dbVersion.StatusId = (StatusId)reader.GetInt32(6);  
+                        dbVersion.FailedScriptPath = reader.GetValue(7) as string;      //as string handles null values
+                        dbVersion.FailedScriptError = reader.GetValue(8) as string;     //as string handles null values
                     }
 
                     result.Add(dbVersion);
@@ -300,39 +292,30 @@ namespace Yuniql.Core
             IDbParameters dbParameters = null;
             string sqlStatement;
 
-            //in case database supports non transactional flow
+            //in case database supports non-transactional flow
             if (_dataService is INonTransactionalFlow nonTransactionalDataService)
             {
-                sqlStatement = string.Format(GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), schemaName, tableName) , version, toolName, $"v{toolVersion}", (int) statusId);
-
-                //Using of db parameters is important and a good practice, otherwise the errors containing SQL specific characters like "'" would need to be escaped in more complicated manner
+                //using of db parameters is important and a good practice, otherwise the errors containing SQL specific characters like "'" would need to be escaped in more complicated manner
+                sqlStatement = string.Format(GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), schemaName, tableName), version, toolName, $"v{toolVersion}", (int)statusId);
                 dbParameters = _dataService.CreateDbParameters();
                 dbParameters.AddParameter("failedScriptPath", failedScriptPath);
                 dbParameters.AddParameter("failedScriptError", failedScriptError);
             }
             else
             {
-                if (statusId == StatusId.Failed)
-                {
-                    throw new NotSupportedException(@$"The non-transactional flow is not supported by this platform.");
-                }
-
                 sqlStatement = string.Format(GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), schemaName, tableName), version, toolName, $"v{toolVersion}");
             }
-            
-            if (null != _traceService)
-                _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
 
+            _traceService?.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
             var command = connection
                 .KeepOpen()
                 .CreateCommand(
-                commandText: sqlStatement,
-                commandTimeout: commandTimeout,
-                transaction: transaction
+                    commandText: sqlStatement,
+                    commandTimeout: commandTimeout,
+                    transaction: transaction
                 );
 
             dbParameters?.CopyToDataParameterCollection(command.Parameters);
-
             command.ExecuteNonQuery();
         }
 

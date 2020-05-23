@@ -28,7 +28,7 @@ namespace Yuniql.MySql
             IDbTransaction transaction,
             string fileFullPath,
             string bulkSeparator = null,
-            int? batchSize = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
             var tableName = Path.GetFileNameWithoutExtension(fileFullPath);

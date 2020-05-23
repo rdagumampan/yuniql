@@ -105,7 +105,7 @@ namespace Yuniql.SqlServer
         public string GetSqlForInsertVersion()
             => @"INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion) VALUES ('{0}','{1}','{2}');";
 
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null)
+        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)
         {
             //no need to update tracking table as the structure has no been changed so far
             return false;
