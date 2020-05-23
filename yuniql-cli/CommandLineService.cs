@@ -341,11 +341,45 @@ namespace Yuniql.CLI
             return 0;
         }
 
-        public int RunArchiveOption(ArchiveOption Opts)
+        public int RunArchiveOption(ArchiveOption opts)
         {
             try
-            {
-                throw new NotImplementedException("Not yet implemented, stay tune!");
+            { 
+                //if no path provided, we default into current directory
+                if (string.IsNullOrEmpty(opts.Path))
+                {
+                    var workingPath = _environmentService.GetCurrentDirectory();
+                    opts.Path = workingPath;
+                }
+
+                _traceService.Info($"Started archiving from {opts.Path}.");
+
+                //if no connection string provided, we default into environment variable or throw exception
+                if (string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
+                }
+
+                //if no target platform provided, we default into sqlserver
+                if (string.IsNullOrEmpty(opts.Platform))
+                {
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
+                    if (string.IsNullOrEmpty(opts.Platform))
+                    {
+                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
+                    }
+                }
+
+                //parse tokens
+                var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+
+                var toolName = "yuniql-cli";
+                var toolVersion = this.GetType().Assembly.GetName().Version.ToString();
+
+                //run all archive script
+                var migrationService = _migrationServiceFactory.Create(opts.Platform);
+                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
+                migrationService.Archive(opts.Path, opts.CommandTimeout, opts.Schema, opts.Table, toolName, toolVersion, tokens);
             }
             catch (Exception ex)
             {

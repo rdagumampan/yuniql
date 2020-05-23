@@ -71,5 +71,25 @@ namespace Yuniql.Core
             int? commandTimeout = null,
             string environmentCode = null
         );
+
+        /// <summary>
+        /// Executes archive to flatten out all of the existing branches and move into v0.00 again.
+        /// </summary>
+        /// <param name="workingPath">The directory path to migration project.</param>
+        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
+        /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
+        /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
+        void Archive(
+            string workingPath,
+            int commandTimeout,
+            string schemaName,
+            string tableName, 
+            string appliedByTool = null,
+            string appliedByToolVersion = null,       
+            List<KeyValuePair<string, string>> tokens = null
+        );
     }
 }
