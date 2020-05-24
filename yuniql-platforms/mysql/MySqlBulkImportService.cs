@@ -7,21 +7,25 @@ using Yuniql.Extensibility.BulkCsvParser;
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.MySql
 {
+    ///<inheritdoc/>
     public class MySqlBulkImportService : IBulkImportService
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
+        ///<inheritdoc/>
         public MySqlBulkImportService(ITraceService traceService)
         {
             this._traceService = traceService;
         }
 
+        ///<inheritdoc/>
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
         }
 
+        ///<inheritdoc/>
         public void Run(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -87,7 +91,7 @@ namespace Yuniql.MySql
         //NOTE: This is not the most typesafe and performant way to do this and this is just to demonstrate
         //possibility to bulk import data in custom means during migration execution
         private void BulkCopyWithDataTable(
-            IDbConnection connection, 
+            IDbConnection connection,
             IDbTransaction transaction,
             int? bulkBatchSize,
             string tableName,

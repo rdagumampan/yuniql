@@ -11,22 +11,26 @@ using Yuniql.Extensibility.BulkCsvParser;
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.PostgreSql
 {
+    ///<inheritdoc/>
     public class PostgreSqlBulkImportService : IBulkImportService
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
+        ///<inheritdoc/>
         public PostgreSqlBulkImportService(ITraceService traceService)
         {
             this._traceService = traceService;
         }
 
+        ///<inheritdoc/>
         public void Initialize(
             string connectionString)
         {
             this._connectionString = connectionString;
         }
 
+        ///<inheritdoc/>
         public void Run(
             IDbConnection connection,
             IDbTransaction transaction,

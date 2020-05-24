@@ -7,36 +7,46 @@ using System;
 
 namespace Yuniql.MySql
 {
+    ///<inheritdoc/>
     public class MySqlDataService : IDataService, INonTransactionalFlow
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
+        ///<inheritdoc/>
         public MySqlDataService(ITraceService traceService)
         {
             this._traceService = traceService;
         }
 
+        ///<inheritdoc/>
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
         }
 
+        ///<inheritdoc/>
         public bool IsAtomicDDLSupported => false;
 
+        ///<inheritdoc/>
         public bool IsSchemaSupported { get; } = false;
 
+        ///<inheritdoc/>
         public bool IsBatchSqlSupported { get; } = false;
 
+        ///<inheritdoc/>
         public string TableName { get; set; } = "__yuniqldbversion";
 
+        ///<inheritdoc/>
         public string SchemaName { get; set; }
 
+        ///<inheritdoc/>
         public IDbConnection CreateConnection()
         {
             return new MySqlConnection(_connectionString);
         }
 
+        ///<inheritdoc/>
         public IDbConnection CreateMasterConnection()
         {
             var masterConnectionStringBuilder = new MySqlConnectionStringBuilder(_connectionString);
@@ -45,34 +55,42 @@ namespace Yuniql.MySql
             return new MySqlConnection(masterConnectionStringBuilder.ConnectionString);
         }
 
+        ///<inheritdoc/>
         public IDbParameters CreateDbParameters()
         {
             return new MySqlParameters();
         }
 
+        ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
         {
             return new List<string> { sqlStatementRaw };
         }
 
+        ///<inheritdoc/>
         public ConnectionInfo GetConnectionInfo()
         {
             var connectionStringBuilder = new MySqlConnectionStringBuilder(_connectionString);
             return new ConnectionInfo { DataSource = connectionStringBuilder.Server, Database = connectionStringBuilder.Database };
         }
 
+        ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseExists()
             => @"SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${YUNIQL_DB_NAME}';";
 
+        ///<inheritdoc/>
         public string GetSqlForCreateDatabase()
             => @"CREATE DATABASE `${YUNIQL_DB_NAME}`;";
 
+        ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => throw new NotSupportedException("Custom schema is not supported in MySql.");
 
+        ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseConfigured()
             => @"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_DB_NAME}' AND TABLE_NAME = '${YUNIQL_TABLE_NAME}' LIMIT 1;";
 
+        ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
             => @"
                 CREATE TABLE ${YUNIQL_TABLE_NAME} (
@@ -90,15 +108,19 @@ namespace Yuniql.MySql
                 ) ENGINE=InnoDB;
             ";
 
+        ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
             => @"SELECT version FROM ${YUNIQL_TABLE_NAME} WHERE status_id = 1 ORDER BY sequence_id DESC LIMIT 1;";
 
+        ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
 
+        ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => throw new NotSupportedException("Not supported for current target platform");
 
+        ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
             => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER(), '{1}', '{2}', '{3}', @failedScriptPath, @failedScriptError)
                     ON DUPLICATE KEY UPDATE
@@ -111,6 +133,7 @@ namespace Yuniql.MySql
                     failed_script_error = VALUES(failed_script_error);
             ";
 
+        ///<inheritdoc/>
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)
         {
             DataTable columnsTable = GetVersionTableColumns(dbConnection, traceService, tableName);
@@ -172,6 +195,7 @@ namespace Yuniql.MySql
             return dbCommand.ExecuteNonQuery();
         }
 
+        ///<inheritdoc/>
         public bool TryParseErrorFromException(Exception exception, out string result)
         {
             if (exception is MySqlException mySqlException)

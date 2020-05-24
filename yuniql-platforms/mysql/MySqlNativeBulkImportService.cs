@@ -5,16 +5,19 @@ using MySql.Data.MySqlClient;
 
 namespace Yuniql.MySql
 {
+    ///<inheritdoc/>
     public class MySqlNativeBulkImportService : IBulkImportService
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
+        ///<inheritdoc/>
         public MySqlNativeBulkImportService(ITraceService traceService)
         {
             this._traceService = traceService;
         }
 
+        ///<inheritdoc/>
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
@@ -23,6 +26,7 @@ namespace Yuniql.MySql
         //https://wiki.ispirer.com/sqlways/troubleshooting-guide/mysql/import/command-not-allowed-data-load
         //https://www.youtube.com/watch?v=XM2xx-PD4cg&vl=en
         //https://dev.mysql.com/doc/connector-net/en/connector-net-programming-bulk-loader.html
+        ///<inheritdoc/>
         public void Run(
             IDbConnection connection,
             IDbTransaction transaction,

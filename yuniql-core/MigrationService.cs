@@ -234,6 +234,7 @@ namespace Yuniql.Core
             }
         }
 
+        ///<inheritdoc/>
         public override void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -313,6 +314,7 @@ namespace Yuniql.Core
             }
         }
 
+        ///<inheritdoc/>
         public override void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
