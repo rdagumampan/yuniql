@@ -91,6 +91,7 @@ namespace Yuniql.Core
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
+        /// <param name="additionalArtifacts">Additional infromation to describe the version executed.</param>
         /// <param name="failedScriptPath">The failed script path.</param>
         /// <param name="failedScriptError">The failed script error.</param>
         void InsertVersion(
@@ -102,6 +103,7 @@ namespace Yuniql.Core
             int? commandTimeout = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
+            string additionalArtifacts = null,
             string failedScriptPath = null,
             string failedScriptError = null);
 

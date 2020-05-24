@@ -28,28 +28,33 @@ namespace Yuniql.Extensibility
         public string AppliedByUser { get; set; }
 
         /// <summary>
-        /// The version of client that executed the migration step.
+        /// The yuniql client that executed the migration step.
         /// This can be yuniql-cli, yuniql-aspnetcore, yuniql-core, yuniql-azdevops
         /// </summary>
         public string AppliedByTool { get; set; }
 
         /// <summary>
-        /// 
+        /// The version of client that executed the migration step.
         /// </summary>
         public string AppliedByToolVersion { get; set; }
 
         /// <summary>
-        /// Gets or sets the status id.
+        /// Additional information that describes the execution of the version
+        /// </summary>
+        public string AdditionalArtifacts { get; set; }
+
+        /// <summary>
+        /// The status of version execution
         /// </summary>
         public StatusId StatusId { get; set; } = StatusId.Succeeded;
 
         /// <summary>
-        /// Gets or sets the failed script path.
+        /// The full path of last failed script file
         /// </summary>
         public string FailedScriptPath { get; set; }
 
         /// <summary>
-        /// Gets or sets the failed script error.
+        /// The error details from the last failed script file
         /// </summary>
         public string FailedScriptError { get; set; }
     }

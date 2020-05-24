@@ -108,7 +108,7 @@ namespace Yuniql.MySql
 
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
-            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
+            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status_id, failed_script_path, failed_script_error FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
@@ -116,7 +116,7 @@ namespace Yuniql.MySql
 
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
-            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error) VALUES (@version, UTC_TIMESTAMP(), CURRENT_USER(), @toolName, @toolVersion, @statusId, @failedScriptPath, @failedScriptError)
+            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status_id, failed_script_path, failed_script_error) VALUES (@version, UTC_TIMESTAMP(), CURRENT_USER(), @toolName, @toolVersion, @additionalArtifacts, @statusId, @failedScriptPath, @failedScriptError)
                     ON DUPLICATE KEY UPDATE
                     applied_on_utc = VALUES(applied_on_utc),
                     applied_by_user = VALUES(applied_by_user),

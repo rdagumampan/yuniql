@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
+using System.Text.Unicode;
 using Yuniql.Extensibility;
 
 namespace Yuniql.Core
@@ -193,12 +195,20 @@ namespace Yuniql.Core
                         AppliedByToolVersion = reader.GetString(5)
                     };
 
+                    //capture additional artifacts when present present
+                    if (!reader.IsDBNull(6))
+                    {
+                        var additionalArtifactsByteStream = reader.GetValue(6) as byte[];
+                        dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(additionalArtifactsByteStream);
+                    }
+
                     //fill up with information only available for platforms not supporting transactional ddl
                     if (!_dataService.IsAtomicDDLSupported)
                     {
-                        dbVersion.StatusId = (StatusId)reader.GetInt32(6);
-                        dbVersion.FailedScriptPath = reader.GetValue(7) as string;      //as string handles null values
-                        dbVersion.FailedScriptError = reader.GetValue(8) as string;     //as string handles null values
+                        dbVersion.StatusId = (StatusId)reader.GetInt32(7);
+                        dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values
+                        dbVersion.FailedScriptError = reader.GetValue(9) as string;     //as string handles null values
+
                     }
 
                     result.Add(dbVersion);
@@ -218,6 +228,7 @@ namespace Yuniql.Core
             int? commandTimeout = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
+            string additionalArtifacts = null,
             string failedScriptPath = null,
             string failedScriptError = null
             )
@@ -233,16 +244,19 @@ namespace Yuniql.Core
 
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
-            var statusId = string.IsNullOrEmpty(failedScriptPath) ? (int)StatusId.Succeeded : (int)StatusId.Failed;
+            var additionalArtifactsByteStream = Encoding.UTF8.GetBytes(additionalArtifacts ?? string.Empty);
+
             command.Parameters.Add(CreateDbParameter("version", version));
             command.Parameters.Add(CreateDbParameter("toolName", toolName));
             command.Parameters.Add(CreateDbParameter("toolVersion", toolVersion));
+            command.Parameters.Add(CreateDbParameter("additionalArtifacts", additionalArtifactsByteStream));
 
             //in case database supports non-transactional flow
             if (_dataService is INonTransactionalFlow nonTransactionalDataService)
             {
                 //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
                 sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), schemaName, tableName);
+                var statusId = string.IsNullOrEmpty(failedScriptPath) ? (int)StatusId.Succeeded : (int)StatusId.Failed;
                 command.Parameters.Add(CreateDbParameter("statusId", statusId));
                 command.Parameters.Add(CreateDbParameter("failedScriptPath", failedScriptPath));
                 command.Parameters.Add(CreateDbParameter("failedScriptError", failedScriptError));
@@ -257,7 +271,8 @@ namespace Yuniql.Core
             command.ExecuteNonQuery();
 
             //local function
-            IDbDataParameter CreateDbParameter(string name, object value) {
+            IDbDataParameter CreateDbParameter(string name, object value)
+            {
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = name;
                 parameter.Value = value;

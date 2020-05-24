@@ -6,18 +6,13 @@
     public class DbVersionData
     {
         /// <summary>
-        /// Unique ID of migration record in migration history table.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// The version itself as reflected in the directory structure.
+        /// The version of this artifact schema
         /// </summary>
         public string Version { get; set; }
         
         /// <summary>
         /// Serialized BLOB of all scripts executed in the version.
         /// </summary>
-        public byte[] Artifact { get; set; }
+        public byte[] Data { get; set; }
     }
 }

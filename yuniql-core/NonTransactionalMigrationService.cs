@@ -468,9 +468,9 @@ namespace Yuniql.Core
                         tableName,
                         commandTimeout: commandTimeout,
                         appliedByTool: appliedByTool,
-                        appliedByToolVersion: appliedByToolVersion,
-                        currentScriptFile,
-                        sqlError);
+                        appliedByToolVersion: appliedByToolVersion,                        
+                        failedScriptPath: currentScriptFile,
+                        failedScriptError: sqlError);
 
                     _traceService.Error(@$"Migration of ""{version}"" version was not running in transaction and has failed when executing of script file ""{currentScriptFile}"" with following error: {sqlError} {MESSAGES.ManualResolvingAfterFailureMessage}");
                 }
