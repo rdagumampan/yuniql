@@ -1,5 +1,6 @@
 ﻿using Yuniql.Extensibility;
 using System.Collections.Generic;
+using System.Data;
 
 namespace Yuniql.Core
 {
@@ -67,6 +68,64 @@ namespace Yuniql.Core
         /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
+
+        bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null);
+
+        void RunNonVersionScripts(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string workingPath,
+            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            string bulkSeparator = null,
+            int? commandTimeout = null,
+            string environmentCode = null
+        );
+
+        void RunVersionScripts(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            List<string> dbVersions,
+            string workingPath,
+            string targetVersion,
+            NonTransactionalContext nonTransactionalContext,
+            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            string bulkSeparator = null,
+            string schemaName = null,
+            string tableName = null,
+            int? commandTimeout = null,
+            int? bulkBatchSize = null,
+            string appliedByTool = null,
+            string appliedByToolVersion = null,
+            string environmentCode = null
+        );
+
+        void RunBulkImport(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string workingPath,
+            string scriptDirectory,
+            string bulkSeparator = null,
+            int? bulkBatchSize = null,
+            int? commandTimeout = null,
+            string environmentCode = null
+        );
+
+        void RunSqlScripts(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            NonTransactionalContext nonTransactionalContext,
+            string version,
+            string workingPath,
+            string scriptDirectory,
+            string schemaName,
+            string tableName,
+            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            int? commandTimeout = null,
+            string environmentCode = null,
+            string appliedByTool = null,
+            string appliedByToolVersion = null
+        );
+
         void Erase(
             string workingPath,
             List<KeyValuePair<string, string>> tokens = null,

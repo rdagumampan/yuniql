@@ -29,6 +29,22 @@ namespace Yuniql.PlatformTests
                 };
             }
 
+
+            //Ignores test methods with [TestMethodExAttribute (Requires = "IsAtomicDDLSupported")] attribute
+            if (this.Requires.Contains("IsAtomicDDLNotSupported") && testDataService.IsAtomicDDLSupported)
+            {
+                var message = $"Target database platform or version supports atomic DDL operations. " +
+                    $"This test is exclusive for platforms not supporting transaction DDL operations.";
+                return new[]
+                {
+                    new TestResult
+                    {
+                        Outcome = UnitTestOutcome.NotRunnable,
+                        LogOutput = message
+                    }
+                };
+            }
+
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsSchemaSupported")] attribute
             if (this.Requires.Contains(nameof(testDataService.IsSchemaSupported)) && !testDataService.IsSchemaSupported)
             {

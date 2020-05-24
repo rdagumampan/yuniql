@@ -8,7 +8,7 @@ using System.IO;
 namespace Yuniql.Core
 {
     /// <inheritdoc />
-    public class MigrationService : IMigrationService
+    public class MigrationService : MigrationServiceBase
     {
         private readonly ILocalVersionService _localVersionService;
         private readonly IDataService _dataService;
@@ -29,6 +29,16 @@ namespace Yuniql.Core
             IDirectoryService directoryService,
             IFileService fileService,
             ITraceService traceService)
+            : base(
+                localVersionService,
+                dataService,
+                bulkImportService,
+                configurationDataService,
+                tokenReplacementService,
+                directoryService,
+                fileService,
+                traceService
+            )
         {
             this._localVersionService = localVersionService;
             this._dataService = dataService;
@@ -41,29 +51,7 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
-        public void Initialize(
-            string connectionString,
-            int? commandTimeout = null)
-        {
-            //initialize dependencies
-            _dataService.Initialize(connectionString);
-            _bulkImportService.Initialize(connectionString);
-        }
-
-        /// <inheritdoc />
-        public string GetCurrentVersion(string schemaName = null, string tableName = null)
-        {
-            return _configurationDataService.GetCurrentVersion(schemaName, tableName);
-        }
-
-        /// <inheritdoc />
-        public List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null)
-        {
-            return _configurationDataService.GetAllVersions(schemaName, tableName);
-        }
-
-        /// <inheritdoc />
-        public void Run(
+        public override void Run(
             string workingPath,
             string targetVersion = null,
             bool? autoCreateDatabase = false,
@@ -218,7 +206,7 @@ namespace Yuniql.Core
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts int the vxx.xx folders and subfolders
-                RunVersionScripts(connection, transaction, allVersions, workingPath, targetVersion, tokenKeyPairs, bulkSeparator: bulkSeparator, schemaName: schemaName, tableName: tableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
+                RunVersionScripts(connection, transaction, allVersions, workingPath, targetVersion, null, tokenKeyPairs, bulkSeparator: bulkSeparator, schemaName: schemaName, tableName: tableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
 
                 //runs all scripts in the _draft folder and subfolders
                 RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
@@ -246,68 +234,13 @@ namespace Yuniql.Core
             }
         }
 
-        private bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null)
-        {
-            //get the current version stored in database
-            var remoteCurrentVersion = _configurationDataService.GetCurrentVersion(schemaName, tableName);
-            if (string.IsNullOrEmpty(remoteCurrentVersion)) return false;
-
-            //compare version applied in db vs versions available locally
-            var localCurrentVersion = new LocalVersion(remoteCurrentVersion);
-            var localTargetVersion = new LocalVersion(targetVersion);
-            return string.Compare(localCurrentVersion.SemVersion, localTargetVersion.SemVersion) == 1 || //db has more updated than local version
-                string.Compare(localCurrentVersion.SemVersion, localTargetVersion.SemVersion) == 0;      //db has the same version as local version
-        }
-
-        private void RunNonVersionScripts(
-            IDbConnection connection,
-            IDbTransaction transaction,
-            string workingPath,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
-            string bulkSeparator = null,
-            int? commandTimeout = null,
-            string environmentCode = null
-        )
-        {
-            //extract and filter out scripts when environment code is used
-            var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
-            sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
-            _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {workingPath}");
-            _traceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
-
-            //execute all script files in the target folder
-            sqlScriptFiles.Sort();
-            sqlScriptFiles.ForEach(scriptFile =>
-            {
-                var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
-                var sqlStatements = _dataService.BreakStatements(sqlStatementRaw)
-                    .Where(s => !string.IsNullOrWhiteSpace(s))
-                    .ToList();
-
-                sqlStatements.ForEach(sqlStatement =>
-                {
-                    //replace tokens with values from the cli
-                    sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
-
-                    _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-                    _configurationDataService.ExecuteSql(
-                        connection: connection,
-                        commandText: sqlStatement,
-                        transaction: transaction,
-                        commandTimeout: commandTimeout,
-                        traceService: _traceService);
-                });
-
-                _traceService.Info($"Executed script file {scriptFile}.");
-            });
-        }
-
-        private void RunVersionScripts(
+        public override void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
             List<string> dbVersions,
             string workingPath,
             string targetVersion,
+            NonTransactionalContext nonTransactionalContext,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
             string schemaName = null,
@@ -342,41 +275,35 @@ namespace Yuniql.Core
                 versionDirectories.Sort();
                 versionDirectories.ForEach(versionDirectory =>
                 {
-                    try
+                    var versionName = new DirectoryInfo(versionDirectory).Name;
+
+                    //run scripts in all sub-directories
+                    var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList();
+                    scriptSubDirectories.Sort();
+                    scriptSubDirectories.ForEach(scriptSubDirectory =>
                     {
-                        //run scripts in all sub-directories
-                        var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList();
-                        scriptSubDirectories.Sort();
-                        scriptSubDirectories.ForEach(scriptSubDirectory =>
-                        {
-                            //run all scripts in the current version folder
-                            RunSqlScripts(connection, transaction, workingPath, scriptSubDirectory, schemaName, tableName, tokenKeyPairs, commandTimeout, environmentCode);
-
-                            //import csv files into tables of the the same filename as the csv
-                            RunBulkImport(connection, transaction, workingPath, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
-                        });
-
                         //run all scripts in the current version folder
-                        RunSqlScripts(connection, transaction, workingPath, versionDirectory, schemaName, tableName, tokenKeyPairs, commandTimeout, environmentCode);
+                        RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, scriptSubDirectory, schemaName, tableName, tokenKeyPairs, commandTimeout, environmentCode);
 
                         //import csv files into tables of the the same filename as the csv
-                        RunBulkImport(connection, transaction, workingPath, versionDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
+                        RunBulkImport(connection, transaction, workingPath, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
+                    });
 
-                        //update db version
-                        var versionName = new DirectoryInfo(versionDirectory).Name;
-                        _configurationDataService.InsertVersion(connection, transaction, versionName,
-                            schemaName: schemaName,
-                            tableName: tableName,
-                            commandTimeout: commandTimeout,
-                            appliedByTool: appliedByTool,
-                            appliedByToolVersion: appliedByToolVersion);
+                    //run all scripts in the current version folder
+                    RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, versionDirectory, schemaName, tableName, tokenKeyPairs, commandTimeout, environmentCode);
 
-                        _traceService.Info($"Completed migration to version {versionDirectory}");
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    //import csv files into tables of the the same filename as the csv
+                    RunBulkImport(connection, transaction, workingPath, versionDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
+
+                    //update db version
+                    _configurationDataService.InsertVersion(connection, transaction, versionName,
+                        schemaName: schemaName,
+                        tableName: tableName,
+                        commandTimeout: commandTimeout,
+                        appliedByTool: appliedByTool,
+                        appliedByToolVersion: appliedByToolVersion);
+
+                    _traceService.Info($"Completed migration to version {versionDirectory}");
                 });
             }
             else
@@ -386,34 +313,11 @@ namespace Yuniql.Core
             }
         }
 
-        private void RunBulkImport(
+        public override void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            string workingPath,
-            string scriptDirectory,
-            string bulkSeparator = null,
-            int? bulkBatchSize = null,
-            int? commandTimeout = null,
-            string environmentCode = null
-        )
-        {
-            //extract and filter out scripts when environment code is used
-            var bulkFiles = _directoryService.GetFiles(scriptDirectory, "*.csv").ToList();
-            bulkFiles = _directoryService.FilterFiles(workingPath, environmentCode, bulkFiles).ToList();
-            _traceService.Info($"Found the {bulkFiles.Count} bulk files on {scriptDirectory}");
-            _traceService.Info($"{string.Join(@"\r\n\t", bulkFiles.Select(s => new FileInfo(s).Name))}");
-
-            bulkFiles.Sort();
-            bulkFiles.ForEach(csvFile =>
-            {
-                _bulkImportService.Run(connection, transaction, csvFile, bulkSeparator, bulkBatchSize: bulkBatchSize, commandTimeout: commandTimeout);
-                _traceService.Info($"Imported bulk file {csvFile}.");
-            });
-        }
-
-        private void RunSqlScripts(
-            IDbConnection connection,
-            IDbTransaction transaction,
+            NonTransactionalContext nonTransactionalContext,
+            string version,
             string workingPath,
             string scriptDirectory,
             string schemaName,
@@ -456,40 +360,6 @@ namespace Yuniql.Core
 
                     _traceService.Info($"Executed script file {scriptFile}.");
                 });
-        }
-
-        /// <inheritdoc />
-        public void Erase(
-            string workingPath,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
-            int? commandTimeout = null,
-            string environmentCode = null
-        )
-        {
-            //create a shared open connection to entire migration run
-            using (var connection = _dataService.CreateConnection())
-            {
-                connection.KeepOpen();
-
-                //enclose all executions in a single transaction in case platform supports it
-                _traceService.Info(@$"Target platform fully supports transactions. Migration will run in single transaction.");
-                using (var transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        //runs all scripts in the _erase folder
-                        RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, bulkSeparator: DEFAULT_CONSTANTS.BULK_SEPARATOR, commandTimeout: commandTimeout, environmentCode: environmentCode);
-                        _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
-
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
-            }
         }
     }
 }

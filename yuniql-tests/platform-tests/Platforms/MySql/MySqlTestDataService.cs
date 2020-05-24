@@ -170,21 +170,5 @@ DROP TABLE script3;
 CREATE SCHEMA {schemaName};
 ";
         }
-
-        private Tuple<string, string> GetObjectNameWithSchema(string objectName)
-        {
-            //check if a non-default dbo schema is used
-            var schemaName = "public";
-            var newObjectName = objectName;
-
-            if (objectName.IndexOf('.') > 0)
-            {
-                schemaName = objectName.Split('.')[0];
-                newObjectName = objectName.Split('.')[1];
-            }
-
-            return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
-        }
-
     }
 }

@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "run -p c:\\temp\\postgresql-sample -c \"Server=balarama.db.elephantsql.com;Port=5432;Database=gmvuwdtw;User Id=gmvuwdtw;Password=0rdMuRPBVOFU-WzRE8IOikTU1Ssw4oob;\" --platform postgresql -k VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4 --bulk-separator , --debug"
+      "commandLineArgs": "run -a -p C:\\play\\yuniql-dev\\samples\\basic-mysql-sample --platform mysql --debug"
     }
   }
 }
