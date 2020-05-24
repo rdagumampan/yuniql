@@ -55,12 +55,6 @@ namespace Yuniql.PostgreSql
         }
 
         ///<inheritdoc/>
-        public IDbParameters CreateDbParameters()
-        {
-            throw new NotImplementedException("This platform doesn't support Db parameters yet");
-        }
-
-        ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
         {
             return new List<string> { sqlStatementRaw };
@@ -112,7 +106,7 @@ namespace Yuniql.PostgreSql
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
-            => @"INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version) VALUES ('{0}', '{1}', '{2}');";
+            => @"INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version) VALUES (@version, @toolName, @toolVersion);";
 
         ///<inheritdoc/>
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)

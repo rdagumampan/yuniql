@@ -222,28 +222,7 @@ namespace Yuniql.Core
             string failedScriptError = null
             )
         {
-            var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
-            var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? this.GetType().Assembly.GetName().Version.ToString() : appliedByToolVersion;
-            StatusId statusId = string.IsNullOrEmpty(failedScriptPath) ? StatusId.Succeeded : StatusId.Failed;
-
-            IDbParameters dbParameters = null;
-            string sqlStatement;
-
-            //in case database supports non-transactional flow
-            if (_dataService is INonTransactionalFlow nonTransactionalDataService)
-            {
-                //using of db parameters is important and a good practice, otherwise the errors containing SQL specific characters like "'" would need to be escaped in more complicated manner
-                sqlStatement = string.Format(GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), schemaName, tableName), version, toolName, $"v{toolVersion}", (int)statusId);
-                dbParameters = _dataService.CreateDbParameters();
-                dbParameters.AddParameter("failedScriptPath", failedScriptPath);
-                dbParameters.AddParameter("failedScriptError", failedScriptError);
-            }
-            else
-            {
-                sqlStatement = string.Format(GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), schemaName, tableName), version, toolName, $"v{toolVersion}");
-            }
-
-            _traceService?.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
+            var sqlStatement = string.Empty;
             var command = connection
                 .KeepOpen()
                 .CreateCommand(
@@ -252,8 +231,39 @@ namespace Yuniql.Core
                     transaction: transaction
                 );
 
-            dbParameters?.CopyToDataParameterCollection(command.Parameters);
+            var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
+            var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
+            var statusId = string.IsNullOrEmpty(failedScriptPath) ? (int)StatusId.Succeeded : (int)StatusId.Failed;
+            command.Parameters.Add(CreateDbParameter("version", version));
+            command.Parameters.Add(CreateDbParameter("toolName", toolName));
+            command.Parameters.Add(CreateDbParameter("toolVersion", toolVersion));
+
+            //in case database supports non-transactional flow
+            if (_dataService is INonTransactionalFlow nonTransactionalDataService)
+            {
+                //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
+                sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), schemaName, tableName);
+                command.Parameters.Add(CreateDbParameter("statusId", statusId));
+                command.Parameters.Add(CreateDbParameter("failedScriptPath", failedScriptPath));
+                command.Parameters.Add(CreateDbParameter("failedScriptError", failedScriptError));
+            }
+            else
+            {
+                sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), schemaName, tableName);
+            }
+
+            //upsert version information
+            command.CommandText = sqlStatement;
             command.ExecuteNonQuery();
+
+            //local function
+            IDbDataParameter CreateDbParameter(string name, object value) {
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = name;
+                parameter.Value = value;
+                parameter.Direction = ParameterDirection.Input;
+                return parameter;
+            }
         }
 
         ///<inheritdoc/>

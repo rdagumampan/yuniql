@@ -17,8 +17,12 @@ namespace Yuniql.Core
         private readonly ITraceService _traceService;
         private AssemblyLoadContext _defaultLoadContext;
 
+        /// <summary>
+        /// The location of the plugin binaries
+        /// </summary>
         public string PluginPath { get; set; }
 
+        /// <inheritdoc />
         public PluginAssemblyLoadContext(
             AssemblyLoadContext defaultLoadContext,
             string pluginAssemblyFilePath,
@@ -69,6 +73,7 @@ namespace Yuniql.Core
             return null;
         }
 
+        /// <inheritdoc />
         protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
         {
             string libraryPath = _resolver.ResolveUnmanagedDllToPath(unmanagedDllName);

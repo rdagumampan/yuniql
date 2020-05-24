@@ -56,12 +56,6 @@ namespace Yuniql.MySql
         }
 
         ///<inheritdoc/>
-        public IDbParameters CreateDbParameters()
-        {
-            return new MySqlParameters();
-        }
-
-        ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
         {
             return new List<string> { sqlStatementRaw };
@@ -122,7 +116,7 @@ namespace Yuniql.MySql
 
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
-            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER(), '{1}', '{2}', '{3}', @failedScriptPath, @failedScriptError)
+            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status_id, failed_script_path, failed_script_error) VALUES (@version, UTC_TIMESTAMP(), CURRENT_USER(), @toolName, @toolVersion, @statusId, @failedScriptPath, @failedScriptError)
                     ON DUPLICATE KEY UPDATE
                     applied_on_utc = VALUES(applied_on_utc),
                     applied_by_user = VALUES(applied_by_user),

@@ -5,5 +5,7 @@ SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql-dev\samples\basic-mysql-sample"
 SETX YUNIQL_TEST_CLI "C:\play\yuniql-dev\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCAL"
 
+docker run --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
+
 @echo off
 pause

@@ -42,12 +42,6 @@ namespace Yuniql.SqlServer
         }
 
         ///<inheritdoc/>
-        public IDbParameters CreateDbParameters()
-        {
-            throw new NotImplementedException("This platform doesn't support Db parameters yet");
-        }
-
-        ///<inheritdoc/>
         public ConnectionInfo GetConnectionInfo()
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(_connectionString);
@@ -124,7 +118,7 @@ namespace Yuniql.SqlServer
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
-            => @"INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion) VALUES ('{0}','{1}','{2}');";
+            => @"INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion) VALUES (@version, @toolName, @toolVersion);";
 
         ///<inheritdoc/>
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)

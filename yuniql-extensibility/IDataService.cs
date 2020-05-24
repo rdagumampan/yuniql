@@ -28,12 +28,6 @@ namespace Yuniql.Extensibility
         public IDbConnection CreateMasterConnection();
 
         /// <summary>
-        /// Creates empty Db parameters.
-        /// </summary>
-        /// <returns></returns>
-        public IDbParameters CreateDbParameters();
-
-        /// <summary>
         /// Get basic connection information to target database.
         /// </summary>
         /// <returns></returns>
