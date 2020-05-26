@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Yuniql.Extensibility
@@ -111,5 +112,23 @@ namespace Yuniql.Extensibility
         /// Returns the SQL statement to use for creating new entry into migration tracking table.
         /// </summary>
         public string GetSqlForInsertVersion();
+
+        /// <summary>
+        /// Updates the database migration tracking table.
+        /// </summary>
+        /// <param name="dbConnection">The database connection.</param>
+        /// <param name="traceService">The trace service.</param>
+        /// <returns>True if target database was updated, otherwise returns false</returns>
+        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null);
+
+        /// <summary>
+        /// Try parses error from database specific exception.
+        /// </summary>
+        /// <param name="exc">The exc.</param>
+        /// <param name="result">The parsed error.</param>
+        /// <returns>
+        /// True, if the parsing was sucessfull otherwise false
+        /// </returns>
+        bool TryParseErrorFromException(Exception exc, out string result);
     }
-};
+}

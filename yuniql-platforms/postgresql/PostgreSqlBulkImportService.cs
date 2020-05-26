@@ -11,32 +11,36 @@ using Yuniql.Extensibility.BulkCsvParser;
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.PostgreSql
 {
+    ///<inheritdoc/>
     public class PostgreSqlBulkImportService : IBulkImportService
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
+        ///<inheritdoc/>
         public PostgreSqlBulkImportService(ITraceService traceService)
         {
             this._traceService = traceService;
         }
 
+        ///<inheritdoc/>
         public void Initialize(
             string connectionString)
         {
             this._connectionString = connectionString;
         }
 
+        ///<inheritdoc/>
         public void Run(
             IDbConnection connection,
             IDbTransaction transaction,
             string fileFullPath,
-            string delimiter = null,
-            int? batchSize = null,
+            string bulkSeparator = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(fileFullPath, delimiter);
+            var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
 
             //check if a non-default dbo schema is used
             var schemaName = "public";
@@ -51,15 +55,15 @@ namespace Yuniql.PostgreSql
             BulkCopyWithDataTable(connection, transaction, schemaName, tableName, dataTable);
         }
 
-        private DataTable ParseCsvFile(string csvFileFullPath, string delimeter)
+        private DataTable ParseCsvFile(string csvFileFullPath, string bulkSeparator)
         {
-            if (string.IsNullOrEmpty(delimeter))
-                delimeter = ",";
+            if (string.IsNullOrEmpty(bulkSeparator))
+                bulkSeparator = ",";
 
             var csvDatatable = new DataTable();
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
-                csvReader.Delimiters = (new string[] { delimeter });
+                csvReader.Separators = (new string[] { bulkSeparator });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 string[] csvColumns = csvReader.ReadFields();

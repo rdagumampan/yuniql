@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Yuniql.Core;
 using System.Data;
+using System.Text;
 
 namespace Yuniql.PlatformTests
 {
@@ -75,8 +76,26 @@ namespace Yuniql.PlatformTests
                         SequenceId = reader.GetInt16(0),
                         Version = reader.GetString(1),
                         AppliedOnUtc = reader.GetDateTime(2),
-                        AppliedByUser = reader.GetString(3)
+                        AppliedByUser = reader.GetString(3),
+                        AppliedByTool = reader.GetString(4),
+                        AppliedByToolVersion = reader.GetString(5)
                     };
+
+                    //capture additional artifacts when present present
+                    if (!reader.IsDBNull(6))
+                    {
+                        var additionalArtifactsByteStream = reader.GetValue(6) as byte[];
+                        dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(additionalArtifactsByteStream);
+                    }
+
+                    //fill up with information only available for platforms not supporting transactional ddl
+                    if (!_dataService.IsAtomicDDLSupported)
+                    {
+                        dbVersion.Status = Enum.Parse<Status>(reader.GetString(7));
+                        dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values
+                        dbVersion.FailedScriptError = reader.GetValue(9) as string;     //as string handles null values
+                    }
+
                     result.Add(dbVersion);
                 }
             }

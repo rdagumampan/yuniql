@@ -11,19 +11,14 @@ namespace Yuniql.Core
     {
         private readonly ITraceService _traceService;
 
-        /// <summary>
-        /// An instance of <see cref="MigrationServiceFactory"/>
-        /// </summary>
-        /// <param name="traceService"></param>
+        ///<inheritdoc/>
         public MigrationServiceFactory(
             ITraceService traceService)
         {
             this._traceService = traceService;
         }
-        
-        /// <summary>
-        /// Create instance of <see cref="IMigrationService"/> with default support for SQL Server.
-        /// </summary>
+
+        ///<inheritdoc/>
         public IMigrationService Create()
         {
             var dataService = new SqlServerDataService(_traceService);
@@ -31,13 +26,7 @@ namespace Yuniql.Core
             return CreateInternal(dataService, bulkImportService);
         }
 
-        /// <summary>
-        /// Create instance of <see cref="IMigrationService"/> and uses external data services.
-        /// When targeting PostgreSql or MySql, this is where you can pass the implementation of <see cref="IDataService"/> and <see cref="IBulkImportService"/>.
-        /// </summary>
-        /// <param name="dataService">Platform specific data service providing compatible SQL statements and connection objects.</param>
-        /// <param name="bulkImportService">Platform specific service provding support for bulk import of CSV files.</param>
-        /// <returns>An instance of <see cref="IMigrationService"/> and uses external data services.</returns>
+        ///<inheritdoc/>
         public IMigrationService Create(IDataService dataService, IBulkImportService bulkImportService)
         {
             return CreateInternal(dataService, bulkImportService);

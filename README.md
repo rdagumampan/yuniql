@@ -132,7 +132,7 @@ static void Main(string[] args)
 		configuration.AutoCreateDatabase,
 		configuration.Tokens,
 		configuration.VerifyOnly,
-		configuration.Delimiter);
+		configuration.BulkSeparator);
 }
 ```
 

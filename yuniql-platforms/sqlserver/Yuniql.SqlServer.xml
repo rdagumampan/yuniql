@@ -19,9 +19,9 @@
             Default batch size of bulk load operations.
             </summary>
         </member>
-        <member name="F:Yuniql.SqlServer.DEFAULT_CONSTANTS.BULK_DELIMITER">
+        <member name="F:Yuniql.SqlServer.DEFAULT_CONSTANTS.BULK_SEPARATOR">
             <summary>
-            Default CSV file delimiter.
+            Default CSV file values separator.
             </summary>
         </member>
     </members>

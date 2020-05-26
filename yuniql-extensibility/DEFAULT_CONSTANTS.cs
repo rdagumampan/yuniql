@@ -1,4 +1,4 @@
-﻿namespace Yuniql.SqlServer
+﻿namespace Yuniql.Extensibility
 {
     /// <summary>
     /// Globa default values.
@@ -16,8 +16,8 @@
         public const int BULK_BATCH_SIZE = 0;
         
         /// <summary>
-        /// Default CSV file delimiter.
+        /// Default CSV file values separator.
         /// </summary>
-        public const string BULK_DELIMITER = ",";
+        public const string BULK_SEPARATOR = ",";
     }
 };

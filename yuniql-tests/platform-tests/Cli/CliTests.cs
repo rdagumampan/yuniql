@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using System.Diagnostics;
 using System.IO;
 
 namespace Yuniql.PlatformTests
@@ -64,18 +63,19 @@ namespace Yuniql.PlatformTests
         }
 
         [DataTestMethod]
-        [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        [DataRow("run", "-a -d --command-timeout 10 -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        [DataRow("run", "--autocreate-db -d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        [DataRow("run", "-a -d -t v1.00 -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        [DataRow("run", "-a -d --target-version v1.00 -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1\" -k \"VwColumnPrefix2=Vw2\" -k \"VwColumnPrefix3=Vw3\" -k \"VwColumnPrefix4=Vw4\"")]
-        [DataRow("run", "-a -d --delimiter \",\" -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
+        [DataRow("run", "-a -d")]
+        [DataRow("run", "--autocreate-db -d")]
+        [DataRow("run", "-a -d -t v1.00")]
+        [DataRow("run", "-a -d --target-version v1.00")]
+        [DataRow("run", "-a -d --bulk-separator")]
+        [DataRow("run", "-a -d --bulk-batch-size 50")]
+        [DataRow("run", "-a -d --command-timeout 10")]
+        [DataRow("run", "-a -d --environment DEV")]
         [DataRow("run", "-a -d --schema \"my_schema\"")]
         [DataRow("run", "-a -d --table \"my_versions\" ")]
         [DataRow("run", "-a -d --schema \"my_schema\" --table \"my_versions\" ")]
+        [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
+        [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1\" -k \"VwColumnPrefix2=Vw2\" -k \"VwColumnPrefix3=Vw3\" -k \"VwColumnPrefix4=Vw4\"")]
         public void Test_Cli_run(string command, string arguments)
         {
             //arrange
@@ -89,10 +89,15 @@ namespace Yuniql.PlatformTests
         [DataTestMethod]
         [DataRow("verify", "-d -t v1.00")]
         [DataRow("verify", "-d --target-version v1.00")]
-        [DataRow("verify", "-d --delimiter ,")]
+        [DataRow("verify", "-d --bulk-separator ,")]
+        [DataRow("verify", "-d --bulk-batch-size 50")]
         [DataRow("verify", "-d --command-timeout 10")]
         [DataRow("verify", "-d --environment DEV")]
+        [DataRow("verify", "-d --schema \"my_schema\"")]
+        [DataRow("verify", "-d --table \"my_versions\" ")]
+        [DataRow("verify", "-d --schema \"my_schema\" --table \"my_versions\" ")]
         [DataRow("verify", "-d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
+        [DataRow("verify", "-d -k \"VwColumnPrefix1=Vw1\" -k \"VwColumnPrefix2=Vw2\" -k \"VwColumnPrefix3=Vw3\" -k \"VwColumnPrefix4=Vw4\"")]
         public void Test_Cli_verify(string command, string arguments)
         {
             //arrange
@@ -110,7 +115,8 @@ namespace Yuniql.PlatformTests
         [DataTestMethod]
         [DataRow("verify", "-d -t v1.00")]
         [DataRow("verify", "-d --target-version v1.00")]
-        [DataRow("verify", "-d --delimiter ,")]
+        [DataRow("verify", "-d --bulk-separator ,")]
+        [DataRow("verify", "-d --bulk-batch-size 50")]
         [DataRow("verify", "-d --command-timeout 10")]
         [DataRow("verify", "-d --environment DEV")]
         [DataRow("verify", "-d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]

@@ -20,15 +20,15 @@ namespace Yuniql.Extensibility
         /// <param name="connection">An connection to target database.</param>
         /// <param name="transaction">An active transaction.</param>
         /// <param name="fileFullPath">Fully qualified path to the CSV file.</param>
-        /// <param name="delimiter">Delimeter used in CSV file. When NULL, defaults to command ",".</param>
-        /// <param name="batchSize">Size of bacth for bulk load operation.</param>
+        /// <param name="bulkSeparator">Bulk file values separator used in CSV file. When NULL, defaults to command ",".</param>
+        /// <param name="bulkBatchSize">Size of bacth for bulk load operation.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         void Run(
             IDbConnection connection,
             IDbTransaction transaction,
             string fileFullPath,
-            string delimiter = null,
-            int? batchSize = null,
+            string bulkSeparator = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null);
     }
 }

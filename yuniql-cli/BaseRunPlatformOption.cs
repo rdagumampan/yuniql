@@ -19,9 +19,13 @@ namespace Yuniql.CLI
         [Option('k', "token", Required = false, HelpText = "Replace tokens using the passed key-value pairs.", Separator = ',')]
         public IEnumerable<string> Tokens { get; set; } = new List<string>();
 
-        //yuniql <command> --delimeter "," | --delimeter "|"
-        [Option("delimiter", Required = false, HelpText = "Bulk import file delimiter.", Default = ",")]
-        public string Delimiter { get; set; } = ",";
+        //yuniql <command> --bulk-separator "," | --bulk-separator "|"
+        [Option("bulk-separator", Required = false, HelpText = "Bulk import file values separator.", Default = ",")]
+        public string BulkSeparator { get; set; } = ",";
+
+        //yuniql <command> --bulk-separator "," | --bulk-separator "|"
+        [Option("bulk-batch-size", Required = false, HelpText = "Bulk import batch size for platforms supporting batch rows.", Default = 0)]
+        public int BulkBatchSize { get; set; } = 0;
 
         //yuniql <command> --environment "DEV" | --environment "PROD"
         [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts.")]
