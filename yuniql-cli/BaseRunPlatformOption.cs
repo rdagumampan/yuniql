@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Yuniql.CLI
 {
-
     public class BaseRunPlatformOption : BasePlatformOption
     {
         //yuniql <command> -t v1.05 | --target-version v1.05
@@ -31,12 +30,12 @@ namespace Yuniql.CLI
         [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts.")]
         public string Environment { get; set; }
 
-        //yuniql <command> --schema "yuniql" 
-        [Option("schema", Required = false, HelpText = "Schema name for schema versions table.")]
-        public string Schema { get; set; }
+        //yuniql <command> --meta-schema "yuniql" 
+        [Option("meta-schema", Required = false, HelpText = "Schema name for schema versions table.")]
+        public string MetaSchema { get; set; }
 
-        //yuniql <command> --table "__yuniqlschemaversions" 
-        [Option("table", Required = false, HelpText = "Table name for schema versions table.")]
-        public string Table { get; set; }
+        //yuniql <command> --meta-table "__yuniqlschemaversions" 
+        [Option("meta-table", Required = false, HelpText = "Table name for schema versions table.")]
+        public string MetaTable { get; set; }
     }
 }

@@ -58,8 +58,8 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             bool? verifyOnly = false,
             string bulkSeparator = null,
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null,
             int? bulkBatchSize = null,
             string appliedByTool = null,
@@ -107,30 +107,30 @@ namespace Yuniql.Core
             }
 
             //check if database has been pre-configured to support migration and setup when its not
-            var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured(schemaName, tableName);
+            var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured(metaSchemaName, metaTableName);
             if (!targetDatabaseConfigured)
             {
                 //create custom schema when user supplied and only if platform supports it
-                if (_dataService.IsSchemaSupported && null != schemaName && !_dataService.SchemaName.Equals(schemaName))
+                if (_dataService.IsSchemaSupported && null != metaSchemaName && !_dataService.SchemaName.Equals(metaSchemaName))
                 {
-                    _traceService.Info($"Target schema does not exist. Creating schema {schemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
-                    _configurationDataService.CreateSchema(schemaName);
-                    _traceService.Info($"Created schema {schemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
+                    _traceService.Info($"Target schema does not exist. Creating schema {metaSchemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
+                    _configurationDataService.CreateSchema(metaSchemaName);
+                    _traceService.Info($"Created schema {metaSchemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
                 }
 
                 //create empty versions tracking table
                 _traceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");
-                _configurationDataService.ConfigureDatabase(schemaName, tableName);
+                _configurationDataService.ConfigureDatabase(metaSchemaName, metaTableName);
                 _traceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
-            var allVersions = _configurationDataService.GetAllVersions(schemaName, tableName)
+            var allVersions = _configurationDataService.GetAllVersions(metaSchemaName, metaTableName)
                 .Select(dv => dv.Version)
                 .OrderBy(v => v)
                 .ToList();
 
             //check if target database already runs the latest version and skips work if it already is
-            var targeDatabaseLatest = IsTargetDatabaseLatest(targetVersion, schemaName, tableName);
+            var targeDatabaseLatest = IsTargetDatabaseLatest(targetVersion, metaSchemaName, metaTableName);
             if (!targeDatabaseLatest)
             {
                 //enclose all executions in a single transaction, in the event of failure we roll back everything
@@ -206,7 +206,7 @@ namespace Yuniql.Core
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts int the vxx.xx folders and subfolders
-                RunVersionScripts(connection, transaction, allVersions, workingPath, targetVersion, null, tokenKeyPairs, bulkSeparator: bulkSeparator, schemaName: schemaName, tableName: tableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
+                RunVersionScripts(connection, transaction, allVersions, workingPath, targetVersion, null, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
 
                 //runs all scripts in the _draft folder and subfolders
                 RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
@@ -244,8 +244,8 @@ namespace Yuniql.Core
             NonTransactionalContext nonTransactionalContext,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null,
             int? bulkBatchSize = null,
             string appliedByTool = null,
@@ -284,22 +284,22 @@ namespace Yuniql.Core
                     scriptSubDirectories.ForEach(scriptSubDirectory =>
                     {
                         //run all scripts in the current version folder
-                        RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, scriptSubDirectory, schemaName, tableName, tokenKeyPairs, commandTimeout, environmentCode);
+                        RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, scriptSubDirectory, metaSchemaName, metaTableName, tokenKeyPairs, commandTimeout, environmentCode);
 
                         //import csv files into tables of the the same filename as the csv
                         RunBulkImport(connection, transaction, workingPath, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
                     });
 
                     //run all scripts in the current version folder
-                    RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, versionDirectory, schemaName, tableName, tokenKeyPairs, commandTimeout, environmentCode);
+                    RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, versionDirectory, metaSchemaName, metaTableName, tokenKeyPairs, commandTimeout, environmentCode);
 
                     //import csv files into tables of the the same filename as the csv
                     RunBulkImport(connection, transaction, workingPath, versionDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
 
                     //update db version
                     _configurationDataService.InsertVersion(connection, transaction, versionName,
-                        schemaName: schemaName,
-                        tableName: tableName,
+                        metaSchemaName: metaSchemaName,
+                        metaTableName: metaTableName,
                         commandTimeout: commandTimeout,
                         appliedByTool: appliedByTool,
                         appliedByToolVersion: appliedByToolVersion);
@@ -322,8 +322,8 @@ namespace Yuniql.Core
             string version,
             string workingPath,
             string scriptDirectory,
-            string schemaName,
-            string tableName,
+            string metaSchemaName,
+            string metaTableName,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             int? commandTimeout = null,
             string environmentCode = null,

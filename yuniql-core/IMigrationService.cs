@@ -36,8 +36,8 @@ namespace Yuniql.Core
         /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
         /// <param name="verifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
         /// <param name="bulkSeparator">Bulk file values separator character in the CSV bulk import files. When NULL, uses comma.</param>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+        /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
         /// <param name="bulkBatchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
         /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
@@ -51,8 +51,8 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokens = null, 
             bool? verifyOnly = null, 
             string bulkSeparator = null,
-            string schemaName = null, 
-            string tableName = null,
+            string metaSchemaName = null, 
+            string metaTableName = null,
             int? commandTimeout = null,
             int? bulkBatchSize = null,
             string appliedByTool = null,
@@ -90,8 +90,8 @@ namespace Yuniql.Core
             NonTransactionalContext nonTransactionalContext,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null,
             int? bulkBatchSize = null,
             string appliedByTool = null,
@@ -117,8 +117,8 @@ namespace Yuniql.Core
             string version,
             string workingPath,
             string scriptDirectory,
-            string schemaName,
-            string tableName,
+            string metaSchemaName,
+            string metaTableName,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             int? commandTimeout = null,
             string environmentCode = null,
