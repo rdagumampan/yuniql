@@ -126,11 +126,11 @@ namespace Yuniql.PlatformTests
             SetupWorkspaceWithSampleDb();
 
             //act & assert
-            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -t v0.00 --schema \"my_schema\" --table \"my_versions\" ");
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -t v0.00 --meta-schema \"my_schema\" --meta-table \"my_versions\" ");
             result.Contains($"Failed to execute run").ShouldBeFalse();
 
             //act & assert
-            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "--schema \"my_schema\" --table \"my_versions\" " +arguments);
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "--meta-schema \"my_schema\" --meta-table \"my_versions\" " + arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
@@ -162,11 +162,11 @@ namespace Yuniql.PlatformTests
             SetupWorkspaceWithSampleDb();
 
             //act & assert
-            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a --schema \"my_schema\" --table \"my_versions\" -d");
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a --meta-schema \"my_schema\" --meta-table \"my_versions\" -d");
             result.Contains($"Failed to execute run").ShouldBeFalse();
 
             //act & assert
-            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "--schema \"my_schema\" --table \"my_versions\" " + arguments);
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "--meta-schema \"my_schema\" --meta-table \"my_versions\" " + arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 

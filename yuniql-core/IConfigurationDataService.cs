@@ -25,59 +25,59 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns true when migration version tracking table is already created.
         /// </summary>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+        /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>Returns true when version tracking table is already created.</returns>
-        bool IsDatabaseConfigured(string schemaName, string tableName, int? commandTimeout = null);
+        bool IsDatabaseConfigured(string metaSchemaName, string metaTableName, int? commandTimeout = null);
 
         /// <summary>
         /// Creates schema in target databases.
         /// </summary>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
-        void CreateSchema(string schemaName, int? commandTimeout = null);
+        void CreateSchema(string metaSchemaName, int? commandTimeout = null);
 
         /// <summary>
         /// Creates migration version tracking table in the target database.
         /// </summary>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+        /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
-        void ConfigureDatabase(string schemaName, string tableName, int? commandTimeout = null);
+        void ConfigureDatabase(string metaSchemaName, string metaTableName, int? commandTimeout = null);
 
         /// <summary>
         /// Updates migration version tracking table in the target database..
         /// </summary>
         /// <returns>True if target database was updated, otherwise returns false</returns>
-        bool UpdateDatabaseConfiguration(string schemaName, string tableName, int? commandTimeout = null);
+        bool UpdateDatabaseConfiguration(string metaSchemaName, string metaTableName, int? commandTimeout = null);
 
         /// <summary>
         /// Returns the latest version applied in the target database.
         /// </summary>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+        /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>Returns the latest version applied in the target database.</returns>
-        string GetCurrentVersion(string schemaName, string tableName, int? commandTimeout = null);
+        string GetCurrentVersion(string metaSchemaName, string metaTableName, int? commandTimeout = null);
 
         /// <summary>
         /// Returns all versions applied in the target database.
         /// </summary>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+        /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>All versions applied in the target database.</returns>
-        public List<DbVersion> GetAllAppliedVersions(string schemaName, string tableName, int? commandTimeout = null);
+        public List<DbVersion> GetAllAppliedVersions(string metaSchemaName, string metaTableName, int? commandTimeout = null);
 
         /// <summary>
         /// Returns all versions applied in the target database.
         /// </summary>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+        /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <returns>All versions applied in the target database.</returns>
-        List<DbVersion> GetAllVersions(string schemaName, string tableName, int? commandTimeout = null);
+        List<DbVersion> GetAllVersions(string metaSchemaName, string metaTableName, int? commandTimeout = null);
 
 
         /// <summary>

@@ -247,7 +247,7 @@ namespace Yuniql.CLI
                 //get all exsiting db versions
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                var versions = migrationService.GetAllVersions(opts.Schema, opts.Table);
+                var versions = migrationService.GetAllVersions(opts.MetaSchema, opts.MetaTable);
 
                 var results = new StringBuilder();
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");

@@ -75,10 +75,10 @@ namespace Yuniql.Core
         }
 
         ///<inheritdoc/>
-        public void CreateSchema(string schemaName, int? commandTimeout = null)
+        public void CreateSchema(string metaSchemaName, int? commandTimeout = null)
         {
             var tokens = new List<KeyValuePair<string, string>> {
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName),
             };
             var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCreateSchema());
             using (var connection = _dataService.CreateConnection())
@@ -93,11 +93,11 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public bool IsDatabaseConfigured(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForCheckIfDatabaseConfigured(), schemaName, tableName);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForCheckIfDatabaseConfigured(), metaSchemaName, metaTableName);
             using (var connection = _dataService.CreateConnection())
             {
                 return connection.QuerySingleBool(
@@ -110,11 +110,11 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public void ConfigureDatabase(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForConfigureDatabase(), schemaName, tableName);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForConfigureDatabase(), metaSchemaName, metaTableName);
             using (var connection = _dataService.CreateConnection())
             {
                 connection.ExecuteNonQuery(
@@ -127,24 +127,24 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public bool UpdateDatabaseConfiguration(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
             using (var connection = _dataService.CreateConnection())
             {
                 connection.KeepOpen();
-                return _dataService.UpdateDatabaseConfiguration(connection, _traceService, schemaName, tableName);
+                return _dataService.UpdateDatabaseConfiguration(connection, _traceService, metaSchemaName, metaTableName);
             }
         }
 
         ///<inheritdoc/>
         public string GetCurrentVersion(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetCurrentVersion(), schemaName, tableName);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetCurrentVersion(), metaSchemaName, metaTableName);
             using (var connection = _dataService.CreateConnection())
             {
                 return connection.QuerySingleString(
@@ -157,11 +157,11 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public List<DbVersion> GetAllAppliedVersions(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
-            return this.GetAllVersions(schemaName, tableName, commandTimeout)
+            return this.GetAllVersions(metaSchemaName, metaTableName, commandTimeout)
                 .Where(x => x.Status == Status.Successful).ToList();
         }
 

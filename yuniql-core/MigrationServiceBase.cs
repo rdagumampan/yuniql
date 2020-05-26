@@ -51,16 +51,16 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
-        public virtual string GetCurrentVersion(string schemaName = null, string tableName = null)
+        public virtual string GetCurrentVersion(string metaSchemaName = null, string metaTableName = null)
         {
-            return _configurationDataService.GetCurrentVersion(schemaName, tableName);
+            return _configurationDataService.GetCurrentVersion(metaSchemaName, metaTableName);
         }
 
         /// <inheritdoc />
         //TODO: Move this to MigrationServiceBase
-        public virtual List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null)
+        public virtual List<DbVersion> GetAllVersions(string metaSchemaName = null, string metaTableName = null)
         {
-            return _configurationDataService.GetAllAppliedVersions(schemaName, tableName);
+            return _configurationDataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
         }
 
         /// <inheritdoc />
@@ -82,10 +82,10 @@ namespace Yuniql.Core
          );
 
         /// <inheritdoc />
-        public virtual bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null)
+        public virtual bool IsTargetDatabaseLatest(string targetVersion, string metaSchemaName = null, string metaTableName = null)
         {
             //get the current version stored in database
-            var remoteCurrentVersion = _configurationDataService.GetCurrentVersion(schemaName, tableName);
+            var remoteCurrentVersion = _configurationDataService.GetCurrentVersion(metaSchemaName, metaTableName);
             if (string.IsNullOrEmpty(remoteCurrentVersion)) return false;
 
             //compare version applied in db vs versions available locally
