@@ -46,7 +46,7 @@ namespace Yuniql.Extensibility
         /// <summary>
         /// The status of version execution
         /// </summary>
-        public StatusId StatusId { get; set; } = StatusId.Succeeded;
+        public Status Status { get; set; } = Status.Successful;
 
         /// <summary>
         /// The full path of last failed script file

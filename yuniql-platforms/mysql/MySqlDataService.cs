@@ -95,7 +95,7 @@ namespace Yuniql.MySql
 	                applied_by_tool VARCHAR(32) NULL,
 	                applied_by_tool_version VARCHAR(16) NULL,
 	                additional_artifacts BLOB NULL,
-                    status_id INT NOT NULL DEFAULT 1 COMMENT '1 - Succeeded, 2 - Failed',
+                    status VARCHAR(32) NOT NULL,
                     failed_script_path VARCHAR(4000) NULL,
                     failed_script_error VARCHAR(4000) NULL,
 	                CONSTRAINT ix___yuniqldbversion UNIQUE (version)
@@ -104,11 +104,11 @@ namespace Yuniql.MySql
 
         ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT version FROM ${YUNIQL_TABLE_NAME} WHERE status_id = 1 ORDER BY sequence_id DESC LIMIT 1;";
+            => @"SELECT version FROM ${YUNIQL_TABLE_NAME} WHERE status = 'Successful' ORDER BY sequence_id DESC LIMIT 1;";
 
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
-            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status_id, failed_script_path, failed_script_error FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
+            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
@@ -116,13 +116,13 @@ namespace Yuniql.MySql
 
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
-            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status_id, failed_script_path, failed_script_error) VALUES (@version, UTC_TIMESTAMP(), CURRENT_USER(), @toolName, @toolVersion, @additionalArtifacts, @statusId, @failedScriptPath, @failedScriptError)
+            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error) VALUES (@version, UTC_TIMESTAMP(), CURRENT_USER(), @toolName, @toolVersion, @additionalArtifacts, @status, @failedScriptPath, @failedScriptError)
                     ON DUPLICATE KEY UPDATE
                     applied_on_utc = VALUES(applied_on_utc),
                     applied_by_user = VALUES(applied_by_user),
                     applied_by_tool = VALUES(applied_by_tool),
                     applied_by_tool_version = VALUES(applied_by_tool_version),
-                    status_id = VALUES(status_id),
+                    status = VALUES(status),
                     failed_script_path = VALUES(failed_script_path),
                     failed_script_error = VALUES(failed_script_error);
             ";
@@ -130,16 +130,14 @@ namespace Yuniql.MySql
         ///<inheritdoc/>
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)
         {
-            DataTable columnsTable = GetVersionTableColumns(dbConnection, traceService, tableName);
-
+            var columnsTable = GetVersionTableColumns(dbConnection, traceService, tableName);
             var columnsTableRows = columnsTable.Rows.Cast<DataRow>().Select(x => new { ColumnName = x.Field<string>("COLUMN_NAME"), ColumnType = x.Field<string>("COLUMN_TYPE") }).ToDictionary(x => x.ColumnName, StringComparer.OrdinalIgnoreCase);
 
-            bool databaseUpdated = false;
-
             //Add new columns into old version of table
-            if (!columnsTableRows.ContainsKey("status_id"))
+            bool databaseUpdated = false;
+            if (!columnsTableRows.ContainsKey("status"))
             {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {tableName ?? this.TableName} ADD COLUMN status_id INT NOT NULL DEFAULT 1 COMMENT '1 - Succeeded, 2 - Failed'", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {tableName ?? this.TableName} ADD COLUMN status VARCHAR(32) NOT NULL", traceService);
                 databaseUpdated = true;
             }
 
@@ -160,7 +158,7 @@ namespace Yuniql.MySql
 
         private DataTable GetVersionTableColumns(IDbConnection dbConnection, ITraceService traceService = null, string tableName = null)
         {
-            MySqlCommand dbCommand = (MySqlCommand)dbConnection.CreateCommand();
+            var dbCommand = (MySqlCommand)dbConnection.CreateCommand();
             dbCommand.CommandText = $"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{tableName ?? this.TableName}' AND table_schema = DATABASE()";
 
             return this.FillDataTable(dbCommand, traceService);
@@ -168,10 +166,8 @@ namespace Yuniql.MySql
 
         private DataTable FillDataTable(MySqlCommand dbCommand, ITraceService traceService = null)
         {
-            if (null != traceService)
-                traceService.Debug($"Executing statement: {Environment.NewLine}{dbCommand.CommandText}");
-
-            DataTable dataTable = new DataTable();
+            traceService?.Debug($"Executing statement: {Environment.NewLine}{dbCommand.CommandText}");
+            var dataTable = new DataTable();
             using (MySqlDataAdapter dataAdapter = new MySqlDataAdapter(dbCommand))
             {
                 dataAdapter.Fill(dataTable);
@@ -181,10 +177,9 @@ namespace Yuniql.MySql
 
         private int ExecuteNonQuery(IDbConnection dbConnection, string commandText, ITraceService traceService = null)
         {
-            if (null != traceService)
-                traceService.Debug($"Executing statement: {Environment.NewLine}{commandText}");
+            traceService?.Debug($"Executing statement: {Environment.NewLine}{commandText}");
 
-            IDbCommand dbCommand = dbConnection.CreateCommand();
+            var dbCommand = dbConnection.CreateCommand();
             dbCommand.CommandText = commandText;
             return dbCommand.ExecuteNonQuery();
         }

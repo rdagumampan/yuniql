@@ -118,10 +118,10 @@ namespace Yuniql.PlatformTests
             //verrity status of migrations
             var versions = _testDataService.GetAllDbVersions(_testConfiguration.ConnectionString);
             versions.Count.ShouldBe(1);
-            versions.Count(s => s.StatusId == StatusId.Failed).ShouldBe(1);
+            versions.Count(s => s.Status == Status.Failed).ShouldBe(1);
 
             var failedVersion = versions.Single();
-            failedVersion.StatusId.ShouldBe(StatusId.Failed);
+            failedVersion.Status.ShouldBe(Status.Failed);
             failedVersion.FailedScriptPath.ShouldBe(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00_01.sql"));
             failedVersion.FailedScriptError.ShouldNotBeNullOrEmpty();
         }
@@ -154,10 +154,10 @@ namespace Yuniql.PlatformTests
             //verrity status of migrations
             var versions = _testDataService.GetAllDbVersions(_testConfiguration.ConnectionString);
             versions.Count.ShouldBe(1);
-            versions.Count(s => s.StatusId == StatusId.Failed).ShouldBe(1);
+            versions.Count(s => s.Status == Status.Failed).ShouldBe(1);
 
             var failedVersion = versions.Single();
-            failedVersion.StatusId.ShouldBe(StatusId.Failed);
+            failedVersion.Status.ShouldBe(Status.Failed);
             failedVersion.FailedScriptPath.ShouldBe(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00_01.sql"));
             failedVersion.FailedScriptError.ShouldNotBeNullOrEmpty();
 
@@ -205,10 +205,10 @@ namespace Yuniql.PlatformTests
             //verrity status of migrations
             var versions = _testDataService.GetAllDbVersions(_testConfiguration.ConnectionString);
             versions.Count.ShouldBe(1);
-            versions.Count(s => s.StatusId == StatusId.Failed).ShouldBe(1);
+            versions.Count(s => s.Status == Status.Failed).ShouldBe(1);
 
             var failedVersion = versions.Single();
-            failedVersion.StatusId.ShouldBe(StatusId.Failed);
+            failedVersion.Status.ShouldBe(Status.Failed);
             failedVersion.FailedScriptPath.ShouldBe(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00_01.sql"));
             failedVersion.FailedScriptError.ShouldNotBeNullOrEmpty();
 
@@ -218,10 +218,10 @@ namespace Yuniql.PlatformTests
             //verrity status of migrations
             var retriedVersions = _testDataService.GetAllDbVersions(_testConfiguration.ConnectionString);
             retriedVersions.Count.ShouldBe(1);
-            retriedVersions.Count(s => s.StatusId == StatusId.Succeeded).ShouldBe(1);
+            retriedVersions.Count(s => s.Status == Status.Successful).ShouldBe(1);
 
             var version = retriedVersions.Single();
-            version.StatusId.ShouldBe(StatusId.Succeeded);
+            version.Status.ShouldBe(Status.Successful);
             version.FailedScriptPath.ShouldBeNullOrEmpty();
             version.FailedScriptError.ShouldBeNullOrEmpty();
         }

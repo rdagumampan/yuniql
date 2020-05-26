@@ -162,7 +162,7 @@ namespace Yuniql.Core
             int? commandTimeout = null)
         {
             return this.GetAllVersions(schemaName, tableName, commandTimeout)
-                .Where(x => x.StatusId == StatusId.Succeeded).ToList();
+                .Where(x => x.Status == Status.Successful).ToList();
         }
 
         ///<inheritdoc/>
@@ -205,7 +205,7 @@ namespace Yuniql.Core
                     //fill up with information only available for platforms not supporting transactional ddl
                     if (!_dataService.IsAtomicDDLSupported)
                     {
-                        dbVersion.StatusId = (StatusId)reader.GetInt32(7);
+                        dbVersion.Status = Enum.Parse<Status>(reader.GetString(7));
                         dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values
                         dbVersion.FailedScriptError = reader.GetValue(9) as string;     //as string handles null values
 
@@ -256,8 +256,8 @@ namespace Yuniql.Core
             {
                 //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
                 sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), schemaName, tableName);
-                var statusId = string.IsNullOrEmpty(failedScriptPath) ? (int)StatusId.Succeeded : (int)StatusId.Failed;
-                command.Parameters.Add(CreateDbParameter("statusId", statusId));
+                var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
+                command.Parameters.Add(CreateDbParameter("status", status));
                 command.Parameters.Add(CreateDbParameter("failedScriptPath", failedScriptPath));
                 command.Parameters.Add(CreateDbParameter("failedScriptError", failedScriptError));
             }

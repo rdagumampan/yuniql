@@ -138,7 +138,7 @@ namespace Yuniql.Core
 
             //check for presence of failed no-transactional versions from previous runs
             var allVersions = _configurationDataService.GetAllVersions(schemaName, tableName);
-            var failedVersion = allVersions.Where(x => x.StatusId == StatusId.Failed).FirstOrDefault();
+            var failedVersion = allVersions.Where(x => x.Status == Status.Failed).FirstOrDefault();
             if (failedVersion != null)
             {
                 //check if user had issue resolving option such as continue on failure

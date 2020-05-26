@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Yuniql.Extensibility
 {
-    public enum StatusId
+    public enum Status
     {
-        Succeeded = 1,
+        Successful = 1,
         Failed = 2
     }
 }
