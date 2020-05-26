@@ -40,15 +40,17 @@ namespace Yuniql.AspNetCore
             migrationService.Run(
                 configuration.WorkspacePath,
                 configuration.TargetVersion,
-                configuration.AutoCreateDatabase,
-                configuration.Tokens,
-                configuration.VerifyOnly,
-                configuration.BulkSeparator,
-                configuration.CommandTimeout,
-                configuration.BatchSize,
-                configuration.ApplyByTool,
-                configuration.ApplyByToolVersion,
-                configuration.Environment);
+                autoCreateDatabase: configuration.AutoCreateDatabase,
+                tokens: configuration.Tokens,
+                verifyOnly: configuration.VerifyOnly,
+                bulkSeparator: configuration.BulkSeparator,
+                metaSchemaName: configuration.MetaSchemaName,
+                metaTableName: configuration.MetaTableName,
+                commandTimeout: configuration.CommandTimeout,
+                bulkBatchSize: configuration.BulkBatchSize,
+                appliedByTool: configuration.ApplyByTool,
+                appliedByToolVersion: configuration.ApplyByToolVersion,
+                environmentCode: configuration.Environment);
 
             return builder;
         }
@@ -76,15 +78,17 @@ namespace Yuniql.AspNetCore
             migrationService.Run(
                 configuration.WorkspacePath,
                 configuration.TargetVersion,
-                configuration.AutoCreateDatabase,
-                configuration.Tokens,
-                configuration.VerifyOnly,
-                configuration.BulkSeparator,
-                configuration.BatchSize,
-                configuration.CommandTimeout,
-                configuration.ApplyByTool,
-                configuration.ApplyByToolVersion,
-                configuration.Environment);
+                autoCreateDatabase: configuration.AutoCreateDatabase,
+                tokens: configuration.Tokens,
+                verifyOnly: configuration.VerifyOnly,
+                bulkSeparator: configuration.BulkSeparator,
+                metaSchemaName: configuration.MetaSchemaName,
+                metaTableName: configuration.MetaTableName,
+                commandTimeout: configuration.CommandTimeout,
+                bulkBatchSize: configuration.BulkBatchSize,
+                appliedByTool: configuration.ApplyByTool,
+                appliedByToolVersion: configuration.ApplyByToolVersion,
+                environmentCode: configuration.Environment);
 
             return builder;
         }

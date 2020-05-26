@@ -52,7 +52,7 @@ namespace Yuniql.AspNetCore
         /// The size of each batch when performing bulk load. Default is 100 rows.
         /// This may not be used in non-sqlserver platforms.
         /// </summary>
-        public int BatchSize { get; set; } = 100;
+        public int BulkBatchSize { get; set; } = 0;
 
         /// <summary>
         /// The time it taks to wait for one commend to execute before it expires and throws error.
@@ -82,5 +82,15 @@ namespace Yuniql.AspNetCore
         /// See https://github.com/rdagumampan/yuniql/wiki/environment-aware-scripts
         /// </summary>
         public string Environment { get; set; } = null;
+
+        /// <summary>
+        /// Schema name for schema versions table.
+        /// </summary>
+        public string MetaSchemaName { get; set; } = null;
+
+        /// <summary>
+        /// Table name for schema versions table.
+        /// </summary>
+        public string MetaTableName { get; set; } = null;
     }
 }
