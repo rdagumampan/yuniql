@@ -6,9 +6,9 @@
     <title>Yuniql</title>
     <summary>An open source schema versioning and database migration engine for SqlServer, PostgreSql and others.</summary>
     <description><![CDATA[    
-Run database migrations and schema versioning with Yuniql. Supports SqlServer, PostgreSql, MySql and others. For samples and developer guide, walk through our [wiki documentation](https://github.com/rdagumampan/yuniql/wiki).
+Run database migrations and schema versioning with Yuniql. Supports SqlServer, PostgreSql, MySql and others. For samples and developer guides, visit https://yuniql.io/docs.
 
-**NOTE: This is a PREVIEW RELEASE. Stay tuned for latest features and releases, star or watch project yuniql on Github. See  https://github.com/rdagumampan/yuniql**
+**NOTE: This is a BETA RELEASE. Stay tuned for latest features and releases, star or watch project yuniql on Github. See  https://github.com/rdagumampan/yuniql**
 
 ![screenshot](https://rawcdn.githack.com/rdagumampan/yuniql/a141e5b5aeda60511d67707ef2d230f81df7807b/assets/wiki-evodb-01.png)
 
