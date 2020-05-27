@@ -51,16 +51,16 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
-        public virtual string GetCurrentVersion(string schemaName = null, string tableName = null)
+        public virtual string GetCurrentVersion(string metaSchemaName = null, string metaTableName = null)
         {
-            return _configurationDataService.GetCurrentVersion(schemaName, tableName);
+            return _configurationDataService.GetCurrentVersion(metaSchemaName, metaTableName);
         }
 
         /// <inheritdoc />
         //TODO: Move this to MigrationServiceBase
-        public virtual List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null)
+        public virtual List<DbVersion> GetAllVersions(string metaSchemaName = null, string metaTableName = null)
         {
-            return _configurationDataService.GetAllAppliedVersions(schemaName, tableName);
+            return _configurationDataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
         }
 
         /// <inheritdoc />
@@ -71,8 +71,8 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             bool? verifyOnly = false,
             string bulkSeparator = null,
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null,
             int? bulkBatchSize = null,
             string appliedByTool = null,
@@ -82,10 +82,10 @@ namespace Yuniql.Core
          );
 
         /// <inheritdoc />
-        public virtual bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null)
+        public virtual bool IsTargetDatabaseLatest(string targetVersion, string metaSchemaName = null, string metaTableName = null)
         {
             //get the current version stored in database
-            var remoteCurrentVersion = _configurationDataService.GetCurrentVersion(schemaName, tableName);
+            var remoteCurrentVersion = _configurationDataService.GetCurrentVersion(metaSchemaName, metaTableName);
             if (string.IsNullOrEmpty(remoteCurrentVersion)) return false;
 
             //compare version applied in db vs versions available locally
@@ -148,8 +148,8 @@ namespace Yuniql.Core
             NonTransactionalContext nonTransactionalContext,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
-            string schemaName = null,
-            string tableName = null,
+            string metaschemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null,
             int? bulkBatchSize = null,
             string appliedByTool = null,
@@ -189,8 +189,8 @@ namespace Yuniql.Core
             string version,
             string workingPath,
             string scriptDirectory,
-            string schemaName,
-            string tableName,
+            string metaSchemaName,
+            string metaTableName,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             int? commandTimeout = null,
             string environmentCode = null,

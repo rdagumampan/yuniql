@@ -134,8 +134,8 @@ namespace Yuniql.CLI
                     tokens: tokens,
                     verifyOnly: false,
                     bulkSeparator: opts.BulkSeparator,
-                    schemaName: opts.Schema,
-                    tableName: opts.Table,
+                    metaSchemaName: opts.MetaSchema,
+                    metaTableName: opts.MetaTable,
                     commandTimeout: opts.CommandTimeout,
                     bulkBatchSize: opts.BulkBatchSize,
                     appliedByTool: toolName,
@@ -204,8 +204,8 @@ namespace Yuniql.CLI
                     tokens: tokens,
                     verifyOnly: true,
                     bulkSeparator: opts.BulkSeparator,
-                    schemaName: opts.Schema,
-                    tableName: opts.Table,
+                    metaSchemaName: opts.MetaSchema,
+                    metaTableName: opts.MetaTable,
                     commandTimeout: opts.CommandTimeout,
                     bulkBatchSize: opts.BulkBatchSize,
                     appliedByTool: toolName,
@@ -247,7 +247,7 @@ namespace Yuniql.CLI
                 //get all exsiting db versions
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                var versions = migrationService.GetAllVersions(opts.Schema, opts.Table);
+                var versions = migrationService.GetAllVersions(opts.MetaSchema, opts.MetaTable);
 
                 var results = new StringBuilder();
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");

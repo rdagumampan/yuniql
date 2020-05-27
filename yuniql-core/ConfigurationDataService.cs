@@ -29,12 +29,12 @@ namespace Yuniql.Core
             _tokenReplacementService = tokenReplacementService;
         }
 
-        private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
+        private string GetPreparedSqlStatement(string sqlStatement, string metaSchemaName, string metaTableName)
         {
             var tokens = new List<KeyValuePair<string, string>> {
              new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName ?? _dataService.SchemaName),
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, tableName?? _dataService.TableName)
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName ?? _dataService.SchemaName),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, metaTableName?? _dataService.TableName)
             };
 
             return _tokenReplacementService.Replace(tokens, sqlStatement);
@@ -75,10 +75,10 @@ namespace Yuniql.Core
         }
 
         ///<inheritdoc/>
-        public void CreateSchema(string schemaName, int? commandTimeout = null)
+        public void CreateSchema(string metaSchemaName, int? commandTimeout = null)
         {
             var tokens = new List<KeyValuePair<string, string>> {
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName),
             };
             var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCreateSchema());
             using (var connection = _dataService.CreateConnection())
@@ -93,11 +93,11 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public bool IsDatabaseConfigured(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForCheckIfDatabaseConfigured(), schemaName, tableName);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForCheckIfDatabaseConfigured(), metaSchemaName, metaTableName);
             using (var connection = _dataService.CreateConnection())
             {
                 return connection.QuerySingleBool(
@@ -110,11 +110,11 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public void ConfigureDatabase(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForConfigureDatabase(), schemaName, tableName);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForConfigureDatabase(), metaSchemaName, metaTableName);
             using (var connection = _dataService.CreateConnection())
             {
                 connection.ExecuteNonQuery(
@@ -127,24 +127,24 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public bool UpdateDatabaseConfiguration(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
             using (var connection = _dataService.CreateConnection())
             {
                 connection.KeepOpen();
-                return _dataService.UpdateDatabaseConfiguration(connection, _traceService, schemaName, tableName);
+                return _dataService.UpdateDatabaseConfiguration(connection, _traceService, metaSchemaName, metaTableName);
             }
         }
 
         ///<inheritdoc/>
         public string GetCurrentVersion(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetCurrentVersion(), schemaName, tableName);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetCurrentVersion(), metaSchemaName, metaTableName);
             using (var connection = _dataService.CreateConnection())
             {
                 return connection.QuerySingleString(
@@ -157,21 +157,21 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public List<DbVersion> GetAllAppliedVersions(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
-            return this.GetAllVersions(schemaName, tableName, commandTimeout)
+            return this.GetAllVersions(metaSchemaName, metaTableName, commandTimeout)
                 .Where(x => x.Status == Status.Successful).ToList();
         }
 
         ///<inheritdoc/>
         public List<DbVersion> GetAllVersions(
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null)
         {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetAllVersions(), schemaName, tableName);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetAllVersions(), metaSchemaName, metaTableName);
             _traceService?.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
 
             var result = new List<DbVersion>();
@@ -223,8 +223,8 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
-            string schemaName = null,
-            string tableName = null,
+            string metaSchemaName = null,
+            string metaTableName = null,
             int? commandTimeout = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
@@ -255,7 +255,7 @@ namespace Yuniql.Core
             if (_dataService is INonTransactionalFlow nonTransactionalDataService)
             {
                 //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
-                sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), schemaName, tableName);
+                sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), metaSchemaName, metaTableName);
                 var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
                 command.Parameters.Add(CreateDbParameter("status", status));
                 command.Parameters.Add(CreateDbParameter("failedScriptPath", failedScriptPath));
@@ -263,7 +263,7 @@ namespace Yuniql.Core
             }
             else
             {
-                sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), schemaName, tableName);
+                sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), metaSchemaName, metaTableName);
             }
 
             //upsert version information
