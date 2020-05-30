@@ -12,10 +12,7 @@ namespace Yuniql.Core
     /// </summary>
     public class TokenReplacementService : ITokenReplacementService
     {
-        /// <summary>
-        /// Constructs a new instance of TokenReplacementService.
-        /// </summary>
-        /// <param name="traceService">Trace service provider where trace messages will be written.</param>
+        ///<inheritdoc/>
         public TokenReplacementService(ITraceService traceService)
         {
             this._traceService = traceService;
@@ -24,12 +21,7 @@ namespace Yuniql.Core
         private const string tokenPattern = @"\${([^}]+)}";
         private readonly ITraceService _traceService;
 
-        /// <summary>
-        /// Runs token replacement process.
-        /// </summary>
-        /// <param name="tokens">List of token Key/Value pairs.</param>
-        /// <param name="sqlStatement">Raw SQL statement where tokens maybe present.</param>
-        /// <returns>SQL statement where tokens are successfully replaced.</returns>
+        ///<inheritdoc/>
         public string Replace(List<KeyValuePair<string, string>> tokens, string sqlStatement)
         {
             //check if the sql statement has tokens in it

@@ -25,19 +25,25 @@ namespace Yuniql.CLI
                     {
                         var dataService = new SqlServerDataService(_traceService);
                         var bulkImportService = new SqlServerBulkImportService(_traceService);
-                        return Create(dataService, bulkImportService);
+                        return dataService.IsAtomicDDLSupported 
+                            ? CreateTransactionalMigrationService(dataService, bulkImportService) 
+                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
                 case SUPPORTED_DATABASES.POSTGRESQL:
                     {
                         var dataService = new PostgreSqlDataService(_traceService);
                         var bulkImportService = new PostgreSqlBulkImportService(_traceService);
-                        return Create(dataService, bulkImportService);
+                        return dataService.IsAtomicDDLSupported
+                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
+                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
                 case SUPPORTED_DATABASES.MYSQL:
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
-                        return Create(dataService, bulkImportService);
+                        return dataService.IsAtomicDDLSupported
+                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
+                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +
@@ -45,7 +51,7 @@ namespace Yuniql.CLI
             }
         }
 
-        private IMigrationService Create(IDataService dataService, IBulkImportService bulkImportService)
+        private IMigrationService CreateTransactionalMigrationService(IDataService dataService, IBulkImportService bulkImportService)
         {
             var localVersionService = new LocalVersionService(_traceService);
             var tokenReplacementService = new TokenReplacementService(_traceService);
@@ -55,6 +61,27 @@ namespace Yuniql.CLI
             var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
 
             var migrationService = new MigrationService(
+                localVersionService,
+                dataService,
+                bulkImportService,
+                configurationService,
+                tokenReplacementService,
+                directoryService,
+                fileService,
+                _traceService);
+            return migrationService;
+        }
+
+        private IMigrationService CreateNonTransactionalMigrationService(IDataService dataService, IBulkImportService bulkImportService)
+        {
+            var localVersionService = new LocalVersionService(_traceService);
+            var tokenReplacementService = new TokenReplacementService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+
+            var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
+
+            var migrationService = new NonTransactionalMigrationService(
                 localVersionService,
                 dataService,
                 bulkImportService,

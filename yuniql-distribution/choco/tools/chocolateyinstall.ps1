@@ -6,7 +6,7 @@ $packageArgs = @{
     packageName     = $packageName
     url             = $packageUrl
     unzipLocation   =  $toolsDir
-    checksum        = '7976CB66DEAAE62619D6319333ABEC640418E7CD2EBBD7E17B89C24A70F1BCC7'
+    checksum        = 'DCF8E0FE8A5568311A9FE611101BE215458E4409ACF5FF340ABCC478D8EE11D6'
     checksumType    = 'sha256'
 }
 

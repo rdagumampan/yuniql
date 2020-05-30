@@ -11,49 +11,37 @@ namespace Yuniql.Core
     {
         private const string ENVIRONMENT_CODE_PREFIX = "_";
 
-        /// <summary>
-        /// Wraps <see cref="Directory.GetDirectories"/>
-        /// </summary>
+        ///<inheritdoc/>
         public string[] GetDirectories(string path, string searchPattern)
         {
             return Directory.GetDirectories(path, searchPattern);
         }
 
-        /// <summary>
-        /// Wraps <see cref="Directory.GetDirectories"/>
-        /// </summary>
+        ///<inheritdoc/>
         public string[] GetAllDirectories(string path, string searchPattern)
         {
             return Directory.GetDirectories(path, searchPattern, SearchOption.AllDirectories);
         }
 
-        /// <summary>
-        /// Wraps <see cref="Directory.GetFiles"/>
-        /// </summary>
+        ///<inheritdoc/>
         public string[] GetFiles(string path, string searchPattern)
         {
             return Directory.GetFiles(path, searchPattern, SearchOption.TopDirectoryOnly);
         }
 
-        /// <summary>
-        /// Wraps <see cref="Directory.GetFiles"/>
-        /// </summary>
+        ///<inheritdoc/>
         public string[] GetAllFiles(string path, string searchPattern)
         {
             return Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories);
         }
 
-        /// <summary>
-        /// Wraps <see cref="Directory.Exists"/>
-        /// </summary>
+        ///<inheritdoc/>
         public bool Exists(string path)
         {
             return Directory.Exists(path);
         }
 
-        /// <summary>
-        /// Returns case insensitive file fullname
-        /// </summary>
+        ///<inheritdoc/>
         public string GetFileCaseInsensitive(string path, string fileName)
         {
             return Directory.GetFiles(path, "*.dll")
@@ -62,6 +50,7 @@ namespace Yuniql.Core
         }
 
         //TODO: improve this code!!!!
+        ///<inheritdoc/>
         public string[] FilterFiles(string workingPath, string environmentCode, List<string> files)
         {
             var rootParts = Split(new DirectoryInfo(workingPath)).ToList();
@@ -97,6 +86,7 @@ namespace Yuniql.Core
             return sqlScriptFiles.ToArray();
         }
 
+        ///<inheritdoc/>
         public string[] FilterDirectories(string workingPath, string environmentCode, List<string> directories)
         {
             throw new System.NotImplementedException();

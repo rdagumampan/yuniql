@@ -7,47 +7,51 @@ using Yuniql.Extensibility.BulkCsvParser;
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.MySql
 {
+    ///<inheritdoc/>
     public class MySqlBulkImportService : IBulkImportService
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
+        ///<inheritdoc/>
         public MySqlBulkImportService(ITraceService traceService)
         {
             this._traceService = traceService;
         }
 
+        ///<inheritdoc/>
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
         }
 
+        ///<inheritdoc/>
         public void Run(
             IDbConnection connection,
             IDbTransaction transaction,
             string fileFullPath,
-            string delimiter = null,
-            int? batchSize = null,
+            string bulkSeparator = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
             //extract destination table name, mysql is case sensitive!
             var tableName = Path.GetFileNameWithoutExtension(fileFullPath);
 
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(connection, fileFullPath, tableName, delimiter);
+            var dataTable = ParseCsvFile(connection, fileFullPath, tableName, bulkSeparator);
 
             //save the csv data into staging sql table
-            BulkCopyWithDataTable(connection, transaction, tableName, dataTable);
+            BulkCopyWithDataTable(connection, transaction, bulkBatchSize, tableName, dataTable);
         }
 
         private DataTable ParseCsvFile(
             IDbConnection connection,
             string fileFullPath,
             string tableName,
-            string delimiter)
+            string bulkSeparator)
         {
-            if (string.IsNullOrEmpty(delimiter))
-                delimiter = ",";
+            if (string.IsNullOrEmpty(bulkSeparator))
+                bulkSeparator = ",";
 
             var csvDatatable = new DataTable();
             string query = $"SELECT * FROM {tableName} LIMIT 0;";
@@ -58,7 +62,7 @@ namespace Yuniql.MySql
 
             using (var csvReader = new CsvTextFieldParser(fileFullPath))
             {
-                csvReader.Delimiters = (new string[] { delimiter });
+                csvReader.Separators = (new string[] { bulkSeparator });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 //skipped the first row
@@ -87,8 +91,9 @@ namespace Yuniql.MySql
         //NOTE: This is not the most typesafe and performant way to do this and this is just to demonstrate
         //possibility to bulk import data in custom means during migration execution
         private void BulkCopyWithDataTable(
-            IDbConnection connection, 
+            IDbConnection connection,
             IDbTransaction transaction,
+            int? bulkBatchSize,
             string tableName,
             DataTable dataTable)
         {
@@ -102,7 +107,7 @@ namespace Yuniql.MySql
 
                 using (var adapter = new MySqlDataAdapter(cmd))
                 {
-                    adapter.UpdateBatchSize = 10000;
+                    adapter.UpdateBatchSize = bulkBatchSize.HasValue ? bulkBatchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE; ;
                     using (var cb = new MySqlCommandBuilder(adapter))
                     {
                         cb.SetAllValues = true;

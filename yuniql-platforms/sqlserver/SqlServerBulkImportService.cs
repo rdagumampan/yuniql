@@ -7,27 +7,31 @@ using Yuniql.Extensibility.BulkCsvParser;
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.SqlServer
 {
+    ///<inheritdoc/>
     public class SqlServerBulkImportService : IBulkImportService
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
+        ///<inheritdoc/>
         public SqlServerBulkImportService(ITraceService traceService)
         {
             this._traceService = traceService;
         }
 
+        ///<inheritdoc/>
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
         }
 
+        ///<inheritdoc/>
         public void Run(
             IDbConnection connection,
             IDbTransaction transaction,
             string fileFullPath,
-            string delimiter = null,
-            int? batchSize = null,
+            string bulkSeparator = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
             //check if a non-default dbo schema is used
@@ -40,7 +44,7 @@ namespace Yuniql.SqlServer
             }
 
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(fileFullPath, delimiter);
+            var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(
@@ -49,21 +53,21 @@ namespace Yuniql.SqlServer
                 schemaName,
                 tableName,
                 dataTable,
-                batchSize,
+                bulkBatchSize,
                 commandTimeout);
         }
 
         private DataTable ParseCsvFile(
             string csvFileFullPath,
-            string delimiter = null)
+            string bulkSeparator = null)
         {
-            if (string.IsNullOrEmpty(delimiter))
-                delimiter = ",";
+            if (string.IsNullOrEmpty(bulkSeparator))
+                bulkSeparator = ",";
 
             var csvDatatable = new DataTable();
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
-                csvReader.Delimiters = (new string[] { delimiter });
+                csvReader.Separators = (new string[] { bulkSeparator });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 string[] csvColumns = csvReader.ReadFields();
@@ -96,14 +100,14 @@ namespace Yuniql.SqlServer
             string schemaName,
             string tableName,
             DataTable dataTable,
-            int? batchSize = null,
+            int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
             using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
             {
                 sqlBulkCopy.DestinationTableName = $"[{schemaName}].[{tableName}]";
                 sqlBulkCopy.BulkCopyTimeout = commandTimeout.HasValue ? commandTimeout.Value : DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS;
-                sqlBulkCopy.BatchSize = batchSize.HasValue ? batchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE;
+                sqlBulkCopy.BatchSize = bulkBatchSize.HasValue ? bulkBatchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE;
                 sqlBulkCopy.EnableStreaming = true;
                 sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
                 foreach (var column in dataTable.Columns)

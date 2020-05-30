@@ -7,9 +7,7 @@ namespace Yuniql.Core
     /// </summary>
     public class EnvironmentService: IEnvironmentService
     {
-        /// <summary>
-        /// Returns the current directory where yuniql is executed from.
-        /// </summary>
+        ///<inheritdoc/>
         public string GetCurrentDirectory()
         {
             return Environment.CurrentDirectory;
@@ -18,13 +16,7 @@ namespace Yuniql.Core
         //extracts the environment variable with special consideration when its running on windows
         //https://docs.microsoft.com/en-us/dotnet/api/system.environment.getenvironmentvariable?view=netcore-3.0
 
-        /// <summary>
-        /// Extract values of environment variable with respect to OS platform.
-        /// For Windows, the order of ENV variable search is Machine -> User -> Process.
-        /// For Linux, it will always use Process.
-        /// </summary>
-        /// <param name="name">Environment varible name.</param>
-        /// <returns>Value of the environment variable.</returns>
+        ///<inheritdoc/>
         public string GetEnvironmentVariable(string name)
         {
             string result = null;

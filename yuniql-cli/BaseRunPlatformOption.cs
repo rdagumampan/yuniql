@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Yuniql.CLI
 {
-
     public class BaseRunPlatformOption : BasePlatformOption
     {
         //yuniql <command> -t v1.05 | --target-version v1.05
@@ -19,20 +18,24 @@ namespace Yuniql.CLI
         [Option('k', "token", Required = false, HelpText = "Replace tokens using the passed key-value pairs.", Separator = ',')]
         public IEnumerable<string> Tokens { get; set; } = new List<string>();
 
-        //yuniql <command> --delimeter "," | --delimeter "|"
-        [Option("delimiter", Required = false, HelpText = "Bulk import file delimiter.", Default = ",")]
-        public string Delimiter { get; set; } = ",";
+        //yuniql <command> --bulk-separator "," | --bulk-separator "|"
+        [Option("bulk-separator", Required = false, HelpText = "Bulk import file values separator.", Default = ",")]
+        public string BulkSeparator { get; set; } = ",";
+
+        //yuniql <command> --bulk-separator "," | --bulk-separator "|"
+        [Option("bulk-batch-size", Required = false, HelpText = "Bulk import batch size for platforms supporting batch rows.", Default = 0)]
+        public int BulkBatchSize { get; set; } = 0;
 
         //yuniql <command> --environment "DEV" | --environment "PROD"
         [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts.")]
         public string Environment { get; set; }
 
-        //yuniql <command> --schema "yuniql" 
-        [Option("schema", Required = false, HelpText = "Schema name for schema versions table.")]
-        public string Schema { get; set; }
+        //yuniql <command> --meta-schema "yuniql" 
+        [Option("meta-schema", Required = false, HelpText = "Schema name for schema versions table.")]
+        public string MetaSchema { get; set; }
 
-        //yuniql <command> --table "__yuniqlschemaversions" 
-        [Option("table", Required = false, HelpText = "Table name for schema versions table.")]
-        public string Table { get; set; }
+        //yuniql <command> --meta-table "__yuniqlschemaversions" 
+        [Option("meta-table", Required = false, HelpText = "Table name for schema versions table.")]
+        public string MetaTable { get; set; }
     }
 }

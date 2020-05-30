@@ -1,6 +1,6 @@
 ### Database migration project
 This database migration project is created and to be executed thru `yuniql`. 
-For more how-to guides and deep-divers, please visit yuniql [wiki page on github](https://github.com/rdagumampan/yuniql/wiki).
+For more how-to guides, samples and developer guides, walk through our [documentation](https://yuniql.io/docs) and bookmark [https://yuniql.io](https://yuniql.io).
 
 #### Run this migration with yuniql on docker
 
