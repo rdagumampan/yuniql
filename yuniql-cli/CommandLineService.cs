@@ -47,8 +47,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute init function. {Environment.NewLine}{ex.ToString()}");
-                return 1;
+                return OnException(ex, "Failed to execute init function", opts.Debug, _traceService);
             }
         }
 
@@ -78,8 +77,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute vnext function. {Environment.NewLine}{ex.ToString()}");
-                return 1;
+                return OnException(ex, "Failed to execute vnext function", opts.Debug, _traceService);
             }
         }
 
@@ -147,8 +145,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute run function. {Environment.NewLine}{ex.ToString()}");
-                return 1;
+                return OnException(ex, "Failed to execute run function", opts.Debug, _traceService);
             }
         }
 
@@ -219,8 +216,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute verification function. Target database will be rolled back to its previous state. {Environment.NewLine}{ex.ToString()}");
-                return 1;
+                return OnException(ex, "Failed to execute verification function. Target database will be rolled back to its previous state", opts.Debug, _traceService);
             }
         }
 
@@ -261,8 +257,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
-                return 1;
+                return OnException(ex, "Failed to execute info function", opts.Debug, _traceService);
             }
         }
 
@@ -305,8 +300,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
-                return 1;
+                return OnException(ex, "Failed to execute erase function", opts.Debug, _traceService);
             }
         }
 
@@ -318,8 +312,8 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
-                return 1;
+                return OnException(ex, "Failed to execute baseline function", opts.Debug, _traceService);
+
             }
         }
 
@@ -331,12 +325,12 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
-                return 1;
+                return OnException(ex, "Failed to execute rebase function", opts.Debug, _traceService);
+
             }
         }
 
-        public int RunArchiveOption(ArchiveOption Opts)
+        public int RunArchiveOption(ArchiveOption opts)
         {
             try
             {
@@ -344,9 +338,15 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Failed to execute info function. {Environment.NewLine}{ex.ToString()}");
-                return 1;
+                return OnException(ex, "Failed to archive function", opts.Debug, _traceService);
             }
+        }
+
+        private int OnException(Exception ex, string headerMsg, bool debug, ITraceService traceService) 
+        {
+            var userMsg = debug ? ex.ToString() : ex.Message;
+            traceService.Error($"{headerMsg}.{Environment.NewLine}{userMsg}");
+            return 1;
         }
     }
 }

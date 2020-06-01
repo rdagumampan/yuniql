@@ -374,5 +374,35 @@ namespace Yuniql.UnitTests
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
                 ), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null));
         }
+
+        [DataTestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void Test_StackTrace_Shown_Depending_On_Debug_Flag(bool isDebug)
+        {
+            //arrange
+            var errorTraceMsg = string.Empty;
+            var traceService = new Mock<ITraceService>();
+            traceService.Setup(s => s.Error(It.IsAny<string>(), null))
+                        .Callback<string, object>((msg, o) => errorTraceMsg = msg);
+            
+            var exc = new Exception("Fake exception");
+            var environmentService = new Mock<IEnvironmentService>();
+            environmentService.Setup(s => s.GetCurrentDirectory()).Throws(exc);
+
+            //act
+            var option = new RunOption{ Debug = isDebug};
+            var sut = new CommandLineService(null, null, environmentService.Object, traceService.Object);
+
+            var returnCode = sut.RunMigration(option);
+
+            //assert
+            if (isDebug) {
+                errorTraceMsg.ShouldContain(exc.StackTrace);
+            }
+            else { 
+                errorTraceMsg.ShouldNotContain(exc.StackTrace);
+            }
+        }
     }
 }
