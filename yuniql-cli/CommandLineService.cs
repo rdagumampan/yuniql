@@ -342,11 +342,11 @@ namespace Yuniql.CLI
             }
         }
 
-        private int OnException(Exception ex, string headerMsg, bool debug, ITraceService traceService) 
+        private int OnException(Exception exception, string headerMessage, bool debug, ITraceService traceService) 
         {
-            var userMsg = debug ? ex.ToString() : $"Arrg... something seems broken. {ex.Message} {ex.InnerException?.Message}";
-            traceService.Error($"{headerMsg}. " +
-                $"Error message: {userMsg} " +
+            var userMessage = debug ? exception.ToString() : $"{exception.Message} {exception.InnerException?.Message}";
+            traceService.Error($"{headerMessage}. Arrg... something seems broken.{Environment.NewLine}" +
+                $"Internal error message: {userMessage}. " +
                 $"If you think this is a bug, please report issue https://github.com/rdagumampan/yuniql/issues.");
             return 1;
         }
