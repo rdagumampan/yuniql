@@ -25,7 +25,8 @@ namespace Yuniql
                 VerifyOption,
                 EraseOption,
                 BaselineOption,
-                RebaseOption>(args)
+                RebaseOption,
+                ArchiveOption>(args)
               .MapResult(
                 (InitOption opts) =>
                 {

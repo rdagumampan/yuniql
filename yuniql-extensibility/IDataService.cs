@@ -109,9 +109,24 @@ namespace Yuniql.Extensibility
         public string GetSqlForGetAllVersions();
 
         /// <summary>
+        /// Returns the SQL statement to use for getting all versions applied in the target database formatted as JSON
+        /// </summary>
+        public string GetSqlForGetAllVersionAsJson();
+
+        /// <summary>
+        /// Returns the SQL statement to use for deleting all versions in the target database
+        /// </summary>
+        public string GetSqlForClearAllVersions();
+
+        /// <summary>
         /// Returns the SQL statement to use for creating new entry into migration tracking table.
         /// </summary>
         public string GetSqlForInsertVersion();
+
+        /// <summary>
+        /// Returns the SQL statement to use for creating new entry into migration tracking table.
+        /// </summary>
+        public string GetSqlForInsertVersionWithArtifact();
 
         /// <summary>
         /// Updates the database migration tracking table.

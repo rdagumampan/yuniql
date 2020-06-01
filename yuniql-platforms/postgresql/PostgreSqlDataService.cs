@@ -104,6 +104,16 @@ namespace Yuniql.PostgreSql
         public string GetSqlForGetAllVersions()
             => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
 
+        public string GetSqlForGetAllVersionAsJson()
+            => @"SELECT json_agg(t)::jsonb FROM
+            (SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} ORDER BY version ASC) t;";
+            
+        public string GetSqlForInsertVersionWithArtifact()
+            => @"INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version, additional_artifacts) VALUES ('{0}', '{1}', '{2}', '{3}');";
+
+        public string GetSqlForClearAllVersions()
+            => @"TRUNCATE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}  CASCADE;";
+            
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version, additional_artifacts) VALUES (@version, @toolName, @toolVersion, @additionalArtifacts);";
