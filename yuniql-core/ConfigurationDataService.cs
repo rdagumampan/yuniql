@@ -218,63 +218,7 @@ namespace Yuniql.Core
             return result;
         }
 
-        /// <summary>
-        /// Returns all versions applied in the target database as json format
-        /// </summary>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-        /// <param name="commandTimeout">Command timeout in seconds.</param>
-        /// <returns>All versions applied in the target database.</returns>
-        public string GetAllVersionsAsJson(
-            string schemaName = null,
-            string tableName = null,
-            int? commandTimeout = null)
-        {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetAllVersionAsJson(), schemaName, tableName);
-            using (var connection = _dataService.CreateConnection())
-            {
-                return connection.QuerySingleString(
-                    commandText: sqlStatement,
-                    commandTimeout: commandTimeout,
-                    transaction: null,
-                    traceService: _traceService);
-            }
-        }
-
-        /// <summary>
-        /// Clear all existing versions
-        /// </summary>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-        /// <param name="commandTimeout">Command timeout in seconds.</param>
-        /// <returns>All versions applied in the target database.</returns>
-        public int ClearAllVersions(
-            string schemaName = null,
-            string tableName = null,
-            int? commandTimeout = null)
-        {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForClearAllVersions(), schemaName, tableName);
-            using (var connection = _dataService.CreateConnection())
-            {
-                return connection.ExecuteNonQuery(
-                    commandText: sqlStatement,
-                    commandTimeout: commandTimeout,
-                    transaction: null,
-                    traceService: _traceService);
-            }
-        }
-
-        /// <summary>
-        /// Creates new entry to version tracking table after all versions were successfully executed.
-        /// </summary>
-        /// <param name="connection">Connection to target database. Connection will be open automatically.</param>
-        /// <param name="transaction">An active transaction.</param>
-        /// <param name="version">Migration version.</param>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-        /// <param name="commandTimeout">Command timeout in seconds.</param>
-        /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
-        /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
+        ///<inheritdoc/>
         public void InsertVersion(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -325,8 +269,7 @@ namespace Yuniql.Core
             //upsert version information
             command.CommandText = sqlStatement;
             command.ExecuteNonQuery();
-            
-            ///<inheritdoc/>
+
             //local function
             IDbDataParameter CreateDbParameter(string name, object value)
             {
@@ -337,56 +280,8 @@ namespace Yuniql.Core
                 return parameter;
             }
         }
-  
-        /// <summary>
-        /// Creates new entry to version tracking table, with artifact information, after all versions were successfully executed.
-        /// </summary>
-        /// <param name="connection">Connection to target database. Connection will be open automatically.</param>
-        /// <param name="transaction">An active transaction.</param>
-        /// <param name="version">Migration version.</param>
-        /// <param name="schemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-        /// <param name="tableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-        /// <param name="commandTimeout">Command timeout in seconds.</param>
-        /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
-        /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
-        /// <param name="artifactInfo">Additonal Artifacts.</param>
-        public void InsertVersionWithArtifact(
-            IDbConnection connection,
-            IDbTransaction transaction,
-            string version,
-            string schemaName = null,
-            string tableName = null,
-            int? commandTimeout = null,
-            string appliedByTool = null,
-            string appliedByToolVersion = null,
-            string artifactInfo = null)
-        {
-            var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
-            var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? this.GetType().Assembly.GetName().Version.ToString() : appliedByToolVersion;
-            var AdditionalArtifacts = string.IsNullOrEmpty(artifactInfo) ? string.Empty : artifactInfo;
-            var sqlStatement = string.Format(GetPreparedSqlStatement(_dataService.GetSqlForInsertVersionWithArtifact(), schemaName, tableName), version, toolName, $"v{toolVersion}", AdditionalArtifacts);
 
-            if (null != _traceService)
-                _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
-
-            var command = connection
-                .KeepOpen()
-                .CreateCommand(
-                commandText: sqlStatement,
-                commandTimeout: commandTimeout,
-                transaction: transaction);
-            command.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Executes sql statement to target database.
-        /// </summary>
-        /// <param name="connection">Connection to target database. Connection will be open automatically.</param>
-        /// <param name="commandText">The sql statement.</param>
-        /// <param name="commandTimeout">Command timeout in seconds.</param>
-        /// <param name="transaction">An active transaction.</param>
-        /// <param name="traceService">Trace service provider where trace messages will be written to.</param>
-        /// <returns></returns>
+        ///<inheritdoc/>
         public int ExecuteSql(
             IDbConnection connection,
             string commandText,
