@@ -344,8 +344,10 @@ namespace Yuniql.CLI
 
         private int OnException(Exception ex, string headerMsg, bool debug, ITraceService traceService) 
         {
-            var userMsg = debug ? ex.ToString() : ex.Message;
-            traceService.Error($"{headerMsg}.{Environment.NewLine}{userMsg}");
+            var userMsg = debug ? ex.ToString() : $"Arrg... something seems broken. {ex.Message} {ex.InnerException?.Message}";
+            traceService.Error($"{headerMsg}. " +
+                $"Error message: {userMsg} " +
+                $"If you think this is a bug, please report issue https://github.com/rdagumampan/yuniql/issues.");
             return 1;
         }
     }
