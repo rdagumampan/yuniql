@@ -120,16 +120,6 @@ namespace Yuniql.SqlServer
         public string GetSqlForInsertVersion()
             => @"INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion, AdditionalArtifacts) VALUES (@version, @toolName, @toolVersion, @additionalArtifacts);";
 
-        public string GetSqlForInsertVersionWithArtifact()
-            => @"INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion, AdditionalArtifacts) VALUES ('{0}','{1}','{2}',CONVERT(VARBINARY(max),'{3}'));";
-
-        public string GetSqlForGetAllVersionAsJson()
-            => @"SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser, AppliedByTool, AppliedByToolVersion FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY Version ASC
-            FOR JSON PATH;";
-
-        public string GetSqlForClearAllVersions()
-            => @"TRUNCATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}];";
-            
         ///<inheritdoc/>
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)
         {

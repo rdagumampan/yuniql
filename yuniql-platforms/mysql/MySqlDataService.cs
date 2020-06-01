@@ -105,10 +105,6 @@ namespace Yuniql.MySql
         ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
             => @"SELECT version FROM ${YUNIQL_TABLE_NAME} WHERE status = 'Successful' ORDER BY sequence_id DESC LIMIT 1;";
-            
-        public string GetSqlForGetAllVersionAsJson()
-            => @"SELECT JSON_ARRAYAGG(JSON_OBJECT('sequence_id', sequence_id, 'version', version, 'applied_on_utc', applied_on_utc, 'applied_by_user', applied_by_user, 'applied_by_tool', applied_by_tool, 'applied_by_tool_version', applied_by_tool_version))
-            FROM ${YUNIQL_TABLE_NAME};";
 
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
@@ -199,11 +195,5 @@ namespace Yuniql.MySql
             result = null;
             return false;
         }
-        
-        public string GetSqlForInsertVersionWithArtifact()
-            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts) VALUES ('{0}', UTC_TIMESTAMP(), CURRENT_USER(), '{1}', '{2}', '{3}');";
-
-        public string GetSqlForClearAllVersions()
-            => @"TRUNCATE ${YUNIQL_TABLE_NAME};";
     }
 }
