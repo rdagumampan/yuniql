@@ -1,6 +1,8 @@
 ﻿using Yuniql.CLI;
 using Yuniql.Core;
 using CommandLine;
+using System;
+using Yuniql.Extensibility;
 
 namespace Yuniql
 {
@@ -27,54 +29,23 @@ namespace Yuniql
                 BaselineOption,
                 RebaseOption>(args)
               .MapResult(
-                (InitOption opts) =>
-                {
-                    traceService.IsDebugEnabled = opts.Debug;
-                    return commandLineService.RunInitOption(opts);
-                },
-                (RunOption opts) =>
-                {
-                    traceService.IsDebugEnabled = opts.Debug;
-                    return commandLineService.RunMigration(opts);
-                },
-                (NextVersionOption opts) =>
-                {
-                    traceService.IsDebugEnabled = opts.Debug;
-                    return commandLineService.IncrementVersion(opts);
-                },
-                (InfoOption opts) =>
-                {
-                    traceService.IsDebugEnabled = opts.Debug;
-                    return commandLineService.RunInfoOption(opts);
-                },
-                (VerifyOption opts) =>
-                {
-                    traceService.IsDebugEnabled = opts.Debug;
-                    return commandLineService.RunVerify(opts);
-                },
-                (EraseOption opts) =>
-                {
-                    traceService.IsDebugEnabled = opts.Debug;
-                    return commandLineService.RunEraseOption(opts);
-                },
-                (BaselineOption opts) =>
-                {
-                    traceService.IsDebugEnabled = opts.Debug;
-                    return commandLineService.RunBaselineOption(opts);
-                },
-                (RebaseOption opts) =>
-                {
-                    traceService.IsDebugEnabled = opts.Debug;
-                    return commandLineService.RunRebaseOption(opts);
-                },
-                (ArchiveOption opts) =>
-                {
-                    traceService.IsDebugEnabled = opts.Debug;
-                    return commandLineService.RunArchiveOption(opts);
-                },
+                (InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
+                (RunOption opts) => Dispatch(commandLineService.RunMigration, opts, traceService),
+                (NextVersionOption opts) => Dispatch(commandLineService.IncrementVersion, opts, traceService),
+                (InfoOption opts) => Dispatch(commandLineService.RunInfoOption, opts, traceService),
+                (VerifyOption opts) => Dispatch(commandLineService.RunVerify, opts, traceService),
+                (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
+                (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
+                (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
+                (ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
                 errs => 1);
 
             return resultCode;
+        }
+
+        private static int Dispatch<T>(Func<T, int> command, T opts, ITraceService traceService) where T : BaseOption {
+            traceService.IsDebugEnabled = opts.Debug;
+            return command.Invoke(opts);
         }
     }
 }

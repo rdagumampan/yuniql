@@ -6,6 +6,7 @@ using Moq;
 using Yuniql.Extensibility;
 using Yuniql.Core;
 using Shouldly;
+using CommandLine;
 
 namespace Yuniql.UnitTests
 {
@@ -223,6 +224,25 @@ namespace Yuniql.UnitTests
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
                 ), DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, null));
+        }
+
+        [DataTestMethod]
+        [DataRow("--force", 0)]
+        [DataRow("-f", 0)]
+        [DataRow("", 1)]
+        public void Test_Erase_Require_Force_Flag(string forceFlag, int expectedResultCode) {
+            // arrange
+            var eraseVerbAttribute = Attribute.GetCustomAttribute(typeof(EraseOption), typeof(VerbAttribute));
+            var eraseVerbName = ((VerbAttribute)eraseVerbAttribute).Name;
+            var args = new string[] {eraseVerbName, forceFlag};
+            
+            // act
+            var resultCode = Parser.Default.ParseArguments<EraseOption>(args)
+                                    .MapResult((EraseOption sut) => 0,
+                                                errs => 1);
+            
+            // assert
+            resultCode.ShouldBeEquivalentTo(expectedResultCode);
         }
 
         [TestMethod]
