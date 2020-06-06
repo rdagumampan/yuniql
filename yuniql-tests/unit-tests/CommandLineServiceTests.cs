@@ -413,37 +413,6 @@ namespace Yuniql.UnitTests
                 ), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, false));
         }
 
-        [TestMethod]
-        public void Test_Run_Option_No_Transaction()
-        {
-            //arrange
-            var traceService = new Mock<ITraceService>();
-            var environmentService = new Mock<IEnvironmentService>();
-            environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
-            environmentService.Setup(s => s.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")).Returns("sqlserver-connection-string");
-
-            var localVersionService = new Mock<ILocalVersionService>();
-            localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
-
-            var migrationService = new Mock<IMigrationService>();
-            var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
-            migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
-
-            //act
-            var option = new RunOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.RunMigration(option);
-
-            //assert
-            var toolName = "yuniql-cli";
-            var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
-
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), 
-                                        false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, 
-                                        toolVersion, null, null, false));
-        }
-
         [DataTestMethod]
         [DataRow(true)]
         [DataRow(false)]
