@@ -8,6 +8,7 @@ using System.Data;
 using System.IO;
 using System;
 using Yuniql.PlatformTests;
+using Yuniql.CLI;
 
 namespace Yuniql.UnitTests
 {
@@ -550,6 +551,44 @@ namespace Yuniql.UnitTests
             connection.Verify(s => s.Open());
             connection.Verify(s => s.BeginTransaction());
             transaction.Verify(s => s.Rollback());
+        }
+
+
+        [DataTestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void Test_Run_NoTransaction_Option(bool noTransactionOption)
+        {
+            //arrange
+            var transaction = new Mock<IDbTransaction>();
+            var connection = new Mock<IDbConnection>();
+            connection.Setup(c => c.BeginTransaction())
+                      .Returns(transaction.Object);
+
+            var dataService = new Mock<IDataService>();
+            dataService.Setup(s => s.CreateConnection())
+                                    .Returns(connection.Object);
+            dataService.Setup(s => s.GetConnectionInfo())
+                                    .Returns(() => new ConnectionInfo {  Database = "test", DataSource = "test"});
+            var configurationDataService = new Mock<IConfigurationDataService>();
+            configurationDataService.Setup(s => s.IsDatabaseConfigured(It.IsAny<string>(), It.IsAny<string>(), null))
+                                    .Returns(true);
+            configurationDataService.Setup(s => s.GetCurrentVersion(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+                                    .Returns(string.Empty);
+            configurationDataService.Setup(s => s.GetAllVersions(It.IsAny<string>(), It.IsAny<string>(), null))
+                                    .Returns(new List<DbVersion>());
+
+            //act
+            var option = new RunOption {  NoTransaction = noTransactionOption };
+            var sut = new MigrationService(new Mock<ILocalVersionService>().Object, dataService.Object, new Mock<IBulkImportService>().Object, 
+                                           configurationDataService.Object, new Mock<ITokenReplacementService>().Object, 
+                                           new Mock<IDirectoryService>().Object, new Mock<IFileService>().Object, new Mock<ITraceService>().Object);
+            sut.Run(string.Empty, metaSchemaName: "any", metaTableName: "any", noTransaction: noTransactionOption);
+
+            // assert
+            connection.Verify(c => c.BeginTransaction(), noTransactionOption == true ? Times.Never() : Times.AtLeastOnce());
+            transaction.Verify(t => t.Commit(), noTransactionOption == true ? Times.Never() : Times.AtLeastOnce());
+            transaction.Verify(t => t.Rollback(), noTransactionOption == true ? Times.Never() : Times.AtMostOnce());
         }
     }
 }
