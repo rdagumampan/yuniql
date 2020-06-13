@@ -19,5 +19,10 @@
         /// MySql
         /// </summary>
         public const string MYSQL = "mysql";
+
+        /// <summary>
+        /// MariaDB
+        /// </summary>
+        public const string MARIADB = "mariadb";
     }
 }
