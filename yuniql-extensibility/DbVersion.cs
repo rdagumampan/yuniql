@@ -10,7 +10,7 @@ namespace Yuniql.Extensibility
         /// <summary>
         /// Unique sequence id for the version.
         /// </summary>
-        public int SequenceId { get; set; }
+        public Int64 SequenceId { get; set; }
 
         /// <summary>
         /// The version itself as reflected in the directory structure.

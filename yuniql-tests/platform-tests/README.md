@@ -52,7 +52,7 @@ The tests automatically deploy a Docker container and perform tests against it. 
 	dotnet test -v n
 	```
 
-## Running platform tests for PostgreSql
+## Running platform tests for PostgreSql, CockroachDB, Aurora PostgreSql
 
 1. Configure your connection string
 
@@ -79,7 +79,7 @@ The tests automatically deploy a Docker container and perform tests against it. 
 	dotnet test -v n
 	```
 
-## Running platform tests for MySql, MariaDB
+## Running platform tests for MySql, MariaDB, Aurora MySql
 
 1. Configure your connection string
 

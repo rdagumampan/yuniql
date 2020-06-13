@@ -187,7 +187,7 @@ namespace Yuniql.Core
                 {
                     var dbVersion = new DbVersion
                     {
-                        SequenceId = reader.GetInt16(0),
+                        SequenceId = reader.GetInt64(0),
                         Version = reader.GetString(1),
                         AppliedOnUtc = reader.GetDateTime(2),
                         AppliedByUser = reader.GetString(3),

@@ -53,6 +53,14 @@ namespace Yuniql.CLI
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
+                case SUPPORTED_DATABASES.COCKROACHDB:
+                    {
+                        var dataService = new PostgreSqlDataService(_traceService);
+                        var bulkImportService = new PostgreSqlBulkImportService(_traceService);
+                        return dataService.IsAtomicDDLSupported
+                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
+                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
+                    }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +
                         $"See WIKI for supported database platforms and usage guide.");

@@ -36,6 +36,10 @@ namespace Yuniql.PlatformTests
                     {
                         return new MySqlTestDataService(new MySqlDataService(traceService), tokenReplacementService);
                     }
+                case SUPPORTED_DATABASES.COCKROACHDB:
+                    {
+                        return new PostgreSqlTestDataService(new PostgreSqlDataService(traceService), tokenReplacementService);
+                    }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +
                         $"See WIKI for supported database platforms and usage guide.");

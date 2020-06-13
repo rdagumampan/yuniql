@@ -24,5 +24,10 @@
         /// MariaDB
         /// </summary>
         public const string MARIADB = "mariadb";
+
+        /// <summary>
+        /// CockroachDB
+        /// </summary>
+        public const string COCKROACHDB = "cockroachdb";
     }
 }
