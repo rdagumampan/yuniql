@@ -65,7 +65,8 @@ namespace Yuniql.Core
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null,
-            NonTransactionalResolvingOption? resumeFromFailure = null
+            NonTransactionalResolvingOption? resumeFromFailure = null,
+            bool noTransaction = false
          )
         {
             //check the workspace structure if required directories are present
@@ -137,7 +138,7 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = connection.BeginTransaction())
+                    using (var transaction = noTransaction ? null : connection.BeginTransaction())
                     {
                         try
                         {
@@ -147,13 +148,13 @@ namespace Yuniql.Core
                             //when true, the execution is an uncommitted transaction 
                             //and only for purpose of testing if all can go well when it run to the target environment
                             if (verifyOnly.HasValue && verifyOnly == true)
-                                transaction.Rollback();
+                                transaction?.Rollback();
                             else
-                                transaction.Commit();
+                                transaction?.Commit();
                         }
                         catch (Exception)
                         {
-                            transaction.Rollback();
+                            transaction?.Rollback();
                             throw;
                         }
                     }
@@ -165,7 +166,7 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = connection.BeginTransaction())
+                    using (var transaction = noTransaction ? null : connection.BeginTransaction())
                     {
                         try
                         {
@@ -175,13 +176,13 @@ namespace Yuniql.Core
                             //when true, the execution is an uncommitted transaction 
                             //and only for purpose of testing if all can go well when it run to the target environment
                             if (verifyOnly.HasValue && verifyOnly == true)
-                                transaction.Rollback();
+                                transaction?.Rollback();
                             else
-                                transaction.Commit();
+                                transaction?.Commit();
                         }
                         catch (Exception)
                         {
-                            transaction.Rollback();
+                            transaction?.Rollback();
                             throw;
                         }
                     }
