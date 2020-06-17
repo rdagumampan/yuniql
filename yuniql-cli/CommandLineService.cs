@@ -9,13 +9,13 @@ namespace Yuniql.CLI
 {
     public class CommandLineService : ICommandLineService
     {
-        private IMigrationServiceFactory _migrationServiceFactory;
+        private Core.Factories.IMigrationServiceFactory _migrationServiceFactory;
         private readonly ILocalVersionService _localVersionService;
         private readonly IEnvironmentService _environmentService;
         private ITraceService _traceService;
 
         public CommandLineService(
-            IMigrationServiceFactory migrationServiceFactory,
+            Core.Factories.IMigrationServiceFactory migrationServiceFactory,
             ILocalVersionService localVersionService,
             IEnvironmentService environmentService,
             ITraceService traceService)
