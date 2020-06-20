@@ -57,7 +57,7 @@ The tests automatically deploy a Docker container and perform tests against it. 
 1. Configure your connection string
 
 	```bash
-	cd yuniql-platforms\postgresql
+	cd C:\play\yuniql\yuniql-cli
 	dotnet publish -c release -r win-x64
 
 	SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
@@ -79,12 +79,12 @@ The tests automatically deploy a Docker container and perform tests against it. 
 	dotnet test -v n
 	```
 
-## Running platform tests for MySql
+## Running platform tests for MySql, MariaDB
 
 1. Configure your connection string
 
 	```bash
-	cd yuniql-platforms\mysql
+	cd C:\play\yuniql\yuniql-cli
 	dotnet publish -c release -r win-x64
 
 	SETX YUNIQL_TEST_TARGET_PLATFORM "mysql"

@@ -7,7 +7,7 @@ CREATE TABLE countries (
     country_id CHARACTER (2) PRIMARY KEY,
     country_name CHARACTER VARYING (40),
     region_id INTEGER NOT NULL,
-    FOREIGN KEY (region_id) REFERENCES regions (region_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (region_id) REFERENCES regions (region_id)
 );
  
 CREATE TABLE locations (
@@ -17,14 +17,14 @@ CREATE TABLE locations (
     city CHARACTER VARYING (30) NOT NULL,
     state_province CHARACTER VARYING (25),
     country_id CHARACTER (2) NOT NULL,
-    FOREIGN KEY (country_id) REFERENCES countries (country_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (country_id) REFERENCES countries (country_id)
 );
  
 CREATE TABLE departments (
     department_id SERIAL PRIMARY KEY,
     department_name CHARACTER VARYING (30) NOT NULL,
     location_id INTEGER,
-    FOREIGN KEY (location_id) REFERENCES locations (location_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (location_id) REFERENCES locations (location_id)
 );
  
 CREATE TABLE jobs (
@@ -45,9 +45,9 @@ CREATE TABLE employees (
     salary NUMERIC (8, 2) NOT NULL,
     manager_id INTEGER,
     department_id INTEGER,
-    FOREIGN KEY (job_id) REFERENCES jobs (job_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (department_id) REFERENCES departments (department_id) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (manager_id) REFERENCES employees (employee_id) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (job_id) REFERENCES jobs (job_id),
+    FOREIGN KEY (department_id) REFERENCES departments (department_id),
+    FOREIGN KEY (manager_id) REFERENCES employees (employee_id)
 );
  
 CREATE TABLE dependents (
@@ -56,5 +56,5 @@ CREATE TABLE dependents (
     last_name CHARACTER VARYING (50) NOT NULL,
     relationship CHARACTER VARYING (25) NOT NULL,
     employee_id INTEGER NOT NULL,
-    FOREIGN KEY (employee_id) REFERENCES employees (employee_id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (employee_id) REFERENCES employees (employee_id)
 );
