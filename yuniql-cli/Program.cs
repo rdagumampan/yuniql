@@ -16,7 +16,8 @@ namespace Yuniql
             var environmentService = new EnvironmentService();
             var traceService = new FileTraceService();
             var localVersionService = new LocalVersionService(traceService);
-            var migrationServiceFactory = new CLI.MigrationServiceFactory(traceService);
+            //var migrationServiceFactory = new CLI.MigrationServiceFactory(traceService);
+            var migrationServiceFactory = new Core.Factories.MigrationServiceFactory(traceService);
             var commandLineService = new CommandLineService(migrationServiceFactory, localVersionService, environmentService, traceService);
 
             var resultCode = Parser.Default.ParseArguments<
