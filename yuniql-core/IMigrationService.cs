@@ -44,6 +44,7 @@ namespace Yuniql.Core
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
         /// <param name="resumeFromFailure">The resume from failure.</param>
+        /// <param name="noTransaction">When TRUE, migration will run without using transactions</param>
         void Run(
             string workingPath, 
             string targetVersion = null, 
@@ -58,7 +59,8 @@ namespace Yuniql.Core
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null,
-            NonTransactionalResolvingOption? resumeFromFailure = null
+            NonTransactionalResolvingOption? resumeFromFailure = null,
+            bool noTransaction = false
         );
 
         /// <summary>

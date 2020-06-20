@@ -78,7 +78,8 @@ namespace Yuniql.Core
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null,
-            NonTransactionalResolvingOption? nonTransactionalResolvingOption = null
+            NonTransactionalResolvingOption? nonTransactionalResolvingOption = null,
+            bool noTransaction = false
          );
 
         /// <inheritdoc />

@@ -139,7 +139,8 @@ namespace Yuniql.CLI
                     appliedByTool: toolName,
                     appliedByToolVersion: toolVersion,
                     environmentCode: opts.Environment,
-                    opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?) null
+                    opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?) null,
+                    opts.NoTransaction
                     );
                 return 0;
             }

@@ -12,6 +12,7 @@ namespace Yuniql.PlatformTests
                 SUPPORTED_DATABASES.SQLSERVER => new SqlServerContainer(),
                 SUPPORTED_DATABASES.POSTGRESQL => new PostgreSqlContainer(),
                 SUPPORTED_DATABASES.MYSQL => new MySqlContainer(),
+                SUPPORTED_DATABASES.MARIADB => new MariaDBContainer(),
                 _ => throw new NotSupportedException(),
             };
         }

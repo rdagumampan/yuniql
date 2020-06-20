@@ -45,6 +45,14 @@ namespace Yuniql.PlatformTests
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
+                case SUPPORTED_DATABASES.MARIADB:
+                    {
+                        var dataService = new MySqlDataService(_traceService);
+                        var bulkImportService = new MySqlBulkImportService(_traceService);
+                        return dataService.IsAtomicDDLSupported
+                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
+                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
+                    }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +
                         $"See WIKI for supported database platforms and usage guide.");
