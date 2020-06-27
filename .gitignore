@@ -82,3 +82,8 @@ yuniql-platformtests/Yuniql.PlatformTests.csproj.user
 yuniql-sqlserver/Yuniql.SqlServer.csproj.user
 build-nupkgs.bat
 yuniql-cli/Yuniql.CLI.csproj.user
+yuniql-core/Yuniql.Core.xml
+yuniql-extensibility/Yuniql.Extensibility.xml
+yuniql-platforms/mysql/Yuniql.MySql.xml
+yuniql-platforms/postgresql/Yuniql.PostgreSql.xml
+yuniql-platforms/sqlserver/Yuniql.SqlServer.xml
