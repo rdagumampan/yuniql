@@ -221,7 +221,7 @@ namespace Yuniql.CLI
             }
         }
 
-        public int RunInfoOption(InfoOption opts)
+        public int RunInfoOption(ListOption opts)
         {
             try
             {

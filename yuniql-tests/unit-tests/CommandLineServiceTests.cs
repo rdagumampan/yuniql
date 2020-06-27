@@ -277,7 +277,7 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new InfoOption { };
+            var option = new ListOption { };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
             sut.RunInfoOption(option);
 

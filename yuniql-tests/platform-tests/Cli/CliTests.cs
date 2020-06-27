@@ -135,9 +135,9 @@ namespace Yuniql.PlatformTests
         }
 
         [DataTestMethod]
-        [DataRow("info", "")]
-        [DataRow("info", "-d")]
-        [DataRow("info", "-d --command-timeout 10")]
+        [DataRow("list", "")]
+        [DataRow("list", "-d")]
+        [DataRow("list", "-d --command-timeout 10")]
         public void Test_Cli_info(string command, string arguments)
         {
             //arrange
@@ -153,9 +153,9 @@ namespace Yuniql.PlatformTests
         }
 
         [DataTestMethod]
-        [DataRow("info", "")]
-        [DataRow("info", "-d")]
-        [DataRow("info", "-d --command-timeout 10")]
+        [DataRow("list", "")]
+        [DataRow("list", "-d")]
+        [DataRow("list", "-d --command-timeout 10")]
         public void Test_Cli_info_With_Custom_Schema(string command, string arguments)
         {
             //arrange

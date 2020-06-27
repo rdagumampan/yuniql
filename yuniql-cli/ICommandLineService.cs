@@ -10,7 +10,7 @@
 
         int RunVerify(VerifyOption opts);
 
-        int RunInfoOption(InfoOption opts);
+        int RunInfoOption(ListOption opts);
 
         int RunEraseOption(EraseOption opts);
 
