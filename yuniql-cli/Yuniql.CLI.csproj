@@ -34,7 +34,7 @@
     <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
     <PackageTags>yuniql sqlserver-migration database-migration sql devops devops-tools database-versioning</PackageTags>
     <PackageReleaseNotes>https://github.com/rdagumampan/yuniql/wiki/release-notes</PackageReleaseNotes>
-    <Copyright>Copyright 2019 | Rodel E. Dagumampan | https://yuniql.io</Copyright>
+    <Copyright>Copyright 2019 (C) Rodel E. Dagumampan</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
   </PropertyGroup>
 
