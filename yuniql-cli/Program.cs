@@ -14,16 +14,6 @@ namespace Yuniql
 
         public static int Main(string[] args)
         {
-            var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
-            var toolPlatform = Environment.OSVersion.Platform == PlatformID.Win32NT ? "windows" : "linux";
-            var toolCopyright = (typeof(CommandLineService).Assembly.GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright;
-
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine($"Running yuniql v{toolVersion} for {toolPlatform}-x64");
-            Console.WriteLine($"{toolCopyright}. Apache License v2.0");
-            Console.WriteLine($"Visit https://yuniql.io for documentation & more samples.");
-            Console.ResetColor();
-
             var environmentService = new EnvironmentService();
             var traceService = new FileTraceService();
             var localVersionService = new LocalVersionService(traceService);
@@ -55,6 +45,16 @@ namespace Yuniql
         }
 
         private static int Dispatch<T>(Func<T, int> command, T opts, ITraceService traceService) where T : BaseOption {
+            var toolVersion = typeof(CommandLineService).Assembly.GetName().Version;
+            var toolPlatform = Environment.OSVersion.Platform == PlatformID.Win32NT ? "windows" : "linux";
+            var toolCopyright = (typeof(CommandLineService).Assembly.GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright;
+
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine($"Running yuniql v{toolVersion.Major}.{toolVersion.Minor}.{toolVersion.Build} for {toolPlatform}-x64");
+            Console.WriteLine($"{toolCopyright}. Apache License v2.0");
+            Console.WriteLine($"Visit https://yuniql.io for documentation & more samples{Environment.NewLine}");
+            Console.ResetColor();
+
             traceService.IsDebugEnabled = opts.Debug;
             return command.Invoke(opts);
         }
