@@ -22,8 +22,8 @@ namespace Yuniql
             var resultCode = Parser.Default.ParseArguments<
                 InitOption,
                 RunOption,
-                NextVersionOption,
                 ListOption,
+                NextVersionOption,
                 VerifyOption,
                 EraseOption,
                 BaselineOption,
@@ -32,7 +32,7 @@ namespace Yuniql
                 (InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
                 (RunOption opts) => Dispatch(commandLineService.RunMigration, opts, traceService),
                 (NextVersionOption opts) => Dispatch(commandLineService.IncrementVersion, opts, traceService),
-                (ListOption opts) => Dispatch(commandLineService.RunInfoOption, opts, traceService),
+                (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),
                 (VerifyOption opts) => Dispatch(commandLineService.RunVerify, opts, traceService),
                 (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
                 (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),

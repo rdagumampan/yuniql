@@ -30,5 +30,13 @@
         /// <param name="message">The message to write.</param>
         /// <param name="payload">JSON structured information to support the trace entry.</param>
         void Debug(string message, object payload = null);
+
+        /// <summary>
+        /// Writes success informational messages.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
+        /// <param name="payload">JSON structured information to support the trace entry.</param>
+        void Success(string message, object payload = null);
+
     }
 }

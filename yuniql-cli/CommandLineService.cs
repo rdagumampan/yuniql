@@ -40,7 +40,7 @@ namespace Yuniql.CLI
                 else
                 {
                     _localVersionService.Init(opts.Path);
-                    _traceService.Info($"Initialized {opts.Path}.");
+                    _traceService.Success($"Initialized {opts.Path}.");
                 }
 
                 return 0;
@@ -65,12 +65,12 @@ namespace Yuniql.CLI
                 if (opts.IncrementMajorVersion)
                 {
                     var nextVersion = _localVersionService.IncrementMajorVersion(opts.Path, opts.File);
-                    _traceService.Info($"New major version created {nextVersion} on {opts.Path}.");
+                    _traceService.Success($"New major version created {nextVersion} on {opts.Path}.");
                 }
                 else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
                 {
                     var nextVersion = _localVersionService.IncrementMinorVersion(opts.Path, opts.File);
-                    _traceService.Info($"New minor version created {nextVersion} on {opts.Path}.");
+                    _traceService.Success($"New minor version created {nextVersion} on {opts.Path}.");
                 }
 
                 return 0;
@@ -142,6 +142,8 @@ namespace Yuniql.CLI
                     opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?) null,
                     opts.NoTransaction
                     );
+
+                _traceService.Success($"Schema migration completed successfuly on {opts.Path}.");
                 return 0;
             }
             catch (Exception ex)
@@ -212,7 +214,7 @@ namespace Yuniql.CLI
                     null
                     );
 
-                _traceService.Info("Verification run successful.");
+                _traceService.Success($"Schema migration verification completed successfuly on {opts.Path}.");
                 return 0;
             }
             catch (Exception ex)
@@ -221,7 +223,7 @@ namespace Yuniql.CLI
             }
         }
 
-        public int RunInfoOption(ListOption opts)
+        public int RunListOption(ListOption opts)
         {
             try
             {
@@ -250,7 +252,7 @@ namespace Yuniql.CLI
                 results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");
                 versions.ForEach(v =>
                 {
-                    results.AppendLine($"{v.Version}\t\t{v.AppliedOnUtc.ToString("o")}\t{v.AppliedByUser}");
+                    results.AppendLine($"{v.Version}\t\t{v.AppliedOnUtc.ToString("u")}\t{v.AppliedByUser}");
                 });
 
                 Console.WriteLine(results.ToString());
@@ -297,6 +299,7 @@ namespace Yuniql.CLI
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 migrationService.Erase(opts.Path, tokens, opts.CommandTimeout, opts.Environment);
 
+                _traceService.Success($"Schema erase completed successfuly on {opts.Path}.");
                 return 0;
             }
             catch (Exception ex)

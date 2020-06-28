@@ -279,7 +279,7 @@ namespace Yuniql.UnitTests
             //act
             var option = new ListOption { };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.RunInfoOption(option);
+            sut.RunListOption(option);
 
             //assert
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));

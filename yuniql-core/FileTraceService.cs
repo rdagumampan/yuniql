@@ -15,16 +15,10 @@ namespace Yuniql.Core
             _traceSessionId = DateTime.Now.ToString("MMddyyyy-HHmmss");
         }
 
-        /// <summary>
-        /// When true, debug messages are always written in Trace logs.
-        /// </summary>
+        ///<inheritdoc/>
         public bool IsDebugEnabled { get; set; } = false;
 
-        /// <summary>
-        /// Writes informational messages.
-        /// </summary>
-        /// <param name="message">The message to write.</param>
-        /// <param name="payload">JSON structured information to support the trace entry.</param>
+        ///<inheritdoc/>
         public void Info(string message, object payload = null)
         {
             var traceFile = GetTraceSessionFilePath();
@@ -34,11 +28,7 @@ namespace Yuniql.Core
             Console.Write(traceMessage);
         }
 
-        /// <summary>
-        /// Writes error messages.
-        /// </summary>
-        /// <param name="message">The message to write.</param>
-        /// <param name="payload">JSON structured information to support the trace entry.</param>
+        ///<inheritdoc/>
         public void Error(string message, object payload = null)
         {
             var traceFile = GetTraceSessionFilePath();
@@ -50,11 +40,7 @@ namespace Yuniql.Core
             Console.ResetColor();
         }
 
-        /// <summary>
-        /// Writes debug messages.
-        /// </summary>
-        /// <param name="message">The message to write.</param>
-        /// <param name="payload">JSON structured information to support the trace entry.</param>
+        ///<inheritdoc/>
         public void Debug(string message, object payload = null)
         {
             if (IsDebugEnabled)
@@ -67,6 +53,18 @@ namespace Yuniql.Core
                 Console.Write(traceMessage);
                 Console.ResetColor();
             }
+        }
+
+        ///<inheritdoc/>
+        public void Success(string message, object payload = null)
+        {
+            var traceFile = GetTraceSessionFilePath();
+            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
+
+            File.AppendAllText(traceFile, traceMessage);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(traceMessage);
+            Console.ResetColor();
         }
 
         private string GetTraceSessionFilePath()
