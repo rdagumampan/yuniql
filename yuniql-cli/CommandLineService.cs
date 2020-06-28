@@ -139,7 +139,7 @@ namespace Yuniql.CLI
                     appliedByTool: toolName,
                     appliedByToolVersion: toolVersion,
                     environmentCode: opts.Environment,
-                    opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?) null,
+                    opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?)null,
                     opts.NoTransaction
                     );
 
@@ -248,14 +248,13 @@ namespace Yuniql.CLI
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 var versions = migrationService.GetAllVersions(opts.MetaSchema, opts.MetaTable);
 
-                var results = new StringBuilder();
-                results.AppendLine($"Version\t\tCreated\t\t\t\tCreatedBy");
-                versions.ForEach(v =>
-                {
-                    results.AppendLine($"{v.Version}\t\t{v.AppliedOnUtc.ToString("u")}\t{v.AppliedByUser}");
-                });
+                var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool");
+                versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}"));
+                versionPrettyPrint.Print();
 
-                Console.WriteLine(results.ToString());
+                _traceService.Success($"Listed all schema versions applied to database on {opts.Path} workspace.{Environment.NewLine}" +
+                    $"For platforms not supporting full transactional DDL operations (ex. MySql, CockroachDB, Snowflake), unsuccessful migrations will show the status as Failed and you can look for LastFailedScript and LastScriptError in the schema version tracking table.");
+
                 return 0;
             }
             catch (Exception ex)
@@ -346,7 +345,7 @@ namespace Yuniql.CLI
             }
         }
 
-        private int OnException(Exception exception, string headerMessage, bool debug, ITraceService traceService) 
+        private int OnException(Exception exception, string headerMessage, bool debug, ITraceService traceService)
         {
             var userMessage = debug ? exception.ToString() : $"{exception.Message} {exception.InnerException?.Message}";
             traceService.Error($"{headerMessage}. Arrg... something seems broken.{Environment.NewLine}" +
