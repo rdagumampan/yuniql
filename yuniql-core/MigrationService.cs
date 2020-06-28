@@ -335,8 +335,8 @@ namespace Yuniql.Core
             //extract and filter out scripts when environment code is used
             var sqlScriptFiles = _directoryService.GetFiles(scriptDirectory, "*.sql").ToList();
             sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
-            _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {scriptDirectory}");
-            _traceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
+            _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}{Environment.NewLine}" +
+                   $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
 
             //execute all script files in the version folder
             sqlScriptFiles.Sort();
@@ -350,15 +350,25 @@ namespace Yuniql.Core
                     ;
                     sqlStatements.ForEach(sqlStatement =>
                     {
-                        sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
-
-                        _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
-                        _configurationDataService.ExecuteSql(
-                            connection: connection,
-                            commandText: sqlStatement,
-                            transaction: transaction,
-                            commandTimeout: commandTimeout,
-                            traceService: _traceService);
+                        try
+                        {
+                            sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
+                            _traceService.Debug($"Executing sql statement as part of : {scriptFile}");
+                            _configurationDataService.ExecuteSql(
+                                connection: connection,
+                                commandText: sqlStatement,
+                                transaction: transaction,
+                                commandTimeout: commandTimeout,
+                                traceService: _traceService);
+                        }
+                        catch (Exception)
+                        {
+                            _traceService.Error($"Failed to execute sql statements in script file {scriptFile}.{Environment.NewLine}" +
+                                $"The failing statement starts here --------------------------{Environment.NewLine}" +
+                                $"{sqlStatement} {Environment.NewLine}" +
+                                $"The failing statement ends here --------------------------");
+                            throw;
+                        }
                     });
 
                     _traceService.Info($"Executed script file {scriptFile}.");

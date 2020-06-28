@@ -347,7 +347,7 @@ namespace Yuniql.CLI
         {
             var userMessage = debug ? exception.ToString() : $"{exception.Message} {exception.InnerException?.Message}";
             traceService.Error($"{headerMessage}. Arrg... something seems broken.{Environment.NewLine}" +
-                $"Internal error message: {userMessage}. " +
+                $"Internal error message: {userMessage}.{Environment.NewLine}" +
                 $"If you think this is a bug, please report issue https://github.com/rdagumampan/yuniql/issues.");
             return 1;
         }

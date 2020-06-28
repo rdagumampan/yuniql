@@ -7,6 +7,7 @@ INSERT INTO regions(region_id,region_name) VALUES (3,'Asia');
 INSERT INTO regions(region_id,region_name) VALUES (4,'Middle East and Africa');
  
 SET IDENTITY_INSERT regions OFF;  
+GO
  
 /*Data for the table countries */
 INSERT INTO countries(country_id,country_name,region_id) VALUES ('AR','Argentina',2);
@@ -34,6 +35,7 @@ INSERT INTO countries(country_id,country_name,region_id) VALUES ('UK','United Ki
 INSERT INTO countries(country_id,country_name,region_id) VALUES ('US','United States of America',2);
 INSERT INTO countries(country_id,country_name,region_id) VALUES ('ZM','Zambia',4);
 INSERT INTO countries(country_id,country_name,region_id) VALUES ('ZW','Zimbabwe',4);
+GO
  
 /*Data for the table locations */
 SET IDENTITY_INSERT locations ON;
@@ -45,6 +47,7 @@ INSERT INTO locations(location_id,street_address,postal_code,city,state_province
 INSERT INTO locations(location_id,street_address,postal_code,city,state_province,country_id) VALUES (2500,'Magdalen Centre, The Oxford Science Park','OX9 9ZB','Oxford','Oxford','UK');
 INSERT INTO locations(location_id,street_address,postal_code,city,state_province,country_id) VALUES (2700,'Schwanthalerstr. 7031','80925','Munich','Bavaria','DE');
 SET IDENTITY_INSERT locations OFF;
+GO
  
 /*Data for the table jobs */
 SET IDENTITY_INSERT jobs ON;
@@ -68,6 +71,7 @@ INSERT INTO jobs(job_id,job_title,min_salary,max_salary) VALUES (17,'Shipping Cl
 INSERT INTO jobs(job_id,job_title,min_salary,max_salary) VALUES (18,'Stock Clerk',2000.00,5000.00);
 INSERT INTO jobs(job_id,job_title,min_salary,max_salary) VALUES (19,'Stock Manager',5500.00,8500.00);
 SET IDENTITY_INSERT jobs OFF;
+GO
  
 /*Data for the table departments */
 SET IDENTITY_INSERT departments ON;
@@ -83,7 +87,7 @@ INSERT INTO departments(department_id,department_name,location_id) VALUES (9,'Ex
 INSERT INTO departments(department_id,department_name,location_id) VALUES (10,'Finance',1700);
 INSERT INTO departments(department_id,department_name,location_id) VALUES (11,'Accounting',1700);
 SET IDENTITY_INSERT departments OFF;
- 
+GO
  
 /*Data for the table employees */
 SET IDENTITY_INSERT employees ON;
@@ -128,6 +132,7 @@ INSERT INTO employees(employee_id,first_name,last_name,email,phone_number,hire_d
 INSERT INTO employees(employee_id,first_name,last_name,email,phone_number,hire_date,job_id,salary,manager_id,department_id) VALUES (205,'Shelley','Higgins','shelley.higgins@sqltutorial.org','515.123.8080','1994-06-07',2,12000.00,101,11);
 INSERT INTO employees(employee_id,first_name,last_name,email,phone_number,hire_date,job_id,salary,manager_id,department_id) VALUES (206,'William','Gietz','william.gietz@sqltutorial.org','515.123.8181','1994-06-07',1,8300.00,205,11);
 SET IDENTITY_INSERT employees OFF;
+GO
  
 /*Data for the table dependents */
 SET IDENTITY_INSERT dependents ON;
@@ -162,3 +167,4 @@ INSERT INTO dependents(dependent_id,first_name,last_name,relationship,employee_i
 INSERT INTO dependents(dependent_id,first_name,last_name,relationship,employee_id) VALUES (29,'Alec','Partners','Child',146);
 INSERT INTO dependents(dependent_id,first_name,last_name,relationship,employee_id) VALUES (30,'Sandra','Taylor','Child',176);
 SET IDENTITY_INSERT dependents OFF;
+GO

@@ -28,7 +28,7 @@ namespace Yuniql.Core
         public void Info(string message, object payload = null)
         {
             var traceFile = GetTraceSessionFilePath();
-            var traceMessage = $"INF   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
             File.AppendAllText(traceFile, traceMessage);
             Console.Write(traceMessage);
@@ -42,10 +42,12 @@ namespace Yuniql.Core
         public void Error(string message, object payload = null)
         {
             var traceFile = GetTraceSessionFilePath();
-            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
             File.AppendAllText(traceFile, traceMessage);
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(traceMessage);
+            Console.ResetColor();
         }
 
         /// <summary>
@@ -58,16 +60,18 @@ namespace Yuniql.Core
             if (IsDebugEnabled)
             {
                 var traceFile = GetTraceSessionFilePath();
-                var traceMessage = $"DBG   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+                var traceMessage = $"DBG   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
                 File.AppendAllText(traceFile, traceMessage);
+                Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write(traceMessage);
+                Console.ResetColor();
             }
         }
 
         private string GetTraceSessionFilePath()
         {
-            return Path.Combine(Environment.CurrentDirectory, $"yuniql-migration-{_traceSessionId}.txt");
+            return Path.Combine(Environment.CurrentDirectory, $"yuniql-log-{_traceSessionId}.txt");
         }
 
     }
