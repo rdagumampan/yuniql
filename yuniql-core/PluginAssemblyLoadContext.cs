@@ -16,6 +16,7 @@ namespace Yuniql.Core
         private AssemblyDependencyResolver _resolver;
         private readonly ITraceService _traceService;
         private AssemblyLoadContext _defaultLoadContext;
+        private Exception _pluginLoadException;
 
         /// <summary>
         /// The location of the plugin binaries
@@ -31,7 +32,13 @@ namespace Yuniql.Core
             _defaultLoadContext = defaultLoadContext;
             PluginPath = pluginAssemblyFilePath;
             this._traceService = traceService;
-            this._resolver = new AssemblyDependencyResolver(pluginAssemblyFilePath);
+            try {
+                this._resolver = new AssemblyDependencyResolver(pluginAssemblyFilePath);
+            }
+            catch(Exception exc) {
+                // Suppress exception; signal error, if needed, during Load()
+                _pluginLoadException = exc; 
+            }
         }
 
         /// <summary>
@@ -51,13 +58,22 @@ namespace Yuniql.Core
                 var assembly = _defaultLoadContext.LoadFromAssemblyName(assemblyName);
                 if (null != assembly)
                 {
+                    _traceService.Debug($"Resolved dependency: {assemblyName.Name}, v{assemblyName.Version} from DefaultLoadContext");
+
                     return assembly;
                 }
             }
-            catch (Exception)
+            catch (Exception exc)
             {
-                string assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
+                _traceService.Debug($"Error while attempting to resolve  {assemblyName.Name}, v{assemblyName.Version} from DefaultContext: {exc.Message}");
                 _traceService.Debug($"Resolving dependency: {assemblyName.Name}, v{assemblyName.Version} from componentAssemblyPath: {PluginPath}");
+
+                if (_resolver == null) {
+                    throw new Exception($"Cannot fallback to componentAssemblyPath because resolver for {PluginPath} was null: {_pluginLoadException}");
+                }
+                
+
+                string assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
 
                 if (assemblyPath != null)
                 {

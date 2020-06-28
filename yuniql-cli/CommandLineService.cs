@@ -123,7 +123,7 @@ namespace Yuniql.CLI
                 var toolName = "yuniql-cli";
                 var toolVersion = this.GetType().Assembly.GetName().Version.ToString();
 
-                var migrationService = _migrationServiceFactory.Create(opts.Platform);
+                var migrationService = _migrationServiceFactory.Create(opts.Platform, opts.PluginsPath);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 migrationService.Run(
                     opts.Path,

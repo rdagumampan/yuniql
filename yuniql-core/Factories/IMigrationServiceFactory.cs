@@ -3,6 +3,6 @@
     ///<inheritdoc/>
     public interface IMigrationServiceFactory {
         ///<inheritdoc/>
-        IMigrationService Create(string platform);
-    }
+        IMigrationService Create(string platform, string pluginsPath = "");
+    }   
 }

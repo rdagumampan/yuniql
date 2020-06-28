@@ -28,6 +28,8 @@
     <Compile Remove="nupkgs\**" />
     <EmbeddedResource Remove="nupkgs\**" />
     <None Remove="nupkgs\**" />
+    <Compile Remove="HostAssemblyLoadContext.cs" />
+    <Compile Remove="PluginLoadContext.cs" />
     <None Include="..\LICENSE.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -37,7 +39,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
-    <ProjectReference Include="..\yuniql-platforms\sqlserver\Yuniql.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>
