@@ -3,6 +3,7 @@ using Yuniql.Core;
 using CommandLine;
 using System;
 using Yuniql.Extensibility;
+using System.Reflection;
 
 namespace Yuniql
 {
@@ -13,6 +14,16 @@ namespace Yuniql
 
         public static int Main(string[] args)
         {
+            var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
+            var toolPlatform = Environment.OSVersion.Platform == PlatformID.Win32NT ? "windows" : "linux";
+            var toolCopyright = (typeof(CommandLineService).Assembly.GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright;
+
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine($"Running yuniql v{toolVersion} for {toolPlatform} x-64");
+            Console.WriteLine($"{toolCopyright}. Apache License v2.0");
+            Console.WriteLine($"For documentation & samples, visit https://yuniql.io");
+            Console.ResetColor();
+
             var environmentService = new EnvironmentService();
             var traceService = new FileTraceService();
             var localVersionService = new LocalVersionService(traceService);
