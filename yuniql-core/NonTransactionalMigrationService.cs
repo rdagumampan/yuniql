@@ -407,8 +407,8 @@ namespace Yuniql.Core
                 //filter out scripts when environment code is used
                 var sqlScriptFiles = _directoryService.GetFiles(scriptDirectory, "*.sql").ToList();
                 sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
-                _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {scriptDirectory}");
-                _traceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
+                _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}{Environment.NewLine}" +
+                       $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
 
                 //execute all script files in the version folder, we also make sure its sorted by file name
                 sqlScriptFiles.Sort();
@@ -437,7 +437,7 @@ namespace Yuniql.Core
                         sqlStatements.ForEach(sqlStatement =>
                         {
                             sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
-                            _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
+                            _traceService.Debug($"Executing sql statement as part of : {scriptFile}");
 
                             _configurationDataService.ExecuteSql(
                                 connection: connection,

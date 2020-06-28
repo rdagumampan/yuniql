@@ -110,8 +110,8 @@ namespace Yuniql.Core
             //extract and filter out scripts when environment code is used
             var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
             sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
-            _traceService.Info($"Found the {sqlScriptFiles.Count} script files on {workingPath}");
-            _traceService.Info($"{string.Join(@"\r\n\t", sqlScriptFiles.Select(s => new FileInfo(s).Name))}");
+            _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}{Environment.NewLine}" +
+                   $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
 
             //execute all script files in the target folder
             sqlScriptFiles.Sort();
@@ -124,16 +124,26 @@ namespace Yuniql.Core
 
                 sqlStatements.ForEach(sqlStatement =>
                 {
-                    //replace tokens with values from the cli
-                    sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
-                    _traceService.Debug($"Executing sql statement as part of : {scriptFile}{Environment.NewLine}{sqlStatement}");
+                    try
+                    {
+                        sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
+                        _traceService.Debug($"Executing sql statement as part of : {scriptFile}");
 
-                    _configurationDataService.ExecuteSql(
-                        connection: connection,
-                        commandText: sqlStatement,
-                        transaction: transaction,
-                        commandTimeout: commandTimeout,
-                        traceService: _traceService);
+                        _configurationDataService.ExecuteSql(
+                            connection: connection,
+                            commandText: sqlStatement,
+                            transaction: transaction,
+                            commandTimeout: commandTimeout,
+                            traceService: _traceService);
+                    }
+                    catch (Exception)
+                    {
+                        _traceService.Error($"Failed to execute sql statements in script file {scriptFile}.{Environment.NewLine}" +
+                            $"The failing statement starts here --------------------------{Environment.NewLine}" +
+                            $"{sqlStatement} {Environment.NewLine}" +
+                            $"The failing statement ends here --------------------------");
+                        throw;
+                    }
                 });
 
                 _traceService.Info($"Executed script file {scriptFile}.");
@@ -172,9 +182,8 @@ namespace Yuniql.Core
             //extract and filter out scripts when environment code is used
             var bulkFiles = _directoryService.GetFiles(scriptDirectory, "*.csv").ToList();
             bulkFiles = _directoryService.FilterFiles(workingPath, environmentCode, bulkFiles).ToList();
-            _traceService.Info($"Found the {bulkFiles.Count} bulk files on {scriptDirectory}");
-            _traceService.Info($"{string.Join(@"\r\n\t", bulkFiles.Select(s => new FileInfo(s).Name))}");
-
+            _traceService.Info($"Found {bulkFiles.Count} script files on {scriptDirectory}{Environment.NewLine}" +
+                   $"{string.Join(Environment.NewLine, bulkFiles.Select(s => "  + " + new FileInfo(s).Name))}");
             bulkFiles.Sort();
             bulkFiles.ForEach(csvFile =>
             {
