@@ -87,3 +87,8 @@ yuniql-extensibility/Yuniql.Extensibility.xml
 yuniql-platforms/mysql/Yuniql.MySql.xml
 yuniql-platforms/postgresql/Yuniql.PostgreSql.xml
 yuniql-platforms/sqlserver/Yuniql.SqlServer.xml
+yuniql-core/Yuniql.Core.xml
+yuniql-extensibility/Yuniql.Extensibility.xml
+yuniql-platforms/mysql/Yuniql.MySql.xml
+yuniql-platforms/postgresql/Yuniql.PostgreSql.xml
+yuniql-platforms/sqlserver/Yuniql.SqlServer.xml

@@ -4,6 +4,180 @@
         <name>Yuniql.Extensibility</name>
     </assembly>
     <members>
+        <member name="T:Yuniql.Extensibility.BulkCsvParser.CsvMalformedLineException">
+            <summary>
+            An exception that is thrown when the <see cref="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.ReadFields"/> method cannot parse a row using the specified format.
+            </summary>
+            <remarks>
+            Based on <code>Microsoft.VisualBasic.FileIO.MalformedLineException.MalformedLineException</code>.
+            </remarks>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvMalformedLineException.#ctor(System.String,System.Int64)">
+            <summary>
+            Constructs an exception with a specified message and a line number.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvMalformedLineException.#ctor(System.String,System.Int64,System.Exception)">
+            <summary>
+            Constructs an exception with a specified message, a line number, and a reference to the inner exception that is the cause of this exception.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.BulkCsvParser.CsvMalformedLineException.LineNumber">
+            <summary>
+            The line number of the malformed line.
+            </summary>
+        </member>
+        <member name="T:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser">
+            <summary>
+            Parses comma-separated text files.
+            </summary>
+            <remarks>
+            Based on <code>Microsoft.VisualBasic.FileIO.TextFieldParser</code>.
+            </remarks>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.#ctor(System.IO.Stream)">
+            <summary>
+            Constructs a parser from the specified input stream.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.#ctor(System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            Constructs a parser from the specified input stream with the specified encoding.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Constructs a parser from the specified input stream with the specified encoding and byte order mark detection option.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Boolean)">
+            <summary>
+            Constructs a parser from the specified input stream with the specified encoding and byte order mark detection option, and optionally leaves the stream open.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.#ctor(System.String)">
+            <summary>
+            Constructs a parser from the specified input file path.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.#ctor(System.String,System.Text.Encoding)">
+            <summary>
+            Constructs a parser from the specified input file path with the specified encoding.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.#ctor(System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Constructs a parser from the specified input file path with the specified encoding and byte order mark detection option.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.#ctor(System.IO.TextReader)">
+            <summary>
+            Constructs a parser from the specified input text reader.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.EndOfData">
+            <summary>
+            True if there are non-empty lines between the current cursor position and the end of the file.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.ReadFields">
+            <summary>
+            Reads all fields on the current line, returns them as an array of strings, and advances the cursor to the next line containing data.
+            </summary>
+            <returns>An array of strings that contains field values for the current line, or null if <see cref="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.EndOfData"/> is true.</returns>
+            <exception cref="T:Yuniql.Extensibility.BulkCsvParser.CsvMalformedLineException">if the parse of the current line failed</exception>
+        </member>
+        <member name="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.LineNumber">
+            <summary>
+            The number of the line that will be returned by <see cref="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.ReadFields"/> (starting at 1), or -1 if there are no more lines.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.Close">
+            <summary>
+            Closes the current <see cref="T:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser"/> object.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.Dispose">
+            <summary>
+            Closes and disposes the current <see cref="T:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser"/> object.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.Dispose(System.Boolean)">
+            <summary>
+            Disposes of the current <see cref="T:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser"/> object.
+            </summary>
+            <param name="disposing">true if called from <see cref="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.Dispose"/>, or false if called from a finalizer</param>
+        </member>
+        <member name="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.ErrorLine">
+            <summary>
+            The line that caused the most recent <see cref="T:Yuniql.Extensibility.BulkCsvParser.CsvMalformedLineException"/>.
+            </summary>
+            <remarks>
+            If no <see cref="T:Yuniql.Extensibility.BulkCsvParser.CsvMalformedLineException"/> exceptions have been thrown, an empty string is returned.
+            The <see cref="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.ErrorLineNumber"/> property can be used to display the number of the line that caused the exception.
+            </remarks>
+        </member>
+        <member name="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.ErrorLineNumber">
+            <summary>
+            Returns the number of the line that caused the most recent <see cref="T:Yuniql.Extensibility.BulkCsvParser.CsvMalformedLineException"/> exception.
+            </summary>
+            <remarks>
+            If no <see cref="T:Yuniql.Extensibility.BulkCsvParser.CsvMalformedLineException"/> exceptions have been thrown, -1 is returned.
+            The <see cref="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.ErrorLine"/> property can be used to display the number of the line that caused the exception.
+            Blank lines and comments are not ignored when determining the line number.
+            </remarks>
+        </member>
+        <member name="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.CompatibilityMode">
+            <summary>
+            True if this parser should exactly reproduce the behavior of the <code>Microsoft.VisualBasic.FileIO.TextFieldParser</code>.
+            Defaults to <code>false</code>.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.Separators">
+            <summary>
+            Defines the separators or separators for a text file.
+            Default is a comma.
+            </summary>
+            <remarks>
+            This is defined as an array of strings for compatibility with <code>Microsoft.VisualBasic.FileIO.TextFieldParser</code>,
+            but this parser only supports one single-character separator.
+            </remarks>
+            <exception cref="T:System.ArgumentException">A separator value is set to a newline character, an empty string, or null.</exception>
+            <exception cref="T:System.NotSupportedException">The separators are set to an array that does not contain exactly one element with exactly one character.</exception>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.SetSeparator(System.Char)">
+            <summary>
+            Sets the separator character used by this parser.
+            Default is a comma.
+            </summary>
+            <exception cref="T:System.ArgumentException">The separator character is set to a newline character.</exception>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.SetQuoteCharacter(System.Char)">
+            <summary>
+            Sets the quote character used by this parser, and also sets the quote escape character to match if it previously matched.
+            Default is a double quote character.
+            </summary>
+            <exception cref="T:System.ArgumentException">The quote character is set to a newline character.</exception>
+        </member>
+        <member name="M:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.SetQuoteEscapeCharacter(System.Char)">
+            <summary>
+            Sets the quote escape character used by this parser.
+            Default is the same as the quote character, a double quote character.
+            </summary>
+            <exception cref="T:System.ArgumentException">The quote escape character is set to a newline character.</exception>
+        </member>
+        <member name="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.HasFieldsEnclosedInQuotes">
+            <summary>
+            Denotes whether fields are enclosed in quotation marks when a CSV file is being parsed.
+            Defaults to <code>true</code>.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.BulkCsvParser.CsvTextFieldParser.TrimWhiteSpace">
+            <summary>
+            Indicates whether leading and trailing white space should be trimmed from field values.
+            Defaults to <code>false</code>.
+            </summary>
+        </member>
         <member name="T:Yuniql.Extensibility.ConnectionInfo">
             <summary>
             Connection information to target database.
@@ -17,180 +191,6 @@
         <member name="P:Yuniql.Extensibility.ConnectionInfo.DataSource">
             <summary>
             The host server or database instance in a cluster.
-            </summary>
-        </member>
-        <member name="T:Yuniql.Extensibility.CsvMalformedLineException">
-            <summary>
-            An exception that is thrown when the <see cref="M:Yuniql.Extensibility.CsvTextFieldParser.ReadFields"/> method cannot parse a row using the specified format.
-            </summary>
-            <remarks>
-            Based on <code>Microsoft.VisualBasic.FileIO.MalformedLineException.MalformedLineException</code>.
-            </remarks>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvMalformedLineException.#ctor(System.String,System.Int64)">
-            <summary>
-            Constructs an exception with a specified message and a line number.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvMalformedLineException.#ctor(System.String,System.Int64,System.Exception)">
-            <summary>
-            Constructs an exception with a specified message, a line number, and a reference to the inner exception that is the cause of this exception.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Extensibility.CsvMalformedLineException.LineNumber">
-            <summary>
-            The line number of the malformed line.
-            </summary>
-        </member>
-        <member name="T:Yuniql.Extensibility.CsvTextFieldParser">
-            <summary>
-            Parses comma-delimited text files.
-            </summary>
-            <remarks>
-            Based on <code>Microsoft.VisualBasic.FileIO.TextFieldParser</code>.
-            </remarks>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.#ctor(System.IO.Stream)">
-            <summary>
-            Constructs a parser from the specified input stream.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.#ctor(System.IO.Stream,System.Text.Encoding)">
-            <summary>
-            Constructs a parser from the specified input stream with the specified encoding.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
-            <summary>
-            Constructs a parser from the specified input stream with the specified encoding and byte order mark detection option.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Boolean)">
-            <summary>
-            Constructs a parser from the specified input stream with the specified encoding and byte order mark detection option, and optionally leaves the stream open.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.#ctor(System.String)">
-            <summary>
-            Constructs a parser from the specified input file path.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.#ctor(System.String,System.Text.Encoding)">
-            <summary>
-            Constructs a parser from the specified input file path with the specified encoding.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.#ctor(System.String,System.Text.Encoding,System.Boolean)">
-            <summary>
-            Constructs a parser from the specified input file path with the specified encoding and byte order mark detection option.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.#ctor(System.IO.TextReader)">
-            <summary>
-            Constructs a parser from the specified input text reader.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Extensibility.CsvTextFieldParser.EndOfData">
-            <summary>
-            True if there are non-empty lines between the current cursor position and the end of the file.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.ReadFields">
-            <summary>
-            Reads all fields on the current line, returns them as an array of strings, and advances the cursor to the next line containing data.
-            </summary>
-            <returns>An array of strings that contains field values for the current line, or null if <see cref="P:Yuniql.Extensibility.CsvTextFieldParser.EndOfData"/> is true.</returns>
-            <exception cref="T:Yuniql.Extensibility.CsvMalformedLineException">if the parse of the current line failed</exception>
-        </member>
-        <member name="P:Yuniql.Extensibility.CsvTextFieldParser.LineNumber">
-            <summary>
-            The number of the line that will be returned by <see cref="M:Yuniql.Extensibility.CsvTextFieldParser.ReadFields"/> (starting at 1), or -1 if there are no more lines.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.Close">
-            <summary>
-            Closes the current <see cref="T:Yuniql.Extensibility.CsvTextFieldParser"/> object.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.Dispose">
-            <summary>
-            Closes and disposes the current <see cref="T:Yuniql.Extensibility.CsvTextFieldParser"/> object.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.Dispose(System.Boolean)">
-            <summary>
-            Disposes of the current <see cref="T:Yuniql.Extensibility.CsvTextFieldParser"/> object.
-            </summary>
-            <param name="disposing">true if called from <see cref="M:Yuniql.Extensibility.CsvTextFieldParser.Dispose"/>, or false if called from a finalizer</param>
-        </member>
-        <member name="P:Yuniql.Extensibility.CsvTextFieldParser.ErrorLine">
-            <summary>
-            The line that caused the most recent <see cref="T:Yuniql.Extensibility.CsvMalformedLineException"/>.
-            </summary>
-            <remarks>
-            If no <see cref="T:Yuniql.Extensibility.CsvMalformedLineException"/> exceptions have been thrown, an empty string is returned.
-            The <see cref="P:Yuniql.Extensibility.CsvTextFieldParser.ErrorLineNumber"/> property can be used to display the number of the line that caused the exception.
-            </remarks>
-        </member>
-        <member name="P:Yuniql.Extensibility.CsvTextFieldParser.ErrorLineNumber">
-            <summary>
-            Returns the number of the line that caused the most recent <see cref="T:Yuniql.Extensibility.CsvMalformedLineException"/> exception.
-            </summary>
-            <remarks>
-            If no <see cref="T:Yuniql.Extensibility.CsvMalformedLineException"/> exceptions have been thrown, -1 is returned.
-            The <see cref="P:Yuniql.Extensibility.CsvTextFieldParser.ErrorLine"/> property can be used to display the number of the line that caused the exception.
-            Blank lines and comments are not ignored when determining the line number.
-            </remarks>
-        </member>
-        <member name="P:Yuniql.Extensibility.CsvTextFieldParser.CompatibilityMode">
-            <summary>
-            True if this parser should exactly reproduce the behavior of the <code>Microsoft.VisualBasic.FileIO.TextFieldParser</code>.
-            Defaults to <code>false</code>.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Extensibility.CsvTextFieldParser.Delimiters">
-            <summary>
-            Defines the delimiters for a text file.
-            Default is a comma.
-            </summary>
-            <remarks>
-            This is defined as an array of strings for compatibility with <code>Microsoft.VisualBasic.FileIO.TextFieldParser</code>,
-            but this parser only supports one single-character delimiter.
-            </remarks>
-            <exception cref="T:System.ArgumentException">A delimiter value is set to a newline character, an empty string, or null.</exception>
-            <exception cref="T:System.NotSupportedException">The delimiters are set to an array that does not contain exactly one element with exactly one character.</exception>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.SetDelimiter(System.Char)">
-            <summary>
-            Sets the delimiter character used by this parser.
-            Default is a comma.
-            </summary>
-            <exception cref="T:System.ArgumentException">The delimiter character is set to a newline character.</exception>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.SetQuoteCharacter(System.Char)">
-            <summary>
-            Sets the quote character used by this parser, and also sets the quote escape character to match if it previously matched.
-            Default is a double quote character.
-            </summary>
-            <exception cref="T:System.ArgumentException">The quote character is set to a newline character.</exception>
-        </member>
-        <member name="M:Yuniql.Extensibility.CsvTextFieldParser.SetQuoteEscapeCharacter(System.Char)">
-            <summary>
-            Sets the quote escape character used by this parser.
-            Default is the same as the quote character, a double quote character.
-            </summary>
-            <exception cref="T:System.ArgumentException">The quote escape character is set to a newline character.</exception>
-        </member>
-        <member name="P:Yuniql.Extensibility.CsvTextFieldParser.HasFieldsEnclosedInQuotes">
-            <summary>
-            Denotes whether fields are enclosed in quotation marks when a CSV file is being parsed.
-            Defaults to <code>true</code>.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Extensibility.CsvTextFieldParser.TrimWhiteSpace">
-            <summary>
-            Indicates whether leading and trailing white space should be trimmed from field values.
-            Defaults to <code>false</code>.
             </summary>
         </member>
         <member name="T:Yuniql.Extensibility.DbVersion">
@@ -220,13 +220,33 @@
         </member>
         <member name="P:Yuniql.Extensibility.DbVersion.AppliedByTool">
             <summary>
-            The version of client that executed the migration step.
+            The yuniql client that executed the migration step.
             This can be yuniql-cli, yuniql-aspnetcore, yuniql-core, yuniql-azdevops
             </summary>
         </member>
         <member name="P:Yuniql.Extensibility.DbVersion.AppliedByToolVersion">
             <summary>
-            
+            The version of client that executed the migration step.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.DbVersion.AdditionalArtifacts">
+            <summary>
+            Additional information that describes the execution of the version
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.DbVersion.Status">
+            <summary>
+            The status of version execution
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.DbVersion.FailedScriptPath">
+            <summary>
+            The full path of last failed script file
+            </summary>
+        </member>
+        <member name="P:Yuniql.Extensibility.DbVersion.FailedScriptError">
+            <summary>
+            The error details from the last failed script file
             </summary>
         </member>
         <member name="T:Yuniql.Extensibility.DbVersionData">
@@ -234,19 +254,34 @@
             Extended data to describe the migration version.
             </summary>
         </member>
-        <member name="P:Yuniql.Extensibility.DbVersionData.Id">
-            <summary>
-            Unique ID of migration record in migration history table.
-            </summary>
-        </member>
         <member name="P:Yuniql.Extensibility.DbVersionData.Version">
             <summary>
-            The version itself as reflected in the directory structure.
+            The version of this artifact schema
             </summary>
         </member>
-        <member name="P:Yuniql.Extensibility.DbVersionData.Artifact">
+        <member name="P:Yuniql.Extensibility.DbVersionData.Data">
             <summary>
             Serialized BLOB of all scripts executed in the version.
+            </summary>
+        </member>
+        <member name="T:Yuniql.Extensibility.DEFAULT_CONSTANTS">
+            <summary>
+            Globa default values.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS">
+            <summary>
+            Default command timeout in seconds.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.DEFAULT_CONSTANTS.BULK_BATCH_SIZE">
+            <summary>
+            Default batch size of bulk load operations.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.DEFAULT_CONSTANTS.BULK_SEPARATOR">
+            <summary>
+            Default CSV file values separator.
             </summary>
         </member>
         <member name="T:Yuniql.Extensibility.EnvironmentHelper">
@@ -281,8 +316,8 @@
             <param name="connection">An connection to target database.</param>
             <param name="transaction">An active transaction.</param>
             <param name="fileFullPath">Fully qualified path to the CSV file.</param>
-            <param name="delimiter">Delimeter used in CSV file. When NULL, defaults to command ",".</param>
-            <param name="batchSize">Size of bacth for bulk load operation.</param>
+            <param name="bulkSeparator">Bulk file values separator used in CSV file. When NULL, defaults to command ",".</param>
+            <param name="bulkBatchSize">Size of bacth for bulk load operation.</param>
             <param name="commandTimeout">Command timeout in seconds.</param>
         </member>
         <member name="T:Yuniql.Extensibility.IDataService">
@@ -327,6 +362,12 @@
             MySql version below 8.0 are known to not support Schema.
             </summary>
         </member>
+        <member name="P:Yuniql.Extensibility.IDataService.IsBatchSqlSupported">
+            <summary>
+            Returns true if the database platform or version supports batch sql statements.
+            For example, SQL Server uses GO word as default batch terminator while Snowflow uses semicolon (;).
+            </summary>
+        </member>
         <member name="P:Yuniql.Extensibility.IDataService.SchemaName">
             <summary>
             Default schema name for schema versions table. Leave it null if database doesn't support schema.
@@ -357,6 +398,12 @@
             Returns the SQL statement to use for creating new database if --auto-createdb flag is set to true.
             </summary>
         </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCreateSchema">
+            <summary>
+            Returns the SQL statement to use for creating schema if the target database supports schemas.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCheckIfDatabaseConfigured">
             <summary>
             Returns the SQL statement to use for checking target database has been configured for migration tracking.
@@ -381,6 +428,35 @@
             <summary>
             Returns the SQL statement to use for creating new entry into migration tracking table.
             </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">
+            <summary>
+            Updates the database migration tracking table.
+            </summary>
+            <param name="dbConnection">The database connection.</param>
+            <param name="traceService">The trace service.</param>
+            <returns>True if target database was updated, otherwise returns false</returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.TryParseErrorFromException(System.Exception,System.String@)">
+            <summary>
+            Try parses error from database specific exception.
+            </summary>
+            <param name="exc">The exc.</param>
+            <param name="result">The parsed error.</param>
+            <returns>
+            True, if the parsing was sucessfull otherwise false
+            </returns>
+        </member>
+        <member name="T:Yuniql.Extensibility.INonTransactionalFlow">
+            <summary>
+            Support for non-transactional flow (when version scripts are not executed in transaction)
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.INonTransactionalFlow.GetSqlForUpsertVersion">
+            <summary>
+            Gets the SQL for insert or update version for non-transactional platform.
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Yuniql.Extensibility.ITraceService">
             <summary>
@@ -409,6 +485,13 @@
         <member name="M:Yuniql.Extensibility.ITraceService.Debug(System.String,System.Object)">
             <summary>
             Writes debug messages.
+            </summary>
+            <param name="message">The message to write.</param>
+            <param name="payload">JSON structured information to support the trace entry.</param>
+        </member>
+        <member name="M:Yuniql.Extensibility.ITraceService.Success(System.String,System.Object)">
+            <summary>
+            Writes success informational messages.
             </summary>
             <param name="message">The message to write.</param>
             <param name="payload">JSON structured information to support the trace entry.</param>

@@ -4,25 +4,83 @@
         <name>Yuniql.SqlServer</name>
     </assembly>
     <members>
-        <member name="T:Yuniql.SqlServer.DEFAULT_CONSTANTS">
-            <summary>
-            Globa default values.
-            </summary>
+        <member name="T:Yuniql.SqlServer.SqlServerBulkImportService">
+            <inheritdoc/>
         </member>
-        <member name="F:Yuniql.SqlServer.DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS">
-            <summary>
-            Default command timeout in seconds.
-            </summary>
+        <member name="M:Yuniql.SqlServer.SqlServerBulkImportService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
         </member>
-        <member name="F:Yuniql.SqlServer.DEFAULT_CONSTANTS.BULK_BATCH_SIZE">
-            <summary>
-            Default batch size of bulk load operations.
-            </summary>
+        <member name="M:Yuniql.SqlServer.SqlServerBulkImportService.Initialize(System.String)">
+            <inheritdoc/>
         </member>
-        <member name="F:Yuniql.SqlServer.DEFAULT_CONSTANTS.BULK_SEPARATOR">
-            <summary>
-            Default CSV file values separator.
-            </summary>
+        <member name="M:Yuniql.SqlServer.SqlServerBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="T:Yuniql.SqlServer.SqlServerDataService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.CreateConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.CreateMasterConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetConnectionInfo">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.IsAtomicDDLSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.IsSchemaSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.IsBatchSqlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.TableName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.SchemaName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.BreakStatements(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCheckIfDatabaseExists">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCreateDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCreateSchema">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCheckIfDatabaseConfigured">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForConfigureDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForGetCurrentVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForGetAllVersions">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForInsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.TryParseErrorFromException(System.Exception,System.String@)">
+            <inheritdoc/>
         </member>
     </members>
 </doc>

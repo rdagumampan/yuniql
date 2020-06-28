@@ -4,5 +4,98 @@
         <name>Yuniql.MySql</name>
     </assembly>
     <members>
+        <member name="T:Yuniql.MySql.MySqlBulkImportService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlBulkImportService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlBulkImportService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="T:Yuniql.MySql.MySqlDataService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.MySql.MySqlDataService.IsAtomicDDLSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.MySql.MySqlDataService.IsSchemaSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.MySql.MySqlDataService.IsBatchSqlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.MySql.MySqlDataService.TableName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.MySql.MySqlDataService.SchemaName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.CreateConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.CreateMasterConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.BreakStatements(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetConnectionInfo">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCheckIfDatabaseExists">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCreateDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCreateSchema">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCheckIfDatabaseConfigured">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForConfigureDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForGetCurrentVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForGetAllVersions">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForInsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForUpsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.TryParseErrorFromException(System.Exception,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Yuniql.MySql.MySqlNativeBulkImportService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlNativeBulkImportService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlNativeBulkImportService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.MySql.MySqlNativeBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
     </members>
 </doc>
