@@ -3,8 +3,8 @@
 namespace Yuniql.CLI
 {
     //yuniql info
-    [Verb("info", HelpText = "Shows all the migrations applied to target database.")]
-    public class InfoOption : BasePlatformOption
+    [Verb("list", HelpText = "Shows all the migrations applied to target database.")]
+    public class ListOption : BasePlatformOption
     {
         //yuniql <command> --meta-schema "yuniql" 
         [Option("meta-schema", Required = false, HelpText = "Schema name for schema versions table.")]
