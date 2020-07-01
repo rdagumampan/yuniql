@@ -1,4 +1,4 @@
-## aspnetcore-sample
+# aspnetcore-sample
 
 This is a sample project for running database migrations in ASP.NET Core app.
 For more how-to guides, samples and developer guides, walk through our [documentation](https://yuniql.io/docs) and bookmark [https://yuniql.io](https://yuniql.io).

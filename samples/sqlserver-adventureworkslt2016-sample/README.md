@@ -1,4 +1,4 @@
-## sqlserver-adventureworkslt2016-sample
+# sqlserver-adventureworkslt2016-sample
 
 For more how-to guides, samples and developer guides, walk through our [documentation](https://yuniql.io/docs) and bookmark [https://yuniql.io](https://yuniql.io).
 

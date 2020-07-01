@@ -1,4 +1,4 @@
-## aspnetcore-sample
+# aspnetcore-sample
 
 This is a sample project for running PostgreSql database migrations in ASP.NET Core app.
 For more how-to guides, samples and developer guides, walk through our [documentation](https://yuniql.io/docs) and bookmark [https://yuniql.io](https://yuniql.io).
@@ -11,7 +11,7 @@ docker run -dit -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_D
 
 Build and run
 
-```
+```console
 dotnet build
 dotnet run
 ```
