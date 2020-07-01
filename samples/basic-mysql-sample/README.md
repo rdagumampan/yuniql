@@ -1,6 +1,8 @@
 # basic-mysql-sample
 
-This project is created and to be executed thru `yuniql` CLI tool. If you need help formatting connection string, please visit https://www.connectionstrings.com.
+This project is created and to be executed thru `yuniql` CLI tool. 
+- To install `yuniql cli`, see https://yuniql.io/docs/install-yuniql/
+- To format connection string, see https://www.connectionstrings.com.
 
 Deploy local postgresql with docker or use your own server
 
