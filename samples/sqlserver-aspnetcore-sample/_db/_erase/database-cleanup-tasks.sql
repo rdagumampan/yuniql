@@ -1,9 +1,0 @@
-DROP TABLE [dbo].[__YuniqlDbVersion];
-DROP VIEW [dbo].[VwVisitor];
-DROP VIEW [dbo].[VwVisitorTokenized];
-DROP PROC [dbo].[usp_delete_visitor];
-DROP PROC [dbo].[usp_insert_visitor];
-DROP PROC [dbo].[usp_update_visitor];
-DROP TABLE [dbo].[Destination];
-DROP TABLE [dbo].[Visitor];
-DROP FUNCTION [dbo].[udf_calculate_visitors];

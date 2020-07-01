@@ -1,7 +1,7 @@
 ﻿using System;
 using Yuniql.Extensibility;
 
-namespace console_sample
+namespace worker_sample
 {
     //TIP: You can implement custom ITraceService to capture the log and debug information during your migration run.
     //This us usefule if you wish to sink trace logs into your preferred provider ie. serilog, seq, or others.
@@ -15,13 +15,13 @@ namespace console_sample
 
         public void Info(string message, object payload = null)
         {
-            var traceMessage = $"INF   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
             Console.Write(traceMessage);
         }
 
         public void Error(string message, object payload = null)
         {
-            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
             Console.Write(traceMessage);
         }
 
@@ -29,7 +29,7 @@ namespace console_sample
         {
             if (IsDebugEnabled)
             {
-                var traceMessage = $"DBG   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+                var traceMessage = $"DBG   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
                 Console.Write(traceMessage);
             }
         }
@@ -39,6 +39,5 @@ namespace console_sample
             var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
             Console.Write(traceMessage);
         }
-
     }
 }

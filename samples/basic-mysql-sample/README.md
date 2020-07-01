@@ -1,13 +1,30 @@
-### Database migration project
-This database migration project is created and to be executed thru `yuniql`. 
-For more how-to guides, samples and developer guides, walk through our [documentation](https://yuniql.io/docs) and bookmark [https://yuniql.io](https://yuniql.io).
+# basic-mysql-sample
 
-#### Run this migration with yuniql on docker
+This project is created and to be executed thru `yuniql` CLI tool. If you need help formatting connection string, please visit https://www.connectionstrings.com.
 
-Run with basic parameters
+Deploy local postgresql with docker or use your own server
+
+```console
+docker run -dit --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
+SETX YUNIQL_CONNECTION_STRING "Server=localhost;Port=3306;Database=helloyuniql;Uid=root;Pwd=P@ssw0rd!;"
 ```
-docker build -t yuniql-mysql-sample .
-docker run yuniql-mysql-sample --platform mysql -c "your-connection-string"
+
+Run migrations
+
+```console
+yuniql run -a --platform mysql
+```
+
+Show migrations
+
+```console
+yuniql list --platform mysql
+```
+
+Erase database
+
+```console
+yuniql erase -f --platform mysql
 ```
 
 #### Found bugs?

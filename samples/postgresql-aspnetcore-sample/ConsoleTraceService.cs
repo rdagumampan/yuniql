@@ -33,5 +33,11 @@ namespace aspnetcore_sample
                 Console.Write(traceMessage);
             }
         }
+
+        public void Success(string message, object payload = null)
+        {
+            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
+            Console.Write(traceMessage);
+        }
     }
 }

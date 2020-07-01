@@ -1,18 +1,30 @@
-### Database migration project
-This database migration project is created and to be executed thru `yuniql`. 
-For more how-to guides, samples and developer guides, walk through our [documentation](https://yuniql.io/docs) and bookmark [https://yuniql.io](https://yuniql.io).
+# basic-sqlserver-sample
 
-#### Run this migration with yuniql on docker
+This project is created and to be executed thru `yuniql` CLI tool. If you need help formatting connection string, please visit https://www.connectionstrings.com.
 
-Run with basic parameters
-```
-docker build -t yuniql-sqlserver-sample .
-docker run yuniql-sqlserver-sample -c "your-connection-string"
+Deploy local postgresql with docker or use your own server
+
+```console
+docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!"
 ```
 
-Run with token replacement, verify in `VwVisitorTokenized`
+Run migrations
+
+```console
+yuniql run -a
 ```
-docker run yuniql-sqlserver-sample -c "your-connection-string" -k "VwColumnPrefix1=App1,VwColumnPrefix2=App2,VwColumnPrefix3=App3,VwColumnPrefix4=App4"
+
+Show migrations
+
+```console
+yuniql list
+```
+
+Erase database
+
+```console
+yuniql erase -f
 ```
 
 #### Found bugs?
