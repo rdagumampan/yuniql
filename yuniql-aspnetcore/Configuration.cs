@@ -29,7 +29,7 @@ namespace Yuniql.AspNetCore
         /// <summary>
         /// Runs migration only up to the version specified in this property. Defaul is Null and will run upto latest.
         /// </summary>
-        public string TargetVersion { get; set; } = "latest";
+        public string TargetVersion { get; set; } = null;
 
         /// <summary>
         /// The list of token key/value pairs to repair tokens in each script file. 
