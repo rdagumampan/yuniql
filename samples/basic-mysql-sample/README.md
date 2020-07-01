@@ -2,31 +2,31 @@
 
 This project is created and to be executed thru `yuniql` CLI tool. If you need help formatting connection string, please visit https://www.connectionstrings.com.
 
-Deploy local postgresql with docker or use your own server
+1. Deploy local postgresql with docker or use your own server
 
-```console
-docker run -dit --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
-SETX YUNIQL_CONNECTION_STRING "Server=localhost;Port=3306;Database=helloyuniql;Uid=root;Pwd=P@ssw0rd!;"
-```
+  ```console
+  docker run -dit --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
+  SETX YUNIQL_CONNECTION_STRING "Server=localhost;Port=3306;Database=helloyuniql;Uid=root;Pwd=P@ssw0rd!;"
+  ```
 
-Run migrations
+2. Run migrations
 
-```console
-yuniql run -a --platform mysql
-```
+  ```console
+  yuniql run -a --platform mysql
+  ```
 
-Show migrations
+3. Show migrations
 
-```console
-yuniql list --platform mysql
-```
+  ```console
+  yuniql list --platform mysql
+  ```
 
-Erase database
+3. Erase database
 
-```console
-yuniql erase -f --platform mysql
-```
+  ```console
+  yuniql erase -f --platform mysql
+  ```
 
-#### Found bugs?
+## Found bugs?
 
 Help us improve further please [create an issue](https://github.com/rdagumampan/yuniql/issues/new).
