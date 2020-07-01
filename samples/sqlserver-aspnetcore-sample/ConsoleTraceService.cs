@@ -15,13 +15,13 @@ namespace aspnetcore_sample
 
         public void Info(string message, object payload = null)
         {
-            var traceMessage = $"INF   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
             Console.Write(traceMessage);
         }
 
         public void Error(string message, object payload = null)
         {
-            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
             Console.Write(traceMessage);
         }
 
@@ -29,9 +29,15 @@ namespace aspnetcore_sample
         {
             if (IsDebugEnabled)
             {
-                var traceMessage = $"DBG   {DateTime.UtcNow.ToString("o")}   {message}{Environment.NewLine}";
+                var traceMessage = $"DBG   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
                 Console.Write(traceMessage);
             }
+        }
+
+        public void Success(string message, object payload = null)
+        {
+            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
+            Console.Write(traceMessage);
         }
     }
 }

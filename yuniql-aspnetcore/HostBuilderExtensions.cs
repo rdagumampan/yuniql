@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
 namespace Yuniql.AspNetCore
 {
-    public static class YuniqlWebHostBuilderExtensions
+    public static class HostBuilderExtensions
     {
         /// <summary>
         /// Runs database migrations with Yuniql. This uses default trace service FileTraceService.
@@ -12,14 +12,15 @@ namespace Yuniql.AspNetCore
         /// <param name="builder"></param>
         /// <param name="configuration">Desired configuration when yuniql runs. Set your workspace location, connection string, target version and other parameters.</param>
         /// <returns></returns>
-        public static IWebHostBuilder UseYuniql(
-            this IWebHostBuilder builder,
-            YuniqlConfiguration configuration
+        public static IHostBuilder UseYuniql(
+            this IHostBuilder builder,
+            Configuration configuration
         )
         {
             var traceService = new FileTraceService { IsDebugEnabled = configuration.DebugTraceMode };
             return builder.UseYuniql(traceService, configuration);
         }
+
 
         /// <summary>
         /// Runs database migrations with Yuniql. This uses your specific implementation of ITraceService interface.
@@ -28,10 +29,10 @@ namespace Yuniql.AspNetCore
         /// <param name="traceService">Your custom implementation of ITraceService interface</param>
         /// <param name="configuration">Desired configuration when yuniql runs. Set your workspace location, connection string, target version and other parameters.</param>
         /// <returns></returns>
-        public static IWebHostBuilder UseYuniql(
-            this IWebHostBuilder builder,
+        public static IHostBuilder UseYuniql(
+            this IHostBuilder builder,
             ITraceService traceService,
-            YuniqlConfiguration configuration
+            Configuration configuration
         )
         {
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
@@ -39,7 +40,7 @@ namespace Yuniql.AspNetCore
             migrationService.Initialize(configuration.ConnectionString);
             migrationService.Run(
                 configuration.WorkspacePath,
-                configuration.TargetVersion,
+                targetVersion: configuration.TargetVersion,
                 autoCreateDatabase: configuration.AutoCreateDatabase,
                 tokens: configuration.Tokens,
                 verifyOnly: configuration.VerifyOnly,
@@ -48,9 +49,12 @@ namespace Yuniql.AspNetCore
                 metaTableName: configuration.MetaTableName,
                 commandTimeout: configuration.CommandTimeout,
                 bulkBatchSize: configuration.BulkBatchSize,
-                appliedByTool: configuration.ApplyByTool,
-                appliedByToolVersion: configuration.ApplyByToolVersion,
-                environmentCode: configuration.Environment);
+                appliedByTool: configuration.AppliedByTool,
+                appliedByToolVersion: configuration.AppliedByToolVersion,
+                environmentCode: configuration.Environment,
+                resumeFromFailure: configuration.ContinueAfterFailure.HasValue && configuration.ContinueAfterFailure.Value ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?)null,
+                noTransaction: configuration.NoTransaction
+                );
 
             return builder;
         }
@@ -64,12 +68,12 @@ namespace Yuniql.AspNetCore
         /// <param name="traceService">Your custom implementation of ITraceService interface</param>
         /// <param name="configuration">Desired configuration when yuniql runs. Set your workspace location, connection string, target version and other parameters.</param>
         /// <returns></returns>
-        public static IWebHostBuilder UseYuniql(
-            this IWebHostBuilder builder,
+        public static IHostBuilder UseYuniql(
+            this IHostBuilder builder,
             IDataService dataService,
             IBulkImportService bulkImportService,
             ITraceService traceService,
-            YuniqlConfiguration configuration
+            Configuration configuration
         )
         {
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
@@ -77,7 +81,7 @@ namespace Yuniql.AspNetCore
             migrationService.Initialize(configuration.ConnectionString);
             migrationService.Run(
                 configuration.WorkspacePath,
-                configuration.TargetVersion,
+                targetVersion: configuration.TargetVersion,
                 autoCreateDatabase: configuration.AutoCreateDatabase,
                 tokens: configuration.Tokens,
                 verifyOnly: configuration.VerifyOnly,
@@ -86,9 +90,12 @@ namespace Yuniql.AspNetCore
                 metaTableName: configuration.MetaTableName,
                 commandTimeout: configuration.CommandTimeout,
                 bulkBatchSize: configuration.BulkBatchSize,
-                appliedByTool: configuration.ApplyByTool,
-                appliedByToolVersion: configuration.ApplyByToolVersion,
-                environmentCode: configuration.Environment);
+                appliedByTool: configuration.AppliedByTool,
+                appliedByToolVersion: configuration.AppliedByToolVersion,
+                environmentCode: configuration.Environment,
+                resumeFromFailure: configuration.ContinueAfterFailure.HasValue && configuration.ContinueAfterFailure.Value ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?)null,
+                noTransaction: configuration.NoTransaction
+                );
 
             return builder;
         }
