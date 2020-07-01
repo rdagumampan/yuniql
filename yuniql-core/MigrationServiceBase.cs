@@ -110,7 +110,7 @@ namespace Yuniql.Core
             //extract and filter out scripts when environment code is used
             var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
             sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
-            _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}{Environment.NewLine}" +
+            _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine: string.Empty) +
                    $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
 
             //execute all script files in the target folder
@@ -182,7 +182,7 @@ namespace Yuniql.Core
             //extract and filter out scripts when environment code is used
             var bulkFiles = _directoryService.GetFiles(scriptDirectory, "*.csv").ToList();
             bulkFiles = _directoryService.FilterFiles(workingPath, environmentCode, bulkFiles).ToList();
-            _traceService.Info($"Found {bulkFiles.Count} script files on {scriptDirectory}{Environment.NewLine}" +
+            _traceService.Info($"Found {bulkFiles.Count} script files on {scriptDirectory}" + (bulkFiles.Count > 0 ? Environment.NewLine : string.Empty) +
                    $"{string.Join(Environment.NewLine, bulkFiles.Select(s => "  + " + new FileInfo(s).Name))}");
             bulkFiles.Sort();
             bulkFiles.ForEach(csvFile =>

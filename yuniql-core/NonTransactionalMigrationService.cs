@@ -407,7 +407,7 @@ namespace Yuniql.Core
                 //filter out scripts when environment code is used
                 var sqlScriptFiles = _directoryService.GetFiles(scriptDirectory, "*.sql").ToList();
                 sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
-                _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}{Environment.NewLine}" +
+                _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine : string.Empty) +
                        $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
 
                 //execute all script files in the version folder, we also make sure its sorted by file name
