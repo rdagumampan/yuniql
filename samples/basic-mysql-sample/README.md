@@ -1,10 +1,17 @@
 # basic-mysql-sample
 
 This project is created and to be executed thru `yuniql` CLI tool. 
-- To install `yuniql cli`, see https://yuniql.io/docs/install-yuniql/
+- To install `yuniql cli`, see https://yuniql.io/docs/install-yuniql
 - To format connection string, see https://www.connectionstrings.com.
 
-Deploy local postgresql with docker or use your own server
+Clone this sample to your machine
+
+  ```
+  git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql
+  cd c:\temp\yuniql\samples\basic-mysql-sample
+  ``
+
+Deploying local postgresql with docker or use your own server and set environment variable
 
   ```console
   docker run -dit --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
