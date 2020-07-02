@@ -1,24 +1,12 @@
 # yuniql ![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql?style=flat-square&logo=appveyor) [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql/build/tests) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql?style=flat-square&logo=gitter&color=orange)](https://gitter.im/yuniql/yuniql) [![Download latest build](https://img.shields.io/badge/Download-win--x64-green?style=flat-square&logo=windows)](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest-full.zip) [![Download latest build](https://img.shields.io/badge/Download-docker--images-green?style=flat-square&logo=docker)](https://hub.docker.com/r/rdagumampan/yuniql)
 
->*** LATEST UPDATE: BETA version `v0.465.0` has been released! This release covers all the major features expected to be part of `v1.0`. Try out with samples described below. - may.27.2020
+<img align="right" src="https://yuniql.io/images/logo.png" width="150">
 
-<img align="right" src="assets/yuniql-logo.png" width="150">
+**yuniql** (yuu-nee-kel). Open source schema versioning and database migration engine for SqlServer, PostgreSql and others. Improve your Data Platform DevOps discipline with repeatable deployment, plain SQL scripts, bulk import, integrated CI/CD pipelines, and Docker-based migrations.
 
-**yuniql** (yuu-nee-kel) is an open source schema versioning and database migration engine for SqlServer, PostgreSql and others. Improve your Data Platform DevOps discipline with repeatable deployment, plain SQL scripts, bulk import, integrated CI/CD pipelines, and Docker-based migrations.
-
-<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-evodb-01.png" width="700">
+<img align="center" src="https://yuniql.io/images/evodb-01.png" width="700">
 
 >Inspired by [Evolutionary Database Design](https://www.martinfowler.com/articles/evodb.html) by Martin Fowler and Pramod Sadalage.
-
-## Why yuniql?
-- **It's raw SQL.** Yuniql follows database-first approach in versioning your database. Versions are normal directories or folders. Scripts are series of plain old .sql files. No special tool or language required.
-- **It's .NET Core Native.** Released as a self-contained .NET Core 3.0 application. Yuniql doesn't require any dependencies or CLR installed on the developer machine or CI/CD server. For windows, `yuniql.exe` is ready-for-use on day 1.
-- **Bulk Import CSV.** Load up your master data and lookup tables from CSV files. A powerful feature when provisioning fresh developer databases or when taking large block of master data as part of a new version.
-- **DevOps Friendly.** Azure Pipeline Tasks available in the Market Place. `Use Yuniql` task acquires a specific version of the Yuniql. `Run Yuniql` task runs database migrations with Yuniql CLI using version acquired earlier.
-- **Cloud Ready.** Platform tested for Azure SQL Database, Amazon RDS and Google Cloud SQL. Plugins for Snowflake, Aurora and Azure Synapse Analytics are lined up for development.
-- **Docker Support.** Each project is prepared for containerized execution using Yuniql base images. A dockerized database project is cheap way to run migration on any CI/CD platform.
-- **Cross-platform.** Works with Windows and major Linux distros.
-- **Open Source.** Released under Apache License version 2.0. Absolutely free for personal or commercial use.
 
 ## Working with CLI
 Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://yuniql.io/docs/install-yuniql
@@ -59,7 +47,7 @@ yuniql info --platform postgresql
 ## Working with Azure DevOps Pipelines Tasks
 Run your database migration from Azure DevOps Pipelines. The tasks downloads package and cache it for later execution just like how `Use .NET Core` or `Use Node` tasks works. Find Yuniql on [Azure DevOps MarketPlace](https://marketplace.visualstudio.com/items?itemName=rdagumampan.yuniql-azdevops-extensions). Developer guide is available here https://yuniql.io/docs/migrate-via-azure-devops-pipelines.
 
-<img align="center" src="https://github.com/rdagumampan/yuniql/raw/master/assets/wiki-az-devops-task-all.png">
+<img align="center" src="https://rdagumampan.gallerycdn.vsassets.io/extensions/rdagumampan/yuniql-azdevops-extensions/0.56.0/1576914414829/images/screenshot-01.png">
 
 ## Working with Docker Container
 Run your database migration thru a Docker container. This is specially helpful on Linux environments and CI/CD pipelines running on Linux Agents as it facilitates your migration without having to worry any local installations or runtime dependencies. Developer guide is available here https://yuniql.io/docs/migrate-via-docker-container.

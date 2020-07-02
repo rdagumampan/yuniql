@@ -1,10 +1,7 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-env
 
 WORKDIR /code
-COPY ./yuniql-cli ./yuniql-cli
-COPY ./yuniql-core ./yuniql-core
-COPY ./yuniql-extensibility ./yuniql-extensibility
-COPY ./yuniql-platforms ./yuniql-platforms
+RUN git clone https://github.com/rdagumampan/yuniql.git /code
 
 WORKDIR /code/yuniql-cli
 RUN dotnet publish -c release -r win-x64 /p:publishtrimmed=true -o ./app
