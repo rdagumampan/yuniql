@@ -2,7 +2,7 @@
 
 <img align="right" src="https://yuniql.io/images/logo.png" width="150">
 
-**yuniql** (yuu-nee-kel). Open source schema versioning and database migration engine for SqlServer, PostgreSql and others. Improve your Data Platform DevOps discipline with repeatable deployment, plain SQL scripts, bulk import, integrated CI/CD pipelines, and Docker-based migrations.
+**yuniql** (yuu-nee-kel). Free and open source schema versioning and database migration engine. Use plain SQL scripts, bulk import CSV, integrate CI/CD pipelines, runs on with Windows and Linux.
 
 <img align="center" src="https://yuniql.io/images/evodb-01.png" width="700">
 
