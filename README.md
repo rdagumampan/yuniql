@@ -10,13 +10,13 @@
 Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://yuniql.io/docs/install-yuniql
 
 ```console
-choco install yuniql --version 0.465.0
+choco install yuniql --version=1.0.1
 ```
 
 ### Run migrations for SQL Server
 
 ```console
-docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
 ```
 
@@ -31,11 +31,12 @@ yuniql info
 ### Run migrations for PostgreSql, MySql and others
 
 ```console
-docker run -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
+docker run -dit -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
 SETX YUNIQL_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
 ```
 
 ```console
+git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
 cd c:\temp\yuniql-cli\samples\basic-postgresql-sample
 
 yuniql run -a --platform postgresql
@@ -70,7 +71,7 @@ using Yuniql.AspNetCore;
 ...
 ...
 
-//docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+//docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 var traceService = new ConsoleTraceService { IsDebugEnabled = true };
 app.UseYuniql(traceService, new YuniqlConfiguration
 {
@@ -100,7 +101,7 @@ using Yuniql.Core;
 
 static void Main(string[] args)
 {
-	//docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+	//docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 	var traceService = new ConsoleTraceService { IsDebugEnabled = true };
 	var configuration = new YuniqlConfiguration
 	{
