@@ -26,6 +26,16 @@ cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
 
 yuniql run -a
 yuniql list
+
+Running yuniql v1.0.1 for windows-x64
+Copyright 2019 (C) Rodel E. Dagumampan. Apache License v2.0
+Visit https://yuniql.io for documentation & more samples
+
++---------------+----------------------+------------+---------------+---------------------+
+| SchemaVersion | AppliedOnUtc         | Status     | AppliedByUser | AppliedByTool       |
++---------------+----------------------+------------+---------------+---------------------+
+| v0.00         | 2020-07-02 21:45:13Z | Successful | sa            | yuniql-cli v1.0.1.0 |
++---------------+----------------------+------------+---------------+---------------------+
 ```
 
 ### Run migrations for PostgreSql, MySql and others
