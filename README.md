@@ -25,7 +25,7 @@ git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
 cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
 
 yuniql run -a
-yuniql info
+yuniql list
 ```
 
 ### Run migrations for PostgreSql, MySql and others
@@ -40,7 +40,7 @@ git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
 cd c:\temp\yuniql-cli\samples\basic-postgresql-sample
 
 yuniql run -a --platform postgresql
-yuniql info --platform postgresql
+yuniql list --platform postgresql
 ```
 
 ## Working with Azure DevOps Pipelines Tasks
