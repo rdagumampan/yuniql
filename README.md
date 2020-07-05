@@ -7,6 +7,9 @@
 >Inspired by [Evolutionary Database Design](https://www.martinfowler.com/articles/evodb.html) by Martin Fowler and Pramod Sadalage.
 
 ## Working with CLI
+
+<img align="center" src="https://yuniql.io/images/screen-gif-01.gif" width="700">
+
 Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://yuniql.io/docs/install-yuniql
 
 ```console
