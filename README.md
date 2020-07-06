@@ -7,7 +7,7 @@
 >Inspired by [Evolutionary Database Design](https://www.martinfowler.com/articles/evodb.html) by Martin Fowler and Pramod Sadalage.
 -->
 
-<img align="center" src="https://yuniql.io/images/screen-gif-02.gif" width="100%">
+<img align="center" src="https://yuniql.io/images/screen-gif-01-gh.gif" width="100%">
 
 ## Working with CLI
 
@@ -20,7 +20,7 @@ choco install yuniql --version=1.0.1
 ### Run migrations for SQL Server
 
 ```console
-docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+docker run -d -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
 ```
 
@@ -45,7 +45,7 @@ Visit https://yuniql.io for documentation & more samples
 ### Run migrations for PostgreSql, MySql and others
 
 ```console
-docker run -dit -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
+docker run -d -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
 SETX YUNIQL_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
 ```
 
@@ -85,7 +85,7 @@ using Yuniql.AspNetCore;
 ...
 ...
 
-//docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+//docker run -d -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 var traceService = new ConsoleTraceService { IsDebugEnabled = true };
 app.UseYuniql(traceService, new Configuration
 {
@@ -115,7 +115,7 @@ using Yuniql.Core;
 
 static void Main(string[] args)
 {
-	//docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+	//docker run -d -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 	var traceService = new ConsoleTraceService { IsDebugEnabled = true };
 	var configuration = new Configuration
 	{
