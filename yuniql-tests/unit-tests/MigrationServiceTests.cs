@@ -105,7 +105,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new MigrationService(
+            var sut = new TransactionalMigrationService(
                 localVersionService.Object,
                 dataService.Object,
                 bulkImportService.Object,
@@ -288,7 +288,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new MigrationService(
+            var sut = new TransactionalMigrationService(
                 localVersionService.Object,
                 dataService.Object,
                 bulkImportService.Object,
@@ -414,7 +414,7 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
 
             //act
-            var sut = new MigrationService(
+            var sut = new TransactionalMigrationService(
                 localVersionService.Object,
                 dataService.Object,
                 bulkImportService.Object,
@@ -472,7 +472,7 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
 
             //act
-            var sut = new MigrationService(
+            var sut = new TransactionalMigrationService(
                 localVersionService.Object,
                 dataService.Object,
                 bulkImportService.Object,
@@ -532,7 +532,7 @@ namespace Yuniql.UnitTests
             //act
             Assert.ThrowsException<ApplicationException>(() =>
             {
-                var sut = new MigrationService(
+                var sut = new TransactionalMigrationService(
                     localVersionService.Object,
                     dataService.Object,
                     bulkImportService.Object,
@@ -580,7 +580,7 @@ namespace Yuniql.UnitTests
 
             //act
             var option = new RunOption {  NoTransaction = noTransactionOption };
-            var sut = new MigrationService(new Mock<ILocalVersionService>().Object, dataService.Object, new Mock<IBulkImportService>().Object, 
+            var sut = new TransactionalMigrationService(new Mock<ILocalVersionService>().Object, dataService.Object, new Mock<IBulkImportService>().Object, 
                                            configurationDataService.Object, new Mock<ITokenReplacementService>().Object, 
                                            new Mock<IDirectoryService>().Object, new Mock<IFileService>().Object, new Mock<ITraceService>().Object);
             sut.Run(string.Empty, metaSchemaName: "any", metaTableName: "any", noTransaction: noTransactionOption);

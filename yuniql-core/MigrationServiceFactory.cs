@@ -41,7 +41,7 @@ namespace Yuniql.Core
 
             var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
 
-            var migrationService = new MigrationService(
+            var migrationService = new TransactionalMigrationService(
                 localVersionService,
                 dataService,
                 bulkImportService,
