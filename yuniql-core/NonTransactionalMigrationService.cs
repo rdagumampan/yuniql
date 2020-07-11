@@ -69,7 +69,7 @@ namespace Yuniql.Core
             bool noTransaction = false
          )
         {
-            if (_dataService.IsAtomicDDLSupported && nonTransactionalResolvingOption != null)
+            if (_dataService.IsTransactionalDdlSupported && nonTransactionalResolvingOption != null)
             {
                 throw new NotSupportedException(@$"The non-transactional failure resolving option ""{nonTransactionalResolvingOption}"" is not available for this platform.");
             }
@@ -78,7 +78,7 @@ namespace Yuniql.Core
             _localVersionService.Validate(workingPath);
 
             //when uncomitted run is not supported, fail migration, throw exceptions and return error exit code
-            if (verifyOnly.HasValue && verifyOnly == true && !_dataService.IsAtomicDDLSupported)
+            if (verifyOnly.HasValue && verifyOnly == true && !_dataService.IsTransactionalDdlSupported)
             {
                 throw new NotSupportedException("Yuniql.Verify is not supported in the target platform. " +
                     "The feature requires support for atomic DDL operations. " +
@@ -285,7 +285,7 @@ namespace Yuniql.Core
                     if (_directoryService.Exists(transactionDirectory))
                     {
                         //version directory with _transaction directory only applies to platforms supporting transactional ddl
-                        if (_dataService.IsAtomicDDLSupported)
+                        if (_dataService.IsTransactionalDdlSupported)
                         {
                             throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" can't contain ""_transaction"" subdirectory for selected target platform, because the whole migration is already running in single transaction.");
                         }

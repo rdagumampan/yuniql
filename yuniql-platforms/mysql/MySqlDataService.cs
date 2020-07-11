@@ -26,7 +26,7 @@ namespace Yuniql.MySql
         }
 
         ///<inheritdoc/>
-        public bool IsAtomicDDLSupported => false;
+        public bool IsTransactionalDdlSupported => false;
 
         ///<inheritdoc/>
         public bool IsSchemaSupported { get; } = false;

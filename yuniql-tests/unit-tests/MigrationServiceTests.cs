@@ -45,7 +45,7 @@ namespace Yuniql.UnitTests
             configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
 
             var dataService = new Mock<IDataService>();
-            dataService.Setup(s => s.IsAtomicDDLSupported).Returns(true);
+            dataService.Setup(s => s.IsTransactionalDdlSupported).Returns(true);
             dataService.Setup(s => s.GetConnectionInfo()).Returns(new ConnectionInfo { DataSource = "server", Database = "db" });
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
 
@@ -395,7 +395,7 @@ namespace Yuniql.UnitTests
             configurationService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'erase'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
 
             var dataService = new Mock<IDataService>();
-            dataService.Setup(s => s.IsAtomicDDLSupported).Returns(true);
+            dataService.Setup(s => s.IsTransactionalDdlSupported).Returns(true);
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
             dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
 
@@ -509,7 +509,7 @@ namespace Yuniql.UnitTests
             var configurationService = new Mock<IConfigurationDataService>();
 
             var dataService = new Mock<IDataService>();
-            dataService.Setup(s => s.IsAtomicDDLSupported).Returns(true);
+            dataService.Setup(s => s.IsTransactionalDdlSupported).Returns(true);
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
             dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
             //dataService.Setup(s => s.ExecuteNonQuery("sql-connection-string", "SELECT erase", DefaultConstants.CommandTimeoutSecs));

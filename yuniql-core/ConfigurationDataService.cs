@@ -203,7 +203,7 @@ namespace Yuniql.Core
                     }
 
                     //fill up with information only available for platforms not supporting transactional ddl
-                    if (!_dataService.IsAtomicDDLSupported)
+                    if (!_dataService.IsTransactionalDdlSupported)
                     {
                         dbVersion.Status = Enum.Parse<Status>(reader.GetString(7));
                         dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values

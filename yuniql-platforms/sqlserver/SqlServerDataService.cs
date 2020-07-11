@@ -49,7 +49,7 @@ namespace Yuniql.SqlServer
         }
 
         ///<inheritdoc/>
-        public bool IsAtomicDDLSupported => true;
+        public bool IsTransactionalDdlSupported => true;
 
         ///<inheritdoc/>
         public bool IsSchemaSupported { get; } = true;

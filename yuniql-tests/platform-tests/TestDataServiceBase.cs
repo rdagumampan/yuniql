@@ -20,7 +20,7 @@ namespace Yuniql.PlatformTests
             this._tokenReplacementService = tokenReplacementService;
         }
 
-        public virtual bool IsAtomicDDLSupported => _dataService.IsAtomicDDLSupported;
+        public virtual bool IsAtomicDDLSupported => _dataService.IsTransactionalDdlSupported;
 
         public virtual bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
@@ -89,7 +89,7 @@ namespace Yuniql.PlatformTests
                     }
 
                     //fill up with information only available for platforms not supporting transactional ddl
-                    if (!_dataService.IsAtomicDDLSupported)
+                    if (!_dataService.IsTransactionalDdlSupported)
                     {
                         dbVersion.Status = Enum.Parse<Status>(reader.GetString(7));
                         dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values

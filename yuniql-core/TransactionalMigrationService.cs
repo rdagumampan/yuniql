@@ -73,7 +73,7 @@ namespace Yuniql.Core
             _localVersionService.Validate(workingPath);
 
             //when uncomitted run is not supported, fail migration, throw exceptions and return error exit code
-            if (verifyOnly.HasValue && verifyOnly == true && !_dataService.IsAtomicDDLSupported)
+            if (verifyOnly.HasValue && verifyOnly == true && !_dataService.IsTransactionalDdlSupported)
             {
                 throw new NotSupportedException("Yuniql.Verify is not supported in the target platform. " +
                     "The feature requires support for atomic DDL operations. " +

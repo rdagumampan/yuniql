@@ -25,7 +25,7 @@ namespace Yuniql.PlatformTests
                     {
                         var dataService = new SqlServerDataService(_traceService);
                         var bulkImportService = new SqlServerBulkImportService(_traceService);
-                        return dataService.IsAtomicDDLSupported
+                        return dataService.IsTransactionalDdlSupported
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
@@ -33,7 +33,7 @@ namespace Yuniql.PlatformTests
                     {
                         var dataService = new PostgreSqlDataService(_traceService);
                         var bulkImportService = new PostgreSqlBulkImportService(_traceService);
-                        return dataService.IsAtomicDDLSupported
+                        return dataService.IsTransactionalDdlSupported
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
@@ -41,7 +41,7 @@ namespace Yuniql.PlatformTests
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
-                        return dataService.IsAtomicDDLSupported
+                        return dataService.IsTransactionalDdlSupported
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
@@ -49,7 +49,7 @@ namespace Yuniql.PlatformTests
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
-                        return dataService.IsAtomicDDLSupported
+                        return dataService.IsTransactionalDdlSupported
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
