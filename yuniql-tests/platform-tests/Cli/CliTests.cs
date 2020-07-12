@@ -76,6 +76,9 @@ namespace Yuniql.PlatformTests
         [DataRow("run", "-a -d --meta-schema \"my_schema\" --meta-table \"my_versions\" ")]
         [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
         [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1\" -k \"VwColumnPrefix2=Vw2\" -k \"VwColumnPrefix3=Vw3\" -k \"VwColumnPrefix4=Vw4\"")]
+        [DataRow("run", "-a -d --transaction-mode full")]
+        [DataRow("run", "-a -d --transaction-mode partial")]
+        [DataRow("run", "-a -d --transaction-mode none")]
         public void Test_Cli_run(string command, string arguments)
         {
             //arrange
