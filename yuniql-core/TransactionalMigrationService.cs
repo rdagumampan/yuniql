@@ -66,7 +66,7 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string environmentCode = null,
             NonTransactionalResolvingOption? resumeFromFailure = null,
-            bool noTransaction = false
+            string transactionMode = null
          )
         {
             //check the workspace structure if required directories are present
@@ -138,7 +138,7 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = noTransaction ? null : connection.BeginTransaction())
+                    using (var transaction = transactionMode.Equals(TRANSACTION_MODE.NONE) ? null : connection.BeginTransaction())
                     {
                         try
                         {
@@ -166,7 +166,7 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = noTransaction ? null : connection.BeginTransaction())
+                    using (var transaction = transactionMode.Equals(TRANSACTION_MODE.NONE) ? null : connection.BeginTransaction())
                     {
                         try
                         {
@@ -197,24 +197,24 @@ namespace Yuniql.Core
                 if (!targetDatabaseConfigured)
                 {
                     //runs all scripts in the _init folder
-                    RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                    RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
                     _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
                 }
 
                 //checks if target database already runs the latest version and skips work if it already is
                 //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts int the vxx.xx folders and subfolders
-                RunVersionScripts(connection, transaction, allVersions, workingPath, targetVersion, null, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
+                RunVersionScripts(connection, transaction, allVersions, workingPath, targetVersion, null, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode, transactionMode: transactionMode);
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
             }
 
@@ -222,15 +222,15 @@ namespace Yuniql.Core
             void RunDraftInternal(IDbConnection connection, IDbTransaction transaction)
             {
                 //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
             }
         }
@@ -251,7 +251,8 @@ namespace Yuniql.Core
             int? bulkBatchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string environmentCode = null
+            string environmentCode = null,
+            string transactionMode = null
         )
         {
             //excludes all versions already executed
@@ -277,41 +278,70 @@ namespace Yuniql.Core
                 versionDirectories.Sort();
                 versionDirectories.ForEach(versionDirectory =>
                 {
-                    var versionName = new DirectoryInfo(versionDirectory).Name;
-
-                    //run scripts in all sub-directories
-                    var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList();
-                    scriptSubDirectories.Sort();
-                    scriptSubDirectories.ForEach(scriptSubDirectory =>
+                    if (transactionMode.Equals(TRANSACTION_MODE.PARTIAL))
                     {
-                        //run all scripts in the current version folder
-                        RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, scriptSubDirectory, metaSchemaName, metaTableName, tokenKeyPairs, commandTimeout, environmentCode);
-
-                        //import csv files into tables of the the same filename as the csv
-                        RunBulkImport(connection, transaction, workingPath, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
-                    });
-
-                    //run all scripts in the current version folder
-                    RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, versionDirectory, metaSchemaName, metaTableName, tokenKeyPairs, commandTimeout, environmentCode);
-
-                    //import csv files into tables of the the same filename as the csv
-                    RunBulkImport(connection, transaction, workingPath, versionDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
-
-                    //update db version
-                    _configurationDataService.InsertVersion(connection, transaction, versionName,
-                        metaSchemaName: metaSchemaName,
-                        metaTableName: metaTableName,
-                        commandTimeout: commandTimeout,
-                        appliedByTool: appliedByTool,
-                        appliedByToolVersion: appliedByToolVersion);
-
-                    _traceService.Info($"Completed migration to version {versionDirectory}");
+                        using (var internalConnection = _dataService.CreateConnection())
+                        {
+                            internalConnection.Open();
+                            using (var internalTransaction = internalConnection.BeginTransaction())
+                            {
+                                try
+                                {
+                                    RunVersionScriptsInternal(internalConnection, internalTransaction, versionDirectory);
+                                    internalTransaction.Commit();
+                                }
+                                catch (Exception)
+                                {
+                                    internalTransaction.Rollback();
+                                    throw;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        RunVersionScriptsInternal(connection, transaction, versionDirectory);
+                    }
                 });
             }
             else
             {
                 var connectionInfo = _dataService.GetConnectionInfo();
                 _traceService.Info($"Target database is updated. No migration step executed at {connectionInfo.Database} on {connectionInfo.DataSource}.");
+            }
+
+            void RunVersionScriptsInternal(IDbConnection connection, IDbTransaction transaction, string versionDirectory)
+            {
+                var versionName = new DirectoryInfo(versionDirectory).Name;
+
+                //run scripts in all sub-directories
+                var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList();
+                scriptSubDirectories.Sort();
+                scriptSubDirectories.ForEach(scriptSubDirectory =>
+                {
+                    //run all scripts in the current version folder
+                    RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, scriptSubDirectory, metaSchemaName, metaTableName, tokenKeyPairs, commandTimeout, environmentCode);
+
+                    //import csv files into tables of the the same filename as the csv
+                    RunBulkImport(connection, transaction, workingPath, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
+                });
+
+                //run all scripts in the current version folder
+                RunSqlScripts(connection, transaction, nonTransactionalContext, versionName, workingPath, versionDirectory, metaSchemaName, metaTableName, tokenKeyPairs, commandTimeout, environmentCode);
+
+                //import csv files into tables of the the same filename as the csv
+                RunBulkImport(connection, transaction, workingPath, versionDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
+
+                //update db version
+                _configurationDataService.InsertVersion(connection, transaction, versionName,
+                    metaSchemaName: metaSchemaName,
+                    metaTableName: metaTableName,
+                    commandTimeout: commandTimeout,
+                    appliedByTool: appliedByTool,
+                    appliedByToolVersion: appliedByToolVersion);
+
+                _traceService.Info($"Completed migration to version {versionDirectory}");
+
             }
         }
 

@@ -583,7 +583,7 @@ namespace Yuniql.UnitTests
             var sut = new TransactionalMigrationService(new Mock<ILocalVersionService>().Object, dataService.Object, new Mock<IBulkImportService>().Object, 
                                            configurationDataService.Object, new Mock<ITokenReplacementService>().Object, 
                                            new Mock<IDirectoryService>().Object, new Mock<IFileService>().Object, new Mock<ITraceService>().Object);
-            sut.Run(string.Empty, metaSchemaName: "any", metaTableName: "any", noTransaction: noTransactionOption);
+            sut.Run(string.Empty, metaSchemaName: "any", metaTableName: "any", transactionMode: null);
 
             // assert
             connection.Verify(c => c.BeginTransaction(), noTransactionOption == true ? Times.Never() : Times.AtLeastOnce());

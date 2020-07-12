@@ -140,7 +140,7 @@ namespace Yuniql.CLI
                     appliedByToolVersion: toolVersion,
                     environmentCode: opts.Environment,
                     opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?)null,
-                    opts.NoTransaction
+                    opts.TransactionMode
                     );
 
                 _traceService.Success($"Schema migration completed successfuly on {opts.Path}.");

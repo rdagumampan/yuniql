@@ -60,7 +60,7 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string environmentCode = null,
             NonTransactionalResolvingOption? resumeFromFailure = null,
-            bool noTransaction = false
+            string transactionMode = null
         );
 
         /// <summary>
@@ -80,7 +80,8 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
             int? commandTimeout = null,
-            string environmentCode = null
+            string environmentCode = null,
+            string transactionMode = null
         );
 
         void RunVersionScripts(
@@ -98,7 +99,8 @@ namespace Yuniql.Core
             int? bulkBatchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string environmentCode = null
+            string environmentCode = null,
+            string transactionMode = null
         );
 
         void RunBulkImport(

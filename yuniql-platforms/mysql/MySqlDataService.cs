@@ -168,7 +168,7 @@ namespace Yuniql.MySql
         {
             traceService?.Debug($"Executing statement: {Environment.NewLine}{dbCommand.CommandText}");
             var dataTable = new DataTable();
-            using (MySqlDataAdapter dataAdapter = new MySqlDataAdapter(dbCommand))
+            using (var dataAdapter = new MySqlDataAdapter(dbCommand))
             {
                 dataAdapter.Fill(dataTable);
             }

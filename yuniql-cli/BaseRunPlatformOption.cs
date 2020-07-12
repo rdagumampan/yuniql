@@ -37,5 +37,9 @@ namespace Yuniql.CLI
         //yuniql <command> --meta-table "__yuniqlschemaversions" 
         [Option("meta-table", Required = false, HelpText = "Table name for schema versions table.")]
         public string MetaTable { get; set; }
+
+        //yuniql <command> --transaction-mode "full" | "partial" | "none" 
+        [Option("transaction-mode", Required = false, HelpText = "Transaction mode to use in the migration.", Default = "full")]
+        public string TransactionMode { get; set; }
     }
 }

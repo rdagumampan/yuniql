@@ -22,7 +22,7 @@
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.#ctor(Yuniql.Extensibility.ITraceService)">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsTransactionalDDLSupported">
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
         <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsSchemaSupported">

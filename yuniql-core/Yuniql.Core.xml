@@ -4,6 +4,108 @@
         <name>Yuniql.Core</name>
     </assembly>
     <members>
+        <member name="P:Yuniql.Core.Configuration.WorkspacePath">
+            <summary>
+            The directory where yuniql-based migration project is placed.
+            This is a required property.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.Platform">
+            <summary>
+            Target database platform. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.ConnectionString">
+            <summary>
+            The connection string to the target database server.
+            This is a required property.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.AutoCreateDatabase">
+            <summary>
+            When true, automatically creates database in target database server.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.TargetVersion">
+            <summary>
+            Runs migration only up to the version specified in this property. Defaul is Null and will run upto latest.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.Tokens">
+            <summary>
+            The list of token key/value pairs to repair tokens in each script file. 
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.VerifyOnly">
+            <summary>
+            When you run yuniql verify, it checks if all your versions can be executed without errors. 
+            It runs through all the non-versioned script folders (except _init) and all migration steps that yuninql run takes but without committing the transaction. 
+            All changes are rolledback after a successful verification run.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.BulkSeparator">
+            <summary>
+            Bulk file values separator to use when parsing CSV bulk import files. Default is comma ",".
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.BulkBatchSize">
+            <summary>
+            The size of each batch when performing bulk load. Default is 100 rows.
+            This may not be used in non-sqlserver platforms.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.CommandTimeout">
+            <summary>
+            The time it taks to wait for one commend to execute before it expires and throws error.
+            Use this prorty to adjust time out when you expect a long running migration execution.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.DebugTraceMode">
+            <summary>
+            Enrich trace messages with raw sql statements and more verbose diagnostic messages.
+            Use this when you are investigating some failed migrations.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.AppliedByTool">
+            <summary>
+            Describes the source of migration applied to target database.
+            This is defaulted to yuniql-aspnetcore and its readonly property
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.AppliedByToolVersion">
+            <summary>
+            Describes the version of source of migration applied to target database.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.Environment">
+            <summary>
+            Environment to target when running migration with environment-aware scripts.
+            See https://github.com/rdagumampan/yuniql/wiki/environment-aware-scripts
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.MetaSchemaName">
+            <summary>
+            Schema name for schema versions table.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.MetaTableName">
+            <summary>
+            Table name for schema versions table.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.ContinueAfterFailure">
+            <summary>
+            When true, forces to skip the the last failed script file and run from next available script in the failed version
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.TransactionMode">
+            <summary>
+            Transaction mode to use in the migration. 
+            When full, uses single transaction for entire migration run. 
+            When partial, each version is executed in one transaction.
+            When none, no explicit transaction is created for migration run.
+            </summary>
+        </member>
         <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.ConfigurationDataService" -->
         <member name="M:Yuniql.Core.ConfigurationDataService.#ctor(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.ITraceService,Yuniql.Core.ITokenReplacementService)">
             <inheritdoc/>
@@ -368,7 +470,7 @@
             Returns all migration versions applied in the target database
             </summary>
         </member>
-        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.Boolean)">
+        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.String)">
             <summary>
             Runs migrations by executing alls scripts in the workspace directory. 
             When CSV files are present also run bulk import operations to target database table having same file name.
@@ -503,13 +605,13 @@
         <member name="M:Yuniql.Core.MigrationServiceBase.GetAllVersions(System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.Boolean)">
+        <member name="M:Yuniql.Core.MigrationServiceBase.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.String)">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationServiceBase.IsTargetDatabaseLatest(System.String,System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.RunNonVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String)">
+        <member name="M:Yuniql.Core.MigrationServiceBase.RunNonVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String)">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationServiceBase.Erase(System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String)">
@@ -556,10 +658,10 @@
         <member name="M:Yuniql.Core.NonTransactionalMigrationService.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IConfigurationDataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.NonTransactionalMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.Boolean)">
+        <member name="M:Yuniql.Core.NonTransactionalMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.NonTransactionalMigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.NonTransactionalContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.NonTransactionalMigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.NonTransactionalContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.NonTransactionalMigrationService.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.NonTransactionalContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
@@ -680,87 +782,14 @@
         <member name="M:Yuniql.Core.TransactionalMigrationService.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IConfigurationDataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.TransactionalMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.Boolean)">
+        <member name="M:Yuniql.Core.TransactionalMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.TransactionalMigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.NonTransactionalContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.TransactionalMigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.NonTransactionalContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.TransactionalMigrationService.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.NonTransactionalContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
             <inheritdoc/>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.WorkspacePath">
-            <summary>
-            The directory where yuniql-based migration project is placed.
-            This is a required property.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.Platform">
-            <summary>
-            Target database platform. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.ConnectionString">
-            <summary>
-            The connection string to the target database server.
-            This is a required property.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.AutoCreateDatabase">
-            <summary>
-            When true, automatically creates database in target database server.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.TargetVersion">
-            <summary>
-            Runs migration only up to the version specified in this property. Defaul is Null and will run upto latest.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.Tokens">
-            <summary>
-            The list of token key/value pairs to repair tokens in each script file. 
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.VerifyOnly">
-            <summary>
-            When you run yuniql verify, it checks if all your versions can be executed without errors. 
-            It runs through all the non-versioned script folders (except _init) and all migration steps that yuninql run takes but without committing the transaction. 
-            All changes are rolledback after a successful verification run.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.BulkSeparator">
-            <summary>
-            Bulk file values separator  to use when parsing CSV bulk import files. Default is comma ",".
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.BatchSize">
-            <summary>
-            The size of each batch when performing bulk load. Default is 100 rows.
-            This may not be used in non-sqlserver platforms.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.CommandTimeout">
-            <summary>
-            The time it taks to wait for one commend to execute before it expires and throws error.
-            Use this prorty to adjust time out when you expect a long running migration execution.
-            </summary>
-        </member>
-        <!-- Badly formed XML comment ignored for member "P:Yuniql.Core.YuniqlConfiguration.DebugTraceMode" -->
-        <member name="P:Yuniql.Core.YuniqlConfiguration.Environment">
-            <summary>
-            Environment code for environment-aware scripts.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.Schema">
-            <summary>
-            Schema name for schema versions table. When empty, uses the default schema in the target data platform. 
-            For example, dbo for SqlServer and public for PostgreSql
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.YuniqlConfiguration.Table">
-            <summary>
-            Table name for schema versions table. When empty, uses __yuniqldbversion.
-            </summary>
         </member>
         <member name="T:Yuniql.Core.YuniqlMigrationException">
             <summary>

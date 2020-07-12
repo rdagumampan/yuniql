@@ -25,7 +25,7 @@
         <member name="M:Yuniql.MySql.MySqlDataService.Initialize(System.String)">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.MySql.MySqlDataService.IsTransactionalDDLSupported">
+        <member name="P:Yuniql.MySql.MySqlDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
         <member name="P:Yuniql.MySql.MySqlDataService.IsSchemaSupported">
