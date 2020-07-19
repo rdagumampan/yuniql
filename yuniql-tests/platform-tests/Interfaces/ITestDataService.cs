@@ -45,7 +45,7 @@ namespace Yuniql.PlatformTests
 
         string GetSqlForCleanup();
 
-        bool IsAtomicDDLSupported { get; }
+        bool IsTransactionalDdlSupported { get; }
 
         bool IsSchemaSupported { get; }
 

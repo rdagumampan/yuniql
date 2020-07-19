@@ -15,7 +15,7 @@ namespace Yuniql.UnitTests
     [TestClass]
     public class MigrationServiceTests
     {
-        [TestMethodEx(Requires = "IsAtomicDDLSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_()
         {
             //arrange
@@ -380,7 +380,7 @@ namespace Yuniql.UnitTests
             connection.Verify(s => s.Open());
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Erase()
         {
             //arrange
@@ -495,7 +495,7 @@ namespace Yuniql.UnitTests
             connection.Verify(s => s.Open());
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Erase_With_Error_Must_Rollback()
         {
             //arrange
@@ -553,7 +553,7 @@ namespace Yuniql.UnitTests
             transaction.Verify(s => s.Rollback());
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Transaction_Mode_Full()
         {
             //arrange
@@ -596,7 +596,7 @@ namespace Yuniql.UnitTests
         }
 
         //TODO: Refactor this test, include versions level asserts
-        [TestMethodEx(Requires = "IsAtomicDDLSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Transaction_Mode_Version()
         {
             //arrange
@@ -639,7 +639,7 @@ namespace Yuniql.UnitTests
         }
 
 
-        [TestMethodEx(Requires = "IsAtomicDDLSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Transaction_Mode_None()
         {
             //arrange

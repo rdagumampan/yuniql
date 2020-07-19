@@ -20,7 +20,7 @@ namespace Yuniql.PlatformTests
             this._tokenReplacementService = tokenReplacementService;
         }
 
-        public virtual bool IsAtomicDDLSupported => _dataService.IsTransactionalDdlSupported;
+        public virtual bool IsTransactionalDdlSupported => _dataService.IsTransactionalDdlSupported;
 
         public virtual bool IsSchemaSupported => _dataService.IsSchemaSupported;
 

@@ -339,7 +339,7 @@ namespace Yuniql.PlatformTests
             )).ShouldBeTrue();
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Bulk_Import_Mismatch_Columns_But_Not_Nullable()
         {
             //arrange
