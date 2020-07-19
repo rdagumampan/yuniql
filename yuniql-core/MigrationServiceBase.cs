@@ -108,7 +108,7 @@ namespace Yuniql.Core
             string transactionMode = null
         )
         {
-            if (transactionMode.Equals(TRANSACTION_MODE.PARTIAL))
+            if (!string.IsNullOrEmpty(transactionMode) && transactionMode.Equals(TRANSACTION_MODE.VERSION))
             {
                 using (var internalConnection = _dataService.CreateConnection())
                 {

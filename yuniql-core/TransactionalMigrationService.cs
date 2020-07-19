@@ -138,7 +138,7 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = transactionMode.Equals(TRANSACTION_MODE.NONE) ? null : connection.BeginTransaction())
+                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && !transactionMode.Equals(TRANSACTION_MODE.FULL))  ? null : connection.BeginTransaction())
                     {
                         try
                         {
@@ -166,7 +166,7 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = transactionMode.Equals(TRANSACTION_MODE.NONE) ? null : connection.BeginTransaction())
+                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && !transactionMode.Equals(TRANSACTION_MODE.FULL)) ? null : connection.BeginTransaction())
                     {
                         try
                         {
@@ -278,7 +278,7 @@ namespace Yuniql.Core
                 versionDirectories.Sort();
                 versionDirectories.ForEach(versionDirectory =>
                 {
-                    if (transactionMode.Equals(TRANSACTION_MODE.PARTIAL))
+                    if (!string.IsNullOrEmpty(transactionMode) && transactionMode.Equals(TRANSACTION_MODE.VERSION))
                     {
                         using (var internalConnection = _dataService.CreateConnection())
                         {
