@@ -8,7 +8,7 @@ using System;
 namespace Yuniql.PlatformTests
 {
     [TestClass]
-    public class BreakdownScriptTests : TestBase
+    public class SqlBatchBreakdownTests : TestBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;

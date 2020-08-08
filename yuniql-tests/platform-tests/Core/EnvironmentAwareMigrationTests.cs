@@ -7,7 +7,7 @@ using Yuniql.Extensibility;
 namespace Yuniql.PlatformTests
 {
     [TestClass]
-    public class EnvironmentAwareScriptTests : TestBase
+    public class EnvironmentAwareMigrationTests : TestBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;

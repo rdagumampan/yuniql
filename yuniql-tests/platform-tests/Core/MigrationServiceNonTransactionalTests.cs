@@ -12,7 +12,7 @@ namespace Yuniql.PlatformTests
     //https://docs.microsoft.com/en-gb/dotnet/standard/assembly/unloadability
     //https://github.com/dotnet/samples/blob/master/core/extensions/AppWithPlugin/AppWithPlugin/Program.cs
     [TestClass]
-    public class NonTransactionalMigrationServiceTests : TestBase
+    public class MigrationServiceNonTransactionalTests : TestBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;
@@ -40,7 +40,7 @@ namespace Yuniql.PlatformTests
                 Directory.Delete(_testConfiguration.WorkspacePath, true);
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLNotSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Fail_Migration_When_Version_Directory_Has_Other_Directories()
         {
             //arrange
@@ -65,7 +65,7 @@ namespace Yuniql.PlatformTests
             }
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLNotSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Fail_Migration_When_Version_Directory_Has_Files()
         {
             //arrange
@@ -90,7 +90,7 @@ namespace Yuniql.PlatformTests
             }
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLNotSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Fail_Migration_When_Non_Transaction_DDL_Failed()
         {
             //arrange
@@ -126,7 +126,7 @@ namespace Yuniql.PlatformTests
             failedVersion.FailedScriptError.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLNotSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Fail_Migration_When_No_Force_Continue_After_Failue_Option_Enabled()
         {
             //arrange
@@ -176,7 +176,7 @@ namespace Yuniql.PlatformTests
             }
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLNotSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Ok_Migration_With_Force_Continue_After_Failue_Option_Enabled()
         {
             //arrange
@@ -226,7 +226,7 @@ namespace Yuniql.PlatformTests
             version.FailedScriptError.ShouldBeNullOrEmpty();
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLNotSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Ok_Without_Explicit_Transaction()
         {
             //arrange
@@ -254,7 +254,7 @@ namespace Yuniql.PlatformTests
         }
 
 
-        [TestMethodEx(Requires = "IsAtomicDDLNotSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Ok_With_Explicit_Transaction()
         {
             //arrange
@@ -284,7 +284,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_02").ShouldBeTrue();
         }
 
-        [TestMethodEx(Requires = "IsAtomicDDLNotSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Ok_Without_Explicit_Transaction_With_SubDirectories()
         {
             //arrange
@@ -331,7 +331,7 @@ namespace Yuniql.PlatformTests
         }
 
 
-        [TestMethodEx(Requires = "IsAtomicDDLNotSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
         public void Test_Run_Ok_With_Explicit_Transaction_With_SubDirectories()
         {
             //arrange

@@ -31,7 +31,7 @@ namespace Yuniql.PlatformTests
 
 
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlSupported")] attribute
-            if (this.Requires.Contains("IsAtomicDDLNotSupported") && testDataService.IsTransactionalDdlSupported)
+            if (this.Requires.Contains("IsTransactionalDdlSupported") && testDataService.IsTransactionalDdlSupported)
             {
                 var message = $"Target database platform or version supports atomic DDL operations. " +
                     $"This test is exclusive for platforms not supporting transaction DDL operations.";
