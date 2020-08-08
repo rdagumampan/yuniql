@@ -68,7 +68,7 @@ namespace Yuniql.CLI
 
             var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
 
-            var migrationService = new TransactionalMigrationService(
+            var migrationService = new MigrationServiceTransactional(
                 localVersionService,
                 dataService,
                 bulkImportService,
@@ -89,7 +89,7 @@ namespace Yuniql.CLI
 
             var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
 
-            var migrationService = new NonTransactionalMigrationService(
+            var migrationService = new MigrationServiceNonTransactional(
                 localVersionService,
                 dataService,
                 bulkImportService,

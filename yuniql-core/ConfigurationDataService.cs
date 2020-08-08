@@ -10,7 +10,7 @@ namespace Yuniql.Core
 {
     /// <summary>
     /// Service responsible for accessing target database configuration and executing sql statement batches.
-    /// This facility is used by MigrationService and must be not be used directly. See <see cref="TransactionalMigrationService"./>
+    /// This facility is used by MigrationService and must be not be used directly. See <see cref="MigrationServiceTransactional"./>
     /// </summary>
     public class ConfigurationDataService : IConfigurationDataService
     {

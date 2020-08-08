@@ -10,7 +10,7 @@ namespace Yuniql.Core
     public interface IMigrationService
     {
         /// <summary>
-        /// Initializes the current instance of <see cref="TransactionalMigrationService"./>
+        /// Initializes the current instance of <see cref="MigrationServiceTransactional"./>
         /// </summary>
         /// <param name="connectionString">Connection string to target database server or instance.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>

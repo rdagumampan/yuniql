@@ -8,7 +8,7 @@ using System.IO;
 namespace Yuniql.Core
 {
     /// <inheritdoc />
-    public class TransactionalMigrationService : MigrationServiceBase
+    public class MigrationServiceTransactional : MigrationServiceBase
     {
         private readonly ILocalVersionService _localVersionService;
         private readonly IDataService _dataService;
@@ -20,7 +20,7 @@ namespace Yuniql.Core
         private readonly IConfigurationDataService _configurationDataService;
 
         /// <inheritdoc />
-        public TransactionalMigrationService(
+        public MigrationServiceTransactional(
             ILocalVersionService localVersionService,
             IDataService dataService,
             IBulkImportService bulkImportService,
