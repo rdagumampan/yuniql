@@ -1,9 +1,9 @@
-﻿using Yuniql.CLI;
-using Yuniql.Core;
-using CommandLine;
+﻿using CommandLine;
 using System;
-using Yuniql.Extensibility;
 using System.Reflection;
+using Yuniql.CLI;
+using Yuniql.Core;
+using Yuniql.Extensibility;
 
 namespace Yuniql
 {
@@ -18,36 +18,36 @@ namespace Yuniql
             var traceService = new FileTraceService();
             var localVersionService = new LocalVersionService(traceService);
             var migrationServiceFactory = new CLI.MigrationServiceFactory(traceService);
-            var commandLineService = new CommandLineService(migrationServiceFactory, localVersionService, environmentService, traceService);
+            var commandLineService = new CommandLineService(migrationServiceFactory,
+                                                            localVersionService,
+                                                            environmentService,
+                                                            traceService);
 
-            var resultCode = Parser.Default.ParseArguments<
-                InitOption,
-                RunOption,
-                ListOption,
-                NextVersionOption,
-                VerifyOption,
-                EraseOption,
-                BaselineOption,
-                RebaseOption>(args)
-              .MapResult(
-                (InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
-                (RunOption opts) => Dispatch(commandLineService.RunMigration, opts, traceService),
-                (NextVersionOption opts) => Dispatch(commandLineService.IncrementVersion, opts, traceService),
-                (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),
-                (VerifyOption opts) => Dispatch(commandLineService.RunVerify, opts, traceService),
-                (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
-                (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
-                (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
-                (ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
-                errs => 1);
+            var resultCode = Parser.Default
+                .ParseArguments<InitOption, RunOption, ListOption, NextVersionOption, VerifyOption, EraseOption, BaselineOption, RebaseOption, PlatformsOption>(args)
+                .MapResult((InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
+                           (RunOption opts) => Dispatch(commandLineService.RunMigration, opts, traceService),
+                           (NextVersionOption opts) => Dispatch(commandLineService.IncrementVersion, opts, traceService),
+                           (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),
+                           (VerifyOption opts) => Dispatch(commandLineService.RunVerify, opts, traceService),
+                           (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
+                           (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
+                           (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
+                           (ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
+                           (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
+
+                           errs => 1);
 
             return resultCode;
         }
 
-        private static int Dispatch<T>(Func<T, int> command, T opts, ITraceService traceService) where T : BaseOption {
+        private static int Dispatch<T>(Func<T, int> command, T opts, ITraceService traceService)
+            where T : BaseOption
+        {
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version;
             var toolPlatform = Environment.OSVersion.Platform == PlatformID.Win32NT ? "windows" : "linux";
-            var toolCopyright = (typeof(CommandLineService).Assembly.GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright;
+            var toolCopyright = (typeof(CommandLineService).Assembly
+                .GetCustomAttribute(typeof(AssemblyCopyrightAttribute)) as AssemblyCopyrightAttribute).Copyright;
 
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine($"Running yuniql v{toolVersion.Major}.{toolVersion.Minor}.{toolVersion.Build} for {toolPlatform}-x64");
