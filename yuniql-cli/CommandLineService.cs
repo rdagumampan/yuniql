@@ -346,6 +346,40 @@ namespace Yuniql.CLI
             }
         }
 
+        public int RunPlatformsOption(PlatformsOption opts)
+        {
+            try
+            {
+                string platforms = @"
+                                    SqlServer: 
+                                       Supported versions:
+                                       Usage: yuniql run -c <your-connection-string> --platform sqlserver
+                                       Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample
+
+                                    PostgreSql: 
+                                       Supported versions:
+                                       Usage: yuniql run -c <your-connection-string> --platform postgresql
+                                       Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-postgresql-sample
+
+                                    MySql: 
+                                       Supported versions:
+                                       Usage: yuniql run -c <your-connection-string> --platform mysql
+                                       Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
+
+                                    MariaDB: 
+                                       Supported versions:
+                                       Usage: yuniql run -c <your-connection-string> --platform mariadb
+                                       Samples: https://yuniql.io/docs/get-started/";
+
+                Console.WriteLine(platforms);
+
+                return 0;
+            } catch(Exception ex)
+            {
+                return OnException(ex, "Failed to execute RunPlatformsOption function", opts.Debug, _traceService);
+            }
+        }
+
         private int OnException(Exception exception, string headerMessage, bool debug, ITraceService traceService)
         {
             var userMessage = debug ? exception.ToString() : $"{exception.Message} {exception.InnerException?.Message}";

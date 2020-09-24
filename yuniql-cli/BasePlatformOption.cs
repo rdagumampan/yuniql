@@ -2,7 +2,7 @@
 
 namespace Yuniql.CLI
 {
-    public class BasePlatformOption: BaseOption
+    public class BasePlatformOption : BaseOption
     {
         //yuniql <command> -d | --debug
         [Option(longName: "platform", Required = false, HelpText = "Target database platform.", Default = "sqlserver")]
