@@ -300,7 +300,7 @@ namespace Yuniql.CLI
                     .Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1]))
                     .ToList();
 
-                //run all erase scripts
+                //run all drop scripts
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 migrationService.Erase(opts.Path, tokens, opts.CommandTimeout, opts.Environment);
@@ -377,6 +377,51 @@ namespace Yuniql.CLI
             } catch(Exception ex)
             {
                 return OnException(ex, "Failed to execute RunPlatformsOption function", opts.Debug, _traceService);
+            }
+        }
+
+        public int RunDropOption(DropOption opts)
+        {
+            try
+            {
+                //if no path provided, we default into current directory
+                if(string.IsNullOrEmpty(opts.Path))
+                {
+                    var workingPath = _environmentService.GetCurrentDirectory();
+                    opts.Path = workingPath;
+                }
+
+                //if no connection string provided, we default into environment variable or throw exception
+                if(string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
+                }
+
+                //if no target platform provided, we default into sqlserver
+                if(string.IsNullOrEmpty(opts.Platform))
+                {
+                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
+                    if(string.IsNullOrEmpty(opts.Platform))
+                    {
+                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
+                    }
+                }
+
+                //parse tokens
+                var tokens = opts.Tokens
+                    .Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1]))
+                    .ToList();
+
+                //run all drop scripts
+                var migrationService = _migrationServiceFactory.Create(opts.Platform);
+                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
+                migrationService.Drop(opts.Path, tokens, opts.CommandTimeout, opts.Environment);
+
+                _traceService.Success($"Database drop completed successfuly on {opts.Path}.");
+                return 0;
+            } catch(Exception ex)
+            {
+                return OnException(ex, "Failed to execute drop function", opts.Debug, _traceService);
             }
         }
 
