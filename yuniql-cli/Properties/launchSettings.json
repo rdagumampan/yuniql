@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "init",
+      "commandLineArgs": "drop --force",
       "environmentVariables": {
         "Key": "Value"
       },

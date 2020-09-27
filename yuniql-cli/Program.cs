@@ -24,7 +24,7 @@ namespace Yuniql
                                                             traceService);
 
             var resultCode = Parser.Default
-                .ParseArguments<InitOption, RunOption, ListOption, NextVersionOption, VerifyOption, EraseOption, BaselineOption, RebaseOption, PlatformsOption>(args)
+                .ParseArguments<InitOption, RunOption, ListOption, NextVersionOption, VerifyOption, EraseOption, BaselineOption, RebaseOption, PlatformsOption, DropOption>(args)
                 .MapResult((InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
                            (RunOption opts) => Dispatch(commandLineService.RunMigration, opts, traceService),
                            (NextVersionOption opts) => Dispatch(commandLineService.IncrementVersion, opts, traceService),
@@ -34,8 +34,8 @@ namespace Yuniql
                            (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
                            (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
                            (ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
+                           (DropOption opts) => Dispatch(commandLineService.RunDropOption, opts, traceService),
                            (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
-
                            errs => 1);
 
             return resultCode;
