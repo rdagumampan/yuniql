@@ -1,88 +1,104 @@
-﻿using Yuniql.Extensibility;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
     /// <summary>
-    /// Service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are executed from.
-    /// When user calls yuniql-init, a directory structure is created in the target workspace directory.
+    /// Service responsible for initializing and managing the local workspace. A local workspace is a directory where
+    /// yuniql operations are executed from. When user calls yuniql-init, a directory structure is created in the target
+    /// workspace directory.
     /// </summary>
     public class LocalVersionService : ILocalVersionService
     {
         private readonly ITraceService _traceService;
 
         ///<inheritdoc/>
-        public LocalVersionService(ITraceService traceService)
-        {
-            _traceService = traceService;
-        }
+        public LocalVersionService(ITraceService traceService) { _traceService = traceService; }
+
 
         ///<inheritdoc/>
         public void Init(string workingPath)
         {
             string initDirectoryPath = Path.Combine(workingPath, "_init");
-            if (!Directory.Exists(initDirectoryPath))
+            if(!Directory.Exists(initDirectoryPath))
             {
                 Directory.CreateDirectory(initDirectoryPath);
-                File.AppendAllText(Path.Combine(initDirectoryPath, "README.md"), @"# The `_init` directory
+                File.AppendAllText(Path.Combine(initDirectoryPath, "README.md"),
+                                   @"# The `_init` directory
 Initialization scripts. Executed once. This is called the first time you do `yuniql run`.");
                 _traceService.Info($"Created script directory {initDirectoryPath}");
             }
 
             string preDirectoryPath = Path.Combine(workingPath, "_pre");
-            if (!Directory.Exists(preDirectoryPath))
+            if(!Directory.Exists(preDirectoryPath))
             {
                 Directory.CreateDirectory(preDirectoryPath);
-                File.AppendAllText(Path.Combine(preDirectoryPath, "README.md"), @"# The `_pre` directory
+                File.AppendAllText(Path.Combine(preDirectoryPath, "README.md"),
+                                   @"# The `_pre` directory
 Pre migration scripts. Executed every time before any version. 
 ");
                 _traceService.Info($"Created script directory {preDirectoryPath}");
             }
 
             string defaultVersionDirectoryPath = Path.Combine(workingPath, "v0.00");
-            if (!Directory.Exists(defaultVersionDirectoryPath))
+            if(!Directory.Exists(defaultVersionDirectoryPath))
             {
                 Directory.CreateDirectory(defaultVersionDirectoryPath);
-                File.AppendAllText(Path.Combine(defaultVersionDirectoryPath, "README.md"), @"# The `v0.00` directory
+                File.AppendAllText(Path.Combine(defaultVersionDirectoryPath, "README.md"),
+                                   @"# The `v0.00` directory
 Baseline scripts. Executed once. This is called when you do `yuniql run`.");
                 _traceService.Info($"Created script directory {defaultVersionDirectoryPath}");
             }
 
             string draftDirectoryPath = Path.Combine(workingPath, "_draft");
-            if (!Directory.Exists(draftDirectoryPath))
+            if(!Directory.Exists(draftDirectoryPath))
             {
                 Directory.CreateDirectory(draftDirectoryPath);
-                File.AppendAllText(Path.Combine(draftDirectoryPath, "README.md"), @"# The `_draft` directory
+                File.AppendAllText(Path.Combine(draftDirectoryPath, "README.md"),
+                                   @"# The `_draft` directory
 Scripts in progress. Scripts that you are currently working and have not moved to specific version directory yet. Executed every time after the latest version.");
                 _traceService.Info($"Created script directory {draftDirectoryPath}");
             }
 
             string postDirectoryPath = Path.Combine(workingPath, "_post");
-            if (!Directory.Exists(postDirectoryPath))
+            if(!Directory.Exists(postDirectoryPath))
             {
                 Directory.CreateDirectory(postDirectoryPath);
-                File.AppendAllText(Path.Combine(postDirectoryPath, "README.md"), @"# The `_post` directory
+                File.AppendAllText(Path.Combine(postDirectoryPath, "README.md"),
+                                   @"# The `_post` directory
 Post migration scripts. Executed every time and always the last batch to run.");
                 _traceService.Info($"Created script directory {postDirectoryPath}");
             }
 
             string eraseDirectoryPath = Path.Combine(workingPath, "_erase");
-            if (!Directory.Exists(eraseDirectoryPath))
+            if(!Directory.Exists(eraseDirectoryPath))
             {
                 Directory.CreateDirectory(eraseDirectoryPath);
-                File.AppendAllText(Path.Combine(eraseDirectoryPath, "README.md"), @"# The `_erase` directory
+                File.AppendAllText(Path.Combine(eraseDirectoryPath, "README.md"),
+                                   @"# The `_erase` directory
 Database cleanup scripts. Executed once only when you do `yuniql erase`.");
                 _traceService.Info($"Created script directory {eraseDirectoryPath}");
             }
 
-            var readMeFile = Path.Combine(workingPath, "README.md");
-            if (!File.Exists(readMeFile))
+            string dropDirectoryPath = Path.Combine(workingPath, "_drop");
+            if(!Directory.Exists(dropDirectoryPath))
             {
-                File.AppendAllText(readMeFile, @"
+                Directory.CreateDirectory(dropDirectoryPath);
+                File.AppendAllText(Path.Combine(dropDirectoryPath, "README.md"),
+                                   @"# The `_drop` directory
+Drop database scripts. Executed once only when you do `yuniql drop --force`.");
+                _traceService.Info($"Created script directory {dropDirectoryPath}");
+            }
+
+            var readMeFile = Path.Combine(workingPath, "README.md");
+            if(!File.Exists(readMeFile))
+            {
+                File.AppendAllText(readMeFile,
+                                   @"
 
 ## Yuniql-based Database Migration Project
 This database migration project is created and to be executed thru `yuniql`. 
@@ -116,9 +132,10 @@ Help us improve further please [create an issue](https://github.com/rdagumampan/
             }
 
             var dockerFile = Path.Combine(workingPath, "Dockerfile");
-            if (!File.Exists(dockerFile))
+            if(!File.Exists(dockerFile))
             {
-                File.AppendAllText(dockerFile, @"
+                File.AppendAllText(dockerFile,
+                                   @"
 FROM rdagumampan/yuniql:latest
 COPY . ./db                
 ");
@@ -126,9 +143,10 @@ COPY . ./db
             }
 
             var gitIgnoreFile = Path.Combine(workingPath, ".gitignore");
-            if (!File.Exists(gitIgnoreFile))
+            if(!File.Exists(gitIgnoreFile))
             {
-                File.AppendAllText(gitIgnoreFile, @"
+                File.AppendAllText(gitIgnoreFile,
+                                   @"
 .plugins
 yuniql.exe
 yuniql.pdb
@@ -136,7 +154,6 @@ yuniqlx.exe
 ");
                 _traceService.Info($"Created file {gitIgnoreFile}");
             }
-
         }
 
         private List<LocalVersion> GetLocalVersions(string workingPath)
@@ -156,10 +173,7 @@ yuniqlx.exe
         }
 
         ///<inheritdoc/>
-        public string GetLatestVersion(string workingPath)
-        {
-            return GetLocalVersions(workingPath).First().SemVersion;
-        }
+        public string GetLatestVersion(string workingPath) { return GetLocalVersions(workingPath).First().SemVersion; }
 
         ///<inheritdoc/>
         public string IncrementMajorVersion(string workingPath, string sqlFileName)
@@ -173,10 +187,10 @@ yuniqlx.exe
             Directory.CreateDirectory(nextVersionPath);
             _traceService.Info($"Created script directory {nextVersionPath}");
 
-            if (!string.IsNullOrEmpty(sqlFileName))
+            if(!string.IsNullOrEmpty(sqlFileName))
             {
                 var sqlFilePath = Path.Combine(nextVersionPath, sqlFileName);
-                File.AppendAllText(sqlFilePath, @"");
+                File.AppendAllText(sqlFilePath, string.Empty);
                 _traceService.Info($"Created file {sqlFilePath}");
             }
 
@@ -188,17 +202,18 @@ yuniqlx.exe
         {
             var localVersions = GetLocalVersions(workingPath);
 
-            var nextMinorVersion = new LocalVersion { Major = localVersions.First().Major, Minor = localVersions.First().Minor + 1 };
+            var nextMinorVersion = new LocalVersion
+            { Major = localVersions.First().Major, Minor = localVersions.First().Minor + 1 };
             localVersions.Add(nextMinorVersion);
 
             string nextVersionPath = Path.Combine(workingPath, nextMinorVersion.SemVersion);
             Directory.CreateDirectory(nextVersionPath);
             _traceService.Info($"Created script directory {nextVersionPath}");
 
-            if (!string.IsNullOrEmpty(sqlFileName))
+            if(!string.IsNullOrEmpty(sqlFileName))
             {
                 var sqlFilePath = Path.Combine(nextVersionPath, sqlFileName);
-                File.AppendAllText(sqlFilePath, @"");
+                File.AppendAllText(sqlFilePath, string.Empty);
                 _traceService.Info($"Created file {sqlFilePath}");
             }
 
@@ -210,16 +225,22 @@ yuniqlx.exe
         {
             string versionZeroDirectory = Directory.GetDirectories(workingPath, "v0.00*").FirstOrDefault();
 
-            var directories = new List<KeyValuePair<string, bool>> {
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_init"), Directory.Exists(Path.Combine(workingPath, "_init"))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_pre"), Directory.Exists(Path.Combine(workingPath, "_pre"))),
+            var directories = new List<KeyValuePair<string, bool>>
+            {
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_init"),
+                                               Directory.Exists(Path.Combine(workingPath, "_init"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_pre"),
+                                               Directory.Exists(Path.Combine(workingPath, "_pre"))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00*"), versionZeroDirectory != null),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_draft"), Directory.Exists(Path.Combine(workingPath, "_draft"))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_post"), Directory.Exists(Path.Combine(workingPath, "_post"))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_erase"), Directory.Exists(Path.Combine(workingPath, "_erase"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_draft"),
+                                               Directory.Exists(Path.Combine(workingPath, "_draft"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_post"),
+                                               Directory.Exists(Path.Combine(workingPath, "_post"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_erase"),
+                                               Directory.Exists(Path.Combine(workingPath, "_erase"))),
             };
 
-            if (directories.Any(t => !t.Value))
+            if(directories.Any(t => !t.Value))
             {
                 var message = new StringBuilder();
                 directories.ForEach(t => message.AppendLine($"{t.Key} / {(t.Value ? "Found" : "Missing!")}"));

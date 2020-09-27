@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "platforms",
+      "commandLineArgs": "init",
       "environmentVariables": {
         "Key": "Value"
       },
