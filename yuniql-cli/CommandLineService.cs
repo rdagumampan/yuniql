@@ -303,13 +303,13 @@ namespace Yuniql.CLI
                 //run all drop scripts
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                migrationService.Drop(opts.Path, tokens, opts.CommandTimeout, opts.Environment);
+                migrationService.Erase(opts.Path, tokens, opts.CommandTimeout, opts.Environment);
 
-                _traceService.Success($"Database drop completed successfuly on {opts.Path}.");
+                _traceService.Success($"Schema erase completed successfuly on {opts.Path}.");
                 return 0;
             } catch(Exception ex)
             {
-                return OnException(ex, "Failed to execute drop function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute erase function", opts.Debug, _traceService);
             }
         }
 
