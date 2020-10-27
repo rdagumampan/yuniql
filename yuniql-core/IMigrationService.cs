@@ -10,7 +10,7 @@ namespace Yuniql.Core
     public interface IMigrationService
     {
         /// <summary>
-        /// Initializes the current instance of <see cref="MigrationService"./>
+        /// Initializes the current instance of <see cref="MigrationService"/>
         /// </summary>
         /// <param name="connectionString">Connection string to target database server or instance.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
@@ -45,6 +45,7 @@ namespace Yuniql.Core
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
         /// <param name="resumeFromFailure">The resume from failure.</param>
         /// <param name="noTransaction">When TRUE, migration will run without using transactions</param>
+        /// <param name="requiredClearedDraftFolder">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration</param>
         void Run(
             string workingPath, 
             string targetVersion = null, 
@@ -60,7 +61,8 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string environmentCode = null,
             NonTransactionalResolvingOption? resumeFromFailure = null,
-            bool noTransaction = false
+            bool noTransaction = false,
+            bool requiredClearedDraftFolder = false
         );
 
         /// <summary>
@@ -70,9 +72,20 @@ namespace Yuniql.Core
         /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
-
         bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null);
 
+        /// <summary>
+        /// Runs migrations by executing alls scripts in the workspace directory. 
+        /// When CSV files are present also run bulk import operations to target database table having same file name.
+        /// </summary>
+        /// <param name="connection">The <see cref="IDbConnection"/> to use.</param>
+        /// <param name="transaction">The <see cref="IDbTransaction"/> to use</param>
+        /// <param name="workingPath">The directory path to migration project.</param>
+        /// <param name="tokenKeyPairs">Token kev/value pairs to replace tokens in script files.</param>
+        /// <param name="bulkSeparator">Bulk file values separator character in the CSV bulk import files. When NULL, uses comma.</param>
+        /// <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
+        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
+        /// <param name="requiredClearedDraftFolder">When TRUE, the migration will fail if the current folder is empty. This option is for production migration</param>
         void RunNonVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -80,7 +93,8 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
             int? commandTimeout = null,
-            string environmentCode = null
+            string environmentCode = null,
+            bool requiredClearedDraftFolder = false
         );
 
         void RunVersionScripts(

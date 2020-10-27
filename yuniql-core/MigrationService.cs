@@ -66,7 +66,8 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string environmentCode = null,
             NonTransactionalResolvingOption? resumeFromFailure = null,
-            bool noTransaction = false
+            bool noTransaction = false,
+            bool requiredClearedDraftFolder = false
          )
         {
             //check the workspace structure if required directories are present
@@ -143,7 +144,7 @@ namespace Yuniql.Core
                         try
                         {
                             //run all migrations present in all directories
-                            RunAllInternal(connection, transaction);
+                            RunAllInternal(connection, transaction, requiredClearedDraftFolder);
 
                             //when true, the execution is an uncommitted transaction 
                             //and only for purpose of testing if all can go well when it run to the target environment
@@ -171,7 +172,7 @@ namespace Yuniql.Core
                         try
                         {
                             //run all scripts present in the _pre, _draft and _post directories
-                            RunDraftInternal(connection, transaction);
+                            RunDraftInternal(connection, transaction, requiredClearedDraftFolder);
 
                             //when true, the execution is an uncommitted transaction 
                             //and only for purpose of testing if all can go well when it run to the target environment
@@ -191,7 +192,7 @@ namespace Yuniql.Core
             }
 
             //local method
-            void RunAllInternal(IDbConnection connection, IDbTransaction transaction)
+            void RunAllInternal(IDbConnection connection, IDbTransaction transaction, bool requiredClearedDraftFolder = false)
             {
                 //check if database has been pre-configured and execute init scripts
                 if (!targetDatabaseConfigured)
@@ -210,7 +211,15 @@ namespace Yuniql.Core
                 RunVersionScripts(connection, transaction, allVersions, workingPath, targetVersion, null, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode);
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                RunNonVersionScripts(
+                    connection,
+                    transaction,
+                    Path.Combine(workingPath, "_draft"),
+                    tokenKeyPairs,
+                    bulkSeparator: bulkSeparator,
+                    commandTimeout: commandTimeout,
+                    environmentCode: environmentCode,
+                    requiredClearedDraftFolder: requiredClearedDraftFolder);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders
@@ -219,14 +228,22 @@ namespace Yuniql.Core
             }
 
             //local method
-            void RunDraftInternal(IDbConnection connection, IDbTransaction transaction)
+            void RunDraftInternal(IDbConnection connection, IDbTransaction transaction, bool requiredClearedDraftFolder = false)
             {
                 //runs all scripts in the _pre folder and subfolders
                 RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode);
+                RunNonVersionScripts(
+                    connection,
+                    transaction,
+                    Path.Combine(workingPath, "_draft"),
+                    tokenKeyPairs,
+                    bulkSeparator: bulkSeparator,
+                    commandTimeout: commandTimeout,
+                    environmentCode: environmentCode,
+                    requiredClearedDraftFolder: requiredClearedDraftFolder);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders

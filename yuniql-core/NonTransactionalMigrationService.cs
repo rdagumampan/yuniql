@@ -66,7 +66,8 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string environmentCode = null,
             NonTransactionalResolvingOption? nonTransactionalResolvingOption = null,
-            bool noTransaction = false
+            bool noTransaction = false,
+            bool requiredClearedDraft = false
          )
         {
             if (_dataService.IsAtomicDDLSupported && nonTransactionalResolvingOption != null)

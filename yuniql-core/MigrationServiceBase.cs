@@ -79,7 +79,8 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string environmentCode = null,
             NonTransactionalResolvingOption? nonTransactionalResolvingOption = null,
-            bool noTransaction = false
+            bool noTransaction = false,
+            bool requiredClearedDraftFolder = false
          );
 
         /// <inheritdoc />
@@ -104,11 +105,21 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
             int? commandTimeout = null,
-            string environmentCode = null
+            string environmentCode = null,
+            bool requiredClearedDraftFolder = false
         )
         {
             //extract and filter out scripts when environment code is used
             var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
+
+            // Throw exception when --require-cleared-draft is set to TRUE 
+            if (sqlScriptFiles.Any() && requiredClearedDraftFolder && workingPath.Contains("_draft"))
+            {
+                _traceService.Error($"Cannot execute migration when option --require-cleared-draft is set to TRUE.");
+
+                throw new ApplicationException($"Cannot execute migration when option --require-cleared-draft is set to TRUE.");
+            }
+
             sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
             _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine: string.Empty) +
                    $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");

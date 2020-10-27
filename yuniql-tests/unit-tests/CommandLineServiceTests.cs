@@ -263,6 +263,24 @@ namespace Yuniql.UnitTests
                           }, err => 1);
         }
 
+        [DataTestMethod]
+        [DataRow("--require-cleared-draft", true)]
+        [DataRow("", false)]
+        public void Test_Run_RequireClearedDraft_Default_To_False(string noRequireClearedDraftFlag, bool expectedSetting)
+        {
+            // arrange
+            var runVerbAttribute = Attribute.GetCustomAttribute(typeof(RunOption), typeof(VerbAttribute));
+            var runVerbName = ((VerbAttribute)runVerbAttribute).Name;
+            var args = new string[] { runVerbName, noRequireClearedDraftFlag };
+
+            // act-assert
+            Parser.Default.ParseArguments<RunOption>(args)
+                          .MapResult((RunOption sut) => {
+                              sut.RequiredClearedDraft.ShouldBe(expectedSetting);
+                              return 0;
+                          }, err => 1);
+        }
+
         [TestMethod]
         public void Test_Info_Option_No_Explicit_Options()
         {
@@ -312,7 +330,7 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, false));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, false, false));
         }
 
         [TestMethod]
@@ -346,7 +364,7 @@ namespace Yuniql.UnitTests
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, false));
+                ), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, false, false));
         }
 
 
@@ -376,7 +394,7 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, false));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, false, false));
         }
 
         [TestMethod]
@@ -410,7 +428,7 @@ namespace Yuniql.UnitTests
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, false));
+                ), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, false, false));
         }
 
         [DataTestMethod]
