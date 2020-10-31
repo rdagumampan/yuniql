@@ -138,7 +138,8 @@ namespace Yuniql.CLI
                                      opts.ContinueAfterFailure
                     ? NonTransactionalResolvingOption.ContinueAfterFailure
                     : (NonTransactionalResolvingOption?)null,
-                                     opts.NoTransaction);
+                                     opts.NoTransaction,
+                                     opts.RequiredClearedDraft);
 
                 _traceService.Success($"Schema migration completed successfuly on {opts.Path}.");
                 return 0;

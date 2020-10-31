@@ -13,5 +13,9 @@ namespace Yuniql.CLI
         //yuniql <command> --no-transaction
         [Option("no-transaction", Required = false, HelpText = "When set, migration will not use database transactions", Default = false)]
         public bool NoTransaction { get; set; }
+
+        //yuniql <command> --require-cleared-draft
+        [Option("require-cleared-draft", Required = false, HelpText = "When set, migration will fail when the _draft directory is not empty. This option is for production migration", Default = false)]
+        public bool RequiredClearedDraft { get; set; }
     }
 }

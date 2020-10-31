@@ -590,5 +590,84 @@ namespace Yuniql.UnitTests
             transaction.Verify(t => t.Commit(), noTransactionOption == true ? Times.Never() : Times.AtLeastOnce());
             transaction.Verify(t => t.Rollback(), noTransactionOption == true ? Times.Never() : Times.AtMostOnce());
         }
+
+        [DataTestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void Test_Run_RequireClearedDraft_Option(bool requireClearedDraft)
+        {
+            //arrange
+            var transaction = new Mock<IDbTransaction>();
+
+            var connection = new Mock<IDbConnection>();
+            connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
+
+            var localVersionService = new Mock<ILocalVersionService>();
+            localVersionService.Setup(s => s.Validate(@"c:\temp")).Verifiable();
+
+            var configurationService = new Mock<IConfigurationDataService>();
+            configurationService.Setup(s => s.GetAllVersions(null, null, null)).Returns(new List<DbVersion> { });
+            configurationService.Setup(s => s.IsDatabaseConfigured(It.IsAny<string>(), It.IsAny<string>(), null)).Returns(true);
+            configurationService.Setup(s => s.GetCurrentVersion(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>())).Returns(string.Empty);
+
+            var dataService = new Mock<IDataService>();
+            dataService.Setup(s => s.GetConnectionInfo()).Returns(new ConnectionInfo { DataSource = "server", Database = "db" });
+            dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
+
+            dataService.Setup(s => s.BreakStatements("SELECT 'draft'")).Returns(new List<string> { "SELECT 'draft'" });
+            
+            var directoryService = new Mock<IDirectoryService>();
+            var fileService = new Mock<IFileService>();
+
+            directoryService.Setup(s => s.GetDirectories(@"c:\temp", "v*.*")).Returns(new string[] { @"c:\temp\v0.00" });
+
+            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_draft", "*.sql")).Returns(new string[] { @"c:\temp\_draft\sql_draft.sql" });
+            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_draft", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_draft\sql_draft.sql")))).Returns(new string[] { @"c:\temp\_draft\sql_draft.sql" });
+
+            fileService.Setup(s => s.ReadAllText(@"c:\temp\_init\sql_init.sql")).Returns("SELECT 'init'");
+            fileService.Setup(s => s.ReadAllText(@"c:\temp\_draft\sql_draft.sql")).Returns("SELECT 'draft'");
+            fileService.Setup(s => s.ReadAllText(@"c:\temp\v0.00\sql_v0_00.sql")).Returns("SELECT 'v0.00'");
+
+            var tokenReplacementService = new Mock<ITokenReplacementService>();
+            
+            var traceService = new Mock<ITraceService>();
+
+            //act
+            var sut = new MigrationService(
+                localVersionService.Object,
+                dataService.Object,
+                new Mock<IBulkImportService>().Object,
+                configurationService.Object,
+                tokenReplacementService.Object,
+                directoryService.Object,
+                fileService.Object,
+                traceService.Object);
+
+            if (requireClearedDraft)
+            {
+                Assert.ThrowsException<ApplicationException>(() =>
+                {
+                    sut.Run(workingPath: @"c:\temp",
+                        targetVersion: "v0.00",
+                        autoCreateDatabase: true,
+                        tokenKeyPairs: null,
+                        verifyOnly: false,
+                        requiredClearedDraftFolder: requireClearedDraft);
+                }).Message.ShouldBe("Cannot execute migration when option --require-cleared-draft is set to TRUE.");
+            }
+            else
+            {
+                sut.Run(workingPath: @"c:\temp",
+                     targetVersion: "v0.00",
+                     autoCreateDatabase: true,
+                     tokenKeyPairs: null,
+                     verifyOnly: false,
+                     requiredClearedDraftFolder: requireClearedDraft);
+            }
+
+            //asset
+            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_draft", "*.sql"));
+            connection.Verify(s => s.Open());
+        }
     }
 }
