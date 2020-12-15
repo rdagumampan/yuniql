@@ -5,7 +5,7 @@ namespace Yuniql.CLI
     public class BasePlatformOption : BaseOption
     {
         //yuniql <command> -d | --debug
-        [Option(longName: "platform", Required = false, HelpText = "Target database platform.", Default = "sqlserver")]
+        [Option(longName: "platform", Required = false, HelpText = "Target database platform. Default is sqlserver.")]
         public string Platform { get; set; }
 
         //yuniql <command> --plugins-path "," | --plugins-path "|"
