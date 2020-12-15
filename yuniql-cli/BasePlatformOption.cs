@@ -12,7 +12,7 @@ namespace Yuniql.CLI
         [Option("plugins-path", Required = false, HelpText = "The location of plugins. The default location is current location of the yuniql assemblies.")]
         public string PluginsPath { get; set; }
 
-        //yuniql <command> -c "<connectiong-string>"
+        //yuniql <command> -c "<connection-string>"
         [Option('c', "connection-string", Required = false, HelpText = "Connection string to target database server instance.")]
         public string ConnectionString { get; set; }
 
