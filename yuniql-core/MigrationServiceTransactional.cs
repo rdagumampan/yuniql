@@ -71,7 +71,8 @@ namespace Yuniql.Core
          )
         {
             //print run configuration information
-            var configuration = new {
+            var configuration = new
+            {
                 workingPath,
                 targetVersion,
                 autoCreateDatabase,
@@ -160,11 +161,14 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && !transactionMode.Equals(TRANSACTION_MODE.SESSION))  ? null : connection.BeginTransaction())
+                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && transactionMode.Equals(TRANSACTION_MODE.SESSION)) ? connection.BeginTransaction() : null)
                     {
                         try
                         {
                             //run all migrations present in all directories
+                            if (null != transaction) 
+                                _traceService.Info("Transaction created for current session. This migration run will be executed in a shared connection and transaction context.");
+
                             RunAllInternal(connection, transaction);
 
                             //when true, the execution is an uncommitted transaction 
@@ -188,11 +192,14 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && !transactionMode.Equals(TRANSACTION_MODE.SESSION)) ? null : connection.BeginTransaction())
+                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && transactionMode.Equals(TRANSACTION_MODE.SESSION)) ? connection.BeginTransaction() : null)
                     {
                         try
                         {
                             //run all scripts present in the _pre, _draft and _post directories
+                            if (null != transaction)
+                                _traceService.Info("Transaction created for current session. This migration run will be executed in a shared connection and transaction context.");
+
                             RunDraftInternal(connection, transaction);
 
                             //when true, the execution is an uncommitted transaction 
@@ -309,6 +316,9 @@ namespace Yuniql.Core
                             {
                                 try
                                 {
+                                    if (null != internalTransaction)
+                                        _traceService.Info("Transaction created for current version. This version migration run will be executed in this dedicated connection and transaction context.");
+
                                     RunVersionScriptsInternal(internalConnection, internalTransaction, versionDirectory);
                                     internalTransaction.Commit();
                                 }
@@ -322,6 +332,9 @@ namespace Yuniql.Core
                     }
                     else
                     {
+                        if (null == transaction)
+                            _traceService.Info("Transaction is disabled for current session. This version migration run will be executed without explicit transaction context.");
+
                         RunVersionScriptsInternal(connection, transaction, versionDirectory);
                     }
                 });
