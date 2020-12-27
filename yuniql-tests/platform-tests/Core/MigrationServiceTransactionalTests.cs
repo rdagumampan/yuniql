@@ -512,5 +512,86 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_draft_02").ShouldBeTrue();
         }
 
+        [TestMethod]
+        public void Test_Run_Transaction_Mode_Every_Session()
+        {
+            //arrange
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
+
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
+
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
+
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
+
+            //act
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
+            migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.02", autoCreateDatabase: true, transactionMode:TRANSACTION_MODE.SESSION);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_02").ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void Test_Run_Transaction_Mode_Every_Version()
+        {
+            //arrange
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
+
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
+
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
+
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
+
+            //act
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
+            migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.02", autoCreateDatabase: true, transactionMode: TRANSACTION_MODE.VERSION);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_02").ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void Test_Run_Transaction_Mode_None()
+        {
+            //arrange
+            var localVersionService = new LocalVersionService(_traceService);
+            localVersionService.Init(_testConfiguration.WorkspacePath);
+
+            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
+
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
+
+            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
+
+            //act
+            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
+            migrationService.Initialize(_testConfiguration.ConnectionString);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.02", autoCreateDatabase: true, transactionMode: TRANSACTION_MODE.NONE);
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_00").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_01").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_02").ShouldBeTrue();
+        }
+
     }
 }

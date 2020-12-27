@@ -575,7 +575,7 @@ namespace Yuniql.UnitTests
             configurationDataService.Setup(s => s.GetAllVersions(It.IsAny<string>(), It.IsAny<string>(), null))
                                     .Returns(new List<DbVersion>());
 
-            var transactionMode = TRANSACTION_MODE.FULL;
+            var transactionMode = TRANSACTION_MODE.SESSION;
 
             //act
             var sut = new MigrationServiceTransactional(

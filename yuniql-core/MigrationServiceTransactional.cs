@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.IO;
+using System.Text.Json;
 
 namespace Yuniql.Core
 {
@@ -69,6 +70,27 @@ namespace Yuniql.Core
             string transactionMode = null
          )
         {
+            //print run configuration information
+            var configuration = new {
+                workingPath,
+                targetVersion,
+                autoCreateDatabase,
+                tokenKeyPairs,
+                verifyOnly,
+                bulkSeparator,
+                bulkBatchSize,
+                metaSchemaName,
+                metaTableName,
+                commandTimeout,
+                appliedByTool,
+                appliedByToolVersion,
+                environmentCode,
+                resumeFromFailure,
+                transactionMode
+            };
+            var serializedConfiguration = JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true });
+            _traceService.Info($"Run configuration: {Environment.NewLine}{serializedConfiguration}");
+
             //check the workspace structure if required directories are present
             _localVersionService.Validate(workingPath);
 
@@ -138,7 +160,7 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && !transactionMode.Equals(TRANSACTION_MODE.FULL))  ? null : connection.BeginTransaction())
+                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && !transactionMode.Equals(TRANSACTION_MODE.SESSION))  ? null : connection.BeginTransaction())
                     {
                         try
                         {
@@ -166,7 +188,7 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && !transactionMode.Equals(TRANSACTION_MODE.FULL)) ? null : connection.BeginTransaction())
+                    using (var transaction = (!string.IsNullOrEmpty(transactionMode) && !transactionMode.Equals(TRANSACTION_MODE.SESSION)) ? null : connection.BeginTransaction())
                     {
                         try
                         {

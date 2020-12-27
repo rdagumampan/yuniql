@@ -156,10 +156,11 @@ namespace Yuniql.Core
             }
             else
             {
+                //check if the non-txn option is passed even if there was no previous failed runs
                 if (nonTransactionalResolvingOption != null)
                 {
                     //program should exit with non zero exit code
-                    _traceService.Error(@$"The non-transactional failure resolving option ""{nonTransactionalResolvingOption}"" is available only if previous migration has failed.");
+                    _traceService.Error(@$"The non-transactional failure resolving option ""{nonTransactionalResolvingOption}"" is available only if previous migration run has failed.");
                     throw new InvalidOperationException();
                 }
             }
@@ -280,28 +281,28 @@ namespace Yuniql.Core
                     //run scripts in all sub-directories
                     var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList(); ;
 
-                    //check for transaction directory
+                    //check for special _transaction directory in the version directory
                     var isExplicitTransactionDefined = false;
                     var transactionDirectory = Path.Combine(versionDirectory, "_transaction");
                     if (_directoryService.Exists(transactionDirectory))
                     {
-                        //version directory with _transaction directory only applies to platforms supporting transactional ddl
+                        //version directory with _transaction directory only applies to platforms NOT supporting transactional ddl
                         if (_dataService.IsTransactionalDdlSupported)
                         {
                             throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" can't contain ""_transaction"" subdirectory for selected target platform, because the whole migration is already running in single transaction.");
                         }
 
-                        //version directory must only contain _transaction directory
+                        //version directory must only contain _transaction directory and nothing else
                         if (_directoryService.GetDirectories(versionDirectory, "*").Count() > 1)
                         {
-                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""_transaction"" subdirectory can't contain other subdirectories");
+                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""_transaction"" subdirectory can't contain other subdirectories.");
                         }
 
                         //version directory must only contain _transaction directory, files are also not allowed
                         //users need to place the script files and subdirectories inside _transaction directory
                         if (_directoryService.GetFiles(versionDirectory, "*.*").Count() > 0)
                         {
-                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""_transaction"" subdirectory can't contain files");
+                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""_transaction"" subdirectory can't contain files.");
                         }
 
                         isExplicitTransactionDefined = true;

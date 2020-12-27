@@ -22,89 +22,95 @@ The tests automatically deploy a Docker container and perform tests against it. 
 
 ## Running platform tests for SqlServer
 
-1. Always start by publishing Yuniql CLI (yuniql.exe) locally
+Deploy local database container
 
-	```console
-	cd C:\play\yuniql\yuniql-cli
-	dotnet build
-	dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
-	```
+```console
+docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+```
 
-2. Configure your connection string
+Always start by publishing Yuniql CLI (yuniql.exe) locally
 
-	```bash
-	SETX YUNIQL_TEST_TARGET_PLATFORM "sqlserver"
-	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-sqlserver-sample"
+```console
+cd C:\play\yuniql\yuniql-cli
+dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
+```
 
-	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
-	SETX YUNIQL_TEST_HOST "LOCAL"
-	```
+Configure your connection string
 
-	>You can also run the batch file `setup_test_envs_sqlserver.bat` register all these variables.
-	>The batch file is placed in `yuniql-tests\platform-tests` directory.
+```bash
+SETX YUNIQL_TEST_TARGET_PLATFORM "sqlserver"
+SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
+SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-sqlserver-sample"
 
-3. Run the platform tests
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_HOST "LOCAL"
+```
+
+>You can also run the batch file `setup_test_envs_sqlserver.bat` register all these variables.
+>The batch file is placed in `yuniql-tests\platform-tests` directory.
+
+Run the platform tests from cli
 	
-	```console
-	cd C:\play\yuniql\yuniql-tests\platform-tests
-	dotnet build
-	dotnet test -v n
-	```
+```console
+cd C:\play\yuniql\yuniql-tests\platform-tests
+dotnet build
+dotnet test -v n
+dotnet test --filter Test_Run_With_AutocreateDB -v n
+```
 
 ## Running platform tests for PostgreSql
 
-1. Configure your connection string
+Configure your connection string
 
-	```bash
-	cd C:\play\yuniql\yuniql-cli
-	dotnet publish -c release -r win-x64
+```bash
+cd C:\play\yuniql\yuniql-cli
+dotnet publish -c release -r win-x64
 
-	SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
-	SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-postgresql-sample"
+SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
+SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
+SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-postgresql-sample"
 
-	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
-	SETX YUNIQL_TEST_HOST "LOCAL"
-	```
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_HOST "LOCAL"
+```
 
-	>You can also run the batch file `setup_test_envs_mysql.bat` register all these variables.
-	>The batch file is placed in `yuniql-tests\platform-tests` directory.
+>You can also run the batch file `setup_test_envs_mysql.bat` register all these variables.
+>The batch file is placed in `yuniql-tests\platform-tests` directory.
 
-2. Run the platform tests
+Run the platform tests
 	
-	```console
-	cd C:\play\yuniql\yuniql-tests\platform-tests
-	dotnet build
-	dotnet test -v n
-	```
+```console
+cd C:\play\yuniql\yuniql-tests\platform-tests
+dotnet build
+dotnet test -v n
+```
 
 ## Running platform tests for MySql, MariaDB
 
-1. Configure your connection string
+Configure your connection string
 
-	```bash
-	cd C:\play\yuniql\yuniql-cli
-	dotnet publish -c release -r win-x64
+```bash
+cd C:\play\yuniql\yuniql-cli
+dotnet publish -c release -r win-x64
 
-	SETX YUNIQL_TEST_TARGET_PLATFORM "mysql"
-	SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
-	SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-mysql-sample"
+SETX YUNIQL_TEST_TARGET_PLATFORM "mysql"
+SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
+SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-mysql-sample"
 
-	SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
-	SETX YUNIQL_TEST_HOST "LOCAL"
-	```
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_HOST "LOCAL"
+```
 
-	>You can also run the batch file `setup_test_envs_mysql.bat` register all these variables.
-	>The batch file is placed in `yuniql-tests\platform-tests` directory.
+>You can also run the batch file `setup_test_envs_mysql.bat` register all these variables.
+>The batch file is placed in `yuniql-tests\platform-tests` directory.
 
-2. Run the platform tests
+Run the platform tests
 	
-	```console
-	cd C:\play\yuniql\yuniql-tests\platform-tests
-	dotnet build
-	dotnet test -v n
-	```
+```console
+cd C:\play\yuniql\yuniql-tests\platform-tests
+dotnet build
+dotnet test -v n
+```
 
 ## References
 - Reccomended VS Code Extensions or browsing Test Databases

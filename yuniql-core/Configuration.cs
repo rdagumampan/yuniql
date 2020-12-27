@@ -104,7 +104,7 @@ namespace Yuniql.Core
         /// When partial, each version is executed in one transaction.
         /// When none, no explicit transaction is created for migration run.
         /// </summary>
-        public string TransactionMode { get; set; } = TRANSACTION_MODE.FULL;
+        public string TransactionMode { get; set; } = TRANSACTION_MODE.SESSION;
     }
 
 }
