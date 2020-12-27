@@ -79,7 +79,8 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string environmentCode = null,
             NonTransactionalResolvingOption? nonTransactionalResolvingOption = null,
-            string transactionMode = null
+            string transactionMode = null,
+            bool requiredClearedDraftFolder = false
          );
 
         /// <inheritdoc />
@@ -105,7 +106,8 @@ namespace Yuniql.Core
             string bulkSeparator = null,
             int? commandTimeout = null,
             string environmentCode = null,
-            string transactionMode = null
+            string transactionMode = null,
+            bool requiredClearedDraft = false
         )
         {
             if (!string.IsNullOrEmpty(transactionMode) && transactionMode.Equals(TRANSACTION_MODE.VERSION))
@@ -117,6 +119,9 @@ namespace Yuniql.Core
                     {
                         try
                         {
+                            if (null != internalTransaction)
+                                _traceService.Info("Transaction created for current version. This version migration run will be executed in this dedicated connection and transaction context.");
+
                             RunNonVersionScriptsInternal(internalConnection, internalTransaction);
                             internalTransaction.Commit();
                         }
@@ -137,6 +142,14 @@ namespace Yuniql.Core
             {
                 //extract and filter out scripts when environment code is used
                 var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
+
+                // Throw exception when --require-cleared-draft is set to TRUE 
+                if (sqlScriptFiles.Any() && requiredClearedDraft && workingPath.Contains("_draft"))
+                {
+                    throw new YuniqlMigrationException($"Special _draft directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
+                        $"Move the script files to a version directory and re-execute the migration. Or remove --require-cleared-draft in parameter.");
+                }
+
                 sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
                 _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine : string.Empty) +
                        $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
@@ -179,6 +192,7 @@ namespace Yuniql.Core
             }
         }
 
+        /// <inheritdoc />
         public abstract void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -198,6 +212,7 @@ namespace Yuniql.Core
             string transactionMode = null
         );
 
+        /// <inheritdoc />
         public virtual void RunBulkImport(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -222,6 +237,7 @@ namespace Yuniql.Core
             });
         }
 
+        /// <inheritdoc />
         public abstract void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,

@@ -133,6 +133,7 @@ COPY . ./db
 yuniql.exe
 yuniql.pdb
 yuniqlx.exe
+yuniql-log-*.txt
 ");
                 _traceService.Info($"Created file {gitIgnoreFile}");
             }

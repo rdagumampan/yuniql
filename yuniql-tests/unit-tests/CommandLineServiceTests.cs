@@ -231,36 +231,20 @@ namespace Yuniql.UnitTests
         [DataRow("--force", 0)]
         [DataRow("-f", 0)]
         [DataRow("", 1)]
-        public void Test_Erase_Require_Force_Flag(string forceFlag, int expectedResultCode) {
+        public void Test_Erase_Require_Force_Flag(string forceFlag, int expectedResultCode)
+        {
             // arrange
             var eraseVerbAttribute = Attribute.GetCustomAttribute(typeof(EraseOption), typeof(VerbAttribute));
             var eraseVerbName = ((VerbAttribute)eraseVerbAttribute).Name;
-            var args = new string[] {eraseVerbName, forceFlag};
-            
+            var args = new string[] { eraseVerbName, forceFlag };
+
             // act
             var resultCode = Parser.Default.ParseArguments<EraseOption>(args)
                                     .MapResult((EraseOption sut) => 0,
                                                 errs => 1);
-            
+
             // assert
             resultCode.ShouldBeEquivalentTo(expectedResultCode);
-        }
-
-        [DataTestMethod]
-        [DataRow("--no-transaction", true)]
-        [DataRow("", false)]
-        public void Test_Run_NoTransaction_Default_To_False(string noTransactionFlag, bool expectedSetting) {
-            // arrange
-            var runVerbAttribute = Attribute.GetCustomAttribute(typeof(RunOption), typeof(VerbAttribute));
-            var runVerbName = ((VerbAttribute)runVerbAttribute).Name;
-            var args = new string[] {runVerbName, noTransactionFlag};
-
-            // act-assert
-            Parser.Default.ParseArguments<RunOption>(args)
-                          .MapResult((RunOption sut) => {
-                              sut.NoTransaction.ShouldBe(expectedSetting);
-                              return 0;
-                          }, err => 1);
         }
 
         [TestMethod]
@@ -312,7 +296,7 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
         }
 
         [TestMethod]
@@ -346,7 +330,7 @@ namespace Yuniql.UnitTests
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null));
+                ), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
         }
 
 
@@ -376,7 +360,7 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null));
+            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
         }
 
         [TestMethod]
@@ -410,7 +394,7 @@ namespace Yuniql.UnitTests
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
                     && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
                     && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null));
+                ), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
         }
 
         [DataTestMethod]
@@ -423,22 +407,24 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             traceService.Setup(s => s.Error(It.IsAny<string>(), null))
                         .Callback<string, object>((msg, o) => errorTraceMsg = msg);
-            
+
             var exc = new Exception("Fake exception");
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetCurrentDirectory()).Throws(exc);
 
             //act
-            var option = new RunOption{ Debug = isDebug};
+            var option = new RunOption { Debug = isDebug };
             var sut = new CommandLineService(null, null, environmentService.Object, traceService.Object);
 
             var returnCode = sut.RunMigration(option);
 
             //assert
-            if (isDebug) {
+            if (isDebug)
+            {
                 errorTraceMsg.ShouldContain(exc.StackTrace);
             }
-            else { 
+            else
+            {
                 errorTraceMsg.ShouldNotContain(exc.StackTrace);
             }
         }

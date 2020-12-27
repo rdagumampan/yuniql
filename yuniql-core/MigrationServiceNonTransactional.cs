@@ -30,14 +30,14 @@ namespace Yuniql.Core
             IDirectoryService directoryService,
             IFileService fileService,
             ITraceService traceService)
-            : base (
-                localVersionService, 
-                dataService, 
-                bulkImportService, 
-                configurationDataService, 
-                tokenReplacementService, 
-                directoryService, 
-                fileService, 
+            : base(
+                localVersionService,
+                dataService,
+                bulkImportService,
+                configurationDataService,
+                tokenReplacementService,
+                directoryService,
+                fileService,
                 traceService
             )
         {
@@ -49,7 +49,7 @@ namespace Yuniql.Core
             this._fileService = fileService;
             this._traceService = traceService;
             this._configurationDataService = configurationDataService;
-        } 
+        }
 
         /// <inheritdoc />
         public override void Run(
@@ -66,8 +66,9 @@ namespace Yuniql.Core
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null,
-            NonTransactionalResolvingOption? nonTransactionalResolvingOption = null,
-            string transactionMode = null
+            NonTransactionalResolvingOption? resumeFromFailure = null,
+            string transactionMode = null,
+            bool requiredClearedDraft = false
          )
         {
             //print run configuration information
@@ -86,15 +87,16 @@ namespace Yuniql.Core
                 appliedByTool,
                 appliedByToolVersion,
                 environmentCode,
-                nonTransactionalResolvingOption,
-                transactionMode
+                resumeFromFailure,
+                transactionMode,
+                requiredClearedDraft
             };
             var serializedConfiguration = JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true });
             _traceService.Info($"Run configuration: {Environment.NewLine}{serializedConfiguration}");
 
-            if (_dataService.IsTransactionalDdlSupported && nonTransactionalResolvingOption != null)
+            if (_dataService.IsTransactionalDdlSupported && resumeFromFailure != null)
             {
-                throw new NotSupportedException(@$"The non-transactional failure resolving option ""{nonTransactionalResolvingOption}"" is not available for this platform.");
+                throw new NotSupportedException(@$"The non-transactional failure resolving option ""{resumeFromFailure}"" is not available for this platform.");
             }
 
             //check the workspace structure if required directories are present
@@ -166,7 +168,7 @@ namespace Yuniql.Core
             if (failedVersion != null)
             {
                 //check if user had issue resolving option such as continue on failure
-                if (nonTransactionalResolvingOption == null)
+                if (resumeFromFailure == null)
                 {
                     //program should exit with non zero exit code
                     var message = @$"Previous migration of ""{failedVersion.Version}"" version was not running in transaction and has failed when executing of script ""{failedVersion.FailedScriptPath}"" with following error: {failedVersion.FailedScriptError} {MESSAGES.ManualResolvingAfterFailureMessage}";
@@ -174,16 +176,16 @@ namespace Yuniql.Core
                     throw new InvalidOperationException(message);
                 }
 
-                _traceService.Info($@"The non-transactional failure resolving option ""{nonTransactionalResolvingOption}"" was used. Version scripts already applied by previous migration run will be skipped.");
-                nonTransactionalContext = new NonTransactionalContext(failedVersion, nonTransactionalResolvingOption.Value);
+                _traceService.Info($@"The non-transactional failure resolving option ""{resumeFromFailure}"" was used. Version scripts already applied by previous migration run will be skipped.");
+                nonTransactionalContext = new NonTransactionalContext(failedVersion, resumeFromFailure.Value);
             }
             else
             {
                 //check if the non-txn option is passed even if there was no previous failed runs
-                if (nonTransactionalResolvingOption != null)
+                if (resumeFromFailure != null)
                 {
                     //program should exit with non zero exit code
-                    _traceService.Error(@$"The non-transactional failure resolving option ""{nonTransactionalResolvingOption}"" is available only if previous migration run has failed.");
+                    _traceService.Error(@$"The non-transactional failure resolving option ""{resumeFromFailure}"" is available only if previous migration run has failed.");
                     throw new InvalidOperationException();
                 }
             }
@@ -201,7 +203,7 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    RunAllInternal(connection, null);
+                    RunAllInternal(connection, null, requiredClearedDraft);
                 }
             }
             else
@@ -210,12 +212,12 @@ namespace Yuniql.Core
                 using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
-                    RunDraftInternal(connection, null);
+                    RunDraftInternal(connection, null, requiredClearedDraft);
                 }
             }
 
             //local method
-            void RunAllInternal(IDbConnection connection, IDbTransaction transaction)
+            void RunAllInternal(IDbConnection connection, IDbTransaction transaction, bool requiredClearedDraft)
             {
                 //check if database has been pre-configured and execute init scripts
                 if (!targetDatabaseConfigured)
@@ -234,7 +236,7 @@ namespace Yuniql.Core
                 RunVersionScripts(connection, transaction, appliedVersions, workingPath, targetVersion, nonTransactionalContext, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode, transactionMode: transactionMode);
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders
@@ -243,14 +245,14 @@ namespace Yuniql.Core
             }
 
             //local method
-            void RunDraftInternal(IDbConnection connection, IDbTransaction transaction)
+            void RunDraftInternal(IDbConnection connection, IDbTransaction transaction, bool requiredClearedDraft)
             {
                 //runs all scripts in the _pre folder and subfolders
                 RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders
@@ -493,7 +495,7 @@ namespace Yuniql.Core
                         metaTableName: metaTableName,
                         commandTimeout: commandTimeout,
                         appliedByTool: appliedByTool,
-                        appliedByToolVersion: appliedByToolVersion,                        
+                        appliedByToolVersion: appliedByToolVersion,
                         failedScriptPath: currentScriptFile,
                         failedScriptError: sqlError);
 

@@ -139,8 +139,9 @@ namespace Yuniql.CLI
                     appliedByTool: toolName,
                     appliedByToolVersion: toolVersion,
                     environmentCode: opts.Environment,
-                    opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?)null,
-                    opts.TransactionMode
+                    resumeFromFailure: opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?)null,
+                    transactionMode: opts.TransactionMode,
+                    requiredClearedDraft: opts.RequiredClearedDraft
                     );
 
                 _traceService.Success($"Schema migration completed successfuly on {opts.Path}.");
@@ -342,6 +343,41 @@ namespace Yuniql.CLI
             catch (Exception ex)
             {
                 return OnException(ex, "Failed to archive function", opts.Debug, _traceService);
+            }
+        }
+        
+        public int RunPlatformsOption(PlatformsOption opts)
+        {
+            try
+            {
+                string platforms = @"
+                                    SqlServer: 
+                                       Supported versions:
+                                       Usage: yuniql run -c <your-connection-string> --platform sqlserver
+                                       Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample
+
+                                    PostgreSql: 
+                                       Supported versions:
+                                       Usage: yuniql run -c <your-connection-string> --platform postgresql
+                                       Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-postgresql-sample
+
+                                    MySql: 
+                                       Supported versions:
+                                       Usage: yuniql run -c <your-connection-string> --platform mysql
+                                       Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
+
+                                    MariaDB: 
+                                       Supported versions:
+                                       Usage: yuniql run -c <your-connection-string> --platform mariadb
+                                       Samples: https://yuniql.io/docs/get-started/";
+
+                Console.WriteLine(platforms);
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute RunPlatformsOption function", opts.Debug, _traceService);
             }
         }
 

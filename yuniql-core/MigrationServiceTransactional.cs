@@ -67,7 +67,8 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string environmentCode = null,
             NonTransactionalResolvingOption? resumeFromFailure = null,
-            string transactionMode = null
+            string transactionMode = null,
+            bool requiredClearedDraft = false
          )
         {
             //print run configuration information
@@ -87,7 +88,8 @@ namespace Yuniql.Core
                 appliedByToolVersion,
                 environmentCode,
                 resumeFromFailure,
-                transactionMode
+                transactionMode,
+                requiredClearedDraft
             };
             var serializedConfiguration = JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true });
             _traceService.Info($"Run configuration: {Environment.NewLine}{serializedConfiguration}");
@@ -166,10 +168,10 @@ namespace Yuniql.Core
                         try
                         {
                             //run all migrations present in all directories
-                            if (null != transaction) 
+                            if (null != transaction)
                                 _traceService.Info("Transaction created for current session. This migration run will be executed in a shared connection and transaction context.");
 
-                            RunAllInternal(connection, transaction);
+                            RunAllInternal(connection, transaction, requiredClearedDraft);
 
                             //when true, the execution is an uncommitted transaction 
                             //and only for purpose of testing if all can go well when it run to the target environment
@@ -200,7 +202,7 @@ namespace Yuniql.Core
                             if (null != transaction)
                                 _traceService.Info("Transaction created for current session. This migration run will be executed in a shared connection and transaction context.");
 
-                            RunDraftInternal(connection, transaction);
+                            RunDraftInternal(connection, transaction, requiredClearedDraft);
 
                             //when true, the execution is an uncommitted transaction 
                             //and only for purpose of testing if all can go well when it run to the target environment
@@ -220,7 +222,7 @@ namespace Yuniql.Core
             }
 
             //local method
-            void RunAllInternal(IDbConnection connection, IDbTransaction transaction)
+            void RunAllInternal(IDbConnection connection, IDbTransaction transaction, bool requiredClearedDraft)
             {
                 //check if database has been pre-configured and execute init scripts
                 if (!targetDatabaseConfigured)
@@ -239,7 +241,7 @@ namespace Yuniql.Core
                 RunVersionScripts(connection, transaction, allVersions, workingPath, targetVersion, null, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode, transactionMode: transactionMode);
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders
@@ -248,14 +250,14 @@ namespace Yuniql.Core
             }
 
             //local method
-            void RunDraftInternal(IDbConnection connection, IDbTransaction transaction)
+            void RunDraftInternal(IDbConnection connection, IDbTransaction transaction, bool requiredClearedDraft)
             {
                 //runs all scripts in the _pre folder and subfolders
                 RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
 
                 //runs all scripts in the _post folder and subfolders

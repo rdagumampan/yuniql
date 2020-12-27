@@ -44,7 +44,8 @@ namespace Yuniql.Core
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
         /// <param name="resumeFromFailure">The resume from failure.</param>
-        /// <param name="noTransaction">When TRUE, migration will run without using transactions</param>
+        /// <param name="transactionMode"></param>
+        /// <param name="requiredClearedDraft">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration</param>
         void Run(
             string workingPath, 
             string targetVersion = null, 
@@ -60,19 +61,31 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string environmentCode = null,
             NonTransactionalResolvingOption? resumeFromFailure = null,
-            string transactionMode = null
+            string transactionMode = null,
+            bool requiredClearedDraft = false
         );
 
         /// <summary>
-        /// Executes erase scripts presentin _erase directory and subdirectories.
+        /// 
         /// </summary>
-        /// <param name="workingPath">The directory path to migration project.</param>
-        /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
-        /// <param name="commandTimeout">Command timeout in seconds.</param>
-        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
-
+        /// <param name="targetVersion"></param>
+        /// <param name="schemaName"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
         bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="workingPath"></param>
+        /// <param name="tokenKeyPairs"></param>
+        /// <param name="bulkSeparator"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="environmentCode"></param>
+        /// <param name="transactionMode"></param>
+        /// <param name="requiredClearedDraftFolder"></param>
         void RunNonVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -81,9 +94,29 @@ namespace Yuniql.Core
             string bulkSeparator = null,
             int? commandTimeout = null,
             string environmentCode = null,
-            string transactionMode = null
+            string transactionMode = null,
+            bool requiredClearedDraftFolder = false
         );
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="dbVersions"></param>
+        /// <param name="workingPath"></param>
+        /// <param name="targetVersion"></param>
+        /// <param name="nonTransactionalContext"></param>
+        /// <param name="tokenKeyPairs"></param>
+        /// <param name="bulkSeparator"></param>
+        /// <param name="metaSchemaName"></param>
+        /// <param name="metaTableName"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="bulkBatchSize"></param>
+        /// <param name="appliedByTool"></param>
+        /// <param name="appliedByToolVersion"></param>
+        /// <param name="environmentCode"></param>
+        /// <param name="transactionMode"></param>
         void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -103,6 +136,17 @@ namespace Yuniql.Core
             string transactionMode = null
         );
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="workingPath"></param>
+        /// <param name="scriptDirectory"></param>
+        /// <param name="bulkSeparator"></param>
+        /// <param name="bulkBatchSize"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="environmentCode"></param>
         void RunBulkImport(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -114,6 +158,22 @@ namespace Yuniql.Core
             string environmentCode = null
         );
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="nonTransactionalContext"></param>
+        /// <param name="version"></param>
+        /// <param name="workingPath"></param>
+        /// <param name="scriptDirectory"></param>
+        /// <param name="metaSchemaName"></param>
+        /// <param name="metaTableName"></param>
+        /// <param name="tokenKeyPairs"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="environmentCode"></param>
+        /// <param name="appliedByTool"></param>
+        /// <param name="appliedByToolVersion"></param>
         void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -130,6 +190,13 @@ namespace Yuniql.Core
             string appliedByToolVersion = null
         );
 
+        /// <summary>
+        /// Executes erase scripts presentin _erase directory and subdirectories.
+        /// </summary>
+        /// <param name="workingPath">The directory path to migration project.</param>
+        /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
         void Erase(
             string workingPath,
             List<KeyValuePair<string, string>> tokens = null,
