@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.IO;
+using System.Text.Json;
 
 namespace Yuniql.Core
 {
@@ -69,6 +70,28 @@ namespace Yuniql.Core
             string transactionMode = null
          )
         {
+            //print run configuration information
+            var configuration = new
+            {
+                workingPath,
+                targetVersion,
+                autoCreateDatabase,
+                tokenKeyPairs,
+                verifyOnly,
+                bulkSeparator,
+                bulkBatchSize,
+                metaSchemaName,
+                metaTableName,
+                commandTimeout,
+                appliedByTool,
+                appliedByToolVersion,
+                environmentCode,
+                nonTransactionalResolvingOption,
+                transactionMode
+            };
+            var serializedConfiguration = JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true });
+            _traceService.Info($"Run configuration: {Environment.NewLine}{serializedConfiguration}");
+
             if (_dataService.IsTransactionalDdlSupported && nonTransactionalResolvingOption != null)
             {
                 throw new NotSupportedException(@$"The non-transactional failure resolving option ""{nonTransactionalResolvingOption}"" is not available for this platform.");
