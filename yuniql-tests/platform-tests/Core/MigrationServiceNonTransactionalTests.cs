@@ -213,7 +213,7 @@ namespace Yuniql.PlatformTests
             failedVersion.FailedScriptError.ShouldNotBeNullOrEmpty();
 
             //act & assert - where force to continue on failure
-            migrationService.Run(_testConfiguration.WorkspacePath, autoCreateDatabase: true, resumeFromFailure: NonTransactionalResolvingOption.ContinueAfterFailure);
+            migrationService.Run(_testConfiguration.WorkspacePath, autoCreateDatabase: true, continueAfterFailure: true);
 
             //verrity status of migrations
             var retriedVersions = _testDataService.GetAllDbVersions(_testConfiguration.ConnectionString);

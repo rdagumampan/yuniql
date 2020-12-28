@@ -52,6 +52,29 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
+        public override void Run(Configuration configuration)
+        {
+            Run(
+               workingPath: configuration.WorkspacePath,
+               targetVersion: configuration.TargetVersion,
+               autoCreateDatabase: configuration.AutoCreateDatabase,
+               tokenKeyPairs: configuration.Tokens,
+               verifyOnly: configuration.VerifyOnly,
+               bulkSeparator: configuration.BulkSeparator,
+               metaSchemaName: configuration.MetaSchemaName,
+               metaTableName: configuration.MetaTableName,
+               commandTimeout: configuration.CommandTimeout,
+               bulkBatchSize: configuration.BulkBatchSize,
+               appliedByTool: configuration.AppliedByTool,
+               appliedByToolVersion: configuration.AppliedByToolVersion,
+               environmentCode: configuration.Environment,
+               continueAfterFailure: configuration.ContinueAfterFailure,
+               transactionMode: configuration.TransactionMode,
+               requiredClearedDraft: configuration.RequiredClearedDraft
+            );
+        }
+
+        /// <inheritdoc />
         public override void Run(
             string workingPath,
             string targetVersion = null,
@@ -66,7 +89,7 @@ namespace Yuniql.Core
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null,
-            NonTransactionalResolvingOption? resumeFromFailure = null,
+            bool? continueAfterFailure = null,
             string transactionMode = null,
             bool requiredClearedDraft = false
          )
@@ -87,7 +110,7 @@ namespace Yuniql.Core
                 appliedByTool,
                 appliedByToolVersion,
                 environmentCode,
-                resumeFromFailure,
+                continueAfterFailure,
                 transactionMode,
                 requiredClearedDraft
             };

@@ -195,7 +195,7 @@ namespace Yuniql.PlatformTests
             {
                 var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
                 migrationService.Initialize(_testConfiguration.ConnectionString);
-                migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+                migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true, transactionMode: TRANSACTION_MODE.SESSION);
             }
             catch (Exception ex)
             {

@@ -139,7 +139,7 @@ namespace Yuniql.CLI
                     appliedByTool: toolName,
                     appliedByToolVersion: toolVersion,
                     environmentCode: opts.Environment,
-                    resumeFromFailure: opts.ContinueAfterFailure ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?)null,
+                    continueAfterFailure: opts.ContinueAfterFailure,
                     transactionMode: opts.TransactionMode,
                     requiredClearedDraft: opts.RequiredClearedDraft
                     );

@@ -4,10 +4,10 @@ namespace Yuniql.Core
 {
     public class NonTransactionalContext
     {
-        public NonTransactionalContext(DbVersion failedDbVersion, NonTransactionalResolvingOption resolvingOption)
+        public NonTransactionalContext(DbVersion failedDbVersion, bool continueAfterFailure)
         {
             this.FailedScriptPath = failedDbVersion.FailedScriptPath;
-            this.ResolvingOption = resolvingOption;
+            this.ContinueAfterFailure = continueAfterFailure;
         }
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace Yuniql.Core
         /// <summary>
         /// Gets the resolution option.
         /// </summary>
-        public NonTransactionalResolvingOption ResolvingOption { get; }
+        public bool? ContinueAfterFailure { get; }
 
         /// <summary>
         /// Gets a value indicating whether failed script path is matched.

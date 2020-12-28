@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Yuniql.Extensibility
 {
+    //TODO: Rename INonTransactional
     /// <summary>
     /// Support for non-transactional flow (when version scripts are not executed in transaction)
     /// </summary>

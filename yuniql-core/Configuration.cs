@@ -105,6 +105,11 @@ namespace Yuniql.Core
         /// When none, no explicit transaction is created for migration run.
         /// </summary>
         public string TransactionMode { get; set; } = TRANSACTION_MODE.SESSION;
+
+        /// <summary>
+        /// When true, migration will fail if the _draft directory is not empty. This option ideal when targeting staging/production environment.
+        /// </summary>
+        public bool RequiredClearedDraft { get; set; } = false;
     }
 
 }

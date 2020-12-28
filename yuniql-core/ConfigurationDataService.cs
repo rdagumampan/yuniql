@@ -8,6 +8,7 @@ using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
+    //TODO: Rename into MetaDataService
     /// <summary>
     /// Service responsible for accessing target database configuration and executing sql statement batches.
     /// This facility is used by MigrationService and must be not be used directly. See <see cref="MigrationServiceTransactional"./>

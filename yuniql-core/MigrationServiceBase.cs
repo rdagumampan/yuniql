@@ -63,6 +63,8 @@ namespace Yuniql.Core
             return _configurationDataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
         }
 
+        public abstract void Run(Configuration configuration);
+
         /// <inheritdoc />
         public abstract void Run(
             string workingPath,
@@ -78,7 +80,7 @@ namespace Yuniql.Core
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null,
-            NonTransactionalResolvingOption? nonTransactionalResolvingOption = null,
+            bool? continueAfterFailure = null,
             string transactionMode = null,
             bool requiredClearedDraftFolder = false
          );

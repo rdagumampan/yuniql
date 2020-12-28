@@ -52,6 +52,29 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
+        public override void Run(Configuration configuration)
+        {
+            Run(
+               workingPath: configuration.WorkspacePath,
+               targetVersion: configuration.TargetVersion,
+               autoCreateDatabase: configuration.AutoCreateDatabase,
+               tokenKeyPairs: configuration.Tokens,
+               verifyOnly: configuration.VerifyOnly,
+               bulkSeparator: configuration.BulkSeparator,
+               metaSchemaName: configuration.MetaSchemaName,
+               metaTableName: configuration.MetaTableName,
+               commandTimeout: configuration.CommandTimeout,
+               bulkBatchSize: configuration.BulkBatchSize,
+               appliedByTool: configuration.AppliedByTool,
+               appliedByToolVersion: configuration.AppliedByToolVersion,
+               environmentCode: configuration.Environment,
+               continueAfterFailure: configuration.ContinueAfterFailure,
+               transactionMode: configuration.TransactionMode,
+               requiredClearedDraft: configuration.RequiredClearedDraft
+            );
+        }
+
+        /// <inheritdoc />
         public override void Run(
             string workingPath,
             string targetVersion = null,
@@ -66,7 +89,7 @@ namespace Yuniql.Core
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null,
-            NonTransactionalResolvingOption? resumeFromFailure = null,
+            bool? continueAfterFailure = null,
             string transactionMode = null,
             bool requiredClearedDraft = false
          )
@@ -87,16 +110,16 @@ namespace Yuniql.Core
                 appliedByTool,
                 appliedByToolVersion,
                 environmentCode,
-                resumeFromFailure,
+                continueAfterFailure,
                 transactionMode,
                 requiredClearedDraft
             };
             var serializedConfiguration = JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true });
             _traceService.Info($"Run configuration: {Environment.NewLine}{serializedConfiguration}");
 
-            if (_dataService.IsTransactionalDdlSupported && resumeFromFailure != null)
+            if (_dataService.IsTransactionalDdlSupported && continueAfterFailure != null)
             {
-                throw new NotSupportedException(@$"The non-transactional failure resolving option ""{resumeFromFailure}"" is not available for this platform.");
+                throw new NotSupportedException(@$"The non-transactional failure resolving option ""{continueAfterFailure}"" is not available for this platform.");
             }
 
             //check the workspace structure if required directories are present
@@ -168,7 +191,7 @@ namespace Yuniql.Core
             if (failedVersion != null)
             {
                 //check if user had issue resolving option such as continue on failure
-                if (resumeFromFailure == null)
+                if (continueAfterFailure == null)
                 {
                     //program should exit with non zero exit code
                     var message = @$"Previous migration of ""{failedVersion.Version}"" version was not running in transaction and has failed when executing of script ""{failedVersion.FailedScriptPath}"" with following error: {failedVersion.FailedScriptError} {MESSAGES.ManualResolvingAfterFailureMessage}";
@@ -176,16 +199,16 @@ namespace Yuniql.Core
                     throw new InvalidOperationException(message);
                 }
 
-                _traceService.Info($@"The non-transactional failure resolving option ""{resumeFromFailure}"" was used. Version scripts already applied by previous migration run will be skipped.");
-                nonTransactionalContext = new NonTransactionalContext(failedVersion, resumeFromFailure.Value);
+                _traceService.Info($@"The non-transactional failure resolving option ""{continueAfterFailure}"" was used. Version scripts already applied by previous migration run will be skipped.");
+                nonTransactionalContext = new NonTransactionalContext(failedVersion, continueAfterFailure.Value);
             }
             else
             {
                 //check if the non-txn option is passed even if there was no previous failed runs
-                if (resumeFromFailure != null)
+                if (continueAfterFailure != null)
                 {
                     //program should exit with non zero exit code
-                    _traceService.Error(@$"The non-transactional failure resolving option ""{resumeFromFailure}"" is available only if previous migration run has failed.");
+                    _traceService.Error(@$"The non-transactional failure resolving option ""{continueAfterFailure}"" is available only if previous migration run has failed.");
                     throw new InvalidOperationException();
                 }
             }
@@ -444,8 +467,7 @@ namespace Yuniql.Core
                     currentScriptFile = scriptFile;
 
                     //in case the non-transactional failure is resolved, skip scripts
-                    if (nonTransactionalContext?.ResolvingOption == NonTransactionalResolvingOption.ContinueAfterFailure
-                        && !nonTransactionalContext.IsFailedScriptPathMatched)
+                    if (nonTransactionalContext.ContinueAfterFailure.Value && !nonTransactionalContext.IsFailedScriptPathMatched)
                     {
                         //set failed script file as matched
                         if (string.Equals(scriptFile, nonTransactionalContext.FailedScriptPath, StringComparison.InvariantCultureIgnoreCase))

@@ -26,6 +26,8 @@ namespace Yuniql.Core
         /// </summary>
         List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null);
 
+        void Run(Configuration configuration);
+
         /// <summary>
         /// Runs migrations by executing alls scripts in the workspace directory. 
         /// When CSV files are present also run bulk import operations to target database table having same file name.
@@ -43,7 +45,7 @@ namespace Yuniql.Core
         /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
-        /// <param name="resumeFromFailure">The resume from failure.</param>
+        /// <param name="continueAfterFailure">The resume from failure.</param>
         /// <param name="transactionMode"></param>
         /// <param name="requiredClearedDraft">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration</param>
         void Run(
@@ -60,7 +62,7 @@ namespace Yuniql.Core
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null,
-            NonTransactionalResolvingOption? resumeFromFailure = null,
+            bool? continueAfterFailure = null,
             string transactionMode = null,
             bool requiredClearedDraft = false
         );
