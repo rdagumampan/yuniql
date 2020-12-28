@@ -120,29 +120,29 @@ namespace Yuniql.CLI
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var toolName = "yuniql-cli";
-                var toolVersion = this.GetType().Assembly.GetName().Version.ToString();
+                var configuration = new Configuration
+                {
+                    WorkspacePath = opts.Path,
+                    TargetVersion = opts.TargetVersion,
+                    AutoCreateDatabase= opts.AutoCreateDatabase,
+                    Tokens = tokens,
+                    VerifyOnly= false,
+                    BulkSeparator = opts.BulkSeparator,
+                    BulkBatchSize = opts.BulkBatchSize,
+                    MetaSchemaName = opts.MetaSchema,
+                    MetaTableName = opts.MetaTable,
+                    CommandTimeout = opts.CommandTimeout,
+                    Environment = opts.Environment,
+                    ContinueAfterFailure =  opts.ContinueAfterFailure,
+                    TransactionMode = opts.TransactionMode,
+                    RequiredClearedDraft =  opts.RequiredClearedDraft,
+                    AppliedByTool = "yuniql-cli",
+                    AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
+                };
 
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                migrationService.Run(
-                    opts.Path,
-                    opts.TargetVersion,
-                    autoCreateDatabase: opts.AutoCreateDatabase,
-                    tokens: tokens,
-                    verifyOnly: false,
-                    bulkSeparator: opts.BulkSeparator,
-                    metaSchemaName: opts.MetaSchema,
-                    metaTableName: opts.MetaTable,
-                    commandTimeout: opts.CommandTimeout,
-                    bulkBatchSize: opts.BulkBatchSize,
-                    appliedByTool: toolName,
-                    appliedByToolVersion: toolVersion,
-                    environmentCode: opts.Environment,
-                    continueAfterFailure: opts.ContinueAfterFailure,
-                    transactionMode: opts.TransactionMode,
-                    requiredClearedDraft: opts.RequiredClearedDraft
-                    );
+                migrationService.Run(configuration);
 
                 _traceService.Success($"Schema migration completed successfuly on {opts.Path}.");
                 return 0;
@@ -192,28 +192,27 @@ namespace Yuniql.CLI
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 //run the migration
-                var toolName = "yuniql-cli";
-                var toolVersion = this.GetType().Assembly.GetName().Version.ToString();
+                var configuration = new Configuration
+                {
+                    WorkspacePath = opts.Path,
+                    TargetVersion = opts.TargetVersion,
+                    AutoCreateDatabase = opts.AutoCreateDatabase,
+                    Tokens = tokens,
+                    VerifyOnly = true,
+                    BulkSeparator = opts.BulkSeparator,
+                    BulkBatchSize = opts.BulkBatchSize,
+                    MetaSchemaName = opts.MetaSchema,
+                    MetaTableName = opts.MetaTable,
+                    CommandTimeout = opts.CommandTimeout,
+                    Environment = opts.Environment,
+                    TransactionMode = opts.TransactionMode,
+                    AppliedByTool = "yuniql-cli",
+                    AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
+                };
 
-                //run the migration
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                migrationService.Run(
-                    opts.Path,
-                    opts.TargetVersion,
-                    autoCreateDatabase: false,
-                    tokens: tokens,
-                    verifyOnly: true,
-                    bulkSeparator: opts.BulkSeparator,
-                    metaSchemaName: opts.MetaSchema,
-                    metaTableName: opts.MetaTable,
-                    commandTimeout: opts.CommandTimeout,
-                    bulkBatchSize: opts.BulkBatchSize,
-                    appliedByTool: toolName,
-                    appliedByToolVersion: toolVersion,
-                    environmentCode: opts.Environment,
-                    null
-                    );
+                migrationService.Run(configuration);
 
                 _traceService.Success($"Schema migration verification completed successfuly on {opts.Path}.");
                 return 0;
@@ -307,44 +306,6 @@ namespace Yuniql.CLI
                 return OnException(ex, "Failed to execute erase function", opts.Debug, _traceService);
             }
         }
-
-        public int RunBaselineOption(BaselineOption opts)
-        {
-            try
-            {
-                throw new NotImplementedException("Not yet implemented, stay tune!");
-            }
-            catch (Exception ex)
-            {
-                return OnException(ex, "Failed to execute baseline function", opts.Debug, _traceService);
-
-            }
-        }
-
-        public int RunRebaseOption(RebaseOption opts)
-        {
-            try
-            {
-                throw new NotImplementedException("Not yet implemented, stay tune!");
-            }
-            catch (Exception ex)
-            {
-                return OnException(ex, "Failed to execute rebase function", opts.Debug, _traceService);
-
-            }
-        }
-
-        public int RunArchiveOption(ArchiveOption opts)
-        {
-            try
-            {
-                throw new NotImplementedException("Not yet implemented, stay tune!");
-            }
-            catch (Exception ex)
-            {
-                return OnException(ex, "Failed to archive function", opts.Debug, _traceService);
-            }
-        }
         
         public int RunPlatformsOption(PlatformsOption opts)
         {
@@ -388,6 +349,44 @@ namespace Yuniql.CLI
                 $"Internal error message: {userMessage}.{Environment.NewLine}" +
                 $"If you think this is a bug, please report an issue here https://github.com/rdagumampan/yuniql/issues.");
             return 1;
+        }
+
+        public int RunBaselineOption(BaselineOption opts)
+        {
+            try
+            {
+                throw new NotImplementedException("Not yet implemented, stay tune!");
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute baseline function", opts.Debug, _traceService);
+
+            }
+        }
+
+        public int RunRebaseOption(RebaseOption opts)
+        {
+            try
+            {
+                throw new NotImplementedException("Not yet implemented, stay tune!");
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute rebase function", opts.Debug, _traceService);
+
+            }
+        }
+
+        public int RunArchiveOption(ArchiveOption opts)
+        {
+            try
+            {
+                throw new NotImplementedException("Not yet implemented, stay tune!");
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to archive function", opts.Debug, _traceService);
+            }
         }
     }
 }
