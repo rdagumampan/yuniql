@@ -39,7 +39,7 @@ namespace Yuniql.CLI
         public string MetaTable { get; set; }
 
         //yuniql <command> --transaction-mode "full" | "partial" | "none" 
-        [Option("transaction-mode", Required = false, HelpText = "Transaction mode to use in the migration.", Default = "full")]
+        [Option("transaction-mode", Required = false, HelpText = "Transaction mode to use in the migration.", Default = "session")]
         public string TransactionMode { get; set; }
     }
 }
