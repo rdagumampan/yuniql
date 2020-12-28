@@ -18,14 +18,14 @@ namespace Yuniql.Core
         private readonly IDirectoryService _directoryService;
         private readonly IFileService _fileService;
         private readonly ITraceService _traceService;
-        private readonly IConfigurationDataService _configurationDataService;
+        private readonly IMetadataService _metadataService;
 
         ///<inheritdoc/>
         public MigrationServiceNonTransactional(
             ILocalVersionService localVersionService,
             IDataService dataService,
             IBulkImportService bulkImportService,
-            IConfigurationDataService configurationDataService,
+            IMetadataService metadataService,
             ITokenReplacementService tokenReplacementService,
             IDirectoryService directoryService,
             IFileService fileService,
@@ -34,7 +34,7 @@ namespace Yuniql.Core
                 localVersionService,
                 dataService,
                 bulkImportService,
-                configurationDataService,
+                metadataService,
                 tokenReplacementService,
                 directoryService,
                 fileService,
@@ -48,7 +48,7 @@ namespace Yuniql.Core
             this._directoryService = directoryService;
             this._fileService = fileService;
             this._traceService = traceService;
-            this._configurationDataService = configurationDataService;
+            this._metadataService = metadataService;
         }
 
         /// <inheritdoc />
@@ -150,34 +150,34 @@ namespace Yuniql.Core
             //we only check if the db exists when --auto-create-db is true
             if (autoCreateDatabase.HasValue && autoCreateDatabase == true)
             {
-                var targetDatabaseExists = _configurationDataService.IsDatabaseExists();
+                var targetDatabaseExists = _metadataService.IsDatabaseExists();
                 if (!targetDatabaseExists)
                 {
                     _traceService.Info($"Target database does not exist. Creating database {targetDatabaseName} on {targetDatabaseServer}.");
-                    _configurationDataService.CreateDatabase();
+                    _metadataService.CreateDatabase();
                     _traceService.Info($"Created database {targetDatabaseName} on {targetDatabaseServer}.");
                 }
             }
 
             //check if database has been pre-configured to support migration and setup when its not
-            var targetDatabaseConfigured = _configurationDataService.IsDatabaseConfigured(metaSchemaName, metaTableName);
+            var targetDatabaseConfigured = _metadataService.IsDatabaseConfigured(metaSchemaName, metaTableName);
             if (!targetDatabaseConfigured)
             {
                 //create custom schema when user supplied and only if platform supports it
                 if (_dataService.IsSchemaSupported && null != metaSchemaName && !_dataService.SchemaName.Equals(metaSchemaName))
                 {
                     _traceService.Info($"Target schema does not exist. Creating schema {metaSchemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
-                    _configurationDataService.CreateSchema(metaSchemaName);
+                    _metadataService.CreateSchema(metaSchemaName);
                     _traceService.Info($"Created schema {metaSchemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
                 }
 
                 //create empty versions tracking table
                 _traceService.Info($"Target database {targetDatabaseName} on {targetDatabaseServer} not yet configured for migration.");
-                _configurationDataService.ConfigureDatabase(metaSchemaName, metaTableName);
+                _metadataService.ConfigureDatabase(metaSchemaName, metaTableName);
                 _traceService.Info($"Configured database migration support for {targetDatabaseName} on {targetDatabaseServer}.");
             }
 
-            var targetDatabaseUpdated = _configurationDataService.UpdateDatabaseConfiguration(metaSchemaName, metaTableName);
+            var targetDatabaseUpdated = _metadataService.UpdateDatabaseConfiguration(metaSchemaName, metaTableName);
             if (targetDatabaseUpdated)
                 _traceService.Info($"The configuration of migration has been updated for {targetDatabaseName} on {targetDatabaseServer}.");
             else
@@ -186,7 +186,7 @@ namespace Yuniql.Core
             NonTransactionalContext nonTransactionalContext = null;
 
             //check for presence of failed no-transactional versions from previous runs
-            var allVersions = _configurationDataService.GetAllVersions(metaSchemaName, metaTableName);
+            var allVersions = _metadataService.GetAllVersions(metaSchemaName, metaTableName);
             var failedVersion = allVersions.Where(x => x.Status == Status.Failed).FirstOrDefault();
             if (failedVersion != null)
             {
@@ -213,7 +213,7 @@ namespace Yuniql.Core
                 }
             }
 
-            var appliedVersions = _configurationDataService.GetAllAppliedVersions(metaSchemaName, metaTableName)
+            var appliedVersions = _metadataService.GetAllAppliedVersions(metaSchemaName, metaTableName)
                 .Select(dv => dv.Version)
                 .OrderBy(v => v)
                 .ToList();
@@ -416,7 +416,7 @@ namespace Yuniql.Core
                     RunBulkImport(connection, transaction, workingPath, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environmentCode);
 
                     //update db version
-                    _configurationDataService.InsertVersion(connection, transaction, versionName,
+                    _metadataService.InsertVersion(connection, transaction, versionName,
                         metaSchemaName: schemaName,
                         metaTableName: tableName,
                         commandTimeout: commandTimeout,
@@ -488,7 +488,7 @@ namespace Yuniql.Core
                             sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
                             _traceService.Debug($"Executing sql statement as part of : {scriptFile}");
 
-                            _configurationDataService.ExecuteSql(
+                            _metadataService.ExecuteSql(
                                 connection: connection,
                                 commandText: sqlStatement,
                                 transaction: transaction,
@@ -512,7 +512,7 @@ namespace Yuniql.Core
                 //in case scripts are not executed within transaction, mark version as failed in database
                 if (transaction == null)
                 {
-                    _configurationDataService.InsertVersion(connection, transaction, version,
+                    _metadataService.InsertVersion(connection, transaction, version,
                         metaSchemaName: metaSchemaName,
                         metaTableName: metaTableName,
                         commandTimeout: commandTimeout,

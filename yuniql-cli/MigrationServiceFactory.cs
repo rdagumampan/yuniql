@@ -66,13 +66,13 @@ namespace Yuniql.CLI
             var directoryService = new DirectoryService();
             var fileService = new FileService();
 
-            var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
+            var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
 
             var migrationService = new MigrationServiceTransactional(
                 localVersionService,
                 dataService,
                 bulkImportService,
-                configurationService,
+                metadataService,
                 tokenReplacementService,
                 directoryService,
                 fileService,
@@ -87,13 +87,13 @@ namespace Yuniql.CLI
             var directoryService = new DirectoryService();
             var fileService = new FileService();
 
-            var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
+            var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
 
             var migrationService = new MigrationServiceNonTransactional(
                 localVersionService,
                 dataService,
                 bulkImportService,
-                configurationService,
+                metadataService,
                 tokenReplacementService,
                 directoryService,
                 fileService,

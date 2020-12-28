@@ -17,14 +17,14 @@ namespace Yuniql.Core
         private readonly IDirectoryService _directoryService;
         private readonly IFileService _fileService;
         private readonly ITraceService _traceService;
-        private readonly IConfigurationDataService _configurationDataService;
+        private readonly IMetadataService _metadataService;
 
         ///<inheritdoc/>
         public MigrationServiceBase(
             ILocalVersionService localVersionService,
             IDataService dataService,
             IBulkImportService bulkImportService,
-            IConfigurationDataService configurationDataService,
+            IMetadataService metadataService,
             ITokenReplacementService tokenReplacementService,
             IDirectoryService directoryService,
             IFileService fileService,
@@ -37,7 +37,7 @@ namespace Yuniql.Core
             this._directoryService = directoryService;
             this._fileService = fileService;
             this._traceService = traceService;
-            this._configurationDataService = configurationDataService;
+            this._metadataService = metadataService;
         }
 
         /// <inheritdoc />
@@ -53,14 +53,14 @@ namespace Yuniql.Core
         /// <inheritdoc />
         public virtual string GetCurrentVersion(string metaSchemaName = null, string metaTableName = null)
         {
-            return _configurationDataService.GetCurrentVersion(metaSchemaName, metaTableName);
+            return _metadataService.GetCurrentVersion(metaSchemaName, metaTableName);
         }
 
         /// <inheritdoc />
         //TODO: Move this to MigrationServiceBase
         public virtual List<DbVersion> GetAllVersions(string metaSchemaName = null, string metaTableName = null)
         {
-            return _configurationDataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
+            return _metadataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
         }
 
         public abstract void Run(Configuration configuration);
@@ -89,7 +89,7 @@ namespace Yuniql.Core
         public virtual bool IsTargetDatabaseLatest(string targetVersion, string metaSchemaName = null, string metaTableName = null)
         {
             //get the current version stored in database
-            var remoteCurrentVersion = _configurationDataService.GetCurrentVersion(metaSchemaName, metaTableName);
+            var remoteCurrentVersion = _metadataService.GetCurrentVersion(metaSchemaName, metaTableName);
             if (string.IsNullOrEmpty(remoteCurrentVersion)) return false;
 
             //compare version applied in db vs versions available locally
@@ -172,7 +172,7 @@ namespace Yuniql.Core
                             sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
                             _traceService.Debug($"Executing sql statement as part of : {scriptFile}");
 
-                            _configurationDataService.ExecuteSql(
+                            _metadataService.ExecuteSql(
                                 connection: connection,
                                 commandText: sqlStatement,
                                 transaction: transaction,

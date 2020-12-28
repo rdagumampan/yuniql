@@ -4,11 +4,10 @@ using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
-    //TODO: Rename into IMetaDataService
     /// <summary>
     /// Interface for implementing service responsible for accessing target database configuration and executing sql statement batches.
     /// </summary>
-    public interface IConfigurationDataService
+    public interface IMetadataService
     {
         /// <summary>
         /// Returns true when database already exists in the target host.

@@ -39,13 +39,13 @@ namespace Yuniql.Core
             var directoryService = new DirectoryService();
             var fileService = new FileService();
 
-            var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
+            var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
 
             var migrationService = new MigrationServiceTransactional(
                 localVersionService,
                 dataService,
                 bulkImportService,
-                configurationService,
+                metadataService,
                 tokenReplacementService,
                 directoryService,
                 fileService,
