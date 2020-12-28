@@ -51,7 +51,7 @@ namespace Yuniql.CLI
             }
         }
 
-        public int IncrementVersion(NextVersionOption opts)
+        public int RunNextVersionOption(NextVersionOption opts)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace Yuniql.CLI
             }
         }
 
-        public int RunMigration(RunOption opts)
+        public int RunRunOption(RunOption opts)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace Yuniql.CLI
             }
         }
 
-        public int RunVerify(VerifyOption opts)
+        public int RunVerifyOption(VerifyOption opts)
         {
             try
             {

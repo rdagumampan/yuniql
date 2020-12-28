@@ -71,7 +71,7 @@ namespace Yuniql.UnitTests
             //act
             var option = new NextVersionOption { IncrementMajorVersion = true };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.IncrementVersion(option);
+            sut.RunNextVersionOption(option);
 
             //assert
             localVersionService.Verify(s => s.IncrementMajorVersion(@"c:\temp\yuniql", null));
@@ -91,7 +91,7 @@ namespace Yuniql.UnitTests
             //act
             var option = new NextVersionOption { IncrementMajorVersion = true, Path = @"c:\temp\yuniql-ex" };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.IncrementVersion(option);
+            sut.RunNextVersionOption(option);
 
             //assert
             localVersionService.Verify(s => s.IncrementMajorVersion(@"c:\temp\yuniql-ex", null));
@@ -112,7 +112,7 @@ namespace Yuniql.UnitTests
             //act
             var option = new NextVersionOption { IncrementMinorVersion = true };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.IncrementVersion(option);
+            sut.RunNextVersionOption(option);
 
             //assert
             localVersionService.Verify(s => s.IncrementMinorVersion(@"c:\temp\yuniql", null));
@@ -133,7 +133,7 @@ namespace Yuniql.UnitTests
             //act
             var option = new NextVersionOption { };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.IncrementVersion(option);
+            sut.RunNextVersionOption(option);
 
             //assert
             localVersionService.Verify(s => s.IncrementMinorVersion(@"c:\temp\yuniql", null));
@@ -289,7 +289,7 @@ namespace Yuniql.UnitTests
             //act
             var option = new VerifyOption { };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.RunVerify(option);
+            sut.RunVerifyOption(option);
 
             //assert
             var toolName = "yuniql-cli";
@@ -318,7 +318,7 @@ namespace Yuniql.UnitTests
             //act
             var option = new VerifyOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.RunVerify(option);
+            sut.RunVerifyOption(option);
 
             //assert
             var toolName = "yuniql-cli";
@@ -353,7 +353,7 @@ namespace Yuniql.UnitTests
             //act
             var option = new RunOption { };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.RunMigration(option);
+            sut.RunRunOption(option);
 
             //assert
             var toolName = "yuniql-cli";
@@ -382,7 +382,7 @@ namespace Yuniql.UnitTests
             //act
             var option = new RunOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
-            sut.RunMigration(option);
+            sut.RunRunOption(option);
 
             //assert
             var toolName = "yuniql-cli";
@@ -416,7 +416,7 @@ namespace Yuniql.UnitTests
             var option = new RunOption { Debug = isDebug };
             var sut = new CommandLineService(null, null, environmentService.Object, traceService.Object);
 
-            var returnCode = sut.RunMigration(option);
+            var returnCode = sut.RunRunOption(option);
 
             //assert
             if (isDebug)

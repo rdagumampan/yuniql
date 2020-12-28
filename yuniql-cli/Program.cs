@@ -26,10 +26,10 @@ namespace Yuniql
             var resultCode = Parser.Default
                 .ParseArguments<InitOption, RunOption, ListOption, NextVersionOption, VerifyOption, EraseOption, BaselineOption, RebaseOption, PlatformsOption>(args)
                 .MapResult((InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
-                           (RunOption opts) => Dispatch(commandLineService.RunMigration, opts, traceService),
-                           (NextVersionOption opts) => Dispatch(commandLineService.IncrementVersion, opts, traceService),
+                           (RunOption opts) => Dispatch(commandLineService.RunRunOption, opts, traceService),
+                           (NextVersionOption opts) => Dispatch(commandLineService.RunNextVersionOption, opts, traceService),
                            (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),
-                           (VerifyOption opts) => Dispatch(commandLineService.RunVerify, opts, traceService),
+                           (VerifyOption opts) => Dispatch(commandLineService.RunVerifyOption, opts, traceService),
                            (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
                            (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
                            (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
