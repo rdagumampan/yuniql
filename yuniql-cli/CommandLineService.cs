@@ -13,16 +13,19 @@ namespace Yuniql.CLI
         private readonly ILocalVersionService _localVersionService;
         private readonly IEnvironmentService _environmentService;
         private ITraceService _traceService;
+        private readonly IConfigurationService _configurationService;
 
         public CommandLineService(
             IMigrationServiceFactory migrationServiceFactory,
             ILocalVersionService localVersionService,
             IEnvironmentService environmentService,
-            ITraceService traceService)
+            ITraceService traceService,
+            IConfigurationService configurationService)
         {
             this._localVersionService = localVersionService;
             this._environmentService = environmentService;
             this._traceService = traceService;
+            this._configurationService = configurationService;
             this._migrationServiceFactory = migrationServiceFactory;
         }
 
@@ -33,16 +36,15 @@ namespace Yuniql.CLI
                 //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
-                    var workingPath = _environmentService.GetCurrentDirectory();
-                    _localVersionService.Init(workingPath);
-                    _traceService.Info($"Initialized {workingPath}.");
-                }
-                else
-                {
-                    _localVersionService.Init(opts.Path);
-                    _traceService.Success($"Initialized {opts.Path}.");
+                    opts.Path = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE);
+                    if (string.IsNullOrEmpty(opts.Path))
+                    {
+                        opts.Path = _environmentService.GetCurrentDirectory();
+                    }
                 }
 
+                _localVersionService.Init(opts.Path);
+                _traceService.Success($"Initialized {opts.Path}.");
                 return 0;
             }
             catch (Exception ex)
@@ -58,8 +60,11 @@ namespace Yuniql.CLI
                 //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
-                    var workingPath = _environmentService.GetCurrentDirectory();
-                    opts.Path = workingPath;
+                    opts.Path = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE);
+                    if (string.IsNullOrEmpty(opts.Path))
+                    {
+                        opts.Path = _environmentService.GetCurrentDirectory();
+                    }
                 }
 
                 if (opts.IncrementMajorVersion)
@@ -85,41 +90,8 @@ namespace Yuniql.CLI
         {
             try
             {
-                //if no path provided, we default into current directory
-                if (string.IsNullOrEmpty(opts.Path))
-                {
-                    var workingPath = _environmentService.GetCurrentDirectory();
-                    opts.Path = workingPath;
-                }
-                _traceService.Info($"Started migration from {opts.Path}.");
-
-                //if no target platform provided, we default into sqlserver
-                if (string.IsNullOrEmpty(opts.Platform))
-                {
-                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
-                    if (string.IsNullOrEmpty(opts.Platform))
-                    {
-                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
-                    }
-                }
-
-                //if no connection string provided, we default into environment variable or throw exception
-                if (string.IsNullOrEmpty(opts.ConnectionString))
-                {
-                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
-                }
-
-                //if no target version specified, we capture the latest from local folder structure
-                if (string.IsNullOrEmpty(opts.TargetVersion))
-                {
-                    opts.TargetVersion = _localVersionService.GetLatestVersion(opts.Path);
-                    _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
-                }
-
-                //parse tokens
+                //prepare session configuration and validate
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
-
-                //run the migration
                 var configuration = new Configuration
                 {
                     WorkspacePath = opts.Path,
@@ -139,7 +111,9 @@ namespace Yuniql.CLI
                     AppliedByTool = "yuniql-cli",
                     AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
                 };
+                _configurationService.AssignDefaults(configuration);
 
+                //run the migration
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
                 migrationService.Run(configuration);
@@ -157,41 +131,8 @@ namespace Yuniql.CLI
         {
             try
             {
-                //if no path provided, we default into current directory
-                if (string.IsNullOrEmpty(opts.Path))
-                {
-                    var workingPath = _environmentService.GetCurrentDirectory();
-                    opts.Path = workingPath;
-                }
-                _traceService.Info($"Started verifcation from {opts.Path}.");
-
-                //if no target platform provided, we default into sqlserver
-                if (string.IsNullOrEmpty(opts.Platform))
-                {
-                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
-                    if (string.IsNullOrEmpty(opts.Platform))
-                    {
-                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
-                    }
-                }
-
-                //if no connection string provided, we default into environment variable or throw exception
-                if (string.IsNullOrEmpty(opts.ConnectionString))
-                {
-                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
-                }
-
-                //if no target version specified, we capture the latest from local folder structure
-                if (string.IsNullOrEmpty(opts.TargetVersion))
-                {
-                    opts.TargetVersion = _localVersionService.GetLatestVersion(opts.Path);
-                    _traceService.Info($"No explicit target version requested. We'll use latest available locally {opts.TargetVersion} on {opts.Path}.");
-                }
-
-                //parse tokens
+                //prepare session configuration and validate
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
-
-                //run the migration
                 var configuration = new Configuration
                 {
                     WorkspacePath = opts.Path,
@@ -209,6 +150,7 @@ namespace Yuniql.CLI
                     AppliedByTool = "yuniql-cli",
                     AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
                 };
+                _configurationService.AssignDefaults(configuration);
 
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
                 migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
@@ -270,14 +212,11 @@ namespace Yuniql.CLI
                 //if no path provided, we default into current directory
                 if (string.IsNullOrEmpty(opts.Path))
                 {
-                    var workingPath = _environmentService.GetCurrentDirectory();
-                    opts.Path = workingPath;
-                }
-
-                //if no connection string provided, we default into environment variable or throw exception
-                if (string.IsNullOrEmpty(opts.ConnectionString))
-                {
-                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
+                    opts.Path = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE);
+                    if (string.IsNullOrEmpty(opts.Path))
+                    {
+                        opts.Path = _environmentService.GetCurrentDirectory();
+                    }
                 }
 
                 //if no target platform provided, we default into sqlserver
@@ -288,6 +227,12 @@ namespace Yuniql.CLI
                     {
                         opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
                     }
+                }
+
+                //if no connection string provided, we default into environment variable or throw exception
+                if (string.IsNullOrEmpty(opts.ConnectionString))
+                {
+                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
                 }
 
                 //parse tokens

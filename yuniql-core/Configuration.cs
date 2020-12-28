@@ -1,7 +1,84 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
+    public interface IConfigurationService
+    {
+        void AssignDefaults(Configuration configuration);
+
+        void Validate(Configuration configuration);
+
+        string Print(Configuration configuration);
+    }
+
+    public class ConfigurationService : IConfigurationService
+    {
+        private readonly IEnvironmentService _environmentService;
+        private readonly ILocalVersionService _localVersionService;
+        private readonly ITraceService _traceService;
+
+        public ConfigurationService(
+            IEnvironmentService environmentService,
+            ILocalVersionService localVersionService,
+            ITraceService traceService)
+        {
+            this._environmentService = environmentService;
+            this._localVersionService = localVersionService;
+            this._traceService = traceService;
+        }
+
+        public void AssignDefaults(Configuration configuration) {
+
+            //if no path provided, we default into environment variable
+            if (string.IsNullOrEmpty(configuration.WorkspacePath))
+            {
+                configuration.WorkspacePath = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE);
+
+                //if no path provided, we default into current directory
+                if (string.IsNullOrEmpty(configuration.WorkspacePath))
+                {
+                    configuration.WorkspacePath = _environmentService.GetCurrentDirectory();
+                }
+            }
+            _traceService.Info($"Started migration from {configuration.WorkspacePath}.");
+
+            //if no target platform provided, we default into sqlserver
+            if (string.IsNullOrEmpty(configuration.Platform))
+            {
+                configuration.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
+                if (string.IsNullOrEmpty(configuration.Platform))
+                {
+                    configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
+                }
+            }
+
+            //if no connection string provided, we default into environment variable or throw exception
+            if (string.IsNullOrEmpty(configuration.ConnectionString))
+            {
+                configuration.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
+            }
+
+            //if no target version specified, we capture the latest from local folder structure
+            if (string.IsNullOrEmpty(configuration.TargetVersion))
+            {
+                configuration.TargetVersion = _localVersionService.GetLatestVersion(configuration.WorkspacePath);
+                _traceService.Info($"No explicit target version requested. We'll use latest available locally {configuration.TargetVersion} on {configuration.WorkspacePath}.");
+            }
+        }
+
+        public void Validate(Configuration configuration) {
+            throw new NotImplementedException();
+        }
+
+        public string Print(Configuration configuration)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
+
     public class Configuration
     {
         public Configuration()

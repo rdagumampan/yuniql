@@ -10,7 +10,7 @@ namespace Yuniql.Core
     public interface IMigrationService
     {
         /// <summary>
-        /// Initializes the current instance of <see cref="MigrationServiceTransactional"./>
+        /// Initializes the current instance of <see cref="MigrationServiceTransactional"></see>./>
         /// </summary>
         /// <param name="connectionString">Connection string to target database server or instance.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
@@ -26,6 +26,11 @@ namespace Yuniql.Core
         /// </summary>
         List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null);
 
+        /// <summary>
+        /// Runs migrations by executing alls scripts in the workspace directory. 
+        /// When CSV files are present also run bulk import operations to target database table having same file name.
+        /// </summary>
+        /// <param name="configuration">An instance of session configuration.</param>
         void Run(Configuration configuration);
 
         /// <summary>
@@ -47,7 +52,7 @@ namespace Yuniql.Core
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
         /// <param name="continueAfterFailure">The resume from failure.</param>
         /// <param name="transactionMode"></param>
-        /// <param name="requiredClearedDraft">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration</param>
+        /// <param name="requiredClearedDraft">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration.</param>
         void Run(
             string workingPath, 
             string targetVersion = null, 
