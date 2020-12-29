@@ -17,6 +17,7 @@ namespace Yuniql.Core
         private readonly IDirectoryService _directoryService;
         private readonly IFileService _fileService;
         private readonly ITraceService _traceService;
+        private readonly IConfigurationService _configurationService;
         private readonly IMetadataService _metadataService;
 
         ///<inheritdoc/>
@@ -28,7 +29,8 @@ namespace Yuniql.Core
             ITokenReplacementService tokenReplacementService,
             IDirectoryService directoryService,
             IFileService fileService,
-            ITraceService traceService)
+            ITraceService traceService,
+            IConfigurationService configurationService)
         {
             this._localVersionService = localVersionService;
             this._dataService = dataService;
@@ -37,15 +39,23 @@ namespace Yuniql.Core
             this._directoryService = directoryService;
             this._fileService = fileService;
             this._traceService = traceService;
+            this._configurationService = configurationService;
             this._metadataService = metadataService;
         }
 
         /// <inheritdoc />
-        public virtual void Initialize(
-            string connectionString,
-            int? commandTimeout = null)
+        public virtual void Initialize(Configuration configuration)
         {
-            //initialize dependencies
+            _configurationService.Initialize(configuration);
+            //_configurationService.Validate(configuration);
+            //_configurationService.Print(configuration);
+            _dataService.Initialize(configuration.ConnectionString);
+            _bulkImportService.Initialize(configuration.ConnectionString);
+        }
+
+        /// <inheritdoc />
+        public virtual void Initialize(string connectionString, int? commandTimeout = null)
+        {
             _dataService.Initialize(connectionString);
             _bulkImportService.Initialize(connectionString);
         }
@@ -63,7 +73,8 @@ namespace Yuniql.Core
             return _metadataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
         }
 
-        public abstract void Run(Configuration configuration);
+        /// <inheritdoc />
+        public abstract void Run();
 
         /// <inheritdoc />
         public abstract void Run(

@@ -65,8 +65,9 @@ namespace Yuniql.CLI
             var tokenReplacementService = new TokenReplacementService(_traceService);
             var directoryService = new DirectoryService();
             var fileService = new FileService();
-
             var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
+            var environmentService = new EnvironmentService();
+            var configurationService = new ConfigurationService(environmentService, localVersionService, _traceService);
 
             var migrationService = new MigrationServiceTransactional(
                 localVersionService,
@@ -76,7 +77,8 @@ namespace Yuniql.CLI
                 tokenReplacementService,
                 directoryService,
                 fileService,
-                _traceService);
+                _traceService,
+                configurationService);
             return migrationService;
         }
 
@@ -86,8 +88,9 @@ namespace Yuniql.CLI
             var tokenReplacementService = new TokenReplacementService(_traceService);
             var directoryService = new DirectoryService();
             var fileService = new FileService();
-
             var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
+            var environmentService = new EnvironmentService();
+            var configurationService = new ConfigurationService(environmentService, localVersionService, _traceService);
 
             var migrationService = new MigrationServiceNonTransactional(
                 localVersionService,
@@ -97,7 +100,8 @@ namespace Yuniql.CLI
                 tokenReplacementService,
                 directoryService,
                 fileService,
-                _traceService);
+                _traceService,
+                configurationService);
             return migrationService;
         }
     }

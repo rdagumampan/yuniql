@@ -18,6 +18,7 @@ namespace Yuniql.Core
         private readonly IDirectoryService _directoryService;
         private readonly IFileService _fileService;
         private readonly ITraceService _traceService;
+        private readonly IConfigurationService _configurationService;
         private readonly IMetadataService _metadataService;
 
         ///<inheritdoc/>
@@ -29,7 +30,8 @@ namespace Yuniql.Core
             ITokenReplacementService tokenReplacementService,
             IDirectoryService directoryService,
             IFileService fileService,
-            ITraceService traceService)
+            ITraceService traceService,
+            IConfigurationService configurationService)
             : base(
                 localVersionService,
                 dataService,
@@ -38,7 +40,8 @@ namespace Yuniql.Core
                 tokenReplacementService,
                 directoryService,
                 fileService,
-                traceService
+                traceService,
+                configurationService
             )
         {
             this._localVersionService = localVersionService;
@@ -48,12 +51,14 @@ namespace Yuniql.Core
             this._directoryService = directoryService;
             this._fileService = fileService;
             this._traceService = traceService;
+            this._configurationService = configurationService;
             this._metadataService = metadataService;
         }
 
         /// <inheritdoc />
-        public override void Run(Configuration configuration)
+        public override void Run()
         {
+            var configuration = _configurationService.GetConfiguration();
             Run(
                workingPath: configuration.WorkspacePath,
                targetVersion: configuration.TargetVersion,

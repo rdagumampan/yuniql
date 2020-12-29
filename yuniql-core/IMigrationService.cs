@@ -10,6 +10,11 @@ namespace Yuniql.Core
     public interface IMigrationService
     {
         /// <summary>
+        /// Initializes the current instance of a migration service./>
+        /// </summary>
+        void Initialize(Configuration configuration);
+
+        /// <summary>
         /// Initializes the current instance of <see cref="MigrationServiceTransactional"></see>./>
         /// </summary>
         /// <param name="connectionString">Connection string to target database server or instance.</param>
@@ -30,8 +35,7 @@ namespace Yuniql.Core
         /// Runs migrations by executing alls scripts in the workspace directory. 
         /// When CSV files are present also run bulk import operations to target database table having same file name.
         /// </summary>
-        /// <param name="configuration">An instance of session configuration.</param>
-        void Run(Configuration configuration);
+        void Run();
 
         /// <summary>
         /// Runs migrations by executing alls scripts in the workspace directory. 

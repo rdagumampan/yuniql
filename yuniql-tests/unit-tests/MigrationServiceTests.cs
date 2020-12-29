@@ -97,6 +97,8 @@ namespace Yuniql.UnitTests
             tokenReplacementService.Setup(s => s.Replace(It.IsAny<List<KeyValuePair<string, string>>>(), "SELECT 'v0.00'")).Returns("SELECT 'v0.00'"); ;
 
             var traceService = new Mock<ITraceService>();
+            var environmentService = new Mock<IEnvironmentService>();
+            var configurationService = new Mock<IConfigurationService>();
 
             var tokenKeyPairs = new List<KeyValuePair<string, string>> {
                new KeyValuePair<string, string>("Token1","TokenValue1"),
@@ -113,7 +115,8 @@ namespace Yuniql.UnitTests
                 tokenReplacementService.Object,
                 directoryService.Object,
                 fileService.Object,
-                traceService.Object);
+                traceService.Object,
+                configurationService.Object);
             sut.Run(workingPath: @"c:\temp",
                 targetVersion: "v0.00",
                 autoCreateDatabase: true,
@@ -280,6 +283,8 @@ namespace Yuniql.UnitTests
             tokenReplacementService.Setup(s => s.Replace(It.IsAny<List<KeyValuePair<string, string>>>(), "SELECT 'v0.00'")).Returns("SELECT 'v0.00'"); ;
 
             var traceService = new Mock<ITraceService>();
+            var environmentService = new Mock<IEnvironmentService>();
+            var configurationService = new Mock<IConfigurationService>();
 
             var tokenKeyPairs = new List<KeyValuePair<string, string>> {
                new KeyValuePair<string, string>("Token1","TokenValue1"),
@@ -296,7 +301,8 @@ namespace Yuniql.UnitTests
                 tokenReplacementService.Object,
                 directoryService.Object,
                 fileService.Object,
-                traceService.Object);
+                traceService.Object,
+                configurationService.Object);
             sut.Run(workingPath: @"c:\temp",
                 targetVersion: "v0.00",
                 autoCreateDatabase: true,
@@ -412,6 +418,8 @@ namespace Yuniql.UnitTests
             tokenReplacementService.Setup(s => s.Replace(null, "SELECT 'erase'")).Returns("SELECT 'erase'");
 
             var traceService = new Mock<ITraceService>();
+            var environmentService = new Mock<IEnvironmentService>();
+            var configurationService = new Mock<IConfigurationService>();
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -422,7 +430,8 @@ namespace Yuniql.UnitTests
                 tokenReplacementService.Object,
                 directoryService.Object,
                 fileService.Object,
-                traceService.Object);
+                traceService.Object,
+                configurationService.Object);
             sut.Erase(workingPath: @"c:\temp");
 
             //assert
@@ -470,6 +479,8 @@ namespace Yuniql.UnitTests
             tokenReplacementService.Setup(s => s.Replace(null, "SELECT 'erase'")).Returns("SELECT 'erase'");
 
             var traceService = new Mock<ITraceService>();
+            var environmentService = new Mock<IEnvironmentService>();
+            var configurationService = new Mock<IConfigurationService>();
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -480,7 +491,8 @@ namespace Yuniql.UnitTests
                 tokenReplacementService.Object,
                 directoryService.Object,
                 fileService.Object,
-                traceService.Object);
+                traceService.Object,
+                configurationService.Object);
             sut.Erase(workingPath: @"c:\temp");
 
             //assert
@@ -528,6 +540,8 @@ namespace Yuniql.UnitTests
             tokenReplacementService.Setup(s => s.Replace(null, "SELECT 'erase'")).Returns("SELECT 'erase'");
 
             var traceService = new Mock<ITraceService>();
+            var environmentService = new Mock<IEnvironmentService>();
+            var configurationService = new Mock<IConfigurationService>();
 
             //act
             Assert.ThrowsException<ApplicationException>(() =>
@@ -540,7 +554,8 @@ namespace Yuniql.UnitTests
                     tokenReplacementService.Object,
                     directoryService.Object,
                     fileService.Object,
-                    traceService.Object);
+                    traceService.Object,
+                    configurationService.Object);
                 sut.Erase(workingPath: @"c:\temp");
             }).Message.ShouldBe("Fake exception");
 
@@ -575,6 +590,9 @@ namespace Yuniql.UnitTests
             configurationDataService.Setup(s => s.GetAllVersions(It.IsAny<string>(), It.IsAny<string>(), null))
                                     .Returns(new List<DbVersion>());
 
+            var environmentService = new Mock<IEnvironmentService>();
+            var configurationService = new Mock<IConfigurationService>();
+
             var transactionMode = TRANSACTION_MODE.SESSION;
 
             //act
@@ -586,7 +604,8 @@ namespace Yuniql.UnitTests
                 new Mock<ITokenReplacementService>().Object, 
                 new Mock<IDirectoryService>().Object, 
                 new Mock<IFileService>().Object, 
-                new Mock<ITraceService>().Object);
+                new Mock<ITraceService>().Object,
+                configurationService.Object);
             sut.Run(string.Empty, transactionMode: transactionMode);
 
             // assert
@@ -618,6 +637,9 @@ namespace Yuniql.UnitTests
             metadataService.Setup(s => s.GetAllVersions(It.IsAny<string>(), It.IsAny<string>(), null))
                                     .Returns(new List<DbVersion>());
 
+            var environmentService = new Mock<IEnvironmentService>();
+            var configurationService = new Mock<IConfigurationService>();
+
             var transactionMode = TRANSACTION_MODE.VERSION;
 
             //act
@@ -629,7 +651,8 @@ namespace Yuniql.UnitTests
                 new Mock<ITokenReplacementService>().Object,
                 new Mock<IDirectoryService>().Object,
                 new Mock<IFileService>().Object,
-                new Mock<ITraceService>().Object);
+                new Mock<ITraceService>().Object,
+                configurationService.Object);
             sut.Run(string.Empty, transactionMode: transactionMode);
 
             // assert
@@ -661,6 +684,9 @@ namespace Yuniql.UnitTests
             metadataService.Setup(s => s.GetAllVersions(It.IsAny<string>(), It.IsAny<string>(), null))
                                     .Returns(new List<DbVersion>());
 
+            var environmentService = new Mock<IEnvironmentService>();
+            var configurationService = new Mock<IConfigurationService>();
+
             var transactionMode = TRANSACTION_MODE.NONE;
 
             //act
@@ -672,7 +698,8 @@ namespace Yuniql.UnitTests
                 new Mock<ITokenReplacementService>().Object,
                 new Mock<IDirectoryService>().Object,
                 new Mock<IFileService>().Object,
-                new Mock<ITraceService>().Object);
+                new Mock<ITraceService>().Object,
+                configurationService.Object);
             sut.Run(string.Empty, transactionMode: transactionMode);
 
             // assert

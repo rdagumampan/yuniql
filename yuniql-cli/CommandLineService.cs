@@ -13,19 +13,16 @@ namespace Yuniql.CLI
         private readonly ILocalVersionService _localVersionService;
         private readonly IEnvironmentService _environmentService;
         private ITraceService _traceService;
-        private readonly IConfigurationService _configurationService;
 
         public CommandLineService(
             IMigrationServiceFactory migrationServiceFactory,
             ILocalVersionService localVersionService,
             IEnvironmentService environmentService,
-            ITraceService traceService,
-            IConfigurationService configurationService)
+            ITraceService traceService)
         {
             this._localVersionService = localVersionService;
             this._environmentService = environmentService;
             this._traceService = traceService;
-            this._configurationService = configurationService;
             this._migrationServiceFactory = migrationServiceFactory;
         }
 
@@ -95,6 +92,8 @@ namespace Yuniql.CLI
                 var configuration = new Configuration
                 {
                     WorkspacePath = opts.Path,
+                    Platform = opts.Platform,
+                    ConnectionString = opts.ConnectionString,
                     TargetVersion = opts.TargetVersion,
                     AutoCreateDatabase= opts.AutoCreateDatabase,
                     Tokens = tokens,
@@ -111,12 +110,11 @@ namespace Yuniql.CLI
                     AppliedByTool = "yuniql-cli",
                     AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
                 };
-                _configurationService.AssignDefaults(configuration);
 
                 //run the migration
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
-                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                migrationService.Run(configuration);
+                migrationService.Initialize(configuration);
+                migrationService.Run();
 
                 _traceService.Success($"Schema migration completed successfuly on {opts.Path}.");
                 return 0;
@@ -136,6 +134,8 @@ namespace Yuniql.CLI
                 var configuration = new Configuration
                 {
                     WorkspacePath = opts.Path,
+                    Platform = opts.Platform,
+                    ConnectionString = opts.ConnectionString,
                     TargetVersion = opts.TargetVersion,
                     AutoCreateDatabase = opts.AutoCreateDatabase,
                     Tokens = tokens,
@@ -150,11 +150,10 @@ namespace Yuniql.CLI
                     AppliedByTool = "yuniql-cli",
                     AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
                 };
-                _configurationService.AssignDefaults(configuration);
 
                 var migrationService = _migrationServiceFactory.Create(opts.Platform);
-                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                migrationService.Run(configuration);
+                migrationService.Initialize(configuration);
+                migrationService.Run();
 
                 _traceService.Success($"Schema migration verification completed successfuly on {opts.Path}.");
                 return 0;

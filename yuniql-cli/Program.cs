@@ -1,11 +1,10 @@
 ﻿using CommandLine;
 using System;
 using System.Reflection;
-using Yuniql.CLI;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
-namespace Yuniql
+namespace Yuniql.CLI
 {
     public class Program
     {
@@ -17,13 +16,11 @@ namespace Yuniql
             var environmentService = new EnvironmentService();
             var traceService = new FileTraceService();
             var localVersionService = new LocalVersionService(traceService);
-            var configurationService = new ConfigurationService(environmentService, localVersionService, traceService);
-            var migrationServiceFactory = new CLI.MigrationServiceFactory(traceService);
+            var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var commandLineService = new CommandLineService(migrationServiceFactory,
                                                             localVersionService,
                                                             environmentService,
-                                                            traceService, 
-                                                            configurationService);
+                                                            traceService);
 
             var resultCode = Parser.Default
                 .ParseArguments<InitOption, RunOption, ListOption, NextVersionOption, VerifyOption, EraseOption, BaselineOption, RebaseOption, PlatformsOption>(args)
