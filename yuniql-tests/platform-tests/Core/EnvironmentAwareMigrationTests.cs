@@ -84,9 +84,13 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(post_prod, $"post_prod.sql"), _testDataService.GetSqlForCreateDbObject($"post_prod"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-            migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v0.00", autoCreateDatabase: true, environmentCode: "test");
+            var configuration = _testConfiguration.GetConfiguration();
+            configuration.TargetVersion = "v0.00";
+            configuration.Environment = "test";
+
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Initialize(configuration);
+            migrationService.Run();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "init_dev").ShouldBeFalse();
@@ -129,9 +133,13 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v00_prod, $"v00_prod.sql"), _testDataService.GetSqlForCreateDbObject($"v00_prod"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-            migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v0.00", autoCreateDatabase: true, environmentCode: "test");
+            var configuration = _testConfiguration.GetConfiguration();
+            configuration.TargetVersion = "v0.00";
+            configuration.Environment = "test";
+
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Initialize(configuration);
+            migrationService.Run();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_dev").ShouldBeFalse();
@@ -166,9 +174,13 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v00_prod, $"v00_prod.sql"), _testDataService.GetSqlForCreateDbObject($"v00_prod"));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-            migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v0.00", autoCreateDatabase: true, environmentCode: "test");
+            var configuration = _testConfiguration.GetConfiguration();
+            configuration.TargetVersion = "v0.00";
+            configuration.Environment = "test";
+
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Initialize(configuration);
+            migrationService.Run();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "v00_01").ShouldBeTrue();

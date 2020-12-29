@@ -53,7 +53,6 @@ Run the platform tests from cli
 	
 ```console
 cd C:\play\yuniql\yuniql-tests\platform-tests
-dotnet build
 dotnet test -v n
 dotnet test --filter Test_Run_With_AutocreateDB -v n
 ```
@@ -81,7 +80,6 @@ Run the platform tests
 	
 ```console
 cd C:\play\yuniql\yuniql-tests\platform-tests
-dotnet build
 dotnet test -v n
 ```
 
@@ -108,7 +106,6 @@ Run the platform tests
 	
 ```console
 cd C:\play\yuniql\yuniql-tests\platform-tests
-dotnet build
 dotnet test -v n
 ```
 

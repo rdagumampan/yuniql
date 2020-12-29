@@ -77,13 +77,6 @@ namespace Yuniql.Core
             {
                 _configuration.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
             }
-
-            //if no target version specified, we capture the latest from local folder structure
-            if (string.IsNullOrEmpty(_configuration.TargetVersion))
-            {
-                _configuration.TargetVersion = _localVersionService.GetLatestVersion(_configuration.WorkspacePath);
-                _traceService.Info($"No explicit target version requested. We'll use latest available locally {_configuration.TargetVersion} on {_configuration.WorkspacePath}.");
-            }
         }
 
         ///<inheritdoc/>

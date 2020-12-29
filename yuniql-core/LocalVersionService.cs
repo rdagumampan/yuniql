@@ -7,6 +7,7 @@ using System.Text;
 
 namespace Yuniql.Core
 {
+    //TODO: Rename to WorkspaceService
     /// <summary>
     /// Service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are executed from.
     /// When user calls yuniql-init, a directory structure is created in the target workspace directory.
@@ -211,6 +212,7 @@ yuniql-log-*.txt
         {
             string versionZeroDirectory = Directory.GetDirectories(workingPath, "v0.00*").FirstOrDefault();
 
+            //TODO: Use RESERVED_DIRECTORY_NAME constants in this directory names
             var directories = new List<KeyValuePair<string, bool>> {
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_init"), Directory.Exists(Path.Combine(workingPath, "_init"))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_pre"), Directory.Exists(Path.Combine(workingPath, "_pre"))),

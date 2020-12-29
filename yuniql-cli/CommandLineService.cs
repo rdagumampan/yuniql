@@ -111,12 +111,19 @@ namespace Yuniql.CLI
                     AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
                 };
 
+                //if no target version specified, we capture the latest from local folder structure
+                if (string.IsNullOrEmpty(configuration.TargetVersion))
+                {
+                    configuration.TargetVersion = _localVersionService.GetLatestVersion(configuration.WorkspacePath);
+                    _traceService.Info($"No explicit target version requested. We'll use latest available locally {configuration.TargetVersion} on {configuration.WorkspacePath}.");
+                }
+
                 //run the migration
-                var migrationService = _migrationServiceFactory.Create(opts.Platform);
+                var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 migrationService.Initialize(configuration);
                 migrationService.Run();
 
-                _traceService.Success($"Schema migration completed successfuly on {opts.Path}.");
+                _traceService.Success($"Schema migration completed successfuly on {configuration.WorkspacePath}.");
                 return 0;
             }
             catch (Exception ex)
@@ -151,11 +158,18 @@ namespace Yuniql.CLI
                     AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
                 };
 
-                var migrationService = _migrationServiceFactory.Create(opts.Platform);
+                //if no target version specified, we capture the latest from local folder structure
+                if (string.IsNullOrEmpty(configuration.TargetVersion))
+                {
+                    configuration.TargetVersion = _localVersionService.GetLatestVersion(configuration.WorkspacePath);
+                    _traceService.Info($"No explicit target version requested. We'll use latest available locally {configuration.TargetVersion} on {configuration.WorkspacePath}.");
+                }
+
+                var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 migrationService.Initialize(configuration);
                 migrationService.Run();
 
-                _traceService.Success($"Schema migration verification completed successfuly on {opts.Path}.");
+                _traceService.Success($"Schema migration verification completed successfuly on {configuration.WorkspacePath}.");
                 return 0;
             }
             catch (Exception ex)
@@ -168,32 +182,26 @@ namespace Yuniql.CLI
         {
             try
             {
-                //if no target platform provided, we default into sqlserver
-                if (string.IsNullOrEmpty(opts.Platform))
+                var configuration = new Configuration
                 {
-                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
-                    if (string.IsNullOrEmpty(opts.Platform))
-                    {
-                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
-                    }
-                }
-
-                //if no connection string provided, we default into environment variable or throw exception
-                if (string.IsNullOrEmpty(opts.ConnectionString))
-                {
-                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
-                }
+                    WorkspacePath = opts.Path,
+                    Platform = opts.Platform,
+                    ConnectionString = opts.ConnectionString,
+                    MetaSchemaName = opts.MetaSchema,
+                    MetaTableName = opts.MetaTable,
+                    CommandTimeout = opts.CommandTimeout,
+                };
 
                 //get all exsiting db versions
-                var migrationService = _migrationServiceFactory.Create(opts.Platform);
-                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                var versions = migrationService.GetAllVersions(opts.MetaSchema, opts.MetaTable);
+                var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+                migrationService.Initialize(configuration);
+                var versions = migrationService.GetAllVersions(configuration.MetaSchemaName, configuration.MetaTableName);
 
                 var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool");
                 versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}"));
                 versionPrettyPrint.Print();
 
-                _traceService.Success($"Listed all schema versions applied to database on {opts.Path} workspace.{Environment.NewLine}" +
+                _traceService.Success($"Listed all schema versions applied to database on {configuration.WorkspacePath} workspace.{Environment.NewLine}" +
                     $"For platforms not supporting full transactional DDL operations (ex. MySql, CockroachDB, Snowflake), unsuccessful migrations will show the status as Failed and you can look for LastFailedScript and LastScriptError in the schema version tracking table.");
 
                 return 0;
@@ -208,41 +216,23 @@ namespace Yuniql.CLI
         {
             try
             {
-                //if no path provided, we default into current directory
-                if (string.IsNullOrEmpty(opts.Path))
-                {
-                    opts.Path = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE);
-                    if (string.IsNullOrEmpty(opts.Path))
-                    {
-                        opts.Path = _environmentService.GetCurrentDirectory();
-                    }
-                }
-
-                //if no target platform provided, we default into sqlserver
-                if (string.IsNullOrEmpty(opts.Platform))
-                {
-                    opts.Platform = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM);
-                    if (string.IsNullOrEmpty(opts.Platform))
-                    {
-                        opts.Platform = SUPPORTED_DATABASES.SQLSERVER;
-                    }
-                }
-
-                //if no connection string provided, we default into environment variable or throw exception
-                if (string.IsNullOrEmpty(opts.ConnectionString))
-                {
-                    opts.ConnectionString = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
-                }
-
                 //parse tokens
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+                var configuration = new Configuration
+                {
+                    WorkspacePath = opts.Path,
+                    Platform = opts.Platform,
+                    ConnectionString = opts.ConnectionString,
+                    Tokens = tokens,
+                    CommandTimeout = opts.CommandTimeout,
+                };
 
                 //run all erase scripts
-                var migrationService = _migrationServiceFactory.Create(opts.Platform);
-                migrationService.Initialize(opts.ConnectionString, opts.CommandTimeout);
-                migrationService.Erase(opts.Path, tokens, opts.CommandTimeout, opts.Environment);
+                var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+                migrationService.Initialize(configuration);
+                migrationService.Erase(configuration.WorkspacePath, tokens, configuration.CommandTimeout, configuration.Environment);
 
-                _traceService.Success($"Schema erase completed successfuly on {opts.Path}.");
+                _traceService.Success($"Schema erase completed successfuly on {configuration.WorkspacePath}.");
                 return 0;
             }
             catch (Exception ex)

@@ -48,17 +48,16 @@ namespace Yuniql.Core
         {
             _configurationService.Initialize(configuration);
             //_configurationService.Validate(configuration);
-            //_configurationService.Print(configuration);
             _dataService.Initialize(configuration.ConnectionString);
             _bulkImportService.Initialize(configuration.ConnectionString);
         }
 
-        /// <inheritdoc />
-        public virtual void Initialize(string connectionString, int? commandTimeout = null)
-        {
-            _dataService.Initialize(connectionString);
-            _bulkImportService.Initialize(connectionString);
-        }
+        ///// <inheritdoc />
+        //public virtual void Initialize(string connectionString, int? commandTimeout = null)
+        //{
+        //    _dataService.Initialize(connectionString);
+        //    _bulkImportService.Initialize(connectionString);
+        //}
 
         /// <inheritdoc />
         public virtual string GetCurrentVersion(string metaSchemaName = null, string metaTableName = null)

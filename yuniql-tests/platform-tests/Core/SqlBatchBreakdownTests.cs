@@ -49,9 +49,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"Test_Single_Run_Empty.sql"), sqlStatement);
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-            migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+            var configuration = _testConfiguration.GetConfiguration();
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Initialize(configuration);
+            migrationService.Run();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "Test_Single_Run_Empty").ShouldBeFalse();
@@ -69,9 +70,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLine(sqlObjectName));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-            migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+            var configuration = _testConfiguration.GetConfiguration();
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Initialize(configuration);
+            migrationService.Run();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName}").ShouldBeTrue();
@@ -89,9 +91,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLineWithoutTerminator(sqlObjectName));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-            migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(workingPath: _testConfiguration.WorkspacePath, targetVersion: "v1.00", autoCreateDatabase: true);
+            var configuration = _testConfiguration.GetConfiguration();
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Initialize(configuration);
+            migrationService.Run();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName}").ShouldBeTrue();
@@ -113,9 +116,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithoutTerminatorInLastLine(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-            migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+            var configuration = _testConfiguration.GetConfiguration();
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Initialize(configuration);
+            migrationService.Run();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName1}").ShouldBeTrue();
@@ -139,9 +143,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithTerminatorInCommentBlock(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-            migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+            var configuration = _testConfiguration.GetConfiguration();
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Initialize(configuration);
+            migrationService.Run();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName1}").ShouldBeTrue();
@@ -167,9 +172,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithTerminatorInsideStatements(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
-            var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-            migrationService.Initialize(_testConfiguration.ConnectionString);
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true);
+            var configuration = _testConfiguration.GetConfiguration();
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Initialize(configuration);
+            migrationService.Run();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName1}").ShouldBeTrue();
@@ -193,9 +199,10 @@ namespace Yuniql.PlatformTests
             //act
             try
             {
-                var migrationService = _migrationServiceFactory.Create(_testConfiguration.Platform);
-                migrationService.Initialize(_testConfiguration.ConnectionString);
-                migrationService.Run(_testConfiguration.WorkspacePath, "v1.00", autoCreateDatabase: true, transactionMode: TRANSACTION_MODE.SESSION);
+                var configuration = _testConfiguration.GetConfiguration();
+                var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+                migrationService.Initialize(configuration);
+                migrationService.Run();
             }
             catch (Exception ex)
             {

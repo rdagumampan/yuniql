@@ -14,12 +14,12 @@ namespace Yuniql.Core
         /// </summary>
         void Initialize(Configuration configuration);
 
-        /// <summary>
-        /// Initializes the current instance of <see cref="MigrationServiceTransactional"></see>./>
-        /// </summary>
-        /// <param name="connectionString">Connection string to target database server or instance.</param>
-        /// <param name="commandTimeout">Command timeout in seconds.</param>
-        void Initialize(string connectionString, int? commandTimeout = null);
+        ///// <summary>
+        ///// Initializes the current instance of <see cref="MigrationServiceTransactional"></see>./>
+        ///// </summary>
+        ///// <param name="connectionString">Connection string to target database server or instance.</param>
+        ///// <param name="commandTimeout">Command timeout in seconds.</param>
+        //void Initialize(string connectionString, int? commandTimeout = null);
 
         /// <summary>
         /// Returns the current migration version applied in target database.

@@ -213,12 +213,17 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new EraseOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
+            var option = new EraseOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string", Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
             sut.RunEraseOption(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
+                x.WorkspacePath == option.Path
+                && x.Platform == option.Platform
+                && x.ConnectionString == option.ConnectionString
+                && x.CommandTimeout == option.CommandTimeout
+            )));
             migrationService.Verify(s => s.Erase(@"c:\temp\yuniql",
                    It.Is<List<KeyValuePair<string, string>>>(x =>
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
@@ -261,12 +266,17 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new ListOption { };
+            var option = new ListOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string" };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
             sut.RunListOption(option);
 
             //assert
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
+                x.WorkspacePath == option.Path
+                && x.Platform == option.Platform
+                && x.ConnectionString == option.ConnectionString
+                && x.CommandTimeout == option.CommandTimeout
+            )));
             migrationService.Verify(s => s.GetAllVersions(null, null));
         }
 
@@ -287,7 +297,7 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new VerifyOption { };
+            var option = new VerifyOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string"};
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
             sut.RunVerifyOption(option);
 
@@ -295,7 +305,12 @@ namespace Yuniql.UnitTests
             var toolName = "yuniql-cli";
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
+                x.WorkspacePath == option.Path
+                && x.Platform == option.Platform
+                && x.ConnectionString == option.ConnectionString
+                && x.CommandTimeout == option.CommandTimeout
+            )));
             migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
         }
 
@@ -316,7 +331,7 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new VerifyOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
+            var option = new VerifyOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string", Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
             sut.RunVerifyOption(option);
 
@@ -324,7 +339,12 @@ namespace Yuniql.UnitTests
             var toolName = "yuniql-cli";
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
+                x.WorkspacePath == option.Path
+                && x.Platform == option.Platform
+                && x.ConnectionString == option.ConnectionString
+                && x.CommandTimeout == option.CommandTimeout
+            )));
             migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false,
                 It.Is<List<KeyValuePair<string, string>>>(x =>
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"
@@ -351,7 +371,7 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new RunOption { };
+            var option = new RunOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string" };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
             sut.RunRunOption(option);
 
@@ -359,7 +379,12 @@ namespace Yuniql.UnitTests
             var toolName = "yuniql-cli";
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
+                x.WorkspacePath == option.Path
+                && x.Platform == option.Platform
+                && x.ConnectionString == option.ConnectionString
+                && x.CommandTimeout == option.CommandTimeout
+            )));
             migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
         }
 
@@ -380,7 +405,7 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new RunOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
+            var option = new RunOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string", Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
             sut.RunRunOption(option);
 
@@ -388,7 +413,12 @@ namespace Yuniql.UnitTests
             var toolName = "yuniql-cli";
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
-            migrationService.Verify(s => s.Initialize("sqlserver-connection-string", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
+                x.WorkspacePath == option.Path
+                && x.Platform == option.Platform
+                && x.ConnectionString == option.ConnectionString
+                && x.CommandTimeout == option.CommandTimeout
+            )));
             migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false,
                 It.Is<List<KeyValuePair<string, string>>>(x =>
                     x[0].Key == "Token1" && x[0].Value == "TokenValue1"

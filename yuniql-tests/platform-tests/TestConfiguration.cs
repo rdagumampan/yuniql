@@ -1,4 +1,6 @@
-﻿namespace Yuniql.PlatformTests
+﻿using Yuniql.Core;
+
+namespace Yuniql.PlatformTests
 {
     public class TestConfiguration
     {
@@ -15,5 +17,16 @@
         public string PluginsPath { get; set; }
 
         public string TestAgentHost { get; set; }
+
+        public Configuration GetConfiguration()
+        {
+            return new Configuration
+            {
+                WorkspacePath = this.WorkspacePath,
+                Platform = this.Platform,
+                ConnectionString = this.ConnectionString,
+                AutoCreateDatabase = true
+            };
+        }
     }
 }
