@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using Yuniql.Extensibility;
 
 namespace Yuniql.Core
@@ -98,9 +99,12 @@ namespace Yuniql.Core
         }
 
         ///<inheritdoc/>
-        public string Print()
+        public string PrintAsJson()
         {
-            throw new NotImplementedException();
+            var configurationString = JsonSerializer.Serialize(_configuration, new JsonSerializerOptions { WriteIndented = true, IgnoreReadOnlyProperties = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            configurationString = configurationString.Replace(_configuration.ConnectionString, "<redacted>");
+
+            return configurationString;
         }
 
     }

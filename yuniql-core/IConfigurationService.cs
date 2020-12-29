@@ -8,7 +8,7 @@
 
         void Validate();
 
-        string Print();
+        string PrintAsJson();
     }
 
 }

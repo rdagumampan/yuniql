@@ -99,28 +99,8 @@ namespace Yuniql.Core
             bool requiredClearedDraft = false
          )
         {
-            //print run configuration information
-            var configuration = new
-            {
-                workingPath,
-                targetVersion,
-                autoCreateDatabase,
-                tokenKeyPairs,
-                verifyOnly,
-                bulkSeparator,
-                bulkBatchSize,
-                metaSchemaName,
-                metaTableName,
-                commandTimeout,
-                appliedByTool,
-                appliedByToolVersion,
-                environmentCode,
-                continueAfterFailure,
-                transactionMode,
-                requiredClearedDraft
-            };
-            var serializedConfiguration = JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true });
-            _traceService.Info($"Run configuration: {Environment.NewLine}{serializedConfiguration}");
+            //print run configuration information            
+            _traceService.Info($"Run configuration: {Environment.NewLine}{_configurationService.PrintAsJson()}");
 
             //check the workspace structure if required directories are present
             _localVersionService.Validate(workingPath);
