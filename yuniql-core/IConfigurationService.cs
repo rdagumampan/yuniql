@@ -10,7 +10,7 @@
 
         void Validate();
 
-        string PrintAsJson();
+        string PrintAsJson(bool redactSensitiveText = true);
     }
 
 }

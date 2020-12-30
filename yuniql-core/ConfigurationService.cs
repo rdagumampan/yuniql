@@ -91,10 +91,11 @@ namespace Yuniql.Core
         }
 
         ///<inheritdoc/>
-        public string PrintAsJson()
+        public string PrintAsJson(bool redactSensitiveText = true)
         {
             var configurationString = JsonSerializer.Serialize(_configuration, new JsonSerializerOptions { WriteIndented = true, IgnoreReadOnlyProperties = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            configurationString = configurationString.Replace(_configuration.ConnectionString, "<redacted>");
+            if(redactSensitiveText)
+                configurationString = configurationString.Replace(_configuration.ConnectionString, "<sensitive-data-redacted>");
 
             return configurationString;
         }
