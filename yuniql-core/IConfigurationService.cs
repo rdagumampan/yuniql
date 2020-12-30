@@ -2,7 +2,9 @@
 {
     public interface IConfigurationService
     {
-        void Initialize(Configuration configuration);
+        Configuration Initialize(Configuration configuration);
+
+        string GetValueOrDefault(string receivedValue, string environmentVariableName, string defaultValue = null);
 
         Configuration GetConfiguration();
 

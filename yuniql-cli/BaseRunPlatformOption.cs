@@ -41,5 +41,14 @@ namespace Yuniql.CLI
         //yuniql <command> --transaction-mode "full" | "partial" | "none" 
         [Option("transaction-mode", Required = false, HelpText = "Transaction mode to use in the migration.", Default = "session")]
         public string TransactionMode { get; set; }
+
+        //yuniql <command> --continue-after-failure
+        [Option("continue-after-failure", Required = false, HelpText = "Skip failed script and continue with migration (Only for platforms which doesn't fully support transactions).", Default = false)]
+        public bool ContinueAfterFailure { get; set; }
+
+        //yuniql <command> --require-cleared-draft
+        [Option("require-cleared-draft", Required = false, HelpText = "When set, migration will fail if the _draft directory is not empty. This option ideal when targeting staging/production environment.", Default = false)]
+        public bool RequiredClearedDraft { get; set; }
+
     }
 }

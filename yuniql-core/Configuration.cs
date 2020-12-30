@@ -127,6 +127,12 @@ namespace Yuniql.Core
         /// This is defaulted to false.
         /// </summary>
         public bool RequiredClearedDraft { get; set; } = false;
+
+        /// <summary>
+        /// When true, action would be executed. This is required when executing potentially damaging actions such as yuniql-erase and yuniql-drop.
+        /// This is defaulted to false.
+        /// </summary>
+        public bool IsForced { get; set; } = false;
     }
 
 }

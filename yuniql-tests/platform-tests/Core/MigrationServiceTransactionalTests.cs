@@ -412,7 +412,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_erase"), $"erase.sql"), _testDataService.GetSqlForCleanup());
 
             //act
-            migrationService.Erase(_testConfiguration.WorkspacePath);
+            migrationService.Erase();
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "script1").ShouldBeFalse();

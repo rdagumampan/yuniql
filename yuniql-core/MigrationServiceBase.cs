@@ -47,18 +47,10 @@ namespace Yuniql.Core
         public virtual void Initialize(Configuration configuration)
         {
             _configurationService.Initialize(configuration);
-            //_configurationService.Validate(configuration);
             _dataService.Initialize(configuration.ConnectionString);
             _bulkImportService.Initialize(configuration.ConnectionString);
         }
-
-        ///// <inheritdoc />
-        //public virtual void Initialize(string connectionString, int? commandTimeout = null)
-        //{
-        //    _dataService.Initialize(connectionString);
-        //    _bulkImportService.Initialize(connectionString);
-        //}
-
+        
         /// <inheritdoc />
         public virtual string GetCurrentVersion(string metaSchemaName = null, string metaTableName = null)
         {
@@ -267,13 +259,10 @@ namespace Yuniql.Core
         );
 
         /// <inheritdoc />
-        public virtual void Erase(
-            string workingPath,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
-            int? commandTimeout = null,
-            string environmentCode = null
-        )
+        public virtual void Erase()
         {
+            var configuration = _configurationService.GetConfiguration();
+
             //create a shared open connection to entire migration run
             using (var connection = _dataService.CreateConnection())
             {
@@ -285,8 +274,8 @@ namespace Yuniql.Core
                     try
                     {
                         //runs all scripts in the _erase folder
-                        RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_erase"), tokenKeyPairs: tokenKeyPairs, bulkSeparator: DEFAULT_CONSTANTS.BULK_SEPARATOR, commandTimeout: commandTimeout, environmentCode: environmentCode);
-                        _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_erase")}");
+                        RunNonVersionScripts(connection, transaction, Path.Combine(configuration.WorkspacePath, "_erase"), tokenKeyPairs: configuration.Tokens, bulkSeparator: DEFAULT_CONSTANTS.BULK_SEPARATOR, commandTimeout: configuration.CommandTimeout, environmentCode: configuration.Environment);
+                        _traceService.Info($"Executed script files on {Path.Combine(configuration.WorkspacePath, "_erase")}");
 
                         transaction.Commit();
                     }

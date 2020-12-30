@@ -15,7 +15,7 @@ namespace Yuniql.UnitTests
     [TestClass]
     public class MigrationServiceTests
     {
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethod]
         public void Test_Run_()
         {
             //arrange
@@ -98,13 +98,24 @@ namespace Yuniql.UnitTests
 
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
-            var configurationService = new Mock<IConfigurationService>();
 
             var tokenKeyPairs = new List<KeyValuePair<string, string>> {
                new KeyValuePair<string, string>("Token1","TokenValue1"),
                new KeyValuePair<string, string>("Token2","TokenValue2"),
                new KeyValuePair<string, string>("Token3","TokenValue3"),
             };
+
+            var configuration = new Configuration { 
+                WorkspacePath = @"c:\temp",
+                Platform  = SUPPORTED_DATABASES.SQLSERVER,
+                TargetVersion = "v0.00",
+                AutoCreateDatabase = true,
+                Tokens = tokenKeyPairs,
+                VerifyOnly = false
+            };
+
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -117,11 +128,8 @@ namespace Yuniql.UnitTests
                 fileService.Object,
                 traceService.Object,
                 configurationService.Object);
-            sut.Run(workingPath: @"c:\temp",
-                targetVersion: "v0.00",
-                autoCreateDatabase: true,
-                tokenKeyPairs: tokenKeyPairs,
-                verifyOnly: false);
+            sut.Initialize(configuration);
+            sut.Run();
 
             //asset
             localVersionService.Verify(s => s.Validate(@"c:\temp"));
@@ -284,13 +292,24 @@ namespace Yuniql.UnitTests
 
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
-            var configurationService = new Mock<IConfigurationService>();
-
             var tokenKeyPairs = new List<KeyValuePair<string, string>> {
                new KeyValuePair<string, string>("Token1","TokenValue1"),
                new KeyValuePair<string, string>("Token2","TokenValue2"),
                new KeyValuePair<string, string>("Token3","TokenValue3"),
             };
+
+            var configuration = new Configuration
+            {
+                WorkspacePath = @"c:\temp",
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+                TargetVersion = "v0.00",
+                AutoCreateDatabase = true,
+                Tokens = tokenKeyPairs,
+                VerifyOnly = false
+            };
+
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -303,11 +322,8 @@ namespace Yuniql.UnitTests
                 fileService.Object,
                 traceService.Object,
                 configurationService.Object);
-            sut.Run(workingPath: @"c:\temp",
-                targetVersion: "v0.00",
-                autoCreateDatabase: true,
-                tokenKeyPairs: tokenKeyPairs,
-                verifyOnly: false);
+            sut.Initialize(configuration);
+            sut.Run();
 
             //asset
             localVersionService.Verify(s => s.Validate(@"c:\temp"));
@@ -386,7 +402,7 @@ namespace Yuniql.UnitTests
             connection.Verify(s => s.Open());
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethod]
         public void Test_Erase()
         {
             //arrange
@@ -403,23 +419,26 @@ namespace Yuniql.UnitTests
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.IsTransactionalDdlSupported).Returns(true);
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
-            dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
+            dataService.Setup(s => s.BreakStatements(It.IsAny<string>())).Returns(new List<string> { "SELECT 'erase'" });
 
             var bulkImportService = new Mock<IBulkImportService>();
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_erase", "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_erase", null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
 
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql")).Returns("SELECT 'erase'");
+            fileService.Setup(s => s.ReadAllText(It.IsAny<string>())).Returns("SELECT 'erase'");
 
             var tokenReplacementService = new Mock<ITokenReplacementService>();
-            tokenReplacementService.Setup(s => s.Replace(null, "SELECT 'erase'")).Returns("SELECT 'erase'");
+            tokenReplacementService.Setup(s => s.Replace(It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).Returns("SELECT 'erase'");
 
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
+            var configuration = new Configuration { WorkspacePath = @"c:\temp" };
             var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -432,17 +451,16 @@ namespace Yuniql.UnitTests
                 fileService.Object,
                 traceService.Object,
                 configurationService.Object);
-            sut.Erase(workingPath: @"c:\temp");
+            sut.Initialize(configuration);
+            sut.Erase();
 
             //assert
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'erase'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'erase'", It.IsAny<int>(), It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
             dataService.Verify(s => s.CreateConnection());
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_erase", "*.sql"));
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql"));
-            dataService.Verify(s => s.BreakStatements("SELECT 'erase'"));
-            tokenReplacementService.Verify(s => s.Replace(null, "SELECT 'erase'"));
-
+            directoryService.Verify(s => s.GetAllFiles(It.IsAny<string>(), "*.sql"));
+            fileService.Verify(s => s.ReadAllText(It.IsAny<string>()));
+            dataService.Verify(s => s.BreakStatements(It.IsAny<string>()));
+            tokenReplacementService.Verify(s => s.Replace(It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>()));
             connection.Verify(s => s.Open());
             connection.Verify(s => s.BeginTransaction());
             transaction.Verify(s => s.Commit());
@@ -464,26 +482,35 @@ namespace Yuniql.UnitTests
 
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
-            dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
+            dataService.Setup(s => s.BreakStatements(It.IsAny<string>())).Returns(new List<string> { "SELECT 'erase'" });
 
             var bulkImportService = new Mock<IBulkImportService>();
-            var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_erase", "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_erase", null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            var directoryService = new Mock<IDirectoryService>();
+            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
 
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql")).Returns("SELECT 'erase'");
+            fileService.Setup(s => s.ReadAllText(It.IsAny<string>())).Returns("SELECT 'erase'");
 
             var tokenReplacementService = new Mock<ITokenReplacementService>();
-            tokenReplacementService.Setup(s => s.Replace(null, "SELECT 'erase'")).Returns("SELECT 'erase'");
+            tokenReplacementService.Setup(s => s.Replace(It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).Returns("SELECT 'erase'");
 
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
+
+            var configuration = new Configuration
+            {
+                WorkspacePath = @"C:\temp",
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+            };
+
             var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
-            var sut = new MigrationServiceTransactional(
+            var sut = new MigrationServiceNonTransactional(
                 localVersionService.Object,
                 dataService.Object,
                 bulkImportService.Object,
@@ -493,21 +520,20 @@ namespace Yuniql.UnitTests
                 fileService.Object,
                 traceService.Object,
                 configurationService.Object);
-            sut.Erase(workingPath: @"c:\temp");
+            sut.Initialize(configuration);
+            sut.Erase();
 
             //assert
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'erase'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'erase'", It.IsAny<int>(), It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
             dataService.Verify(s => s.CreateConnection());
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_erase", "*.sql"));
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql"));
-            dataService.Verify(s => s.BreakStatements("SELECT 'erase'"));
-            tokenReplacementService.Verify(s => s.Replace(null, "SELECT 'erase'"));
-
+            directoryService.Verify(s => s.GetAllFiles(It.IsAny<string>(), "*.sql"));
+            fileService.Verify(s => s.ReadAllText(It.IsAny<string>()));
+            dataService.Verify(s => s.BreakStatements(It.IsAny<string>()));
+            tokenReplacementService.Verify(s => s.Replace(It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>()));
             connection.Verify(s => s.Open());
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethod]
         public void Test_Erase_With_Error_Must_Rollback()
         {
             //arrange
@@ -523,29 +549,39 @@ namespace Yuniql.UnitTests
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.IsTransactionalDdlSupported).Returns(true);
             dataService.Setup(s => s.CreateConnection()).Returns(connection.Object);
-            dataService.Setup(s => s.BreakStatements("SELECT 'erase'")).Returns(new List<string> { "SELECT 'erase'" });
+            dataService.Setup(s => s.BreakStatements(It.IsAny<string>())).Returns(new List<string> { "SELECT 'erase'" });
             //dataService.Setup(s => s.ExecuteNonQuery("sql-connection-string", "SELECT erase", DefaultConstants.CommandTimeoutSecs));
 
             var bulkImportService = new Mock<IBulkImportService>();
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_erase", "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_erase", null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
 
             //simulates that an exception happens while erase is executing
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql")).Throws(new ApplicationException("Fake exception"));
+            fileService.Setup(s => s.ReadAllText(It.IsAny<string>())).Throws(new ApplicationException("Fake exception"));
 
             var tokenReplacementService = new Mock<ITokenReplacementService>();
-            tokenReplacementService.Setup(s => s.Replace(null, "SELECT 'erase'")).Returns("SELECT 'erase'");
+            tokenReplacementService.Setup(s => s.Replace(It.IsAny<List<KeyValuePair<string, string>>>(), It.IsAny<string>())).Returns("SELECT 'erase'");
 
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
+
+            var configuration = new Configuration
+            {
+                WorkspacePath = @"C:\temp",
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+            };
+
             var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             Assert.ThrowsException<ApplicationException>(() =>
             {
+                var configuration = new Configuration { WorkspacePath = @"c:\temp" };
                 var sut = new MigrationServiceTransactional(
                     localVersionService.Object,
                     dataService.Object,
@@ -556,20 +592,21 @@ namespace Yuniql.UnitTests
                     fileService.Object,
                     traceService.Object,
                     configurationService.Object);
-                sut.Erase(workingPath: @"c:\temp");
+                sut.Initialize(configuration);
+                sut.Erase();
             }).Message.ShouldBe("Fake exception");
 
             //assert
             dataService.Verify(s => s.CreateConnection());
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_erase", "*.sql"));
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_erase\sql_erase.sql"));
+            directoryService.Verify(s => s.GetAllFiles(It.IsAny<string>(), "*.sql"));
+            fileService.Verify(s => s.ReadAllText(It.IsAny<string>()));
             connection.Verify(s => s.Open());
             connection.Verify(s => s.BeginTransaction());
             transaction.Verify(s => s.Rollback());
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
-        public void Test_Run_Transaction_Mode_Full()
+        [TestMethod]
+        public void Test_Run_Transaction_Mode_Session()
         {
             //arrange
             var transaction = new Mock<IDbTransaction>();
@@ -614,8 +651,7 @@ namespace Yuniql.UnitTests
             transaction.Verify(t => t.Rollback(), Times.Never());
         }
 
-        //TODO: Refactor this test, include versions level asserts
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethod]
         public void Test_Run_Transaction_Mode_Version()
         {
             //arrange
@@ -661,8 +697,7 @@ namespace Yuniql.UnitTests
             transaction.Verify(t => t.Rollback(), Times.Never());
         }
 
-
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethod]
         public void Test_Run_Transaction_Mode_None()
         {
             //arrange

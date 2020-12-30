@@ -13,16 +13,19 @@ namespace Yuniql.CLI
         private readonly ILocalVersionService _localVersionService;
         private readonly IEnvironmentService _environmentService;
         private ITraceService _traceService;
+        private readonly IConfigurationService _configurationService;
 
         public CommandLineService(
             IMigrationServiceFactory migrationServiceFactory,
             ILocalVersionService localVersionService,
             IEnvironmentService environmentService,
-            ITraceService traceService)
+            ITraceService traceService,
+            IConfigurationService configurationService)
         {
             this._localVersionService = localVersionService;
             this._environmentService = environmentService;
             this._traceService = traceService;
+            this._configurationService = configurationService;
             this._migrationServiceFactory = migrationServiceFactory;
         }
 
@@ -30,16 +33,7 @@ namespace Yuniql.CLI
         {
             try
             {
-                //if no path provided, we default into current directory
-                if (string.IsNullOrEmpty(opts.Path))
-                {
-                    opts.Path = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE);
-                    if (string.IsNullOrEmpty(opts.Path))
-                    {
-                        opts.Path = _environmentService.GetCurrentDirectory();
-                    }
-                }
-
+                opts.Path = _configurationService.GetValueOrDefault(opts.Path, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
                 _localVersionService.Init(opts.Path);
                 _traceService.Success($"Initialized {opts.Path}.");
                 return 0;
@@ -54,16 +48,7 @@ namespace Yuniql.CLI
         {
             try
             {
-                //if no path provided, we default into current directory
-                if (string.IsNullOrEmpty(opts.Path))
-                {
-                    opts.Path = _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE);
-                    if (string.IsNullOrEmpty(opts.Path))
-                    {
-                        opts.Path = _environmentService.GetCurrentDirectory();
-                    }
-                }
-
+                opts.Path = _configurationService.GetValueOrDefault(opts.Path, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
                 if (opts.IncrementMajorVersion)
                 {
                     var nextVersion = _localVersionService.IncrementMajorVersion(opts.Path, opts.File);
@@ -88,11 +73,12 @@ namespace Yuniql.CLI
             try
             {
                 //prepare session configuration and validate
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
-                var configuration = new Configuration
+                var parameters = new Configuration
                 {
+                    Platform = platform,
                     WorkspacePath = opts.Path,
-                    Platform = opts.Platform,
                     ConnectionString = opts.ConnectionString,
                     TargetVersion = opts.TargetVersion,
                     AutoCreateDatabase= opts.AutoCreateDatabase,
@@ -111,12 +97,9 @@ namespace Yuniql.CLI
                     AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
                 };
 
-                //if no target version specified, we capture the latest from local folder structure
-                if (string.IsNullOrEmpty(configuration.TargetVersion))
-                {
-                    configuration.TargetVersion = _localVersionService.GetLatestVersion(configuration.WorkspacePath);
-                    _traceService.Info($"No explicit target version requested. We'll use latest available locally {configuration.TargetVersion} on {configuration.WorkspacePath}.");
-                }
+                //deep copy all the properties and post process defaults based on this hierarchy
+                //cli parameters -> environment variables -> defaults from internal core logic
+                var configuration = _configurationService.Initialize(parameters);
 
                 //run the migration
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
@@ -137,11 +120,12 @@ namespace Yuniql.CLI
             try
             {
                 //prepare session configuration and validate
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
-                var configuration = new Configuration
+                var parameters = new Configuration
                 {
+                    Platform = platform,
                     WorkspacePath = opts.Path,
-                    Platform = opts.Platform,
                     ConnectionString = opts.ConnectionString,
                     TargetVersion = opts.TargetVersion,
                     AutoCreateDatabase = opts.AutoCreateDatabase,
@@ -158,12 +142,9 @@ namespace Yuniql.CLI
                     AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
                 };
 
-                //if no target version specified, we capture the latest from local folder structure
-                if (string.IsNullOrEmpty(configuration.TargetVersion))
-                {
-                    configuration.TargetVersion = _localVersionService.GetLatestVersion(configuration.WorkspacePath);
-                    _traceService.Info($"No explicit target version requested. We'll use latest available locally {configuration.TargetVersion} on {configuration.WorkspacePath}.");
-                }
+                //deep copy all the properties and post process defaults based on this hierarchy
+                //cli parameters -> environment variables -> defaults from internal core logic
+                var configuration = _configurationService.Initialize(parameters);
 
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 migrationService.Initialize(configuration);
@@ -182,15 +163,20 @@ namespace Yuniql.CLI
         {
             try
             {
-                var configuration = new Configuration
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+                var parameters = new Configuration
                 {
+                    Platform = platform,
                     WorkspacePath = opts.Path,
-                    Platform = opts.Platform,
                     ConnectionString = opts.ConnectionString,
                     MetaSchemaName = opts.MetaSchema,
                     MetaTableName = opts.MetaTable,
                     CommandTimeout = opts.CommandTimeout,
                 };
+
+                //deep copy all the properties and post process defaults based on this hierarchy
+                //cli parameters -> environment variables -> defaults from internal core logic
+                var configuration = _configurationService.Initialize(parameters);
 
                 //get all exsiting db versions
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
@@ -217,20 +203,28 @@ namespace Yuniql.CLI
             try
             {
                 //parse tokens
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
-                var configuration = new Configuration
+                var parameters = new Configuration
                 {
+                    Platform = platform,
                     WorkspacePath = opts.Path,
-                    Platform = opts.Platform,
+                    DebugTraceMode = opts.Debug,
                     ConnectionString = opts.ConnectionString,
-                    Tokens = tokens,
                     CommandTimeout = opts.CommandTimeout,
+                    Tokens = tokens,
+                    IsForced = opts.Force,
+                    Environment = opts.Environment
                 };
+
+                //deep copy all the properties and post process defaults based on this hierarchy
+                //cli parameters -> environment variables -> defaults from internal core logic
+                var configuration = _configurationService.Initialize(parameters);
 
                 //run all erase scripts
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 migrationService.Initialize(configuration);
-                migrationService.Erase(configuration.WorkspacePath, tokens, configuration.CommandTimeout, configuration.Environment);
+                migrationService.Erase();
 
                 _traceService.Success($"Schema erase completed successfuly on {configuration.WorkspacePath}.");
                 return 0;

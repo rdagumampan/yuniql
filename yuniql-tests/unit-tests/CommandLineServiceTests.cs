@@ -8,11 +8,32 @@ using Yuniql.Core;
 using Shouldly;
 using CommandLine;
 using System.Data;
+using System.Linq;
 
 namespace Yuniql.UnitTests
 {
+
     [TestClass]
-    public class CommandLineServiceTests
+    public class TestBase
+    {
+        public bool AreEqual(List<KeyValuePair<string, string>> kvp1, IEnumerable<string> kvs)
+        {
+            var kvp2 = kvs.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+            return AreEqual(kvp1, kvp2);
+        }
+
+        public bool AreEqual(List<KeyValuePair<string, string>> kvp1, List<KeyValuePair<string, string>> kvp2)
+        {
+            var result = kvp1.Count == kvp2.Count;
+            if (result)
+                result = kvp1.TrueForAll(kv1 => kvp2.Exists(kv2 => kv2.Key == kv1.Key && kv2.Value == kv1.Value));
+
+            return result;
+        }
+    }
+
+    [TestClass]
+    public class CommandLineServiceTests : TestBase
     {
         [TestMethod]
         public void Test_Init_Option_No_Explicit_Options()
@@ -22,6 +43,8 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
             var localVersionService = new Mock<ILocalVersionService>();
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, @"c:\temp\yuniql")).Returns(@"c:\temp\yuniql");
 
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
@@ -29,7 +52,7 @@ namespace Yuniql.UnitTests
 
             //act
             var option = new InitOption();
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunInitOption(option);
 
             //assert
@@ -42,18 +65,22 @@ namespace Yuniql.UnitTests
             //arrange
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
+            environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
             var localVersionService = new Mock<ILocalVersionService>();
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(@"c:\temp\yuniql", ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, @"c:\temp\yuniql")).Returns(@"c:\temp\yuniql");
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new InitOption { Path = @"c:\temp\yuniql-ex" };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var option = new InitOption { Path = @"c:\temp\yuniql" };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunInitOption(option);
 
             //assert
-            localVersionService.Verify(s => s.Init(@"c:\temp\yuniql-ex"));
+            localVersionService.Verify(s => s.Init(@"c:\temp\yuniql"));
         }
 
         [TestMethod]
@@ -64,13 +91,16 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
             var localVersionService = new Mock<ILocalVersionService>();
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, @"c:\temp\yuniql")).Returns(@"c:\temp\yuniql");
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
             var option = new NextVersionOption { IncrementMajorVersion = true };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunNextVersionOption(option);
 
             //assert
@@ -83,18 +113,23 @@ namespace Yuniql.UnitTests
             //arrange
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
+            environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
+
             var localVersionService = new Mock<ILocalVersionService>();
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, @"c:\temp\yuniql")).Returns(@"c:\temp\yuniql");
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new NextVersionOption { IncrementMajorVersion = true, Path = @"c:\temp\yuniql-ex" };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var option = new NextVersionOption { IncrementMajorVersion = true };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunNextVersionOption(option);
 
             //assert
-            localVersionService.Verify(s => s.IncrementMajorVersion(@"c:\temp\yuniql-ex", null));
+            localVersionService.Verify(s => s.IncrementMajorVersion(@"c:\temp\yuniql", null));
         }
 
         [TestMethod]
@@ -105,13 +140,16 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
             var localVersionService = new Mock<ILocalVersionService>();
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, @"c:\temp\yuniql")).Returns(@"c:\temp\yuniql");
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
             var option = new NextVersionOption { IncrementMinorVersion = true };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunNextVersionOption(option);
 
             //assert
@@ -126,13 +164,16 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetCurrentDirectory()).Returns(@"c:\temp\yuniql");
             var localVersionService = new Mock<ILocalVersionService>();
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, @"c:\temp\yuniql")).Returns(@"c:\temp\yuniql");
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
             var option = new NextVersionOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunNextVersionOption(option);
 
             //assert
@@ -146,13 +187,15 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
             var localVersionService = new Mock<ILocalVersionService>();
+            var configurationService = new Mock<IConfigurationService>();
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
             var option = new BaselineOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             var returnCode = sut.RunBaselineOption(option);
 
             //assert
@@ -166,13 +209,15 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
             var localVersionService = new Mock<ILocalVersionService>();
+            var configurationService = new Mock<IConfigurationService>();
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
             var option = new RebaseOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             var returnCode = sut.RunRebaseOption(option);
 
             returnCode.ShouldNotBe(0);
@@ -185,13 +230,15 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
             var localVersionService = new Mock<ILocalVersionService>();
+            var configurationService = new Mock<IConfigurationService>();
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
             var option = new ArchiveOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             var returnCode = sut.RunArchiveOption(option);
 
             //assert
@@ -208,28 +255,39 @@ namespace Yuniql.UnitTests
             environmentService.Setup(s => s.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")).Returns("sqlserver-connection-string");
             var localVersionService = new Mock<ILocalVersionService>();
 
+            var configuration = new Configuration
+            {
+                WorkspacePath = @"C:\temp\yuniql",
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+                ConnectionString = "sqlserver-connection-string",
+                CommandTimeout = DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS
+            };
+
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.Initialize(It.IsAny<Configuration>())).Returns(configuration);
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new EraseOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string", Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var option = new EraseOption { };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunEraseOption(option);
 
             //assert
             migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
-                x.WorkspacePath == option.Path
-                && x.Platform == option.Platform
-                && x.ConnectionString == option.ConnectionString
-                && x.CommandTimeout == option.CommandTimeout
+                x.WorkspacePath == configuration.WorkspacePath
+                && x.DebugTraceMode == configuration.DebugTraceMode
+                && x.Platform == configuration.Platform
+                && x.ConnectionString == configuration.ConnectionString
+                && x.CommandTimeout == configuration.CommandTimeout
+                && AreEqual(x.Tokens, configuration.Tokens)
+                && x.IsForced == configuration.IsForced
+                && x.Environment == configuration.Environment
             )));
-            migrationService.Verify(s => s.Erase(@"c:\temp\yuniql",
-                   It.Is<List<KeyValuePair<string, string>>>(x =>
-                    x[0].Key == "Token1" && x[0].Value == "TokenValue1"
-                    && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
-                    && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, null));
+            migrationService.Verify(s => s.Erase());
         }
 
         [DataTestMethod]
@@ -253,29 +311,42 @@ namespace Yuniql.UnitTests
         }
 
         [TestMethod]
-        public void Test_Info_Option_No_Explicit_Options()
+        public void Test_List_Option_No_Explicit_Options()
         {
             //arrange
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetEnvironmentVariable("YUNIQL_CONNECTION_STRING")).Returns("sqlserver-connection-string");
             var localVersionService = new Mock<ILocalVersionService>();
+
+            var configuration = new Configuration
+            {
+                WorkspacePath = @"C:\temp\yuniql",
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+                ConnectionString = "sqlserver-connection-string",
+                CommandTimeout = DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS
+            };
+
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.Initialize(It.IsAny<Configuration>())).Returns(configuration);
+
             var migrationService = new Mock<IMigrationService>();
             migrationService.Setup(s => s.GetAllVersions(null, null)).Returns(new List<DbVersion> { new DbVersion { Version = "v0.00", AppliedOnUtc = DateTime.UtcNow, AppliedByUser = "user" } });
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new ListOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string" };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var option = new ListOption { };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunListOption(option);
 
             //assert
             migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
-                x.WorkspacePath == option.Path
-                && x.Platform == option.Platform
-                && x.ConnectionString == option.ConnectionString
-                && x.CommandTimeout == option.CommandTimeout
+                x.WorkspacePath == configuration.WorkspacePath
+                && x.Platform == configuration.Platform
+                && x.ConnectionString == configuration.ConnectionString
+                && x.CommandTimeout == configuration.CommandTimeout
             )));
             migrationService.Verify(s => s.GetAllVersions(null, null));
         }
@@ -292,13 +363,25 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
+            var configuration = new Configuration
+            {
+                WorkspacePath = @"C:\temp\yuniql",
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+                ConnectionString = "sqlserver-connection-string",
+                CommandTimeout = DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS
+            };
+
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.Initialize(It.IsAny<Configuration>())).Returns(configuration);
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new VerifyOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string"};
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var option = new VerifyOption { };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunVerifyOption(option);
 
             //assert
@@ -306,12 +389,12 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
-                x.WorkspacePath == option.Path
-                && x.Platform == option.Platform
-                && x.ConnectionString == option.ConnectionString
-                && x.CommandTimeout == option.CommandTimeout
+                x.WorkspacePath == configuration.WorkspacePath
+                && x.Platform == configuration.Platform
+                && x.ConnectionString == configuration.ConnectionString
+                && x.CommandTimeout == configuration.CommandTimeout
             )));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
+            migrationService.Verify(s=>s.Run());
         }
 
         [TestMethod]
@@ -326,13 +409,25 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
+            var configuration = new Configuration
+            {
+                WorkspacePath = @"C:\temp\yuniql",
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+                ConnectionString = "sqlserver-connection-string",
+                CommandTimeout = DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS
+            };
+
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.Initialize(It.IsAny<Configuration>())).Returns(configuration);
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new VerifyOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string", Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var option = new VerifyOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunVerifyOption(option);
 
             //assert
@@ -340,17 +435,13 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
-                x.WorkspacePath == option.Path
-                && x.Platform == option.Platform
-                && x.ConnectionString == option.ConnectionString
-                && x.CommandTimeout == option.CommandTimeout
+                x.WorkspacePath == configuration.WorkspacePath
+                && x.Platform == configuration.Platform
+                && x.ConnectionString == configuration.ConnectionString
+                && x.CommandTimeout == configuration.CommandTimeout
+                && AreEqual(x.Tokens, configuration.Tokens)
             )));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false,
-                It.Is<List<KeyValuePair<string, string>>>(x =>
-                    x[0].Key == "Token1" && x[0].Value == "TokenValue1"
-                    && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
-                    && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), true, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
+            migrationService.Verify(s => s.Run());
         }
 
 
@@ -366,13 +457,25 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
+            var configuration = new Configuration
+            {
+                WorkspacePath = @"C:\temp\yuniql",
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+                ConnectionString = "sqlserver-connection-string",
+                CommandTimeout = DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS
+            };
+
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.Initialize(It.IsAny<Configuration>())).Returns(configuration);
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new RunOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string" };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var option = new RunOption { };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunRunOption(option);
 
             //assert
@@ -380,12 +483,12 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
-                x.WorkspacePath == option.Path
-                && x.Platform == option.Platform
-                && x.ConnectionString == option.ConnectionString
-                && x.CommandTimeout == option.CommandTimeout
+                x.WorkspacePath == configuration.WorkspacePath
+                && x.Platform == configuration.Platform
+                && x.ConnectionString == configuration.ConnectionString
+                && x.CommandTimeout == configuration.CommandTimeout
             )));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false, It.Is<List<KeyValuePair<string, string>>>(x => x.Count == 0), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
+            migrationService.Verify(s => s.Run());
         }
 
         [TestMethod]
@@ -400,13 +503,25 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
+            var configuration = new Configuration
+            {
+                WorkspacePath = @"C:\temp\yuniql",
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+                ConnectionString = "sqlserver-connection-string",
+                CommandTimeout = DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS
+            };
+
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.Initialize(It.IsAny<Configuration>())).Returns(configuration);
+
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new RunOption { Path = @"c:\temp\yuniql", Platform = "sqlserver", ConnectionString = "sqlserver-connection-string", Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
-            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object);
+            var option = new RunOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
+            var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunRunOption(option);
 
             //assert
@@ -414,49 +529,47 @@ namespace Yuniql.UnitTests
             var toolVersion = typeof(CommandLineService).Assembly.GetName().Version.ToString();
 
             migrationService.Verify(s => s.Initialize(It.Is<Configuration>(x =>
-                x.WorkspacePath == option.Path
-                && x.Platform == option.Platform
-                && x.ConnectionString == option.ConnectionString
-                && x.CommandTimeout == option.CommandTimeout
+                x.WorkspacePath == configuration.WorkspacePath
+                && x.Platform == configuration.Platform
+                && x.ConnectionString == configuration.ConnectionString
+                && x.CommandTimeout == configuration.CommandTimeout
+                && AreEqual(x.Tokens, configuration.Tokens)
             )));
-            migrationService.Verify(s => s.Run(@"c:\temp\yuniql", "v1.00", false,
-                It.Is<List<KeyValuePair<string, string>>>(x =>
-                    x[0].Key == "Token1" && x[0].Value == "TokenValue1"
-                    && x[1].Key == "Token2" && x[1].Value == "TokenValue2"
-                    && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
-                ), false, DEFAULT_CONSTANTS.BULK_SEPARATOR, null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, 0, toolName, toolVersion, null, null, null, false));
+            migrationService.Verify(s => s.Run());
         }
 
         [DataTestMethod]
         [DataRow(true)]
         [DataRow(false)]
-        public void Test_StackTrace_Shown_Depending_On_Debug_Flag(bool isDebug)
+        public void Test_StackTrace_Shown_Depending_On_Debug_Flag(bool debugEnabled)
         {
             //arrange
             var errorTraceMsg = string.Empty;
             var traceService = new Mock<ITraceService>();
             traceService.Setup(s => s.Error(It.IsAny<string>(), null))
                         .Callback<string, object>((msg, o) => errorTraceMsg = msg);
+            var environmentService = new Mock<IEnvironmentService>();      
+            var configurationService = new Mock<IConfigurationService>();
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
 
-            var exc = new Exception("Fake exception");
-            var environmentService = new Mock<IEnvironmentService>();
-            environmentService.Setup(s => s.GetCurrentDirectory()).Throws(exc);
+            var fakeException = new Exception("Fake exception");
+            configurationService.Setup(s => s.Initialize(It.IsAny<Configuration>())).Throws(fakeException);
 
             //act
-            var option = new RunOption { Debug = isDebug };
-            var sut = new CommandLineService(null, null, environmentService.Object, traceService.Object);
-
+            var option = new RunOption { Debug = debugEnabled };
+            var sut = new CommandLineService(null, null, environmentService.Object, traceService.Object, configurationService.Object);
             var returnCode = sut.RunRunOption(option);
 
             //assert
-            if (isDebug)
+            if (debugEnabled)
             {
-                errorTraceMsg.ShouldContain(exc.StackTrace);
+                errorTraceMsg.ShouldContain(fakeException.StackTrace);
             }
             else
             {
-                errorTraceMsg.ShouldNotContain(exc.StackTrace);
+                errorTraceMsg.ShouldNotContain(fakeException.StackTrace);
             }
         }
     }
+
 }

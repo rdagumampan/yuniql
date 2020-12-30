@@ -16,12 +16,15 @@ namespace Yuniql.CLI
             var environmentService = new EnvironmentService();
             var traceService = new FileTraceService();
             var localVersionService = new LocalVersionService(traceService);
+            var configurationService = new ConfigurationService(environmentService, localVersionService, traceService);
+            
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var commandLineService = new CommandLineService(migrationServiceFactory,
                                                             localVersionService,
                                                             environmentService,
-                                                            traceService);
-
+                                                            traceService,
+                                                            configurationService);
+            
             var resultCode = Parser.Default
                 .ParseArguments<InitOption, RunOption, ListOption, NextVersionOption, VerifyOption, EraseOption, BaselineOption, RebaseOption, PlatformsOption>(args)
                 .MapResult((InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
