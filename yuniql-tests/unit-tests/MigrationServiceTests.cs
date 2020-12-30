@@ -140,7 +140,7 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
             metadataService.Verify(s => s.GetCurrentVersion(null, null, null));;
-            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null, null, null, null, null, null, null, null));
+            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "1.0.0.0", null, null, null));
 
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());
@@ -197,13 +197,13 @@ namespace Yuniql.UnitTests
                && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
             ), "SELECT 'v0.00'"));
 
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'pre'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'post'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'draft'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'pre'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'post'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'draft'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
 
-            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", null, null, null));
+            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
 
             connection.Verify(s => s.Open());
             connection.Verify(s => s.BeginTransaction());
@@ -334,7 +334,7 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
             metadataService.Verify(s => s.GetCurrentVersion(null, null, null)); ;
-            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null, null, null, null, null, null, null, null));
+            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "1.0.0.0", null, null, null));
 
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());
@@ -391,13 +391,13 @@ namespace Yuniql.UnitTests
                && x[2].Key == "Token3" && x[2].Value == "TokenValue3"
             ), "SELECT 'v0.00'"));
 
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'pre'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'post'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'draft'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
-            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'pre'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'post'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'draft'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
+            metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
 
-            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", null, null, null));
+            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
 
             connection.Verify(s => s.Open());
         }
