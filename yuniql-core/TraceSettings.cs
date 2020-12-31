@@ -6,6 +6,7 @@
     public sealed class TraceSettings
     {
         private static readonly TraceSettings instance = new TraceSettings();
+
         static TraceSettings()
         {
         }
