@@ -117,7 +117,7 @@ namespace Yuniql.PlatformTests
         [DataTestMethod()]
         [DataRow(RESERVED_DIRECTORY_NAME.INIT)]
         [DataRow(RESERVED_DIRECTORY_NAME.PRE)]
-        [DataRow("_post")]
+        [DataRow(RESERVED_DIRECTORY_NAME.POST)]
         [DataRow(RESERVED_DIRECTORY_NAME.DRAFT)]
         public void Test_Run_All_NonVersion_Scripts_Executed(string scriptFolder)
         {
@@ -235,7 +235,7 @@ namespace Yuniql.PlatformTests
         [DataRow(RESERVED_DIRECTORY_NAME.INIT, RESERVED_DIRECTORY_NAME.INIT)]
         [DataRow(RESERVED_DIRECTORY_NAME.PRE, RESERVED_DIRECTORY_NAME.PRE)]
         [DataRow("v1.00", "v1_00")]
-        [DataRow("_post", "_post")]
+        [DataRow(RESERVED_DIRECTORY_NAME.POST, RESERVED_DIRECTORY_NAME.POST)]
         [DataRow(RESERVED_DIRECTORY_NAME.DRAFT, RESERVED_DIRECTORY_NAME.DRAFT)]
         public void Test_Run_With_Parameterized_Tokens(string versionFolder, string scriptName)
         {
@@ -430,7 +430,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
             Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT), true);
-            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, "_post"), true);
+            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST), true);
 
             //act
             var exception = Assert.ThrowsException<YuniqlMigrationException>(() =>
@@ -446,7 +446,7 @@ namespace Yuniql.PlatformTests
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE)} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00*")} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT)} / Found").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_post")} / Missing").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST)} / Missing").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_erase")} / Found").ShouldBeTrue();
 
             _testDataService.CheckIfDbExist(_testConfiguration.ConnectionString).ShouldBeFalse();

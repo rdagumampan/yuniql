@@ -75,9 +75,9 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(draft_test, $"draft_test.sql"), _testDataService.GetSqlForCreateDbObject($"draft_test"));
             _testDataService.CreateScriptFile(Path.Combine(draft_prod, $"draft_prod.sql"), _testDataService.GetSqlForCreateDbObject($"draft_prod"));
 
-            var post_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_post", "_dev")).FullName;
-            var post_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_post", "_test")).FullName;
-            var post_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_post", "_prod")).FullName;
+            var post_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST, "_dev")).FullName;
+            var post_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST, "_test")).FullName;
+            var post_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST, "_prod")).FullName;
 
             _testDataService.CreateScriptFile(Path.Combine(post_dev, $"post_dev.sql"), _testDataService.GetSqlForCreateDbObject($"post_dev"));
             _testDataService.CreateScriptFile(Path.Combine(post_test, $"post_test.sql"), _testDataService.GetSqlForCreateDbObject($"post_test"));

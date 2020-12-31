@@ -63,11 +63,11 @@ Scripts in progress. Scripts that you are currently working and have not moved t
                 _traceService.Info($"Created script directory {draftDirectoryPath}");
             }
 
-            string postDirectoryPath = Path.Combine(workingPath, "_post");
+            string postDirectoryPath = Path.Combine(workingPath, POST);
             if (!Directory.Exists(postDirectoryPath))
             {
                 Directory.CreateDirectory(postDirectoryPath);
-                File.AppendAllText(Path.Combine(postDirectoryPath, "README.md"), @"# The `_post` directory
+                File.AppendAllText(Path.Combine(postDirectoryPath, "README.md"), $@"# The `{POST}` directory
 Post migration scripts. Executed every time and always the last batch to run.");
                 _traceService.Info($"Created script directory {postDirectoryPath}");
             }
@@ -219,7 +219,7 @@ yuniql-log-*.txt
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, PRE), Directory.Exists(Path.Combine(workingPath, PRE))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00*"), versionZeroDirectory != null),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, DRAFT), Directory.Exists(Path.Combine(workingPath, DRAFT))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_post"), Directory.Exists(Path.Combine(workingPath, "_post"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST), Directory.Exists(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_erase"), Directory.Exists(Path.Combine(workingPath, "_erase"))),
             };
 

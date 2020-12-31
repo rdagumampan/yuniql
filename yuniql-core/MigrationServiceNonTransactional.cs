@@ -251,8 +251,8 @@ namespace Yuniql.Core
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.DRAFT)}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST)}");
             }
 
             //local method
@@ -267,8 +267,8 @@ namespace Yuniql.Core
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.DRAFT)}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST)}");
             }
         }
 
