@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using static Yuniql.Core.RESERVED_DIRECTORY_NAME;
 
 namespace Yuniql.Core
 {
@@ -25,11 +26,11 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public void Init(string workingPath)
         {
-            string initDirectoryPath = Path.Combine(workingPath, "_init");
+            string initDirectoryPath = Path.Combine(workingPath, INIT);
             if (!Directory.Exists(initDirectoryPath))
             {
                 Directory.CreateDirectory(initDirectoryPath);
-                File.AppendAllText(Path.Combine(initDirectoryPath, "README.md"), @"# The `_init` directory
+                File.AppendAllText(Path.Combine(initDirectoryPath, "README.md"), @$"# The `{INIT}` directory
 Initialization scripts. Executed once. This is called the first time you do `yuniql run`.");
                 _traceService.Info($"Created script directory {initDirectoryPath}");
             }
@@ -214,7 +215,7 @@ yuniql-log-*.txt
 
             //TODO: Use RESERVED_DIRECTORY_NAME constants in this directory names
             var directories = new List<KeyValuePair<string, bool>> {
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_init"), Directory.Exists(Path.Combine(workingPath, "_init"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, INIT), Directory.Exists(Path.Combine(workingPath, INIT))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_pre"), Directory.Exists(Path.Combine(workingPath, "_pre"))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00*"), versionZeroDirectory != null),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_draft"), Directory.Exists(Path.Combine(workingPath, "_draft"))),

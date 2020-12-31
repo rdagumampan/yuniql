@@ -43,8 +43,8 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             //assert
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "_init")).ShouldBe(true);
-            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_init"), "README.md")).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT), "README.md")).ShouldBe(true);
 
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "_pre")).ShouldBe(true);
             File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_pre"), "README.md")).ShouldBe(true);
@@ -76,7 +76,7 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             //assert
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "_init")).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)).ShouldBe(true);
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "_pre")).ShouldBe(true);
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "v0.00")).ShouldBe(true);
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "_draft")).ShouldBe(true);

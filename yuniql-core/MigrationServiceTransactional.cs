@@ -239,8 +239,8 @@ namespace Yuniql.Core
                 if (!targetDatabaseConfigured)
                 {
                     //runs all scripts in the _init folder
-                    RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                    _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
+                    RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.INIT), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                    _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.INIT)}");
                 }
 
                 //checks if target database already runs the latest version and skips work if it already is

@@ -115,7 +115,7 @@ namespace Yuniql.PlatformTests
         }
 
         [DataTestMethod()]
-        [DataRow("_init")]
+        [DataRow(RESERVED_DIRECTORY_NAME.INIT)]
         [DataRow("_pre")]
         [DataRow("_post")]
         [DataRow("_draft")]
@@ -232,7 +232,7 @@ namespace Yuniql.PlatformTests
         }
 
         [DataTestMethod()]
-        [DataRow("_init", "_init")]
+        [DataRow(RESERVED_DIRECTORY_NAME.INIT, RESERVED_DIRECTORY_NAME.INIT)]
         [DataRow("_pre", "_pre")]
         [DataRow("v1.00", "v1_00")]
         [DataRow("_post", "_post")]
@@ -429,7 +429,7 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
-            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, "_init"), true);
+            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT), true);
             Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, "_post"), true);
 
             //act
@@ -442,7 +442,7 @@ namespace Yuniql.PlatformTests
 
             //assert
             exception.Message.Contains("At least one Yuniql directory is missing in your project.").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_init")} / Missing").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)} / Missing").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_pre")} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00*")} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_draft")} / Found").ShouldBeTrue();

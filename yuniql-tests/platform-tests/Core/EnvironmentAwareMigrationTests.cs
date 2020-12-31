@@ -43,9 +43,9 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             //creare environment-aware directories
-            var init_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_init", "_dev")).FullName;
-            var init_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_init", "_test")).FullName;
-            var init_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_init", "_prod")).FullName;
+            var init_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT, "_dev")).FullName;
+            var init_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT, "_test")).FullName;
+            var init_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT, "_prod")).FullName;
 
             _testDataService.CreateScriptFile(Path.Combine(init_dev, $"init_dev.sql"), _testDataService.GetSqlForCreateDbObject($"init_dev"));
             _testDataService.CreateScriptFile(Path.Combine(init_test, $"init_test.sql"), _testDataService.GetSqlForCreateDbObject($"init_test"));
