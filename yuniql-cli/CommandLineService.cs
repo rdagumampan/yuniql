@@ -201,26 +201,28 @@ namespace Yuniql.CLI
         {
             try
             {
-                string platforms = @"
-                                    SqlServer: 
-                                       Supported versions:
-                                       Usage: yuniql run -c <your-connection-string> --platform sqlserver
-                                       Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample
+                string platforms = @"Supported database platforms and available samples. For specific versions, please refer to latest documentation pages.
 
-                                    PostgreSql: 
-                                       Supported versions:
-                                       Usage: yuniql run -c <your-connection-string> --platform postgresql
-                                       Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-postgresql-sample
+    SqlServer: 
+        Supported versions: https://yuniql.io/docs/supported-platforms/
+        Usage: yuniql run -a -c <your-connection-string> --platform sqlserver
+        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample
 
-                                    MySql: 
-                                       Supported versions:
-                                       Usage: yuniql run -c <your-connection-string> --platform mysql
-                                       Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
+    PostgreSql: 
+        Supported versions: https://yuniql.io/docs/supported-platforms/
+        Usage: yuniql run -a -c <your-connection-string> --platform postgresql
+        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-postgresql-sample
 
-                                    MariaDB: 
-                                       Supported versions:
-                                       Usage: yuniql run -c <your-connection-string> --platform mariadb
-                                       Samples: https://yuniql.io/docs/get-started/";
+    MySql: 
+        Supported versions: https://yuniql.io/docs/supported-platforms/
+        Usage: yuniql run -a -c <your-connection-string> --platform mysql
+        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
+
+    MariaDb: 
+        Supported versions: https://yuniql.io/docs/supported-platforms/
+        Supported versions: 
+        Usage: yuniql run -a -c <your-connection-string> --platform mariadb
+        Samples: https://yuniql.io/docs/get-started/";
 
                 Console.WriteLine(platforms);
 
