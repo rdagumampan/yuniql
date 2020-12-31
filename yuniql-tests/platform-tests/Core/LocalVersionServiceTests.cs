@@ -3,6 +3,7 @@ using System.IO;
 using Shouldly;
 using Yuniql.Core;
 using Yuniql.Extensibility;
+using static Yuniql.Core.RESERVED_DIRECTORY_NAME;
 
 namespace Yuniql.PlatformTests
 {
@@ -43,23 +44,23 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             //assert
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)).ShouldBe(true);
-            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT), "README.md")).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, INIT)).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, INIT), "README.md")).ShouldBe(true);
 
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE)).ShouldBe(true);
-            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE), "README.md")).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, PRE)).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, PRE), "README.md")).ShouldBe(true);
 
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "v0.00")).ShouldBe(true);
             File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), "README.md")).ShouldBe(true);
 
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT)).ShouldBe(true);
-            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT), "README.md")).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, DRAFT)).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, DRAFT), "README.md")).ShouldBe(true);
 
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST)).ShouldBe(true);
-            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST), "README.md")).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, POST)).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, POST), "README.md")).ShouldBe(true);
 
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE)).ShouldBe(true);
-            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE), "README.md")).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, ERASE)).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, ERASE), "README.md")).ShouldBe(true);
 
             File.Exists(Path.Combine(_testConfiguration.WorkspacePath, "README.md")).ShouldBe(true);
             File.Exists(Path.Combine(_testConfiguration.WorkspacePath, "Dockerfile")).ShouldBe(true);
@@ -76,11 +77,11 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             //assert
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)).ShouldBe(true);
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE)).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, INIT)).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, PRE)).ShouldBe(true);
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "v0.00")).ShouldBe(true);
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT)).ShouldBe(true);
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST)).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, DRAFT)).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, POST)).ShouldBe(true);
             File.Exists(Path.Combine(_testConfiguration.WorkspacePath, "README.md")).ShouldBe(true);
             File.Exists(Path.Combine(_testConfiguration.WorkspacePath, "Dockerfile")).ShouldBe(true);
             File.Exists(Path.Combine(_testConfiguration.WorkspacePath, ".gitignore")).ShouldBe(true);

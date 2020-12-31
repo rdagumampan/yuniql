@@ -5,6 +5,7 @@ using Yuniql.Core;
 using System;
 using System.IO;
 using System.Linq;
+using static Yuniql.Core.RESERVED_DIRECTORY_NAME;
 
 namespace Yuniql.UnitTests
 {
@@ -15,7 +16,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Environment_Aware_Directory_Present()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "tables", "setup.sql");
             string script3 = Path.Combine(basePath, "procedures", "setup.sql");
@@ -44,7 +45,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Environment_Code_Passed()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "tables", "setup.sql");
             string script3 = Path.Combine(basePath, "procedures", "setup.sql");
@@ -73,7 +74,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_Mixed_Files_And_Environment_Aware_Scripts()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "_dev", "setup.sql");
             string script3 = Path.Combine(basePath, "_test", "setup.sql");
@@ -100,7 +101,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_Mixed_Files_And_Environment_Aware_Scripts_In_SubDirectory()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "tables", "_dev", "setup.sql");
             string script3 = Path.Combine(basePath, "tables", "_test", "setup.sql");
@@ -127,7 +128,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Environment_Code_Passed_But_Environment_Aware_Scripts_Is_Present()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "_dev", "setup.sql");
             string script3 = Path.Combine(basePath, "_test", "setup.sql");
@@ -152,7 +153,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_Sub_Directories_Within_Environment_Aware_Directory()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "_dev", "tables", "setup.sql");
             string script3 = Path.Combine(basePath, "_test", "tables", "setup.sql");
@@ -185,7 +186,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_with_Script_FileNames_Have_Environment_Aware_Token_Underscore()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "tables", "_dev", "_setup.sql");
             string script3 = Path.Combine(basePath, "tables", "_test", "_setup_tables.sql");
@@ -215,7 +216,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Dir_With_Script_FileNames_Have_Environment_Aware_Token()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "tables", "_setup_tables.sql");
             string script2 = Path.Combine(basePath, "tables", "_setup_stored_procedures.sql");
             string script3 = Path.Combine(basePath, "tables", "_dev", "_setup.sql");
@@ -245,7 +246,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Dir_With_Script_FileNames_Have_Environment_Aware_Token_No_Environment_Code_Passed()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "tables", "_setup_tables.sql");
             string script2 = Path.Combine(basePath, "tables", "_setup_stored_procedures.sql");
             var files = new List<string>
@@ -268,7 +269,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_Directories_With_Environment_Code_Passed()
         {
             //arrange
-            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
+            var basePath = Path.Combine(Environment.CurrentDirectory, "_db", INIT);
             string script1 = Path.Combine(basePath, "setup_tables", "setup.sql");
             string script2 = Path.Combine(basePath, "setup_stored_procedures", "setup.sql");
             string script3 = Path.Combine(basePath, "setup_views", "setup.sql");

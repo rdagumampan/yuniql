@@ -3,6 +3,7 @@ using System.IO;
 using Shouldly;
 using Yuniql.Core;
 using Yuniql.Extensibility;
+using static Yuniql.Core.RESERVED_DIRECTORY_NAME;
 
 namespace Yuniql.PlatformTests
 {
@@ -43,17 +44,17 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             //creare environment-aware directories
-            var init_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT, "_dev")).FullName;
-            var init_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT, "_test")).FullName;
-            var init_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT, "_prod")).FullName;
+            var init_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, INIT, "_dev")).FullName;
+            var init_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, INIT, "_test")).FullName;
+            var init_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, INIT, "_prod")).FullName;
 
             _testDataService.CreateScriptFile(Path.Combine(init_dev, $"init_dev.sql"), _testDataService.GetSqlForCreateDbObject($"init_dev"));
             _testDataService.CreateScriptFile(Path.Combine(init_test, $"init_test.sql"), _testDataService.GetSqlForCreateDbObject($"init_test"));
             _testDataService.CreateScriptFile(Path.Combine(init_prod, $"init_prod.sql"), _testDataService.GetSqlForCreateDbObject($"init_prod"));
 
-            var pre_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE, "_dev")).FullName;
-            var pre_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE, "_test")).FullName;
-            var pre_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE, "_prod")).FullName;
+            var pre_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, PRE, "_dev")).FullName;
+            var pre_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, PRE, "_test")).FullName;
+            var pre_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, PRE, "_prod")).FullName;
 
             _testDataService.CreateScriptFile(Path.Combine(pre_dev, $"pre_dev.sql"), _testDataService.GetSqlForCreateDbObject($"pre_dev"));
             _testDataService.CreateScriptFile(Path.Combine(pre_test, $"pre_test.sql"), _testDataService.GetSqlForCreateDbObject($"pre_test"));
@@ -67,17 +68,17 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v00_test, $"v00_test.sql"), _testDataService.GetSqlForCreateDbObject($"v00_test"));
             _testDataService.CreateScriptFile(Path.Combine(v00_prod, $"v00_prod.sql"), _testDataService.GetSqlForCreateDbObject($"v00_prod"));
 
-            var draft_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT, "_dev")).FullName;
-            var draft_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT, "_test")).FullName;
-            var draft_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT, "_prod")).FullName;
+            var draft_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, DRAFT, "_dev")).FullName;
+            var draft_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, DRAFT, "_test")).FullName;
+            var draft_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, DRAFT, "_prod")).FullName;
 
             _testDataService.CreateScriptFile(Path.Combine(draft_dev, $"draft_dev.sql"), _testDataService.GetSqlForCreateDbObject($"draft_dev"));
             _testDataService.CreateScriptFile(Path.Combine(draft_test, $"draft_test.sql"), _testDataService.GetSqlForCreateDbObject($"draft_test"));
             _testDataService.CreateScriptFile(Path.Combine(draft_prod, $"draft_prod.sql"), _testDataService.GetSqlForCreateDbObject($"draft_prod"));
 
-            var post_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST, "_dev")).FullName;
-            var post_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST, "_test")).FullName;
-            var post_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST, "_prod")).FullName;
+            var post_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, POST, "_dev")).FullName;
+            var post_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, POST, "_test")).FullName;
+            var post_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, POST, "_prod")).FullName;
 
             _testDataService.CreateScriptFile(Path.Combine(post_dev, $"post_dev.sql"), _testDataService.GetSqlForCreateDbObject($"post_dev"));
             _testDataService.CreateScriptFile(Path.Combine(post_test, $"post_test.sql"), _testDataService.GetSqlForCreateDbObject($"post_test"));

@@ -212,8 +212,7 @@ yuniql-log-*.txt
         public void Validate(string workingPath)
         {
             string versionZeroDirectory = Directory.GetDirectories(workingPath, "v0.00*").FirstOrDefault();
-
-            //TODO: Use RESERVED_DIRECTORY_NAME constants in this directory names
+            
             var directories = new List<KeyValuePair<string, bool>> {
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, INIT), Directory.Exists(Path.Combine(workingPath, INIT))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, PRE), Directory.Exists(Path.Combine(workingPath, PRE))),
