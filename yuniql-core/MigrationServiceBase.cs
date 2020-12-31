@@ -44,9 +44,12 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
-        public virtual void Initialize(Configuration configuration)
+        public virtual void Initialize()
         {
-            _configurationService.Initialize(configuration);
+            _configurationService.Initialize();
+            _configurationService.Validate();
+
+            var configuration = _configurationService.GetConfiguration();
             _dataService.Initialize(configuration.ConnectionString);
             _bulkImportService.Initialize(configuration.ConnectionString);
         }
@@ -54,6 +57,10 @@ namespace Yuniql.Core
         /// <inheritdoc />
         public virtual string GetCurrentVersion(string metaSchemaName = null, string metaTableName = null)
         {
+            var configuration = _configurationService.GetConfiguration();
+            if (!configuration.IsInitialized)
+                Initialize();
+
             return _metadataService.GetCurrentVersion(metaSchemaName, metaTableName);
         }
 
@@ -61,6 +68,10 @@ namespace Yuniql.Core
         //TODO: Move this to MigrationServiceBase
         public virtual List<DbVersion> GetAllVersions(string metaSchemaName = null, string metaTableName = null)
         {
+            var configuration = _configurationService.GetConfiguration();
+            if (!configuration.IsInitialized) 
+                Initialize();
+
             return _metadataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
         }
 
@@ -261,9 +272,10 @@ namespace Yuniql.Core
         /// <inheritdoc />
         public virtual void Erase()
         {
-            var configuration = _configurationService.GetConfiguration();
+            Initialize();
 
             //create a shared open connection to entire migration run
+            var configuration = _configurationService.GetConfiguration();
             using (var connection = _dataService.CreateConnection())
             {
                 connection.KeepOpen();

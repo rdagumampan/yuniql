@@ -68,42 +68,42 @@ namespace Yuniql.CLI
             }
         }
 
+        private Configuration SetupRunConfiguration(BaseRunPlatformOption opts, bool verifyOnly = false)
+        {
+            var configuration = Configuration.Instance;
+
+            var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+            var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+
+            configuration.Platform = platform;
+            configuration.WorkspacePath = opts.Path;
+            configuration.ConnectionString = opts.ConnectionString;
+            configuration.TargetVersion = opts.TargetVersion;
+            configuration.AutoCreateDatabase = opts.AutoCreateDatabase;
+            configuration.Tokens = tokens;
+            configuration.VerifyOnly = verifyOnly;
+            configuration.BulkSeparator = opts.BulkSeparator;
+            configuration.BulkBatchSize = opts.BulkBatchSize;
+            configuration.MetaSchemaName = opts.MetaSchema;
+            configuration.MetaTableName = opts.MetaTable;
+            configuration.CommandTimeout = opts.CommandTimeout;
+            configuration.Environment = opts.Environment;
+            configuration.ContinueAfterFailure = opts.ContinueAfterFailure;
+            configuration.TransactionMode = opts.TransactionMode;
+            configuration.RequiredClearedDraft = opts.RequiredClearedDraft;
+            configuration.AppliedByTool = "yuniql-cli";
+            configuration.AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString();
+
+            return configuration;
+        }
+
         public int RunRunOption(RunOption opts)
         {
             try
             {
-                //prepare session configuration and validate
-                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
-                var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
-                var parameters = new Configuration
-                {
-                    Platform = platform,
-                    WorkspacePath = opts.Path,
-                    ConnectionString = opts.ConnectionString,
-                    TargetVersion = opts.TargetVersion,
-                    AutoCreateDatabase= opts.AutoCreateDatabase,
-                    Tokens = tokens,
-                    VerifyOnly= false,
-                    BulkSeparator = opts.BulkSeparator,
-                    BulkBatchSize = opts.BulkBatchSize,
-                    MetaSchemaName = opts.MetaSchema,
-                    MetaTableName = opts.MetaTable,
-                    CommandTimeout = opts.CommandTimeout,
-                    Environment = opts.Environment,
-                    ContinueAfterFailure =  opts.ContinueAfterFailure,
-                    TransactionMode = opts.TransactionMode,
-                    RequiredClearedDraft =  opts.RequiredClearedDraft,
-                    AppliedByTool = "yuniql-cli",
-                    AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
-                };
-
-                //deep copy all the properties and post process defaults based on this hierarchy
-                //cli parameters -> environment variables -> defaults from internal core logic
-                var configuration = _configurationService.Initialize(parameters);
-
                 //run the migration
+                var configuration = SetupRunConfiguration(opts, verifyOnly: false);
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
 
                 _traceService.Success($"Schema migration completed successfuly on {configuration.WorkspacePath}.");
@@ -114,40 +114,14 @@ namespace Yuniql.CLI
                 return OnException(ex, "Failed to execute run function", opts.Debug, _traceService);
             }
         }
-
+        
         public int RunVerifyOption(VerifyOption opts)
         {
             try
             {
-                //prepare session configuration and validate
-                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
-                var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
-                var parameters = new Configuration
-                {
-                    Platform = platform,
-                    WorkspacePath = opts.Path,
-                    ConnectionString = opts.ConnectionString,
-                    TargetVersion = opts.TargetVersion,
-                    AutoCreateDatabase = opts.AutoCreateDatabase,
-                    Tokens = tokens,
-                    VerifyOnly = true,
-                    BulkSeparator = opts.BulkSeparator,
-                    BulkBatchSize = opts.BulkBatchSize,
-                    MetaSchemaName = opts.MetaSchema,
-                    MetaTableName = opts.MetaTable,
-                    CommandTimeout = opts.CommandTimeout,
-                    Environment = opts.Environment,
-                    TransactionMode = opts.TransactionMode,
-                    AppliedByTool = "yuniql-cli",
-                    AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString(),
-                };
-
-                //deep copy all the properties and post process defaults based on this hierarchy
-                //cli parameters -> environment variables -> defaults from internal core logic
-                var configuration = _configurationService.Initialize(parameters);
-
+                //run the migration
+                var configuration = SetupRunConfiguration(opts, verifyOnly: true);
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
 
                 _traceService.Success($"Schema migration verification completed successfuly on {configuration.WorkspacePath}.");
@@ -164,23 +138,17 @@ namespace Yuniql.CLI
             try
             {
                 var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
-                var parameters = new Configuration
-                {
-                    Platform = platform,
-                    WorkspacePath = opts.Path,
-                    ConnectionString = opts.ConnectionString,
-                    MetaSchemaName = opts.MetaSchema,
-                    MetaTableName = opts.MetaTable,
-                    CommandTimeout = opts.CommandTimeout,
-                };
 
-                //deep copy all the properties and post process defaults based on this hierarchy
-                //cli parameters -> environment variables -> defaults from internal core logic
-                var configuration = _configurationService.Initialize(parameters);
+                var configuration = Configuration.Instance;
+                configuration.Platform = platform;
+                configuration.WorkspacePath = opts.Path;
+                configuration.ConnectionString = opts.ConnectionString;
+                configuration.MetaSchemaName = opts.MetaSchema;
+                configuration.MetaTableName = opts.MetaTable;
+                configuration.CommandTimeout = opts.CommandTimeout;
 
                 //get all exsiting db versions
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 var versions = migrationService.GetAllVersions(configuration.MetaSchemaName, configuration.MetaTableName);
 
                 var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool");
@@ -205,25 +173,19 @@ namespace Yuniql.CLI
                 //parse tokens
                 var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
-                var parameters = new Configuration
-                {
-                    Platform = platform,
-                    WorkspacePath = opts.Path,
-                    DebugTraceMode = opts.Debug,
-                    ConnectionString = opts.ConnectionString,
-                    CommandTimeout = opts.CommandTimeout,
-                    Tokens = tokens,
-                    IsForced = opts.Force,
-                    Environment = opts.Environment
-                };
 
-                //deep copy all the properties and post process defaults based on this hierarchy
-                //cli parameters -> environment variables -> defaults from internal core logic
-                var configuration = _configurationService.Initialize(parameters);
+                var configuration = Configuration.Instance;
+                configuration.Platform = platform;
+                configuration.WorkspacePath = opts.Path;
+                configuration.DebugTraceMode = opts.Debug;
+                configuration.ConnectionString = opts.ConnectionString;
+                configuration.CommandTimeout = opts.CommandTimeout;
+                configuration.Tokens = tokens;
+                configuration.IsForced = opts.Force;
+                configuration.Environment = opts.Environment;
 
                 //run all erase scripts
-                var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
+                var migrationService = _migrationServiceFactory.Create(platform);
                 migrationService.Erase();
 
                 _traceService.Success($"Schema erase completed successfuly on {configuration.WorkspacePath}.");
@@ -234,7 +196,7 @@ namespace Yuniql.CLI
                 return OnException(ex, "Failed to execute erase function", opts.Debug, _traceService);
             }
         }
-        
+
         public int RunPlatformsOption(PlatformsOption opts)
         {
             try

@@ -50,11 +50,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsv.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsv"));
 
             //act
-            var configuration = new Configuration { WorkspacePath = _testConfiguration.WorkspacePath, Platform = _testConfiguration.Platform, ConnectionString = _testConfiguration.ConnectionString, AutoCreateDatabase = true};
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -67,7 +66,6 @@ namespace Yuniql.PlatformTests
 
             //act
             configuration.TargetVersion = "v1.01";
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -103,11 +101,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvPipeSeparated.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvPipeSeparated"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -152,11 +149,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvUtf8.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvUtf8"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -201,11 +197,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvNullColumn.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvNullColumn"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -249,11 +244,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvUnquoted.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvUnquoted"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -300,11 +294,10 @@ namespace Yuniql.PlatformTests
             //act - bulk load csv files
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 configuration.TargetVersion = "v1.00";
 
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)
@@ -326,11 +319,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvMismatchColumn.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvMismatchColumn"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -377,11 +369,10 @@ namespace Yuniql.PlatformTests
             //act - bulk load csv files
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 configuration.TargetVersion = "v1.00";
 
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)
@@ -407,11 +398,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvWithSchema.sql"), _testDataService.GetSqlForCreateBulkTable("TestSchema.TestCsv"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -459,11 +449,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvNullWordValue.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvNullWordValue"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert

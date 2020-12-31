@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace Yuniql.CLI
 {
+    //TODO: Move this into Yuniql.Core as TablePrintService
     //thanks https://stackoverflow.com/users/1547699/sumudu
     //https://stackoverflow.com/a/54943087/3449591
     public class TablePrinter

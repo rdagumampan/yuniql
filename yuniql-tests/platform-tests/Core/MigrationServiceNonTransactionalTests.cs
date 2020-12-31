@@ -53,9 +53,8 @@ namespace Yuniql.PlatformTests
             //act & assert
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)
@@ -79,9 +78,8 @@ namespace Yuniql.PlatformTests
             //act & assert
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)
@@ -106,9 +104,8 @@ namespace Yuniql.PlatformTests
             //act & assert
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)
@@ -143,9 +140,8 @@ namespace Yuniql.PlatformTests
             //act & assert - where the first script has failed
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)
@@ -168,9 +164,8 @@ namespace Yuniql.PlatformTests
             //act & assert - where force to continue on failure
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)
@@ -193,9 +188,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00_03.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00_03"));
 
             //act & assert - where the first script has failed
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
 
             try
             {
@@ -249,9 +243,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -281,9 +274,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -324,11 +316,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v2level1SubDirectory, $"test_v2_00_level1_sublevel1.sql"), _testDataService.GetSqlForCreateDbObject($"test_v2_00_level1_sublevel1"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v2.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -374,11 +365,10 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v2level1SubDirectory, $"test_v2_00_level1_sublevel1.sql"), _testDataService.GetSqlForCreateDbObject($"test_v2_00_level1_sublevel1"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v2.00";
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert

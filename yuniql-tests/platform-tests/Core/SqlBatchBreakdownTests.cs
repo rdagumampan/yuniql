@@ -49,9 +49,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"Test_Single_Run_Empty.sql"), sqlStatement);
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -70,9 +69,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLine(sqlObjectName));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -91,9 +89,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLineWithoutTerminator(sqlObjectName));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -116,9 +113,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithoutTerminatorInLastLine(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -143,9 +139,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithTerminatorInCommentBlock(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -172,9 +167,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithTerminatorInsideStatements(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -199,9 +193,8 @@ namespace Yuniql.PlatformTests
             //act
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)

@@ -1,14 +1,37 @@
 ﻿using System.Collections.Generic;
+using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
-
-    public class Configuration
+    /// <summary>
+    /// Global singleton instance of session configuration
+    /// </summary>
+    public sealed class Configuration
     {
-        public Configuration()
+        private static readonly Configuration instance = new Configuration();
+
+        ///<inheritdoc/>
+        static Configuration() {}
+
+        ///<inheritdoc/>
+        private Configuration() {}
+
+        /// <summary>
+        /// Returns global singleton instance of session configuration
+        /// </summary>
+        public static Configuration Instance
         {
+            get
+            {
+                return instance;
+            }
         }
 
+        /// <summary>
+        /// Returns true when global configuration has been initiatlized via configurationService.Initialize()
+        /// </summary>
+        public bool IsInitialized { get; set; } = false;
+        
         /// <summary>
         /// The directory where yuniql-based migration project is placed.
         /// This is a required property.
@@ -56,20 +79,20 @@ namespace Yuniql.Core
         /// Bulk file values separator to use when parsing CSV bulk import files.
         /// This is defaulted to comma ",".
         /// </summary>
-        public string BulkSeparator { get; set; } = ",";
+        public string BulkSeparator { get; set; } = DEFAULT_CONSTANTS.BULK_SEPARATOR;
 
         /// <summary>
         /// The size of each batch when performing bulk load. This may not be used in non-sqlserver platforms.
         /// This is defaulted to 0.
         /// </summary>
-        public int BulkBatchSize { get; set; } = 0;
+        public int BulkBatchSize { get; set; } = DEFAULT_CONSTANTS.BULK_BATCH_SIZE;
 
         /// <summary>
         /// The time it taks to wait for one commend to execute before it expires and throws error.
         /// Use this prorty to adjust time out when you expect a long running migration execution.
         /// This is defaulted to 30 secs.
         /// </summary>
-        public int CommandTimeout { get; set; } = 30;
+        public int CommandTimeout { get; set; } = DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS;
 
         /// <summary>
         /// Enrich trace messages with raw sql statements and more verbose diagnostic messages.
@@ -134,5 +157,4 @@ namespace Yuniql.Core
         /// </summary>
         public bool IsForced { get; set; } = false;
     }
-
 }

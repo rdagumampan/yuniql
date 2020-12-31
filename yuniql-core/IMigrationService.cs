@@ -10,11 +10,6 @@ namespace Yuniql.Core
     public interface IMigrationService
     {
         /// <summary>
-        /// Initializes the current instance of a migration service./>
-        /// </summary>
-        void Initialize(Configuration configuration);
-
-        /// <summary>
         /// Returns the current migration version applied in target database.
         /// </summary>
         string GetCurrentVersion(string schemaName = null, string tableName = null);

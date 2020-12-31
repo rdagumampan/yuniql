@@ -51,11 +51,10 @@ namespace Yuniql.PlatformTests
             //act and assert
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 configuration.AutoCreateDatabase = false;
 
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)
@@ -76,9 +75,8 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -95,10 +93,9 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.01";
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             var versions = _testDataService.GetAllDbVersions(_testConfiguration.ConnectionString);
@@ -130,9 +127,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, scriptFolder), $"test_{scriptFolder}.sql"), _testDataService.GetSqlForCreateDbObject($"test_{scriptFolder}"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -156,9 +152,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -181,9 +176,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -225,10 +219,9 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v2.00"), $"test_v2_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v2_00"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.01";
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -261,10 +254,9 @@ namespace Yuniql.PlatformTests
                 new KeyValuePair<string, string>("Token3","Token3Value"),
             };
 
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.Tokens = tokens;
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -303,9 +295,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v2level1SubDirectory, $"test_v2_00_level1_sublevel1.sql"), _testDataService.GetSqlForCreateDbObject($"test_v2_00_level1_sublevel1"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -334,9 +325,8 @@ namespace Yuniql.PlatformTests
             //act
             try
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }
             catch (Exception ex)
@@ -365,9 +355,8 @@ namespace Yuniql.PlatformTests
             localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
@@ -376,7 +365,6 @@ namespace Yuniql.PlatformTests
             //act
             configuration.VerifyOnly = true;
             configuration.AutoCreateDatabase = false;
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -398,9 +386,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"script3.sql"), _testDataService.GetSqlForCreateDbObject($"script3"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -428,9 +415,8 @@ namespace Yuniql.PlatformTests
             //act
             Assert.ThrowsException<NotSupportedException>(() =>
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 var migrationService = _migrationServiceFactory.Create("sqlserver-vnext");
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             }).Message.ShouldContain($"The target database platform sqlserver-vnext is not supported or plugins location was not correctly configured.");
         }
@@ -449,9 +435,8 @@ namespace Yuniql.PlatformTests
             //act
             var exception = Assert.ThrowsException<YuniqlMigrationException>(() =>
             {
-                var configuration = _testConfiguration.GetConfiguration();
+                var configuration = _testConfiguration.GetFreshConfiguration();
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-                migrationService.Initialize(configuration);
                 migrationService.Run();
             });
 
@@ -479,9 +464,8 @@ namespace Yuniql.PlatformTests
             Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_another_user_created_folder"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -502,9 +486,8 @@ namespace Yuniql.PlatformTests
             _testConfiguration.DatabaseName = databaseName;
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -520,9 +503,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
             //act, run with _draft is empty at this point
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -557,10 +539,9 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TransactionMode = TRANSACTION_MODE.SESSION;
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -586,10 +567,9 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TransactionMode = TRANSACTION_MODE.VERSION;
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert
@@ -615,10 +595,9 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
-            var configuration = _testConfiguration.GetConfiguration();
+            var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TransactionMode = TRANSACTION_MODE.NONE;
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
-            migrationService.Initialize(configuration);
             migrationService.Run();
 
             //assert

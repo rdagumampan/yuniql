@@ -115,7 +115,7 @@ namespace Yuniql.UnitTests
             };
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -309,7 +309,7 @@ namespace Yuniql.UnitTests
             };
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -438,7 +438,7 @@ namespace Yuniql.UnitTests
             var configuration = new Configuration { WorkspacePath = @"c:\temp" };
             var configurationService = new Mock<IConfigurationService>();
             configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
-            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -507,7 +507,7 @@ namespace Yuniql.UnitTests
 
             var configurationService = new Mock<IConfigurationService>();
             configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
-            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
 
             //act
             var sut = new MigrationServiceNonTransactional(
@@ -576,7 +576,7 @@ namespace Yuniql.UnitTests
 
             var configurationService = new Mock<IConfigurationService>();
             configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
-            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
 
             //act
             Assert.ThrowsException<ApplicationException>(() =>

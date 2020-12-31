@@ -18,15 +18,21 @@ namespace Yuniql.PlatformTests
 
         public string TestAgentHost { get; set; }
 
-        public Configuration GetConfiguration()
+        public Configuration GetFreshConfiguration()
         {
-            return new Configuration
-            {
-                WorkspacePath = this.WorkspacePath,
-                Platform = this.Platform,
-                ConnectionString = this.ConnectionString,
-                AutoCreateDatabase = true
-            };
+            var traceService = new FileTraceService();
+            var environmentService = new EnvironmentService();
+            var localVersionService = new LocalVersionService(traceService);
+            var configurationService = new ConfigurationService(environmentService, localVersionService, traceService);
+            configurationService.Reset();
+
+            var configuration = Configuration.Instance;
+            configuration.WorkspacePath = this.WorkspacePath;
+            configuration.Platform = this.Platform;
+            configuration.ConnectionString = this.ConnectionString;
+            configuration.AutoCreateDatabase = true;
+
+            return configuration;
         }
     }
 }

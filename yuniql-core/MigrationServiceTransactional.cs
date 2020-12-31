@@ -59,6 +59,9 @@ namespace Yuniql.Core
         public override void Run()
         {
             var configuration = _configurationService.GetConfiguration();
+            if (!configuration.IsInitialized)
+                Initialize();
+
             Run(
                workingPath: configuration.WorkspacePath,
                targetVersion: configuration.TargetVersion,
