@@ -72,11 +72,11 @@ Post migration scripts. Executed every time and always the last batch to run.");
                 _traceService.Info($"Created script directory {postDirectoryPath}");
             }
 
-            string eraseDirectoryPath = Path.Combine(workingPath, "_erase");
+            string eraseDirectoryPath = Path.Combine(workingPath, ERASE);
             if (!Directory.Exists(eraseDirectoryPath))
             {
                 Directory.CreateDirectory(eraseDirectoryPath);
-                File.AppendAllText(Path.Combine(eraseDirectoryPath, "README.md"), @"# The `_erase` directory
+                File.AppendAllText(Path.Combine(eraseDirectoryPath, "README.md"), $@"# The `{ERASE}` directory
 Database cleanup scripts. Executed once only when you do `yuniql erase`.");
                 _traceService.Info($"Created script directory {eraseDirectoryPath}");
             }
@@ -219,8 +219,8 @@ yuniql-log-*.txt
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, PRE), Directory.Exists(Path.Combine(workingPath, PRE))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00*"), versionZeroDirectory != null),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, DRAFT), Directory.Exists(Path.Combine(workingPath, DRAFT))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST), Directory.Exists(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_erase"), Directory.Exists(Path.Combine(workingPath, "_erase"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, POST), Directory.Exists(Path.Combine(workingPath, POST))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, ERASE), Directory.Exists(Path.Combine(workingPath, ERASE))),
             };
 
             if (directories.Any(t => !t.Value))

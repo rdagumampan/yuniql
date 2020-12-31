@@ -58,8 +58,8 @@ namespace Yuniql.PlatformTests
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST)).ShouldBe(true);
             File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST), "README.md")).ShouldBe(true);
 
-            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "_erase")).ShouldBe(true);
-            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_erase"), "README.md")).ShouldBe(true);
+            Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE)).ShouldBe(true);
+            File.Exists(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE), "README.md")).ShouldBe(true);
 
             File.Exists(Path.Combine(_testConfiguration.WorkspacePath, "README.md")).ShouldBe(true);
             File.Exists(Path.Combine(_testConfiguration.WorkspacePath, "Dockerfile")).ShouldBe(true);

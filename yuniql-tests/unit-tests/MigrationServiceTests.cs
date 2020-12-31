@@ -418,8 +418,8 @@ namespace Yuniql.UnitTests
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
 
-            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
-            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { $@"c:\temp\{ERASE}\sql_erase.sql" });
+            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { $@"c:\temp\{ERASE}\sql_erase.sql" });
 
             fileService.Setup(s => s.ReadAllText(It.IsAny<string>())).Returns("SELECT 'erase'");
 
@@ -483,8 +483,8 @@ namespace Yuniql.UnitTests
             var fileService = new Mock<IFileService>();
 
             var directoryService = new Mock<IDirectoryService>();
-            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
-            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { $@"c:\temp\{ERASE}\sql_erase.sql" });
+            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { $@"c:\temp\{ERASE}\sql_erase.sql" });
 
             fileService.Setup(s => s.ReadAllText(It.IsAny<string>())).Returns("SELECT 'erase'");
 
@@ -548,8 +548,8 @@ namespace Yuniql.UnitTests
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
 
-            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
-            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { $@"c:\temp\{ERASE}\sql_erase.sql" });
+            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { $@"c:\temp\{ERASE}\sql_erase.sql" });
 
             //simulates that an exception happens while erase is executing
             fileService.Setup(s => s.ReadAllText(It.IsAny<string>())).Throws(new ApplicationException("Fake exception"));
