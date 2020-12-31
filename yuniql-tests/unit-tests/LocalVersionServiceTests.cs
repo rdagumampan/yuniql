@@ -7,7 +7,7 @@ namespace Yuniql.UnitTests
 {
     //TODO: Implement LocalVersionServiceTests
     [TestClass]
-    public class LocalVersionServiceTests : TestBase
+    public class LocalVersionServiceTests : TestClassBase
     {
 
         //TODO: LocalVersionService is not testable due to use of static classes Directory and File

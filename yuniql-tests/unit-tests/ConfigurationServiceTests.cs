@@ -9,38 +9,38 @@ using Yuniql.Extensibility;
 namespace Yuniql.UnitTests
 {
     [TestClass]
-    public class ConfigurationServiceTests
+    public class ConfigurationServiceTests: TestClassBase
     {
-        private Configuration CreateTestParameter()
+        private Configuration GetFreshConfiguration()
         {
-            return new Configuration
-            {
-                WorkspacePath = @"c:\temp\yuniql",
-                DebugTraceMode = true,
-                Platform = SUPPORTED_DATABASES.SQLSERVER,
-                ConnectionString = "sqlserver-connectionstring",
-                CommandTimeout = 30,
-                TargetVersion = "v0.00",
-                AutoCreateDatabase = true,
-                Tokens = new List<KeyValuePair<string, string>> {
-                    new KeyValuePair<string, string>("token1", "value1"),
-                    new KeyValuePair<string, string>("token2", "value2"),
-                    new KeyValuePair<string, string>("token3", "value3")
-                },
-                BulkSeparator = ",",
-                BulkBatchSize = 1000,
-                Environment = "dev",
-                MetaSchemaName = "yuniql_schema",
-                MetaTableName = "yuniql_table",
-                TransactionMode = TRANSACTION_MODE.SESSION,
-                ContinueAfterFailure = true,
-                RequiredClearedDraft = true,
-                IsForced = true,
-                VerifyOnly = true,
-                AppliedByTool = "yuniql-cli",
-                AppliedByToolVersion = "v0.0.0.0"
+            var configuration = Configuration.Instance;
+            configuration.WorkspacePath = @"c:\temp\yuniql";
+            configuration.DebugTraceMode = true;
+            configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
+            configuration.ConnectionString = "sqlserver-connectionstring";
+            configuration.CommandTimeout = 30;
+            configuration.TargetVersion = "v0.00";
+            configuration.AutoCreateDatabase = true;
+            configuration.Tokens = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string> ("token1", "value1"),
+                new KeyValuePair<string, string> ("token2", "value2"),
+                new KeyValuePair<string, string> ("token3", "value3")
             };
-        }
+            configuration.BulkSeparator = ";";
+            configuration.BulkBatchSize = 1000;
+            configuration.Environment = "dev";
+            configuration.MetaSchemaName = "yuniql_schema";
+            configuration.MetaTableName = "yuniql_table";
+            configuration.TransactionMode = TRANSACTION_MODE.SESSION;
+            configuration.ContinueAfterFailure = true;
+            configuration.RequiredClearedDraft = true;
+            configuration.IsForced = true;
+            configuration.VerifyOnly = true;
+            configuration.AppliedByTool = "yuniql-cli";
+            configuration.AppliedByToolVersion = "v1.0.0.0";
+
+            return configuration;
+    }
 
         [TestMethod]
         public void Test_Paremeters_Mapped_To_Configuration()
@@ -49,7 +49,7 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var localVersionService = new Mock<ILocalVersionService>();
 
-            var parameters = CreateTestParameter();
+            var parameters = GetFreshConfiguration();
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE)).Returns(parameters.WorkspacePath);
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM)).Returns(parameters.Platform);
@@ -57,7 +57,7 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new ConfigurationService(environmentService.Object, localVersionService.Object, traceService.Object);
-            sut.Initialize(parameters);
+            sut.Initialize();
             var configuration = sut.GetConfiguration();
 
             //assert
@@ -73,7 +73,7 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var localVersionService = new Mock<ILocalVersionService>();
 
-            var parameters = CreateTestParameter();
+            var parameters = GetFreshConfiguration();
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE)).Returns(parameters.WorkspacePath);
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM)).Returns(parameters.Platform);
@@ -81,11 +81,11 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new ConfigurationService(environmentService.Object, localVersionService.Object, traceService.Object);
-            sut.Initialize(parameters);
-            var configurationJson = sut.PrintAsJson(redactSensitiveText:true);
+            sut.Initialize();
+            var configurationJson = sut.PrintAsJson(redactSensitiveText: true);
 
             //assert
-            var configuration = JsonSerializer.Deserialize<Configuration>(configurationJson, new JsonSerializerOptions {PropertyNameCaseInsensitive = true });
+            var configuration = JsonSerializer.Deserialize<Configuration>(configurationJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             configuration.ConnectionString.ShouldBe("<sensitive-data-redacted>");
         }
 
@@ -96,7 +96,7 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var localVersionService = new Mock<ILocalVersionService>();
 
-            var parameters = CreateTestParameter();
+            var parameters = GetFreshConfiguration();
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE)).Returns(parameters.WorkspacePath);
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM)).Returns(parameters.Platform);
@@ -104,7 +104,7 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new ConfigurationService(environmentService.Object, localVersionService.Object, traceService.Object);
-            sut.Initialize(parameters);
+            sut.Initialize();
             var configurationJson = sut.PrintAsJson(redactSensitiveText: false);
 
             //assert

@@ -111,7 +111,7 @@ namespace Yuniql.Core
         /// Describes the version of source of migration applied to target database.
         /// This is defaulted to yuniql.core assembly version.
         /// </summary>
-        public string AppliedByToolVersion { get; set; } = typeof(Configuration).Assembly.GetName().Version.ToString();
+        public string AppliedByToolVersion { get; set; } = $"v{typeof(IMigrationService).Assembly.GetName().Version.ToString()}";
 
         /// <summary>
         /// Environment to target when running migration with environment-aware scripts.

@@ -9,7 +9,7 @@ using System.Linq;
 namespace Yuniql.UnitTests
 {
     [TestClass]
-    public class DirectoryServiceTests
+    public class DirectoryServiceTests: TestClassBase
     {
         [TestMethod]
         public void Test_Filter_Files_No_Environment_Aware_Directory_Present()

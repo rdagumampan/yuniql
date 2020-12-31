@@ -8,7 +8,7 @@ using Yuniql.Extensibility.SqlBatchParser;
 namespace Yuniql.UnitTests
 {
     [TestClass]
-    public class SemiColonSqlBatchParserTests
+    public class SemiColonSqlBatchParserTests: TestClassBase
     {
         [TestMethod]
         public void Test_SemiColon_Basic_Two_Batches()

@@ -10,7 +10,7 @@ namespace Yuniql.UnitTests
 {
     //TODO: Implement MetadataServiceTests
     [TestClass]
-    public class MetadataServiceTests : TestBase
+    public class MetadataServiceTests : TestClassBase
     {
         //TODO: MetadataService is not testable due to use of extension methods
         [Ignore]

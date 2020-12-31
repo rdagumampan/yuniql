@@ -13,7 +13,7 @@ using Yuniql.CLI;
 namespace Yuniql.UnitTests
 {
     [TestClass]
-    public class MigrationServiceTests
+    public class MigrationServiceTests: TestClassBase
     {
         [TestMethod]
         public void Test_Run_()
@@ -35,7 +35,7 @@ namespace Yuniql.UnitTests
             metadataService.Setup(s => s.GetAllAppliedVersions(null, null, null)).Returns(new List<DbVersion> { });
             metadataService.Setup(s => s.GetAllVersions(null, null, null)).Returns(new List<DbVersion> { });
             metadataService.Setup(s => s.GetCurrentVersion(null, null, null)).Returns(string.Empty);
-            metadataService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", null,null, null, null, null, null, null, null));
+            metadataService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", null, null, null, null, null, null, null, null));
 
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 1", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
@@ -64,7 +64,7 @@ namespace Yuniql.UnitTests
             directoryService.Setup(s => s.GetDirectories(@"c:\temp", "v*.*")).Returns(new string[] { @"c:\temp\v0.00" });
 
             directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_init", "*.sql")).Returns(new string[] { @"c:\temp\_init\sql_init.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_init", null, It.Is<List<string>>(f=> f.Contains(@"c:\temp\_init\sql_init.sql")))).Returns(new string[] { @"c:\temp\_init\sql_init.sql" });
+            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_init", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_init\sql_init.sql")))).Returns(new string[] { @"c:\temp\_init\sql_init.sql" });
 
             directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_pre", "*.sql")).Returns(new string[] { @"c:\temp\_pre\sql_pre.sql" });
             directoryService.Setup(s => s.FilterFiles(@"c:\temp\_pre", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_pre\sql_pre.sql")))).Returns(new string[] { @"c:\temp\_pre\sql_pre.sql" });
@@ -105,17 +105,16 @@ namespace Yuniql.UnitTests
                new KeyValuePair<string, string>("Token3","TokenValue3"),
             };
 
-            var configuration = new Configuration { 
-                WorkspacePath = @"c:\temp",
-                Platform  = SUPPORTED_DATABASES.SQLSERVER,
-                TargetVersion = "v0.00",
-                AutoCreateDatabase = true,
-                Tokens = tokenKeyPairs,
-                VerifyOnly = false
-            };
+            var configuration = Configuration.Instance;
+            configuration.WorkspacePath = @"c:\temp";
+            configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
+            configuration.TargetVersion = "v0.00";
+            configuration.AutoCreateDatabase = true;
+            configuration.Tokens = tokenKeyPairs;
+            configuration.VerifyOnly = false;
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -128,7 +127,6 @@ namespace Yuniql.UnitTests
                 fileService.Object,
                 traceService.Object,
                 configurationService.Object);
-            sut.Initialize(configuration);
             sut.Run();
 
             //asset
@@ -136,11 +134,11 @@ namespace Yuniql.UnitTests
 
             metadataService.Verify(s => s.IsDatabaseExists(null));
             metadataService.Verify(s => s.CreateDatabase(null));
-            metadataService.Verify(s => s.IsDatabaseConfigured(null, null, null));;
+            metadataService.Verify(s => s.IsDatabaseConfigured(null, null, null)); ;
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
-            metadataService.Verify(s => s.GetCurrentVersion(null, null, null));;
-            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "1.0.0.0", null, null, null));
+            metadataService.Verify(s => s.GetCurrentVersion(null, null, null)); ;
+            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null));
 
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());
@@ -298,18 +296,16 @@ namespace Yuniql.UnitTests
                new KeyValuePair<string, string>("Token3","TokenValue3"),
             };
 
-            var configuration = new Configuration
-            {
-                WorkspacePath = @"c:\temp",
-                Platform = SUPPORTED_DATABASES.SQLSERVER,
-                TargetVersion = "v0.00",
-                AutoCreateDatabase = true,
-                Tokens = tokenKeyPairs,
-                VerifyOnly = false
-            };
+            var configuration = Configuration.Instance;
+            configuration.WorkspacePath = @"c:\temp";
+            configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
+            configuration.TargetVersion = "v0.00";
+            configuration.AutoCreateDatabase = true;
+            configuration.Tokens = tokenKeyPairs;
+            configuration.VerifyOnly = false;
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -322,7 +318,6 @@ namespace Yuniql.UnitTests
                 fileService.Object,
                 traceService.Object,
                 configurationService.Object);
-            sut.Initialize(configuration);
             sut.Run();
 
             //asset
@@ -334,7 +329,7 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
             metadataService.Verify(s => s.GetCurrentVersion(null, null, null)); ;
-            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "1.0.0.0", null, null, null));
+            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null));
 
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());
@@ -435,10 +430,13 @@ namespace Yuniql.UnitTests
 
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
-            var configuration = new Configuration { WorkspacePath = @"c:\temp" };
+
+            var configuration = Configuration.Instance;
+            configuration.WorkspacePath = @"c:\temp";
+
             var configurationService = new Mock<IConfigurationService>();
             configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
-            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceTransactional(
@@ -451,7 +449,6 @@ namespace Yuniql.UnitTests
                 fileService.Object,
                 traceService.Object,
                 configurationService.Object);
-            sut.Initialize(configuration);
             sut.Erase();
 
             //assert
@@ -474,7 +471,7 @@ namespace Yuniql.UnitTests
 
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
-            
+
             var localVersionService = new Mock<ILocalVersionService>();
 
             var metadataService = new Mock<IMetadataService>();
@@ -499,15 +496,13 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
 
-            var configuration = new Configuration
-            {
-                WorkspacePath = @"C:\temp",
-                Platform = SUPPORTED_DATABASES.SQLSERVER,
-            };
+            var configuration = Configuration.Instance;
+            configuration.WorkspacePath = @"C:\temp";
+            configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
 
             var configurationService = new Mock<IConfigurationService>();
             configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
-            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceNonTransactional(
@@ -520,7 +515,6 @@ namespace Yuniql.UnitTests
                 fileService.Object,
                 traceService.Object,
                 configurationService.Object);
-            sut.Initialize(configuration);
             sut.Erase();
 
             //assert
@@ -568,20 +562,17 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
 
-            var configuration = new Configuration
-            {
-                WorkspacePath = @"C:\temp",
-                Platform = SUPPORTED_DATABASES.SQLSERVER,
-            };
+            var configuration = Configuration.Instance;
+            configuration.WorkspacePath = @"C:\temp";
+            configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
 
             var configurationService = new Mock<IConfigurationService>();
             configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
-            configurationService.Setup(s => s.GetConfiguration()).Returns(SessionConfiguration.Instance);
+            configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             Assert.ThrowsException<ApplicationException>(() =>
             {
-                var configuration = new Configuration { WorkspacePath = @"c:\temp" };
                 var sut = new MigrationServiceTransactional(
                     localVersionService.Object,
                     dataService.Object,
@@ -592,7 +583,6 @@ namespace Yuniql.UnitTests
                     fileService.Object,
                     traceService.Object,
                     configurationService.Object);
-                sut.Initialize(configuration);
                 sut.Erase();
             }).Message.ShouldBe("Fake exception");
 
@@ -618,7 +608,7 @@ namespace Yuniql.UnitTests
             dataService.Setup(s => s.CreateConnection())
                                     .Returns(connection.Object);
             dataService.Setup(s => s.GetConnectionInfo())
-                                    .Returns(() => new ConnectionInfo {  Database = "test", DataSource = "test"});
+                                    .Returns(() => new ConnectionInfo { Database = "test", DataSource = "test" });
             var configurationDataService = new Mock<IMetadataService>();
             configurationDataService.Setup(s => s.IsDatabaseConfigured(It.IsAny<string>(), It.IsAny<string>(), null))
                                     .Returns(true);
@@ -634,13 +624,13 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new MigrationServiceTransactional(
-                new Mock<ILocalVersionService>().Object, 
-                dataService.Object, 
-                new Mock<IBulkImportService>().Object, 
-                configurationDataService.Object, 
-                new Mock<ITokenReplacementService>().Object, 
-                new Mock<IDirectoryService>().Object, 
-                new Mock<IFileService>().Object, 
+                new Mock<ILocalVersionService>().Object,
+                dataService.Object,
+                new Mock<IBulkImportService>().Object,
+                configurationDataService.Object,
+                new Mock<ITokenReplacementService>().Object,
+                new Mock<IDirectoryService>().Object,
+                new Mock<IFileService>().Object,
                 new Mock<ITraceService>().Object,
                 configurationService.Object);
             sut.Run(string.Empty, transactionMode: transactionMode);
