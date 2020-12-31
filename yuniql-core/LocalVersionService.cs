@@ -35,11 +35,11 @@ Initialization scripts. Executed once. This is called the first time you do `yun
                 _traceService.Info($"Created script directory {initDirectoryPath}");
             }
 
-            string preDirectoryPath = Path.Combine(workingPath, "_pre");
+            string preDirectoryPath = Path.Combine(workingPath, PRE);
             if (!Directory.Exists(preDirectoryPath))
             {
                 Directory.CreateDirectory(preDirectoryPath);
-                File.AppendAllText(Path.Combine(preDirectoryPath, "README.md"), @"# The `_pre` directory
+                File.AppendAllText(Path.Combine(preDirectoryPath, "README.md"), @$"# The `{PRE}` directory
 Pre migration scripts. Executed every time before any version. 
 ");
                 _traceService.Info($"Created script directory {preDirectoryPath}");
@@ -216,7 +216,7 @@ yuniql-log-*.txt
             //TODO: Use RESERVED_DIRECTORY_NAME constants in this directory names
             var directories = new List<KeyValuePair<string, bool>> {
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, INIT), Directory.Exists(Path.Combine(workingPath, INIT))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_pre"), Directory.Exists(Path.Combine(workingPath, "_pre"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE), Directory.Exists(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00*"), versionZeroDirectory != null),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_draft"), Directory.Exists(Path.Combine(workingPath, "_draft"))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_post"), Directory.Exists(Path.Combine(workingPath, "_post"))),

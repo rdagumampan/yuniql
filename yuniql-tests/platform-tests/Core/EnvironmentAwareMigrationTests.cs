@@ -51,9 +51,9 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(init_test, $"init_test.sql"), _testDataService.GetSqlForCreateDbObject($"init_test"));
             _testDataService.CreateScriptFile(Path.Combine(init_prod, $"init_prod.sql"), _testDataService.GetSqlForCreateDbObject($"init_prod"));
 
-            var pre_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_pre", "_dev")).FullName;
-            var pre_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_pre", "_test")).FullName;
-            var pre_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_pre", "_prod")).FullName;
+            var pre_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE, "_dev")).FullName;
+            var pre_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE, "_test")).FullName;
+            var pre_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE, "_prod")).FullName;
 
             _testDataService.CreateScriptFile(Path.Combine(pre_dev, $"pre_dev.sql"), _testDataService.GetSqlForCreateDbObject($"pre_dev"));
             _testDataService.CreateScriptFile(Path.Combine(pre_test, $"pre_test.sql"), _testDataService.GetSqlForCreateDbObject($"pre_test"));

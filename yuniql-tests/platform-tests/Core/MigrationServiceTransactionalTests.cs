@@ -116,7 +116,7 @@ namespace Yuniql.PlatformTests
 
         [DataTestMethod()]
         [DataRow(RESERVED_DIRECTORY_NAME.INIT)]
-        [DataRow("_pre")]
+        [DataRow(RESERVED_DIRECTORY_NAME.PRE)]
         [DataRow("_post")]
         [DataRow("_draft")]
         public void Test_Run_All_NonVersion_Scripts_Executed(string scriptFolder)
@@ -233,7 +233,7 @@ namespace Yuniql.PlatformTests
 
         [DataTestMethod()]
         [DataRow(RESERVED_DIRECTORY_NAME.INIT, RESERVED_DIRECTORY_NAME.INIT)]
-        [DataRow("_pre", "_pre")]
+        [DataRow(RESERVED_DIRECTORY_NAME.PRE, RESERVED_DIRECTORY_NAME.PRE)]
         [DataRow("v1.00", "v1_00")]
         [DataRow("_post", "_post")]
         [DataRow("_draft", "_draft")]
@@ -443,7 +443,7 @@ namespace Yuniql.PlatformTests
             //assert
             exception.Message.Contains("At least one Yuniql directory is missing in your project.").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)} / Missing").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_pre")} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE)} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00*")} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_draft")} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_post")} / Missing").ShouldBeTrue();

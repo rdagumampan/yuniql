@@ -245,8 +245,8 @@ namespace Yuniql.Core
 
                 //checks if target database already runs the latest version and skips work if it already is
                 //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE)}");
 
                 //runs all scripts int the vxx.xx folders and subfolders
                 RunVersionScripts(connection, transaction, allVersions, workingPath, targetVersion, null, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode, transactionMode: transactionMode);
@@ -264,8 +264,8 @@ namespace Yuniql.Core
             void RunDraftInternal(IDbConnection connection, IDbTransaction transaction, bool requiredClearedDraft)
             {
                 //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE)}");
 
                 //runs all scripts in the _draft folder and subfolders
                 RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
