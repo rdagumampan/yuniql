@@ -118,7 +118,7 @@ namespace Yuniql.PlatformTests
         [DataRow(RESERVED_DIRECTORY_NAME.INIT)]
         [DataRow(RESERVED_DIRECTORY_NAME.PRE)]
         [DataRow("_post")]
-        [DataRow("_draft")]
+        [DataRow(RESERVED_DIRECTORY_NAME.DRAFT)]
         public void Test_Run_All_NonVersion_Scripts_Executed(string scriptFolder)
         {
             //arrange
@@ -236,7 +236,7 @@ namespace Yuniql.PlatformTests
         [DataRow(RESERVED_DIRECTORY_NAME.PRE, RESERVED_DIRECTORY_NAME.PRE)]
         [DataRow("v1.00", "v1_00")]
         [DataRow("_post", "_post")]
-        [DataRow("_draft", "_draft")]
+        [DataRow(RESERVED_DIRECTORY_NAME.DRAFT, RESERVED_DIRECTORY_NAME.DRAFT)]
         public void Test_Run_With_Parameterized_Tokens(string versionFolder, string scriptName)
         {
             //arrange           
@@ -445,7 +445,7 @@ namespace Yuniql.PlatformTests
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)} / Missing").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE)} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00*")} / Found").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_draft")} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT)} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_post")} / Missing").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "_erase")} / Found").ShouldBeTrue();
 
@@ -511,8 +511,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00").ShouldBeTrue();
 
             //arrange
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_draft"), $"test_draft_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_01"));
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "_draft"), $"test_draft_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_02"));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT), $"test_draft_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_01"));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT), $"test_draft_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_02"));
 
             //act - runs again with _draft holding two script files
             migrationService.Run();

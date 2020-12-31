@@ -67,9 +67,9 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v00_test, $"v00_test.sql"), _testDataService.GetSqlForCreateDbObject($"v00_test"));
             _testDataService.CreateScriptFile(Path.Combine(v00_prod, $"v00_prod.sql"), _testDataService.GetSqlForCreateDbObject($"v00_prod"));
 
-            var draft_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_draft", "_dev")).FullName;
-            var draft_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_draft", "_test")).FullName;
-            var draft_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "_draft", "_prod")).FullName;
+            var draft_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT, "_dev")).FullName;
+            var draft_test = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT, "_test")).FullName;
+            var draft_prod = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT, "_prod")).FullName;
 
             _testDataService.CreateScriptFile(Path.Combine(draft_dev, $"draft_dev.sql"), _testDataService.GetSqlForCreateDbObject($"draft_dev"));
             _testDataService.CreateScriptFile(Path.Combine(draft_test, $"draft_test.sql"), _testDataService.GetSqlForCreateDbObject($"draft_test"));

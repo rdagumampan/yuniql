@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.IO;
+using static Yuniql.Core.RESERVED_DIRECTORY_NAME;
 
 namespace Yuniql.Core
 {
@@ -159,9 +160,9 @@ namespace Yuniql.Core
                 var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
 
                 // Throw exception when --require-cleared-draft is set to TRUE 
-                if (sqlScriptFiles.Any() && requiredClearedDraft && workingPath.Contains("_draft"))
+                if (sqlScriptFiles.Any() && requiredClearedDraft && workingPath.Contains(DRAFT))
                 {
-                    throw new YuniqlMigrationException($"Special _draft directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
+                    throw new YuniqlMigrationException($"Special {DRAFT} directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
                         $"Move the script files to a version directory and re-execute the migration. Or remove --require-cleared-draft in parameter.");
                 }
 

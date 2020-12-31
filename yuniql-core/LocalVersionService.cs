@@ -54,11 +54,11 @@ Baseline scripts. Executed once. This is called when you do `yuniql run`.");
                 _traceService.Info($"Created script directory {defaultVersionDirectoryPath}");
             }
 
-            string draftDirectoryPath = Path.Combine(workingPath, "_draft");
+            string draftDirectoryPath = Path.Combine(workingPath, DRAFT);
             if (!Directory.Exists(draftDirectoryPath))
             {
                 Directory.CreateDirectory(draftDirectoryPath);
-                File.AppendAllText(Path.Combine(draftDirectoryPath, "README.md"), @"# The `_draft` directory
+                File.AppendAllText(Path.Combine(draftDirectoryPath, "README.md"), $@"# The `{DRAFT}` directory
 Scripts in progress. Scripts that you are currently working and have not moved to specific version directory yet. Executed every time after the latest version.");
                 _traceService.Info($"Created script directory {draftDirectoryPath}");
             }
@@ -216,9 +216,9 @@ yuniql-log-*.txt
             //TODO: Use RESERVED_DIRECTORY_NAME constants in this directory names
             var directories = new List<KeyValuePair<string, bool>> {
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, INIT), Directory.Exists(Path.Combine(workingPath, INIT))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE), Directory.Exists(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, PRE), Directory.Exists(Path.Combine(workingPath, PRE))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00*"), versionZeroDirectory != null),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, "_draft"), Directory.Exists(Path.Combine(workingPath, "_draft"))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, DRAFT), Directory.Exists(Path.Combine(workingPath, DRAFT))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_post"), Directory.Exists(Path.Combine(workingPath, "_post"))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "_erase"), Directory.Exists(Path.Combine(workingPath, "_erase"))),
             };
