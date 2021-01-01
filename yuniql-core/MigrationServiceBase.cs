@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.IO;
-using static Yuniql.Core.RESERVED_DIRECTORY_NAME;
 
 namespace Yuniql.Core
 {
@@ -160,9 +159,9 @@ namespace Yuniql.Core
                 var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
 
                 // Throw exception when --require-cleared-draft is set to TRUE 
-                if (sqlScriptFiles.Any() && requiredClearedDraft && workingPath.Contains(DRAFT))
+                if (sqlScriptFiles.Any() && requiredClearedDraft && workingPath.Contains(RESERVED_DIRECTORY_NAME.DRAFT))
                 {
-                    throw new YuniqlMigrationException($"Special {DRAFT} directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
+                    throw new YuniqlMigrationException($"Special {RESERVED_DIRECTORY_NAME.DRAFT} directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
                         $"Move the script files to a version directory and re-execute the migration. Or remove --require-cleared-draft in parameter.");
                 }
 
@@ -287,8 +286,8 @@ namespace Yuniql.Core
                     try
                     {
                         //runs all scripts in the _erase folder
-                        RunNonVersionScripts(connection, transaction, Path.Combine(configuration.WorkspacePath, ERASE), tokenKeyPairs: configuration.Tokens, bulkSeparator: DEFAULT_CONSTANTS.BULK_SEPARATOR, commandTimeout: configuration.CommandTimeout, environmentCode: configuration.Environment);
-                        _traceService.Info($"Executed script files on {Path.Combine(configuration.WorkspacePath, ERASE)}");
+                        RunNonVersionScripts(connection, transaction, Path.Combine(configuration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE), tokenKeyPairs: configuration.Tokens, bulkSeparator: DEFAULT_CONSTANTS.BULK_SEPARATOR, commandTimeout: configuration.CommandTimeout, environmentCode: configuration.Environment);
+                        _traceService.Info($"Executed script files on {Path.Combine(configuration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE)}");
 
                         transaction.Commit();
                     }

@@ -5,7 +5,6 @@ using Yuniql.Core;
 using Yuniql.Extensibility;
 using System;
 using System.Linq;
-using static Yuniql.Core.RESERVED_DIRECTORY_NAME;
 
 namespace Yuniql.PlatformTests
 {
@@ -48,7 +47,7 @@ namespace Yuniql.PlatformTests
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
-            var transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.00", TRANSACTION)).FullName;
+            var transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.00", RESERVED_DIRECTORY_NAME.TRANSACTION)).FullName;
             var otherDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.00", "other_directory")).FullName;
 
             //act & assert
@@ -73,7 +72,7 @@ namespace Yuniql.PlatformTests
             var localVersionService = new LocalVersionService(_traceService);
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
-            var transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.00", TRANSACTION)).FullName;
+            var transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.00", RESERVED_DIRECTORY_NAME.TRANSACTION)).FullName;
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
             //act & assert
@@ -263,15 +262,15 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
-            var v1_00_transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v1.00", TRANSACTION)).FullName;
+            var v1_00_transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v1.00", RESERVED_DIRECTORY_NAME.TRANSACTION)).FullName;
             _testDataService.CreateScriptFile(Path.Combine(v1_00_transactionDirectory, $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
 
             localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
-            var v1_01_transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.01", TRANSACTION)).FullName;
+            var v1_01_transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.01", RESERVED_DIRECTORY_NAME.TRANSACTION)).FullName;
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
             localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
-            var v1_02_transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.02", TRANSACTION)).FullName;
+            var v1_02_transactionDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.02", RESERVED_DIRECTORY_NAME.TRANSACTION)).FullName;
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
@@ -293,7 +292,7 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
 
             localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
-            var v1rootDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v1.00", TRANSACTION)).FullName;
+            var v1rootDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v1.00", RESERVED_DIRECTORY_NAME.TRANSACTION)).FullName;
             _testDataService.CreateScriptFile(Path.Combine(v1rootDirectory, $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00")); ;
 
             string v1level1Directory = Path.Combine(v1rootDirectory, "v1.00-level1");
@@ -305,7 +304,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(v1level1SubDirectory, $"test_v1_00_level1_sublevel1.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00_level1_sublevel1"));
 
             localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
-            var v2rootDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v2.00", TRANSACTION)).FullName;
+            var v2rootDirectory = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v2.00", RESERVED_DIRECTORY_NAME.TRANSACTION)).FullName;
             _testDataService.CreateScriptFile(Path.Combine(v2rootDirectory, $"test_v2_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v2_00")); ;
 
             string v2level1Directory = Path.Combine(v2rootDirectory, "v2.00-level1");

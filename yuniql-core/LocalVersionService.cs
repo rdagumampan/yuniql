@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using static Yuniql.Core.RESERVED_DIRECTORY_NAME;
 
 namespace Yuniql.Core
 {
@@ -26,20 +25,20 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public void Init(string workingPath)
         {
-            string initDirectoryPath = Path.Combine(workingPath, INIT);
+            string initDirectoryPath = Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.INIT);
             if (!Directory.Exists(initDirectoryPath))
             {
                 Directory.CreateDirectory(initDirectoryPath);
-                File.AppendAllText(Path.Combine(initDirectoryPath, "README.md"), @$"# The `{INIT}` directory
+                File.AppendAllText(Path.Combine(initDirectoryPath, "README.md"), @$"# The `{RESERVED_DIRECTORY_NAME.INIT}` directory
 Initialization scripts. Executed once. This is called the first time you do `yuniql run`.");
                 _traceService.Info($"Created script directory {initDirectoryPath}");
             }
 
-            string preDirectoryPath = Path.Combine(workingPath, PRE);
+            string preDirectoryPath = Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE);
             if (!Directory.Exists(preDirectoryPath))
             {
                 Directory.CreateDirectory(preDirectoryPath);
-                File.AppendAllText(Path.Combine(preDirectoryPath, "README.md"), @$"# The `{PRE}` directory
+                File.AppendAllText(Path.Combine(preDirectoryPath, "README.md"), @$"# The `{RESERVED_DIRECTORY_NAME.PRE}` directory
 Pre migration scripts. Executed every time before any version. 
 ");
                 _traceService.Info($"Created script directory {preDirectoryPath}");
@@ -54,29 +53,29 @@ Baseline scripts. Executed once. This is called when you do `yuniql run`.");
                 _traceService.Info($"Created script directory {defaultVersionDirectoryPath}");
             }
 
-            string draftDirectoryPath = Path.Combine(workingPath, DRAFT);
+            string draftDirectoryPath = Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.DRAFT);
             if (!Directory.Exists(draftDirectoryPath))
             {
                 Directory.CreateDirectory(draftDirectoryPath);
-                File.AppendAllText(Path.Combine(draftDirectoryPath, "README.md"), $@"# The `{DRAFT}` directory
+                File.AppendAllText(Path.Combine(draftDirectoryPath, "README.md"), $@"# The `{RESERVED_DIRECTORY_NAME.DRAFT}` directory
 Scripts in progress. Scripts that you are currently working and have not moved to specific version directory yet. Executed every time after the latest version.");
                 _traceService.Info($"Created script directory {draftDirectoryPath}");
             }
 
-            string postDirectoryPath = Path.Combine(workingPath, POST);
+            string postDirectoryPath = Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST);
             if (!Directory.Exists(postDirectoryPath))
             {
                 Directory.CreateDirectory(postDirectoryPath);
-                File.AppendAllText(Path.Combine(postDirectoryPath, "README.md"), $@"# The `{POST}` directory
+                File.AppendAllText(Path.Combine(postDirectoryPath, "README.md"), $@"# The `{RESERVED_DIRECTORY_NAME.POST}` directory
 Post migration scripts. Executed every time and always the last batch to run.");
                 _traceService.Info($"Created script directory {postDirectoryPath}");
             }
 
-            string eraseDirectoryPath = Path.Combine(workingPath, ERASE);
+            string eraseDirectoryPath = Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.ERASE);
             if (!Directory.Exists(eraseDirectoryPath))
             {
                 Directory.CreateDirectory(eraseDirectoryPath);
-                File.AppendAllText(Path.Combine(eraseDirectoryPath, "README.md"), $@"# The `{ERASE}` directory
+                File.AppendAllText(Path.Combine(eraseDirectoryPath, "README.md"), $@"# The `{RESERVED_DIRECTORY_NAME.ERASE}` directory
 Database cleanup scripts. Executed once only when you do `yuniql erase`.");
                 _traceService.Info($"Created script directory {eraseDirectoryPath}");
             }
@@ -214,12 +213,12 @@ yuniql-log-*.txt
             string versionZeroDirectory = Directory.GetDirectories(workingPath, "v0.00*").FirstOrDefault();
             
             var directories = new List<KeyValuePair<string, bool>> {
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, INIT), Directory.Exists(Path.Combine(workingPath, INIT))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, PRE), Directory.Exists(Path.Combine(workingPath, PRE))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.INIT), Directory.Exists(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.INIT))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE), Directory.Exists(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE))),
                 new KeyValuePair<string, bool>(Path.Combine(workingPath, "v0.00*"), versionZeroDirectory != null),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, DRAFT), Directory.Exists(Path.Combine(workingPath, DRAFT))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, POST), Directory.Exists(Path.Combine(workingPath, POST))),
-                new KeyValuePair<string, bool>(Path.Combine(workingPath, ERASE), Directory.Exists(Path.Combine(workingPath, ERASE))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.DRAFT), Directory.Exists(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.DRAFT))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST), Directory.Exists(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST))),
+                new KeyValuePair<string, bool>(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.ERASE), Directory.Exists(Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.ERASE))),
             };
 
             if (directories.Any(t => !t.Value))

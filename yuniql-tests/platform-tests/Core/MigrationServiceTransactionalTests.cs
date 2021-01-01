@@ -6,7 +6,6 @@ using System;
 using System.Data;
 using Yuniql.Core;
 using Yuniql.Extensibility;
-using static Yuniql.Core.RESERVED_DIRECTORY_NAME;
 
 namespace Yuniql.PlatformTests
 {
@@ -116,10 +115,10 @@ namespace Yuniql.PlatformTests
         }
 
         [DataTestMethod()]
-        [DataRow(INIT)]
-        [DataRow(PRE)]
-        [DataRow(POST)]
-        [DataRow(DRAFT)]
+        [DataRow(RESERVED_DIRECTORY_NAME.INIT)]
+        [DataRow(RESERVED_DIRECTORY_NAME.PRE)]
+        [DataRow(RESERVED_DIRECTORY_NAME.POST)]
+        [DataRow(RESERVED_DIRECTORY_NAME.DRAFT)]
         public void Test_Run_All_NonVersion_Scripts_Executed(string scriptFolder)
         {
             //arrange
@@ -233,11 +232,11 @@ namespace Yuniql.PlatformTests
         }
 
         [DataTestMethod()]
-        [DataRow(INIT, INIT)]
-        [DataRow(PRE, PRE)]
+        [DataRow(RESERVED_DIRECTORY_NAME.INIT, RESERVED_DIRECTORY_NAME.INIT)]
+        [DataRow(RESERVED_DIRECTORY_NAME.PRE, RESERVED_DIRECTORY_NAME.PRE)]
         [DataRow("v1.00", "v1_00")]
-        [DataRow(POST, POST)]
-        [DataRow(DRAFT, DRAFT)]
+        [DataRow(RESERVED_DIRECTORY_NAME.POST, RESERVED_DIRECTORY_NAME.POST)]
+        [DataRow(RESERVED_DIRECTORY_NAME.DRAFT, RESERVED_DIRECTORY_NAME.DRAFT)]
         public void Test_Run_With_Parameterized_Tokens(string versionFolder, string scriptName)
         {
             //arrange           
@@ -397,7 +396,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "script3").ShouldBeTrue();
 
             //arrange
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, ERASE), $"erase.sql"), _testDataService.GetSqlForCleanup());
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE), $"erase.sql"), _testDataService.GetSqlForCleanup());
 
             //act
             migrationService.Erase();
@@ -430,8 +429,8 @@ namespace Yuniql.PlatformTests
             localVersionService.Init(_testConfiguration.WorkspacePath);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
-            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, INIT), true);
-            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, POST), true);
+            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT), true);
+            Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST), true);
 
             //act
             var exception = Assert.ThrowsException<YuniqlMigrationException>(() =>
@@ -443,12 +442,12 @@ namespace Yuniql.PlatformTests
 
             //assert
             exception.Message.Contains("At least one Yuniql directory is missing in your project.").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, INIT)} / Missing").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, PRE)} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)} / Missing").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE)} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, "v0.00*")} / Found").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, DRAFT)} / Found").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, POST)} / Missing").ShouldBeTrue();
-            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, ERASE)} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT)} / Found").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST)} / Missing").ShouldBeTrue();
+            exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE)} / Found").ShouldBeTrue();
 
             _testDataService.CheckIfDbExist(_testConfiguration.ConnectionString).ShouldBeFalse();
         }
@@ -512,8 +511,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v0_00").ShouldBeTrue();
 
             //arrange
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, DRAFT), $"test_draft_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_01"));
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, DRAFT), $"test_draft_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_02"));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT), $"test_draft_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_01"));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT), $"test_draft_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_draft_02"));
 
             //act - runs again with _draft holding two script files
             migrationService.Run();
