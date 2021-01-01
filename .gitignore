@@ -5,6 +5,9 @@
 .vs
 **/.vs
 
+.idea
+**/.idea
+
 nupkgs
 **/nupkgs
 

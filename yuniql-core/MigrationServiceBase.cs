@@ -64,7 +64,6 @@ namespace Yuniql.Core
             return _metadataService.GetCurrentVersion(metaSchemaName, metaTableName);
         }
 
-        /// <inheritdoc />
         public virtual List<DbVersion> GetAllVersions(string metaSchemaName = null, string metaTableName = null)
         {
             var configuration = _configurationService.GetConfiguration();
@@ -158,9 +157,9 @@ namespace Yuniql.Core
                 var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
 
                 // Throw exception when --require-cleared-draft is set to TRUE 
-                if (sqlScriptFiles.Any() && requiredClearedDraft && workingPath.Contains("_draft"))
+                if (sqlScriptFiles.Any() && requiredClearedDraft && workingPath.Contains(RESERVED_DIRECTORY_NAME.DRAFT))
                 {
-                    throw new YuniqlMigrationException($"Special _draft directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
+                    throw new YuniqlMigrationException($"Special {RESERVED_DIRECTORY_NAME.DRAFT} directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
                         $"Move the script files to a version directory and re-execute the migration. Or remove --require-cleared-draft in parameter.");
                 }
 
@@ -285,8 +284,8 @@ namespace Yuniql.Core
                     try
                     {
                         //runs all scripts in the _erase folder
-                        RunNonVersionScripts(connection, transaction, Path.Combine(configuration.WorkspacePath, "_erase"), tokenKeyPairs: configuration.Tokens, bulkSeparator: DEFAULT_CONSTANTS.BULK_SEPARATOR, commandTimeout: configuration.CommandTimeout, environmentCode: configuration.Environment);
-                        _traceService.Info($"Executed script files on {Path.Combine(configuration.WorkspacePath, "_erase")}");
+                        RunNonVersionScripts(connection, transaction, Path.Combine(configuration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE), tokenKeyPairs: configuration.Tokens, bulkSeparator: DEFAULT_CONSTANTS.BULK_SEPARATOR, commandTimeout: configuration.CommandTimeout, environmentCode: configuration.Environment);
+                        _traceService.Info($"Executed script files on {Path.Combine(configuration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE)}");
 
                         transaction.Commit();
                     }
