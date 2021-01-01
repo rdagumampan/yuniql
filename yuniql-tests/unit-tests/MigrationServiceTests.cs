@@ -5,10 +5,7 @@ using Yuniql.Core;
 using Moq;
 using Yuniql.Extensibility;
 using System.Data;
-using System.IO;
 using System;
-using Yuniql.PlatformTests;
-using Yuniql.CLI;
 
 namespace Yuniql.UnitTests
 {
@@ -63,17 +60,17 @@ namespace Yuniql.UnitTests
 
             directoryService.Setup(s => s.GetDirectories(@"c:\temp", "v*.*")).Returns(new string[] { @"c:\temp\v0.00" });
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_init", "*.sql")).Returns(new string[] { @"c:\temp\_init\sql_init.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_init", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_init\sql_init.sql")))).Returns(new string[] { @"c:\temp\_init\sql_init.sql" });
+            directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql" });
+            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}", null, It.Is<List<string>>(f=> f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql" });
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_pre", "*.sql")).Returns(new string[] { @"c:\temp\_pre\sql_pre.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_pre", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_pre\sql_pre.sql")))).Returns(new string[] { @"c:\temp\_pre\sql_pre.sql" });
+            directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql" });
+            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}", null, It.Is<List<string>>(f => f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql" });
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_post", "*.sql")).Returns(new string[] { @"c:\temp\_post\sql_post.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_post", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_post\sql_post.sql")))).Returns(new string[] { @"c:\temp\_post\sql_post.sql" });
+            directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql" });
+            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}", null, It.Is<List<string>>(f => f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql" });
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_draft", "*.sql")).Returns(new string[] { @"c:\temp\_draft\sql_draft.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_draft", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_draft\sql_draft.sql")))).Returns(new string[] { @"c:\temp\_draft\sql_draft.sql" });
+            directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql" });
+            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}", null, It.Is<List<string>>(f => f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql" });
 
             directoryService.Setup(s => s.GetFiles(@"c:\temp\v0.00", "*.sql")).Returns(new string[] { @"c:\temp\v0.00\sql_v0_00.sql" });
             directoryService.Setup(s => s.FilterFiles(@"c:\temp", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\v0.00\sql_v0_00.sql")))).Returns(new string[] { @"c:\temp\v0.00\sql_v0_00.sql" });
@@ -83,10 +80,10 @@ namespace Yuniql.UnitTests
             directoryService.Setup(s => s.GetFiles(@"c:\temp\v0.00", "*.csv")).Returns(new string[] { @"c:\temp\v0.00\file.csv" });
             directoryService.Setup(s => s.FilterFiles(@"c:\temp", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\v0.00\file.csv")))).Returns(new string[] { @"c:\temp\v0.00\file.csv" });
 
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_init\sql_init.sql")).Returns("SELECT 'init'");
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_pre\sql_pre.sql")).Returns("SELECT 'pre'");
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_post\sql_post.sql")).Returns("SELECT 'post'");
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_draft\sql_draft.sql")).Returns("SELECT 'draft'");
+            fileService.Setup(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql")).Returns("SELECT 'init'");
+            fileService.Setup(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql")).Returns("SELECT 'pre'");
+            fileService.Setup(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql")).Returns("SELECT 'post'");
+            fileService.Setup(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql")).Returns("SELECT 'draft'");
             fileService.Setup(s => s.ReadAllText(@"c:\temp\v0.00\sql_v0_00.sql")).Returns("SELECT 'v0.00'");
 
             var tokenReplacementService = new Mock<ITokenReplacementService>();
@@ -144,18 +141,18 @@ namespace Yuniql.UnitTests
             dataService.Verify(s => s.CreateConnection());
 
             directoryService.Verify(s => s.GetDirectories(@"c:\temp", "v*.*"));
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_init", "*.sql"));
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_pre", "*.sql"));
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_post", "*.sql"));
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_draft", "*.sql"));
+            directoryService.Verify(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}", "*.sql"));
+            directoryService.Verify(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}", "*.sql"));
+            directoryService.Verify(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}", "*.sql"));
+            directoryService.Verify(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}", "*.sql"));
             directoryService.Verify(s => s.GetFiles(@"c:\temp\v0.00", "*.sql"));
             directoryService.Verify(s => s.GetAllDirectories(@"c:\temp\v0.00", "*"));
             directoryService.Verify(s => s.GetFiles(@"c:\temp\v0.00", "*.csv"));
 
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_init\sql_init.sql"));
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_pre\sql_pre.sql"));
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_post\sql_post.sql"));
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_draft\sql_draft.sql"));
+            fileService.Verify(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql"));
+            fileService.Verify(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql"));
+            fileService.Verify(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql"));
+            fileService.Verify(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql"));
             fileService.Verify(s => s.ReadAllText(@"c:\temp\v0.00\sql_v0_00.sql"));
 
             dataService.Verify(s => s.BreakStatements("SELECT 'init'"));
@@ -255,17 +252,17 @@ namespace Yuniql.UnitTests
 
             directoryService.Setup(s => s.GetDirectories(@"c:\temp", "v*.*")).Returns(new string[] { @"c:\temp\v0.00" });
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_init", "*.sql")).Returns(new string[] { @"c:\temp\_init\sql_init.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_init", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_init\sql_init.sql")))).Returns(new string[] { @"c:\temp\_init\sql_init.sql" });
+            directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql" });
+            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}", null, It.Is<List<string>>(f => f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql" });
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_pre", "*.sql")).Returns(new string[] { @"c:\temp\_pre\sql_pre.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_pre", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_pre\sql_pre.sql")))).Returns(new string[] { @"c:\temp\_pre\sql_pre.sql" });
+            directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql" });
+            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}", null, It.Is<List<string>>(f => f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql" });
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_post", "*.sql")).Returns(new string[] { @"c:\temp\_post\sql_post.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_post", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_post\sql_post.sql")))).Returns(new string[] { @"c:\temp\_post\sql_post.sql" });
+            directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql" });
+            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}", null, It.Is<List<string>>(f => f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql" });
 
-            directoryService.Setup(s => s.GetAllFiles(@"c:\temp\_draft", "*.sql")).Returns(new string[] { @"c:\temp\_draft\sql_draft.sql" });
-            directoryService.Setup(s => s.FilterFiles(@"c:\temp\_draft", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\_draft\sql_draft.sql")))).Returns(new string[] { @"c:\temp\_draft\sql_draft.sql" });
+            directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql" });
+            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}", null, It.Is<List<string>>(f => f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql" });
 
             directoryService.Setup(s => s.GetFiles(@"c:\temp\v0.00", "*.sql")).Returns(new string[] { @"c:\temp\v0.00\sql_v0_00.sql" });
             directoryService.Setup(s => s.FilterFiles(@"c:\temp", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\v0.00\sql_v0_00.sql")))).Returns(new string[] { @"c:\temp\v0.00\sql_v0_00.sql" });
@@ -275,10 +272,10 @@ namespace Yuniql.UnitTests
             directoryService.Setup(s => s.GetFiles(@"c:\temp\v0.00", "*.csv")).Returns(new string[] { @"c:\temp\v0.00\file.csv" });
             directoryService.Setup(s => s.FilterFiles(@"c:\temp", null, It.Is<List<string>>(f => f.Contains(@"c:\temp\v0.00\file.csv")))).Returns(new string[] { @"c:\temp\v0.00\file.csv" });
 
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_init\sql_init.sql")).Returns("SELECT 'init'");
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_pre\sql_pre.sql")).Returns("SELECT 'pre'");
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_post\sql_post.sql")).Returns("SELECT 'post'");
-            fileService.Setup(s => s.ReadAllText(@"c:\temp\_draft\sql_draft.sql")).Returns("SELECT 'draft'");
+            fileService.Setup(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql")).Returns("SELECT 'init'");
+            fileService.Setup(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql")).Returns("SELECT 'pre'");
+            fileService.Setup(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql")).Returns("SELECT 'post'");
+            fileService.Setup(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql")).Returns("SELECT 'draft'");
             fileService.Setup(s => s.ReadAllText(@"c:\temp\v0.00\sql_v0_00.sql")).Returns("SELECT 'v0.00'");
 
             var tokenReplacementService = new Mock<ITokenReplacementService>();
@@ -335,18 +332,18 @@ namespace Yuniql.UnitTests
             dataService.Verify(s => s.CreateConnection());
 
             directoryService.Verify(s => s.GetDirectories(@"c:\temp", "v*.*"));
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_init", "*.sql"));
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_pre", "*.sql"));
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_post", "*.sql"));
-            directoryService.Verify(s => s.GetAllFiles(@"c:\temp\_draft", "*.sql"));
+            directoryService.Verify(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}", "*.sql"));
+            directoryService.Verify(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}", "*.sql"));
+            directoryService.Verify(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}", "*.sql"));
+            directoryService.Verify(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}", "*.sql"));
             directoryService.Verify(s => s.GetFiles(@"c:\temp\v0.00", "*.sql"));
             directoryService.Verify(s => s.GetAllDirectories(@"c:\temp\v0.00", "*"));
             directoryService.Verify(s => s.GetFiles(@"c:\temp\v0.00", "*.csv"));
 
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_init\sql_init.sql"));
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_pre\sql_pre.sql"));
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_post\sql_post.sql"));
-            fileService.Verify(s => s.ReadAllText(@"c:\temp\_draft\sql_draft.sql"));
+            fileService.Verify(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql"));
+            fileService.Verify(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql"));
+            fileService.Verify(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.POST}\sql_post.sql"));
+            fileService.Verify(s => s.ReadAllText($@"c:\temp\{RESERVED_DIRECTORY_NAME.DRAFT}\sql_draft.sql"));
             fileService.Verify(s => s.ReadAllText(@"c:\temp\v0.00\sql_v0_00.sql"));
 
             dataService.Verify(s => s.BreakStatements("SELECT 'init'"));
@@ -420,8 +417,8 @@ namespace Yuniql.UnitTests
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
 
-            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
-            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.ERASE}\sql_erase.sql" });
+            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.ERASE}\sql_erase.sql" });
 
             fileService.Setup(s => s.ReadAllText(It.IsAny<string>())).Returns("SELECT 'erase'");
 
@@ -485,8 +482,8 @@ namespace Yuniql.UnitTests
             var fileService = new Mock<IFileService>();
 
             var directoryService = new Mock<IDirectoryService>();
-            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
-            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.ERASE}\sql_erase.sql" });
+            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.ERASE}\sql_erase.sql" });
 
             fileService.Setup(s => s.ReadAllText(It.IsAny<string>())).Returns("SELECT 'erase'");
 
@@ -550,8 +547,8 @@ namespace Yuniql.UnitTests
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
 
-            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
-            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { @"c:\temp\_erase\sql_erase.sql" });
+            directoryService.Setup(s => s.GetAllFiles(It.IsAny<string>(), "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.ERASE}\sql_erase.sql" });
+            directoryService.Setup(s => s.FilterFiles(It.IsAny<string>(), null, It.IsAny<List<string>>())).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.ERASE}\sql_erase.sql" });
 
             //simulates that an exception happens while erase is executing
             fileService.Setup(s => s.ReadAllText(It.IsAny<string>())).Throws(new ApplicationException("Fake exception"));

@@ -234,41 +234,41 @@ namespace Yuniql.Core
                 if (!targetDatabaseConfigured)
                 {
                     //runs all scripts in the _init folder
-                    RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_init"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                    _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_init")}");
+                    RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.INIT), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                    _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.INIT)}");
                 }
 
                 //checks if target database already runs the latest version and skips work if it already is
                 //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE)}");
 
                 //runs all scripts int the vxx.xx folders and subfolders
                 RunVersionScripts(connection, transaction, appliedVersions, workingPath, targetVersion, nonTransactionalContext, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode, transactionMode: transactionMode);
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.DRAFT), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.DRAFT)}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST)}");
             }
 
             //local method
             void RunDraftInternal(IDbConnection connection, IDbTransaction transaction, bool requiredClearedDraft)
             {
                 //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_pre"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.PRE)}");
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_draft")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.DRAFT), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.DRAFT)}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_post"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
-                _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_post")}");
+                RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode);
+                _traceService.Info($"Executed script files on {Path.Combine(workingPath, RESERVED_DIRECTORY_NAME.POST)}");
             }
         }
 
@@ -319,26 +319,26 @@ namespace Yuniql.Core
 
                     //check for special _transaction directory in the version directory
                     var isExplicitTransactionDefined = false;
-                    var transactionDirectory = Path.Combine(versionDirectory, "_transaction");
+                    var transactionDirectory = Path.Combine(versionDirectory, RESERVED_DIRECTORY_NAME.TRANSACTION);
                     if (_directoryService.Exists(transactionDirectory))
                     {
                         //version directory with _transaction directory only applies to platforms NOT supporting transactional ddl
                         if (_dataService.IsTransactionalDdlSupported)
                         {
-                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" can't contain ""_transaction"" subdirectory for selected target platform, because the whole migration is already running in single transaction.");
+                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" can't contain ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory for selected target platform, because the whole migration is already running in single transaction.");
                         }
 
                         //version directory must only contain _transaction directory and nothing else
                         if (_directoryService.GetDirectories(versionDirectory, "*").Count() > 1)
                         {
-                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""_transaction"" subdirectory can't contain other subdirectories.");
+                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory can't contain other subdirectories.");
                         }
 
                         //version directory must only contain _transaction directory, files are also not allowed
                         //users need to place the script files and subdirectories inside _transaction directory
                         if (_directoryService.GetFiles(versionDirectory, "*.*").Count() > 0)
                         {
-                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""_transaction"" subdirectory can't contain files.");
+                            throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory can't contain files.");
                         }
 
                         isExplicitTransactionDefined = true;
@@ -349,7 +349,7 @@ namespace Yuniql.Core
                     {
                         //run scripts within a single transaction
                         string versionName = new DirectoryInfo(versionDirectory).Name;
-                        _traceService.Info(@$"The ""_transaction"" directory has been detected and therefore ""{versionName}"" version scripts will run in single transaction. The rollback will not be reliable in case the version scripts contain commands causing implicit commit (e.g. DDL)!");
+                        _traceService.Info(@$"The ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" directory has been detected and therefore ""{versionName}"" version scripts will run in single transaction. The rollback will not be reliable in case the version scripts contain commands causing implicit commit (e.g. DDL)!");
 
                         using (var transaction = connection.BeginTransaction())
                         {
