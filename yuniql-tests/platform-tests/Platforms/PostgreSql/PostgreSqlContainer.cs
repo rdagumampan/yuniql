@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Yuniql.PlatformTests
 {
+    //docker run -dit --name postgresql -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
     public class PostgreSqlContainer : ContainerBase
     {
         public PostgreSqlContainer()

@@ -196,8 +196,7 @@ namespace Yuniql.Core
                 if (continueAfterFailure != null)
                 {
                     //program should exit with non zero exit code
-                    _traceService.Error(@$"The non-transactional failure resolving option ""{continueAfterFailure}"" is available only if previous migration run has failed.");
-                    throw new InvalidOperationException();
+                    _traceService.Info(@$"The transaction handling parameter --continue-after-failure received ""{continueAfterFailure}"" but no previous failed migrations recorded.");
                 }
             }
 
@@ -425,7 +424,7 @@ namespace Yuniql.Core
         public override void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            TransactionContext nonTransactionalContext,
+            TransactionContext transactionContext,
             string version,
             string workingPath,
             string scriptDirectory,
@@ -455,12 +454,15 @@ namespace Yuniql.Core
                     currentScriptFile = scriptFile;
 
                     //in case the non-transactional failure is resolved, skip scripts
-                    if (nonTransactionalContext.ContinueAfterFailure.Value && !nonTransactionalContext.IsFailedScriptPathMatched)
+                    if (null != transactionContext
+                        && transactionContext.ContinueAfterFailure.HasValue
+                        && transactionContext.ContinueAfterFailure.Value
+                        && !transactionContext.IsFailedScriptPathMatched)
                     {
                         //set failed script file as matched
-                        if (string.Equals(scriptFile, nonTransactionalContext.FailedScriptPath, StringComparison.InvariantCultureIgnoreCase))
+                        if (string.Equals(scriptFile, transactionContext.FailedScriptPath, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            nonTransactionalContext.SetFailedScriptPathMatch();
+                            transactionContext.SetFailedScriptPathMatch();
                         }
                         _traceService.Info($"Skipping script file {scriptFile} ...");
                     }
@@ -491,10 +493,10 @@ namespace Yuniql.Core
             catch (Exception exception)
             {
                 //try parse the known sql error
-                if (!_dataService.TryParseErrorFromException(exception, out string sqlError))
+                if (!_dataService.TryParseErrorFromException(exception, out string sqlExceptionDetail))
                 {
                     //if not sucesfull, use the whole exception
-                    sqlError = exception.ToString();
+                    sqlExceptionDetail = exception.ToString();
                 }
 
                 //in case scripts are not executed within transaction, mark version as failed in database
@@ -507,13 +509,13 @@ namespace Yuniql.Core
                         appliedByTool: appliedByTool,
                         appliedByToolVersion: appliedByToolVersion,
                         failedScriptPath: currentScriptFile,
-                        failedScriptError: sqlError);
+                        failedScriptError: sqlExceptionDetail);
 
-                    _traceService.Error(@$"Migration of ""{version}"" version was not running in transaction and has failed when executing of script file ""{currentScriptFile}"" with following error: {sqlError} {MESSAGES.ManualResolvingAfterFailureMessage}");
+                    _traceService.Error(@$"Migration of ""{version}"" version was not running in transaction and has failed when executing of script file ""{currentScriptFile}"" with following error: {sqlExceptionDetail} {MESSAGES.ManualResolvingAfterFailureMessage}");
                 }
                 else
                 {
-                    _traceService.Error(@$"Migration of ""{version}"" version was running in transaction and has failed when executing of script file ""{currentScriptFile}"" with following error: {sqlError}");
+                    _traceService.Error(@$"Migration of ""{version}"" version was running in transaction and has failed when executing of script file ""{currentScriptFile}"" with following error: {sqlExceptionDetail}");
                 }
 
                 throw;

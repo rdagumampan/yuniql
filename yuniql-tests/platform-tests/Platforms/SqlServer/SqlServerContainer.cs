@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Yuniql.PlatformTests
 {
+    //docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
     public class SqlServerContainer : ContainerBase
     {
         public SqlServerContainer()
