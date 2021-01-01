@@ -9,7 +9,7 @@ namespace Yuniql.UnitTests
 {
 
     [TestClass]
-    public class GoSqlBatchParserTests
+    public class GoSqlBatchParserTests: TestClassBase
     {
         [TestMethod]
         public void Test_Go_Basic_Two_Batches()

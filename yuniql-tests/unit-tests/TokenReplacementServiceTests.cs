@@ -8,7 +8,7 @@ using Yuniql.Extensibility;
 namespace Yuniql.UnitTests
 {
     [TestClass]
-    public class TokenReplacementServiceTests
+    public class TokenReplacementServiceTests: TestClassBase
     {
         [TestMethod]
         public void Test_Replace_Token()

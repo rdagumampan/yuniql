@@ -38,7 +38,7 @@ namespace Yuniql.Extensibility
         /// MySql version below 8.0 are known to not support atomic DDL. Other providers like SqlServer, Oracle and PostgreSql 
         /// supports rollback of DDL operations should migration failed.
         /// </summary>
-        bool IsAtomicDDLSupported { get; }
+        bool IsTransactionalDdlSupported { get; }
 
         /// <summary>
         /// Returns true if the database platform or version supports Schema within the database.

@@ -10,11 +10,14 @@ namespace Yuniql.Core
     public interface IMigrationService
     {
         /// <summary>
-        /// Initializes the current instance of <see cref="MigrationService"/>
+        /// Returns true if the version of target database is equal or greater than local versions
         /// </summary>
-        /// <param name="connectionString">Connection string to target database server or instance.</param>
-        /// <param name="commandTimeout">Command timeout in seconds.</param>
-        void Initialize(string connectionString, int? commandTimeout = null);
+        /// <param name="targetVersion"></param>
+        /// <param name="schemaName"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null);
+
 
         /// <summary>
         /// Returns the current migration version applied in target database.
@@ -25,6 +28,12 @@ namespace Yuniql.Core
         /// Returns all migration versions applied in the target database
         /// </summary>
         List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null);
+
+        /// <summary>
+        /// Runs migrations by executing alls scripts in the workspace directory. 
+        /// When CSV files are present also run bulk import operations to target database table having same file name.
+        /// </summary>
+        void Run();
 
         /// <summary>
         /// Runs migrations by executing alls scripts in the workspace directory. 
@@ -43,9 +52,9 @@ namespace Yuniql.Core
         /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
         /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
-        /// <param name="resumeFromFailure">The resume from failure.</param>
-        /// <param name="noTransaction">When TRUE, migration will run without using transactions</param>
-        /// <param name="requiredClearedDraftFolder">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration</param>
+        /// <param name="continueAfterFailure">The resume from failure.</param>
+        /// <param name="transactionMode"></param>
+        /// <param name="requiredClearedDraft">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration.</param>
         void Run(
             string workingPath, 
             string targetVersion = null, 
@@ -60,32 +69,23 @@ namespace Yuniql.Core
             string appliedByTool = null,
             string appliedByToolVersion = null,
             string environmentCode = null,
-            NonTransactionalResolvingOption? resumeFromFailure = null,
-            bool noTransaction = false,
-            bool requiredClearedDraftFolder = false
+            bool? continueAfterFailure = null,
+            string transactionMode = null,
+            bool requiredClearedDraft = false
         );
 
         /// <summary>
-        /// Executes erase scripts presentin _erase directory and subdirectories.
+        /// 
         /// </summary>
-        /// <param name="workingPath">The directory path to migration project.</param>
-        /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
-        /// <param name="commandTimeout">Command timeout in seconds.</param>
-        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
-        bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null);
-
-        /// <summary>
-        /// Runs migrations by executing alls scripts in the workspace directory. 
-        /// When CSV files are present also run bulk import operations to target database table having same file name.
-        /// </summary>
-        /// <param name="connection">The <see cref="IDbConnection"/> to use.</param>
-        /// <param name="transaction">The <see cref="IDbTransaction"/> to use</param>
-        /// <param name="workingPath">The directory path to migration project.</param>
-        /// <param name="tokenKeyPairs">Token kev/value pairs to replace tokens in script files.</param>
-        /// <param name="bulkSeparator">Bulk file values separator character in the CSV bulk import files. When NULL, uses comma.</param>
-        /// <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
-        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
-        /// <param name="requiredClearedDraftFolder">When TRUE, the migration will fail if the current folder is empty. This option is for production migration</param>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="workingPath"></param>
+        /// <param name="tokenKeyPairs"></param>
+        /// <param name="bulkSeparator"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="environmentCode"></param>
+        /// <param name="transactionMode"></param>
+        /// <param name="requiredClearedDraftFolder"></param>
         void RunNonVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -94,16 +94,36 @@ namespace Yuniql.Core
             string bulkSeparator = null,
             int? commandTimeout = null,
             string environmentCode = null,
+            string transactionMode = null,
             bool requiredClearedDraftFolder = false
         );
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="dbVersions"></param>
+        /// <param name="workingPath"></param>
+        /// <param name="targetVersion"></param>
+        /// <param name="nonTransactionalContext"></param>
+        /// <param name="tokenKeyPairs"></param>
+        /// <param name="bulkSeparator"></param>
+        /// <param name="metaSchemaName"></param>
+        /// <param name="metaTableName"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="bulkBatchSize"></param>
+        /// <param name="appliedByTool"></param>
+        /// <param name="appliedByToolVersion"></param>
+        /// <param name="environmentCode"></param>
+        /// <param name="transactionMode"></param>
         void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
             List<string> dbVersions,
             string workingPath,
             string targetVersion,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
             string metaSchemaName = null,
@@ -112,9 +132,21 @@ namespace Yuniql.Core
             int? bulkBatchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string environmentCode = null
+            string environmentCode = null,
+            string transactionMode = null
         );
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="workingPath"></param>
+        /// <param name="scriptDirectory"></param>
+        /// <param name="bulkSeparator"></param>
+        /// <param name="bulkBatchSize"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="environmentCode"></param>
         void RunBulkImport(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -126,10 +158,26 @@ namespace Yuniql.Core
             string environmentCode = null
         );
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <param name="nonTransactionalContext"></param>
+        /// <param name="version"></param>
+        /// <param name="workingPath"></param>
+        /// <param name="scriptDirectory"></param>
+        /// <param name="metaSchemaName"></param>
+        /// <param name="metaTableName"></param>
+        /// <param name="tokenKeyPairs"></param>
+        /// <param name="commandTimeout"></param>
+        /// <param name="environmentCode"></param>
+        /// <param name="appliedByTool"></param>
+        /// <param name="appliedByToolVersion"></param>
         void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             string version,
             string workingPath,
             string scriptDirectory,
@@ -142,11 +190,9 @@ namespace Yuniql.Core
             string appliedByToolVersion = null
         );
 
-        void Erase(
-            string workingPath,
-            List<KeyValuePair<string, string>> tokens = null,
-            int? commandTimeout = null,
-            string environmentCode = null
-        );
+        /// <summary>
+        /// Executes erase scripts presentin _erase directory and subdirectories.
+        /// </summary>
+        void Erase();
     }
 }

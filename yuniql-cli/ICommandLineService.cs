@@ -4,11 +4,11 @@
     {
         int RunInitOption(InitOption opts);
 
-        int IncrementVersion(NextVersionOption opts);
+        int RunNextVersionOption(NextVersionOption opts);
 
-        int RunMigration(RunOption opts);
+        int RunRunOption(RunOption opts);
 
-        int RunVerify(VerifyOption opts);
+        int RunVerifyOption(VerifyOption opts);
 
         int RunListOption(ListOption opts);
 

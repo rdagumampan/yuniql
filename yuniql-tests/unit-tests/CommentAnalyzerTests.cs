@@ -6,7 +6,7 @@ using Yuniql.Extensibility.SqlBatchParser;
 namespace Yuniql.UnitTests
 {
     [TestClass]
-    public class CommentAnalyzerTests
+    public class CommentAnalyzerTests: TestClassBase
     {
         [TestMethod]
         public void Test_Dash_Dash_Inline_Comment()

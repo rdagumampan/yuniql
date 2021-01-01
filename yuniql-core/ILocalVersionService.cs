@@ -1,5 +1,6 @@
 ﻿namespace Yuniql.Core
 {
+    //TODO: Rename to IWorkspaceService
     /// <summary>
     /// Interface for implementing service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are operated from.
     /// </summary>

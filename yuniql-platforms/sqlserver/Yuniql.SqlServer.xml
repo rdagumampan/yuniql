@@ -34,7 +34,7 @@
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetConnectionInfo">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.SqlServer.SqlServerDataService.IsAtomicDDLSupported">
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
         <member name="P:Yuniql.SqlServer.SqlServerDataService.IsSchemaSupported">

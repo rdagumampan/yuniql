@@ -1,11 +1,10 @@
 ﻿using CommandLine;
 using System;
 using System.Reflection;
-using Yuniql.CLI;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
-namespace Yuniql
+namespace Yuniql.CLI
 {
     public class Program
     {
@@ -17,19 +16,22 @@ namespace Yuniql
             var environmentService = new EnvironmentService();
             var traceService = new FileTraceService();
             var localVersionService = new LocalVersionService(traceService);
-            var migrationServiceFactory = new CLI.MigrationServiceFactory(traceService);
+            var configurationService = new ConfigurationService(environmentService, localVersionService, traceService);
+            
+            var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var commandLineService = new CommandLineService(migrationServiceFactory,
                                                             localVersionService,
                                                             environmentService,
-                                                            traceService);
-
+                                                            traceService,
+                                                            configurationService);
+            
             var resultCode = Parser.Default
                 .ParseArguments<InitOption, RunOption, ListOption, NextVersionOption, VerifyOption, EraseOption, BaselineOption, RebaseOption, PlatformsOption>(args)
                 .MapResult((InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
-                           (RunOption opts) => Dispatch(commandLineService.RunMigration, opts, traceService),
-                           (NextVersionOption opts) => Dispatch(commandLineService.IncrementVersion, opts, traceService),
+                           (RunOption opts) => Dispatch(commandLineService.RunRunOption, opts, traceService),
+                           (NextVersionOption opts) => Dispatch(commandLineService.RunNextVersionOption, opts, traceService),
                            (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),
-                           (VerifyOption opts) => Dispatch(commandLineService.RunVerify, opts, traceService),
+                           (VerifyOption opts) => Dispatch(commandLineService.RunVerifyOption, opts, traceService),
                            (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
                            (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
                            (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),

@@ -38,18 +38,20 @@ namespace Yuniql.Core
             var tokenReplacementService = new TokenReplacementService(_traceService);
             var directoryService = new DirectoryService();
             var fileService = new FileService();
+            var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
+            var environmentService = new EnvironmentService();
+            var configurationService = new ConfigurationService(environmentService, localVersionService, _traceService);
 
-            var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
-
-            var migrationService = new MigrationService(
+            var migrationService = new MigrationServiceTransactional(
                 localVersionService,
                 dataService,
                 bulkImportService,
-                configurationService,
+                metadataService,
                 tokenReplacementService,
                 directoryService,
                 fileService,
-                _traceService);
+                _traceService,
+                configurationService);
             return migrationService;
         }
     }

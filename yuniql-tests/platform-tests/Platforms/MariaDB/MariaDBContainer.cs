@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Yuniql.PlatformTests
 {
+    //docker run -dit --name mariadb -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mariadb:latest --default-authentication-plugin=mysql_native_password
     public class MariaDBContainer : ContainerBase
     {
         public MariaDBContainer()

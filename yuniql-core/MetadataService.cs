@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Text.Unicode;
 using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
     /// <summary>
     /// Service responsible for accessing target database configuration and executing sql statement batches.
-    /// This facility is used by MigrationService and must be not be used directly. See <see cref="MigrationService"./>
+    /// This facility is used by MigrationService and must be not be used directly. See <see cref="MigrationServiceTransactional"./>
     /// </summary>
-    public class ConfigurationDataService : IConfigurationDataService
+    public class MetadataService : IMetadataService
     {
         private readonly IDataService _dataService;
         private readonly ITraceService _traceService;
         private readonly ITokenReplacementService _tokenReplacementService;
 
         ///<inheritdoc/>
-        public ConfigurationDataService(
+        public MetadataService(
             IDataService dataService,
             ITraceService traceService,
             ITokenReplacementService tokenReplacementService)
@@ -203,7 +202,7 @@ namespace Yuniql.Core
                     }
 
                     //fill up with information only available for platforms not supporting transactional ddl
-                    if (!_dataService.IsAtomicDDLSupported)
+                    if (!_dataService.IsTransactionalDdlSupported)
                     {
                         dbVersion.Status = Enum.Parse<Status>(reader.GetString(7));
                         dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values

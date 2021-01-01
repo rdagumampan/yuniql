@@ -25,7 +25,7 @@ namespace Yuniql.CLI
                     {
                         var dataService = new SqlServerDataService(_traceService);
                         var bulkImportService = new SqlServerBulkImportService(_traceService);
-                        return dataService.IsAtomicDDLSupported 
+                        return dataService.IsTransactionalDdlSupported 
                             ? CreateTransactionalMigrationService(dataService, bulkImportService) 
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
@@ -33,7 +33,7 @@ namespace Yuniql.CLI
                     {
                         var dataService = new PostgreSqlDataService(_traceService);
                         var bulkImportService = new PostgreSqlBulkImportService(_traceService);
-                        return dataService.IsAtomicDDLSupported
+                        return dataService.IsTransactionalDdlSupported
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
@@ -41,7 +41,7 @@ namespace Yuniql.CLI
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
-                        return dataService.IsAtomicDDLSupported
+                        return dataService.IsTransactionalDdlSupported
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
@@ -49,7 +49,7 @@ namespace Yuniql.CLI
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
-                        return dataService.IsAtomicDDLSupported
+                        return dataService.IsTransactionalDdlSupported
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);
                     }
@@ -65,18 +65,20 @@ namespace Yuniql.CLI
             var tokenReplacementService = new TokenReplacementService(_traceService);
             var directoryService = new DirectoryService();
             var fileService = new FileService();
+            var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
+            var environmentService = new EnvironmentService();
+            var configurationService = new ConfigurationService(environmentService, localVersionService, _traceService);
 
-            var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
-
-            var migrationService = new MigrationService(
+            var migrationService = new MigrationServiceTransactional(
                 localVersionService,
                 dataService,
                 bulkImportService,
-                configurationService,
+                metadataService,
                 tokenReplacementService,
                 directoryService,
                 fileService,
-                _traceService);
+                _traceService,
+                configurationService);
             return migrationService;
         }
 
@@ -86,18 +88,20 @@ namespace Yuniql.CLI
             var tokenReplacementService = new TokenReplacementService(_traceService);
             var directoryService = new DirectoryService();
             var fileService = new FileService();
+            var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
+            var environmentService = new EnvironmentService();
+            var configurationService = new ConfigurationService(environmentService, localVersionService, _traceService);
 
-            var configurationService = new ConfigurationDataService(dataService, _traceService, tokenReplacementService);
-
-            var migrationService = new NonTransactionalMigrationService(
+            var migrationService = new MigrationServiceNonTransactional(
                 localVersionService,
                 dataService,
                 bulkImportService,
-                configurationService,
+                metadataService,
                 tokenReplacementService,
                 directoryService,
                 fileService,
-                _traceService);
+                _traceService,
+                configurationService);
             return migrationService;
         }
     }

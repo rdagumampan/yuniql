@@ -15,7 +15,7 @@ namespace Yuniql.PlatformTests
             var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_HOST);
             var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
 
-            if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("LOCAL"))
+            if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("CONTAINER"))
             {
                 var containerFactory = new ContainerFactory();
                 var container = containerFactory.Create(targetPlatform.ToLower());
@@ -46,7 +46,7 @@ namespace Yuniql.PlatformTests
             var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_HOST);
             var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
 
-            if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("LOCAL"))
+            if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("CONTAINER"))
             {
                 var dockerService = new DockerService();
                 var container = dockerService.FindByName($"{targetPlatform.ToLower()}-test-infra").First(); ;

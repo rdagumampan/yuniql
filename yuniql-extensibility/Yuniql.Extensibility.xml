@@ -349,7 +349,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="P:Yuniql.Extensibility.IDataService.IsAtomicDDLSupported">
+        <member name="P:Yuniql.Extensibility.IDataService.IsTransactionalDdlSupported">
             <summary>
             Returns true if the database platform or version supports Atomic or Transactional DDL operations.
             MySql version below 8.0 are known to not support atomic DDL. Other providers like SqlServer, Oracle and PostgreSql 
