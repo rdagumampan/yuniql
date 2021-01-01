@@ -284,7 +284,7 @@ namespace Yuniql.Core
             List<string> dbVersions,
             string workingPath,
             string targetVersion,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
             string metaSchemaName = null,
@@ -397,7 +397,7 @@ namespace Yuniql.Core
         public override void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             string version,
             string workingPath,
             string scriptDirectory,

@@ -171,7 +171,7 @@ namespace Yuniql.Core
             else
                 _traceService.Debug($"The configuration of migration is up to date for {targetDatabaseName} on {targetDatabaseServer}.");
 
-            NonTransactionalContext nonTransactionalContext = null;
+            TransactionContext transactionContext = null;
 
             //check for presence of failed no-transactional versions from previous runs
             var allVersions = _metadataService.GetAllVersions(metaSchemaName, metaTableName);
@@ -188,7 +188,7 @@ namespace Yuniql.Core
                 }
 
                 _traceService.Info($@"The non-transactional failure resolving option ""{continueAfterFailure}"" was used. Version scripts already applied by previous migration run will be skipped.");
-                nonTransactionalContext = new NonTransactionalContext(failedVersion, continueAfterFailure.Value);
+                transactionContext = new TransactionContext(failedVersion, continueAfterFailure.Value);
             }
             else
             {
@@ -244,7 +244,7 @@ namespace Yuniql.Core
                 _traceService.Info($"Executed script files on {Path.Combine(workingPath, "_pre")}");
 
                 //runs all scripts int the vxx.xx folders and subfolders
-                RunVersionScripts(connection, transaction, appliedVersions, workingPath, targetVersion, nonTransactionalContext, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode, transactionMode: transactionMode);
+                RunVersionScripts(connection, transaction, appliedVersions, workingPath, targetVersion, transactionContext, tokenKeyPairs, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environmentCode: environmentCode, transactionMode: transactionMode);
 
                 //runs all scripts in the _draft folder and subfolders
                 RunNonVersionScripts(connection, transaction, Path.Combine(workingPath, "_draft"), tokenKeyPairs, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environmentCode: environmentCode, transactionMode: transactionMode, requiredClearedDraft: requiredClearedDraft);
@@ -279,7 +279,7 @@ namespace Yuniql.Core
             List<string> dbVersions,
             string workingPath,
             string targetVersion,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
             string metaSchemaName = null,
@@ -425,7 +425,7 @@ namespace Yuniql.Core
         public override void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             string version,
             string workingPath,
             string scriptDirectory,

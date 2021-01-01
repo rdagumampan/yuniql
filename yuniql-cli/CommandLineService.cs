@@ -222,7 +222,7 @@ namespace Yuniql.CLI
         Supported versions: https://yuniql.io/docs/supported-platforms/
         Supported versions: 
         Usage: yuniql run -a -c <your-connection-string> --platform mariadb
-        Samples: https://yuniql.io/docs/get-started/";
+        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample";
 
                 Console.WriteLine(platforms);
 

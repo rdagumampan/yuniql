@@ -65,11 +65,10 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
-        //TODO: Move this to MigrationServiceBase
         public virtual List<DbVersion> GetAllVersions(string metaSchemaName = null, string metaTableName = null)
         {
             var configuration = _configurationService.GetConfiguration();
-            if (!configuration.IsInitialized) 
+            if (!configuration.IsInitialized)
                 Initialize();
 
             return _metadataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
@@ -214,7 +213,7 @@ namespace Yuniql.Core
             List<string> dbVersions,
             string workingPath,
             string targetVersion,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
             string metaschemaName = null,
@@ -256,7 +255,7 @@ namespace Yuniql.Core
         public abstract void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             string version,
             string workingPath,
             string scriptDirectory,

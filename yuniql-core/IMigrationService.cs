@@ -10,6 +10,16 @@ namespace Yuniql.Core
     public interface IMigrationService
     {
         /// <summary>
+        /// Returns true if the version of target database is equal or greater than local versions
+        /// </summary>
+        /// <param name="targetVersion"></param>
+        /// <param name="schemaName"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null);
+
+
+        /// <summary>
         /// Returns the current migration version applied in target database.
         /// </summary>
         string GetCurrentVersion(string schemaName = null, string tableName = null);
@@ -67,15 +77,6 @@ namespace Yuniql.Core
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="targetVersion"></param>
-        /// <param name="schemaName"></param>
-        /// <param name="tableName"></param>
-        /// <returns></returns>
-        bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null);
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="connection"></param>
         /// <param name="transaction"></param>
         /// <param name="workingPath"></param>
@@ -122,7 +123,7 @@ namespace Yuniql.Core
             List<string> dbVersions,
             string workingPath,
             string targetVersion,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             List<KeyValuePair<string, string>> tokenKeyPairs = null,
             string bulkSeparator = null,
             string metaSchemaName = null,
@@ -176,7 +177,7 @@ namespace Yuniql.Core
         void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            NonTransactionalContext nonTransactionalContext,
+            TransactionContext nonTransactionalContext,
             string version,
             string workingPath,
             string scriptDirectory,
