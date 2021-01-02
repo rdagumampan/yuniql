@@ -27,10 +27,10 @@ namespace Yuniql.PlatformTests
             configurationService.Reset();
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = this.WorkspacePath;
+            configuration.Workspace = this.WorkspacePath;
             configuration.Platform = this.Platform;
             configuration.ConnectionString = this.ConnectionString;
-            configuration.AutoCreateDatabase = true;
+            configuration.IsAutoCreateDatabase = true;
 
             return configuration;
         }

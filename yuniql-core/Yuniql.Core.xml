@@ -4,7 +4,28 @@
         <name>Yuniql.Core</name>
     </assembly>
     <members>
-        <member name="P:Yuniql.Core.Configuration.WorkspacePath">
+        <member name="T:Yuniql.Core.Configuration">
+            <summary>
+            Global singleton instance of session configuration
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.Configuration.#cctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.Configuration.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.Instance">
+            <summary>
+            Returns global singleton instance of session configuration
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.IsInitialized">
+            <summary>
+            Returns true when global configuration has been initiatlized via configurationService.Initialize()
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.Workspace">
             <summary>
             The directory where yuniql-based migration project is placed.
             This is a required property.
@@ -12,7 +33,8 @@
         </member>
         <member name="P:Yuniql.Core.Configuration.Platform">
             <summary>
-            Target database platform. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.
+            Target database platform. Value can be `sqlserver`,`postgresql`, or `mysql`.
+            This is a required property.
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.ConnectionString">
@@ -21,14 +43,16 @@
             This is a required property.
             </summary>
         </member>
-        <member name="P:Yuniql.Core.Configuration.AutoCreateDatabase">
+        <member name="P:Yuniql.Core.Configuration.IsAutoCreateDatabase">
             <summary>
             When true, automatically creates database in target database server.
+            This is defaulted to false.
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.TargetVersion">
             <summary>
-            Runs migration only up to the version specified in this property. Defaul is Null and will run upto latest.
+            Runs migration only up to the version specified in this property. 
+            When Null, it will run upto latest unapplied version.
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.Tokens">
@@ -36,45 +60,50 @@
             The list of token key/value pairs to repair tokens in each script file. 
             </summary>
         </member>
-        <member name="P:Yuniql.Core.Configuration.VerifyOnly">
+        <member name="P:Yuniql.Core.Configuration.IsVerifyOnly">
             <summary>
             When you run yuniql verify, it checks if all your versions can be executed without errors. 
             It runs through all the non-versioned script folders (except _init) and all migration steps that yuninql run takes but without committing the transaction. 
             All changes are rolledback after a successful verification run.
+            This is defaulted to false.
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.BulkSeparator">
             <summary>
-            Bulk file values separator to use when parsing CSV bulk import files. Default is comma ",".
+            Bulk file values separator to use when parsing CSV bulk import files.
+            This is defaulted to comma ",".
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.BulkBatchSize">
             <summary>
-            The size of each batch when performing bulk load. Default is 100 rows.
-            This may not be used in non-sqlserver platforms.
+            The size of each batch when performing bulk load. This may not be used in non-sqlserver platforms.
+            This is defaulted to 0.
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.CommandTimeout">
             <summary>
             The time it taks to wait for one commend to execute before it expires and throws error.
             Use this prorty to adjust time out when you expect a long running migration execution.
+            This is defaulted to 30 secs.
             </summary>
         </member>
-        <member name="P:Yuniql.Core.Configuration.DebugTraceMode">
+        <member name="P:Yuniql.Core.Configuration.IsDebug">
             <summary>
             Enrich trace messages with raw sql statements and more verbose diagnostic messages.
             Use this when you are investigating some failed migrations.
+            This is defaulted to false.
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.AppliedByTool">
             <summary>
             Describes the source of migration applied to target database.
-            This is defaulted to yuniql-aspnetcore and its readonly property
+            This is defaulted to yuniql-cli.
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.AppliedByToolVersion">
             <summary>
             Describes the version of source of migration applied to target database.
+            This is defaulted to yuniql.core assembly version.
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.Environment">
@@ -86,61 +115,63 @@
         <member name="P:Yuniql.Core.Configuration.MetaSchemaName">
             <summary>
             Schema name for schema versions table.
+            This is defaulted to the target data platform's default schema.
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.MetaTableName">
             <summary>
             Table name for schema versions table.
+            This is defaulted to __yuniqldbversion in all target data platforms.
             </summary>
         </member>
-        <member name="P:Yuniql.Core.Configuration.ContinueAfterFailure">
+        <member name="P:Yuniql.Core.Configuration.IsContinueAfterFailure">
             <summary>
             When true, forces to skip the the last failed script file and run from next available script in the failed version
             </summary>
         </member>
         <member name="P:Yuniql.Core.Configuration.TransactionMode">
             <summary>
-            Transaction mode to use in the migration. 
-            When full, uses single transaction for entire migration run. 
-            When partial, each version is executed in one transaction.
+            Transaction mode to use in the migration. Valid options are session, version and none.
+            When session, uses single transaction for entire migration run. 
+            When version, each version is executed in one transaction.
             When none, no explicit transaction is created for migration run.
+            This is defaulted to session.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.ConfigurationDataService" -->
-        <member name="M:Yuniql.Core.ConfigurationDataService.#ctor(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.ITraceService,Yuniql.Core.ITokenReplacementService)">
+        <member name="P:Yuniql.Core.Configuration.IsRequiredClearedDraft">
+            <summary>
+            When true, migration will fail if the _draft directory is not empty. This option ideal when targeting staging/production environment.
+            This is defaulted to false.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.Configuration.IsForced">
+            <summary>
+            When true, action would be executed. This is required when executing potentially damaging actions such as yuniql-erase and yuniql-drop.
+            This is defaulted to false.
+            </summary>
+        </member>
+        <member name="T:Yuniql.Core.ConfigurationService">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.IsDatabaseExists(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationService.#ctor(Yuniql.Core.IEnvironmentService,Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.ITraceService)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.CreateDatabase(System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationService.GetConfiguration">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.CreateSchema(System.String,System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationService.Initialize">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.IsDatabaseConfigured(System.String,System.String,System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationService.Reset">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.ConfigureDatabase(System.String,System.String,System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationService.GetValueOrDefault(System.String,System.String,System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.UpdateDatabaseConfiguration(System.String,System.String,System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.ConfigurationService.Validate">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.GetCurrentVersion(System.String,System.String,System.Nullable{System.Int32})">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.GetAllAppliedVersions(System.String,System.String,System.Nullable{System.Int32})">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.GetAllVersions(System.String,System.String,System.Nullable{System.Int32})">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.ConfigurationDataService.ExecuteSql(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+        <member name="M:Yuniql.Core.ConfigurationService.PrintAsJson(System.Boolean)">
             <inheritdoc/>
         </member>
         <member name="T:Yuniql.Core.ConnectionExtensions">
@@ -271,108 +302,6 @@
         <member name="M:Yuniql.Core.FileTraceService.Success(System.String,System.Object)">
             <inheritdoc/>
         </member>
-        <member name="T:Yuniql.Core.IConfigurationDataService">
-            <summary>
-            Interface for implementing service responsible for accessing target database configuration and executing sql statement batches.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.IsDatabaseExists(System.Nullable{System.Int32})">
-            <summary>
-            Returns true when database already exists in the target host.
-            </summary>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-            <returns>Returns true when database already exists in the target host.</returns>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.CreateDatabase(System.Nullable{System.Int32})">
-            <summary>
-            Creates the database
-            </summary>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.IsDatabaseConfigured(System.String,System.String,System.Nullable{System.Int32})">
-            <summary>
-            Returns true when migration version tracking table is already created.
-            </summary>
-            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-            <returns>Returns true when version tracking table is already created.</returns>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.CreateSchema(System.String,System.Nullable{System.Int32})">
-            <summary>
-            Creates schema in target databases.
-            </summary>
-            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.ConfigureDatabase(System.String,System.String,System.Nullable{System.Int32})">
-            <summary>
-            Creates migration version tracking table in the target database.
-            </summary>
-            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.UpdateDatabaseConfiguration(System.String,System.String,System.Nullable{System.Int32})">
-            <summary>
-            Updates migration version tracking table in the target database..
-            </summary>
-            <returns>True if target database was updated, otherwise returns false</returns>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.GetCurrentVersion(System.String,System.String,System.Nullable{System.Int32})">
-            <summary>
-            Returns the latest version applied in the target database.
-            </summary>
-            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-            <returns>Returns the latest version applied in the target database.</returns>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.GetAllAppliedVersions(System.String,System.String,System.Nullable{System.Int32})">
-            <summary>
-            Returns all versions applied in the target database.
-            </summary>
-            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-            <returns>All versions applied in the target database.</returns>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.GetAllVersions(System.String,System.String,System.Nullable{System.Int32})">
-            <summary>
-            Returns all versions applied in the target database.
-            </summary>
-            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-            <returns>All versions applied in the target database.</returns>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Creates new entry to version tracking table after all versions were successfully executed.
-            </summary>
-            <param name="connection">Connection to target database. Connection will be open automatically.</param>
-            <param name="transaction">An active transaction.</param>
-            <param name="version">Migration version.</param>
-            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-            <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
-            <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
-            <param name="additionalArtifacts">Additional infromation to describe the version executed.</param>
-            <param name="failedScriptPath">The failed script path.</param>
-            <param name="failedScriptError">The failed script error.</param>
-        </member>
-        <member name="M:Yuniql.Core.IConfigurationDataService.ExecuteSql(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
-            <summary>
-            Executes sql statement to target database.
-            </summary>
-            <param name="connection">Connection to target database. Connection will be open automatically.</param>
-            <param name="commandText">The sql statement.</param>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-            <param name="transaction">An active transaction.</param>
-            <param name="traceService">Trace service provider where trace messages will be written to.</param>
-            <returns></returns>
-        </member>
         <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.IDirectoryService" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetDirectories(System.String,System.String)" -->
         <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetAllDirectories(System.String,System.String)" -->
@@ -454,12 +383,122 @@
             </summary>
             <param name="workingPath">The directory path where yuniql operations are executed from.</param>
         </member>
+        <member name="T:Yuniql.Core.IMetadataService">
+            <summary>
+            Interface for implementing service responsible for accessing target database configuration and executing sql statement batches.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.IsDatabaseExists(System.Nullable{System.Int32})">
+            <summary>
+            Returns true when database already exists in the target host.
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>Returns true when database already exists in the target host.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.CreateDatabase(System.Nullable{System.Int32})">
+            <summary>
+            Creates the database
+            </summary>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.IsDatabaseConfigured(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Returns true when migration version tracking table is already created.
+            </summary>
+            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>Returns true when version tracking table is already created.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.CreateSchema(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Creates schema in target databases.
+            </summary>
+            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.ConfigureDatabase(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Creates migration version tracking table in the target database.
+            </summary>
+            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.UpdateDatabaseConfiguration(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Updates migration version tracking table in the target database..
+            </summary>
+            <returns>True if target database was updated, otherwise returns false</returns>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.GetCurrentVersion(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Returns the latest version applied in the target database.
+            </summary>
+            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>Returns the latest version applied in the target database.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.GetAllAppliedVersions(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Returns all versions applied in the target database.
+            </summary>
+            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>All versions applied in the target database.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.GetAllVersions(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Returns all versions applied in the target database.
+            </summary>
+            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <returns>All versions applied in the target database.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Creates new entry to version tracking table after all versions were successfully executed.
+            </summary>
+            <param name="connection">Connection to target database. Connection will be open automatically.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="version">Migration version.</param>
+            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
+            <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
+            <param name="additionalArtifacts">Additional infromation to describe the version executed.</param>
+            <param name="failedScriptPath">The failed script path.</param>
+            <param name="failedScriptError">The failed script error.</param>
+        </member>
+        <member name="M:Yuniql.Core.IMetadataService.ExecuteSql(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Executes sql statement to target database.
+            </summary>
+            <param name="connection">Connection to target database. Connection will be open automatically.</param>
+            <param name="commandText">The sql statement.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written to.</param>
+            <returns></returns>
+        </member>
         <member name="T:Yuniql.Core.IMigrationService">
             <summary>
             Runs migrations by executing alls scripts in the workspace directory. 
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IMigrationService.Initialize(System.String,System.Nullable{System.Int32})" -->
+        <member name="M:Yuniql.Core.IMigrationService.IsTargetDatabaseLatest(System.String,System.String,System.String)">
+            <summary>
+            Returns true if the version of target database is equal or greater than local versions
+            </summary>
+            <param name="version"></param>
+            <param name="metaSchemaName"></param>
+            <param name="metaTableName"></param>
+            <returns></returns>
+        </member>
         <member name="M:Yuniql.Core.IMigrationService.GetCurrentVersion(System.String,System.String)">
             <summary>
             Returns the current migration version applied in target database.
@@ -470,16 +509,22 @@
             Returns all migration versions applied in the target database
             </summary>
         </member>
-        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.String)">
+        <member name="M:Yuniql.Core.IMigrationService.Run">
             <summary>
             Runs migrations by executing alls scripts in the workspace directory. 
             When CSV files are present also run bulk import operations to target database table having same file name.
             </summary>
-            <param name="workingPath">The directory path to migration project.</param>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
+            <summary>
+            Runs migrations by executing alls scripts in the workspace directory. 
+            When CSV files are present also run bulk import operations to target database table having same file name.
+            </summary>
+            <param name="workspace">The directory path to migration project.</param>
             <param name="targetVersion">The maximum version to run to. When NULL, runs migration to the latest version found in the workspace path.</param>
-            <param name="autoCreateDatabase">When TRUE, creates the database in the target host.</param>
+            <param name="isAutoCreateDatabase">When TRUE, creates the database in the target host.</param>
             <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
-            <param name="verifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
+            <param name="isVerifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
             <param name="bulkSeparator">Bulk file values separator character in the CSV bulk import files. When NULL, uses comma.</param>
             <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
             <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
@@ -487,18 +532,81 @@
             <param name="bulkBatchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
             <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
             <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
-            <param name="environmentCode">Environment code for environment-aware scripts.</param>
-            <param name="resumeFromFailure">The resume from failure.</param>
-            <param name="noTransaction">When TRUE, migration will run without using transactions</param>
+            <param name="environment">Environment code for environment-aware scripts.</param>
+            <param name="isContinueAfterFailure">The resume from failure.</param>
+            <param name="transactionMode"></param>
+            <param name="isRequiredClearedDraft">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration.</param>
         </member>
-        <member name="M:Yuniql.Core.IMigrationService.IsTargetDatabaseLatest(System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.IMigrationService.RunNonVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="connection"></param>
+            <param name="transaction"></param>
+            <param name="workspace"></param>
+            <param name="tokens"></param>
+            <param name="bulkSeparator"></param>
+            <param name="commandTimeout"></param>
+            <param name="environment"></param>
+            <param name="transactionMode"></param>
+            <param name="isRequiredClearedDraft"></param>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="connection"></param>
+            <param name="transaction"></param>
+            <param name="versions"></param>
+            <param name="workspace"></param>
+            <param name="targetVersion"></param>
+            <param name="transactionContext"></param>
+            <param name="tokens"></param>
+            <param name="bulkSeparator"></param>
+            <param name="metaSchemaName"></param>
+            <param name="metaTableName"></param>
+            <param name="commandTimeout"></param>
+            <param name="bulkBatchSize"></param>
+            <param name="appliedByTool"></param>
+            <param name="appliedByToolVersion"></param>
+            <param name="environment"></param>
+            <param name="transactionMode"></param>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationService.RunBulkImport(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
+            <summary>
+            
+            </summary>
+            <param name="connection"></param>
+            <param name="transaction"></param>
+            <param name="workspace"></param>
+            <param name="scriptDirectory"></param>
+            <param name="bulkSeparator"></param>
+            <param name="bulkBatchSize"></param>
+            <param name="commandTimeout"></param>
+            <param name="environment"></param>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationService.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="connection"></param>
+            <param name="transaction"></param>
+            <param name="transactionContext"></param>
+            <param name="version"></param>
+            <param name="workspace"></param>
+            <param name="scriptDirectory"></param>
+            <param name="metaSchemaName"></param>
+            <param name="metaTableName"></param>
+            <param name="tokens"></param>
+            <param name="commandTimeout"></param>
+            <param name="environment"></param>
+            <param name="appliedByTool"></param>
+            <param name="appliedByToolVersion"></param>
+        </member>
+        <member name="M:Yuniql.Core.IMigrationService.Erase">
             <summary>
             Executes erase scripts presentin _erase directory and subdirectories.
             </summary>
-            <param name="workingPath">The directory path to migration project.</param>
-            <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
-            <param name="commandTimeout">Command timeout in seconds.</param>
-            <param name="environmentCode">Environment code for environment-aware scripts.</param>
         </member>
         <member name="T:Yuniql.Core.IMigrationServiceFactory">
             <summary>
@@ -590,13 +698,50 @@
         <member name="M:Yuniql.Core.LocalVersionService.Validate(System.String)">
             <inheritdoc/>
         </member>
+        <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.MetadataService" -->
+        <member name="M:Yuniql.Core.MetadataService.#ctor(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.ITraceService,Yuniql.Core.ITokenReplacementService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.IsDatabaseExists(System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.CreateDatabase(System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.CreateSchema(System.String,System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.IsDatabaseConfigured(System.String,System.String,System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.ConfigureDatabase(System.String,System.String,System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.UpdateDatabaseConfiguration(System.String,System.String,System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.GetCurrentVersion(System.String,System.String,System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.GetAllAppliedVersions(System.String,System.String,System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.GetAllVersions(System.String,System.String,System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MetadataService.ExecuteSql(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
         <member name="T:Yuniql.Core.MigrationServiceBase">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IConfigurationDataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService)">
+        <member name="M:Yuniql.Core.MigrationServiceBase.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.Initialize(System.String,System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Core.MigrationServiceBase.Initialize">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationServiceBase.GetCurrentVersion(System.String,System.String)">
@@ -605,16 +750,28 @@
         <member name="M:Yuniql.Core.MigrationServiceBase.GetAllVersions(System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.String)">
+        <member name="M:Yuniql.Core.MigrationServiceBase.Run">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceBase.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationServiceBase.IsTargetDatabaseLatest(System.String,System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.RunNonVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String)">
+        <member name="M:Yuniql.Core.MigrationServiceBase.RunNonVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.Erase(System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String)">
+        <member name="M:Yuniql.Core.MigrationServiceBase.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceBase.RunBulkImport(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceBase.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceBase.Erase">
             <inheritdoc />
         </member>
         <member name="T:Yuniql.Core.MigrationServiceFactory">
@@ -631,51 +788,41 @@
         <member name="M:Yuniql.Core.MigrationServiceFactory.Create(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService)">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.Core.NonTransactionalContext.FailedScriptPath">
-            <summary>
-            Gets the failed script path.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.NonTransactionalContext.ResolvingOption">
-            <summary>
-            Gets the resolution option.
-            </summary>
-        </member>
-        <member name="P:Yuniql.Core.NonTransactionalContext.IsFailedScriptPathMatched">
-            <summary>
-            Gets a value indicating whether failed script path is matched.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Core.NonTransactionalContext.SetFailedScriptPathMatch">
-            <summary>
-            Sets the failed script path as matched.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Yuniql.Core.NonTransactionalMigrationService">
+        <member name="T:Yuniql.Core.MigrationServiceNonTransactional">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.NonTransactionalMigrationService.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IConfigurationDataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService)">
+        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.NonTransactionalMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.String)">
+        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.Run">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.NonTransactionalMigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.NonTransactionalContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.NonTransactionalMigrationService.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.NonTransactionalContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="T:Yuniql.Core.NonTransactionalResolvingOption">
-            <summary>
-            Determines the handling behaviour during migration when the previous migration run failed.
-            </summary>
+        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
+            <inheritdoc />
         </member>
-        <member name="F:Yuniql.Core.NonTransactionalResolvingOption.ContinueAfterFailure">
-            <summary>
-            Continue with next script after failure
-            </summary>
+        <member name="T:Yuniql.Core.MigrationServiceTransactional">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceTransactional.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceTransactional.Run">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceTransactional.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceTransactional.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MigrationServiceTransactional.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
+            <inheritdoc/>
         </member>
         <member name="T:Yuniql.Core.PluginAssemblyLoadContext">
             <summary>
@@ -776,20 +923,38 @@
             Global singleton instance of trace settings
             </summary>
         </member>
-        <member name="T:Yuniql.Core.TransactionalMigrationService">
-            <inheritdoc />
+        <member name="T:Yuniql.Core.TransactionContext">
+            <summary>
+            
+            </summary>
         </member>
-        <member name="M:Yuniql.Core.TransactionalMigrationService.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IConfigurationDataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService)">
-            <inheritdoc />
+        <member name="M:Yuniql.Core.TransactionContext.#ctor(Yuniql.Extensibility.DbVersion,System.Boolean)">
+            <summary>
+            Returns an instance of <see cref="T:Yuniql.Core.TransactionContext"/>
+            </summary>
+            <param name="failedDbVersion"></param>
+            <param name="continueAfterFailure"></param>
         </member>
-        <member name="M:Yuniql.Core.TransactionalMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{Yuniql.Core.NonTransactionalResolvingOption},System.String)">
-            <inheritdoc />
+        <member name="P:Yuniql.Core.TransactionContext.FailedScriptPath">
+            <summary>
+            Gets the failed script path.
+            </summary>
         </member>
-        <member name="M:Yuniql.Core.TransactionalMigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.NonTransactionalContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
-            <inheritdoc/>
+        <member name="P:Yuniql.Core.TransactionContext.ContinueAfterFailure">
+            <summary>
+            Gets the resolution option.
+            </summary>
         </member>
-        <member name="M:Yuniql.Core.TransactionalMigrationService.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.NonTransactionalContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
-            <inheritdoc/>
+        <member name="P:Yuniql.Core.TransactionContext.IsFailedScriptPathMatched">
+            <summary>
+            Gets a value indicating whether failed script path is matched.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.TransactionContext.SetFailedScriptPathMatch">
+            <summary>
+            Sets the failed script path as matched.
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:Yuniql.Core.YuniqlMigrationException">
             <summary>

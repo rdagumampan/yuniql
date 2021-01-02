@@ -251,7 +251,7 @@ namespace Yuniql.Core
             command.Parameters.Add(CreateDbParameter("additionalArtifacts", additionalArtifactsByteStream));
 
             //in case database supports non-transactional flow
-            if (_dataService is INonTransactionalFlow nonTransactionalDataService)
+            if (_dataService is IMixableTransaction nonTransactionalDataService)
             {
                 //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
                 sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), metaSchemaName, metaTableName);

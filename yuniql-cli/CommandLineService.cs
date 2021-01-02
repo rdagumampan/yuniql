@@ -72,25 +72,25 @@ namespace Yuniql.CLI
         {
             var configuration = Configuration.Instance;
 
-            var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+            var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
             var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
             configuration.Platform = platform;
-            configuration.WorkspacePath = opts.Path;
+            configuration.Workspace = opts.Path;
             configuration.ConnectionString = opts.ConnectionString;
             configuration.TargetVersion = opts.TargetVersion;
-            configuration.AutoCreateDatabase = opts.AutoCreateDatabase;
+            configuration.IsAutoCreateDatabase = opts.AutoCreateDatabase;
             configuration.Tokens = tokens;
-            configuration.VerifyOnly = verifyOnly;
+            configuration.IsVerifyOnly = verifyOnly;
             configuration.BulkSeparator = opts.BulkSeparator;
             configuration.BulkBatchSize = opts.BulkBatchSize;
             configuration.MetaSchemaName = opts.MetaSchema;
             configuration.MetaTableName = opts.MetaTable;
             configuration.CommandTimeout = opts.CommandTimeout;
             configuration.Environment = opts.Environment;
-            configuration.ContinueAfterFailure = opts.ContinueAfterFailure;
+            configuration.IsContinueAfterFailure = opts.ContinueAfterFailure;
             configuration.TransactionMode = opts.TransactionMode;
-            configuration.RequiredClearedDraft = opts.RequiredClearedDraft;
+            configuration.IsRequiredClearedDraft = opts.RequiredClearedDraft;
             configuration.AppliedByTool = "yuniql-cli";
             configuration.AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString();
 
@@ -106,7 +106,7 @@ namespace Yuniql.CLI
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 migrationService.Run();
 
-                _traceService.Success($"Schema migration completed successfuly on {configuration.WorkspacePath}.");
+                _traceService.Success($"Schema migration completed successfuly on {configuration.Workspace}.");
                 return 0;
             }
             catch (Exception ex)
@@ -124,7 +124,7 @@ namespace Yuniql.CLI
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 migrationService.Run();
 
-                _traceService.Success($"Schema migration verification completed successfuly on {configuration.WorkspacePath}.");
+                _traceService.Success($"Schema migration verification completed successfuly on {configuration.Workspace}.");
                 return 0;
             }
             catch (Exception ex)
@@ -137,11 +137,11 @@ namespace Yuniql.CLI
         {
             try
             {
-                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
 
                 var configuration = Configuration.Instance;
                 configuration.Platform = platform;
-                configuration.WorkspacePath = opts.Path;
+                configuration.Workspace = opts.Path;
                 configuration.ConnectionString = opts.ConnectionString;
                 configuration.MetaSchemaName = opts.MetaSchema;
                 configuration.MetaTableName = opts.MetaTable;
@@ -155,7 +155,7 @@ namespace Yuniql.CLI
                 versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}"));
                 versionPrettyPrint.Print();
 
-                _traceService.Success($"Listed all schema versions applied to database on {configuration.WorkspacePath} workspace.{Environment.NewLine}" +
+                _traceService.Success($"Listed all schema versions applied to database on {configuration.Workspace} workspace.{Environment.NewLine}" +
                     $"For platforms not supporting full transactional DDL operations (ex. MySql, CockroachDB, Snowflake), unsuccessful migrations will show the status as Failed and you can look for LastFailedScript and LastScriptError in the schema version tracking table.");
 
                 return 0;
@@ -171,13 +171,13 @@ namespace Yuniql.CLI
             try
             {
                 //parse tokens
-                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 var configuration = Configuration.Instance;
                 configuration.Platform = platform;
-                configuration.WorkspacePath = opts.Path;
-                configuration.DebugTraceMode = opts.Debug;
+                configuration.Workspace = opts.Path;
+                configuration.IsDebug = opts.Debug;
                 configuration.ConnectionString = opts.ConnectionString;
                 configuration.CommandTimeout = opts.CommandTimeout;
                 configuration.Tokens = tokens;
@@ -188,7 +188,7 @@ namespace Yuniql.CLI
                 var migrationService = _migrationServiceFactory.Create(platform);
                 migrationService.Erase();
 
-                _traceService.Success($"Schema erase completed successfuly on {configuration.WorkspacePath}.");
+                _traceService.Success($"Schema erase completed successfuly on {configuration.Workspace}.");
                 return 0;
             }
             catch (Exception ex)

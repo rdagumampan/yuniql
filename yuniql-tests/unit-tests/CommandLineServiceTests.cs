@@ -236,12 +236,12 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = @"C:\temp\yuniql";
+            configuration.Workspace = @"C:\temp\yuniql";
             configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
             configuration.ConnectionString = "sqlserver-connection-string";
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
             configurationService.Setup(s => s.Initialize());
 
             var migrationService = new Mock<IMigrationService>();
@@ -287,12 +287,12 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = @"C:\temp\yuniql";
+            configuration.Workspace = @"C:\temp\yuniql";
             configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
             configuration.ConnectionString = "sqlserver-connection-string";
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
 
             var migrationService = new Mock<IMigrationService>();
             migrationService.Setup(s => s.GetAllVersions(null, null)).Returns(new List<DbVersion> { new DbVersion { Version = "v0.00", AppliedOnUtc = DateTime.UtcNow, AppliedByUser = "user" } });
@@ -321,12 +321,12 @@ namespace Yuniql.UnitTests
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = @"C:\temp\yuniql";
+            configuration.Workspace = @"C:\temp\yuniql";
             configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
             configuration.ConnectionString = "sqlserver-connection-string";
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
             
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
@@ -354,12 +354,12 @@ namespace Yuniql.UnitTests
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = @"C:\temp\yuniql";
+            configuration.Workspace = @"C:\temp\yuniql";
             configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
             configuration.ConnectionString = "sqlserver-connection-string";
             
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
 
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
@@ -388,7 +388,7 @@ namespace Yuniql.UnitTests
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
 
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
@@ -416,7 +416,7 @@ namespace Yuniql.UnitTests
             localVersionService.Setup(s => s.GetLatestVersion(@"c:\temp\yuniql")).Returns("v1.00");
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
 
             var migrationService = new Mock<IMigrationService>();
             var migrationServiceFactory = new Mock<CLI.IMigrationServiceFactory>();
@@ -443,7 +443,7 @@ namespace Yuniql.UnitTests
                         .Callback<string, object>((msg, o) => errorTraceMsg = msg);
             var environmentService = new Mock<IEnvironmentService>();      
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
             configurationService.Setup(s => s.GetConfiguration()).Returns(Configuration.Instance);
 
             var migrationService = new Mock<IMigrationService>();

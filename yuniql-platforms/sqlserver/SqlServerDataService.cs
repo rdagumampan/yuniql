@@ -121,7 +121,7 @@ namespace Yuniql.SqlServer
             => @"INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion, AdditionalArtifacts) VALUES (@version, @toolName, @toolVersion, @additionalArtifacts);";
 
         ///<inheritdoc/>
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)
+        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {
             //no need to update tracking table as the structure has no been changed so far
             return false;

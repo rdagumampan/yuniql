@@ -52,7 +52,7 @@ namespace Yuniql.PlatformTests
             try
             {
                 var configuration = _testConfiguration.GetFreshConfiguration();
-                configuration.AutoCreateDatabase = false;
+                configuration.IsAutoCreateDatabase = false;
 
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 migrationService.Run();
@@ -363,8 +363,8 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
-            configuration.VerifyOnly = true;
-            configuration.AutoCreateDatabase = false;
+            configuration.IsVerifyOnly = true;
+            configuration.IsAutoCreateDatabase = false;
             migrationService.Run();
 
             //assert

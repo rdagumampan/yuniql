@@ -14,7 +14,7 @@ The tests automatically deploy a Docker container and perform tests against it. 
 
 |Variable Name|Description|
 |---|---|
-|YUNIQL_TEST_TARGET_PLATFORM|The target platform for the test. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.|
+|YUNIQL_TEST_PLATFORM|The target platform for the test. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.|
 |YUNIQL_TEST_CONNECTION_STRING|The connection string to your test server. See defaults for each containerized server.|
 |YUNIQL_TEST_SAMPLEDB|The directory where sample yuniql db project is placed.|
 |YUNIQL_TEST_CLI|The directory where yuniql CLI is placed.|
@@ -40,7 +40,7 @@ docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433
 Configure your test environment
 
 ```bash
-SETX YUNIQL_TEST_TARGET_PLATFORM "sqlserver"
+SETX YUNIQL_TEST_PLATFORM "sqlserver"
 SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-sqlserver-sample"
 SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
@@ -69,7 +69,7 @@ Configure your test environment
 cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64
 
-SETX YUNIQL_TEST_TARGET_PLATFORM "postgresql"
+SETX YUNIQL_TEST_PLATFORM "postgresql"
 SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-postgresql-sample"
 SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
@@ -97,7 +97,7 @@ Configure your test environment
 cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64
 
-SETX YUNIQL_TEST_TARGET_PLATFORM "mysql"
+SETX YUNIQL_TEST_PLATFORM "mysql"
 SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-mysql-sample"
 SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
@@ -125,7 +125,7 @@ Configure your test environment
 cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64
 
-SETX YUNIQL_TEST_TARGET_PLATFORM "mariadb"
+SETX YUNIQL_TEST_PLATFORM "mariadb"
 SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-mysql-sample"
 SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"

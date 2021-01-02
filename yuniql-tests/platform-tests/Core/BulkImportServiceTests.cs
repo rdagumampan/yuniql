@@ -116,7 +116,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvPipeSeparated.csv"), Path.Combine(v101Directory, "TestCsvPipeSeparated.csv"));
 
             //act - bulk load csv files
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true, bulkSeparator: "|");
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true, bulkSeparator: "|");
 
             //assert
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvPipeSeparated");
@@ -164,7 +164,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUtf8.csv"), Path.Combine(v101Directory, "TestCsvUtf8.csv"));
 
             //act - bulk load csv files
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
 
             //assert
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvUtf8");
@@ -212,7 +212,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullColumn.csv"), Path.Combine(v101Directory, "TestCsvNullColumn.csv"));
 
             //act - bulk load csv files
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
 
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvNullColumn");
             var testDataRows = new List<BulkTestDataRow>
@@ -259,7 +259,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUnquoted.csv"), Path.Combine(v101Directory, "TestCsvUnquoted.csv"));
 
             //act - bulk load csv files
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
 
             //assert
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvUnquoted");
@@ -334,7 +334,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvMismatchColumn.csv"), Path.Combine(v101Directory, "TestCsvMismatchColumn.csv"));
 
             //act - bulk load csv files
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
 
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsvMismatchColumn");
             var testDataRows = new List<BulkTestDataRow>
@@ -413,7 +413,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v101Directory, "TestSchema.TestCsv.csv"));
 
             //act - bulk load csv files
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestSchema.TestCsv").ShouldBeTrue();
@@ -464,7 +464,7 @@ namespace Yuniql.PlatformTests
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullWordValue.csv"), Path.Combine(v101Directory, "TestCsvNullWordValue.csv"));
 
             //act
-            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", autoCreateDatabase: true);
+            migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvNullWordValue").ShouldBeTrue();

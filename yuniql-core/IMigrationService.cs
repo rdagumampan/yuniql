@@ -12,22 +12,22 @@ namespace Yuniql.Core
         /// <summary>
         /// Returns true if the version of target database is equal or greater than local versions
         /// </summary>
-        /// <param name="targetVersion"></param>
-        /// <param name="schemaName"></param>
-        /// <param name="tableName"></param>
+        /// <param name="version"></param>
+        /// <param name="metaSchemaName"></param>
+        /// <param name="metaTableName"></param>
         /// <returns></returns>
-        bool IsTargetDatabaseLatest(string targetVersion, string schemaName = null, string tableName = null);
+        bool IsTargetDatabaseLatest(string version, string metaSchemaName = null, string metaTableName = null);
 
 
         /// <summary>
         /// Returns the current migration version applied in target database.
         /// </summary>
-        string GetCurrentVersion(string schemaName = null, string tableName = null);
+        string GetCurrentVersion(string metaSchemaName = null, string metaTableName = null);
 
         /// <summary>
         /// Returns all migration versions applied in the target database
         /// </summary>
-        List<DbVersion> GetAllVersions(string schemaName = null, string tableName = null);
+        List<DbVersion> GetAllVersions(string metaSchemaName = null, string metaTableName = null);
 
         /// <summary>
         /// Runs migrations by executing alls scripts in the workspace directory. 
@@ -39,11 +39,11 @@ namespace Yuniql.Core
         /// Runs migrations by executing alls scripts in the workspace directory. 
         /// When CSV files are present also run bulk import operations to target database table having same file name.
         /// </summary>
-        /// <param name="workingPath">The directory path to migration project.</param>
+        /// <param name="workspace">The directory path to migration project.</param>
         /// <param name="targetVersion">The maximum version to run to. When NULL, runs migration to the latest version found in the workspace path.</param>
-        /// <param name="autoCreateDatabase">When TRUE, creates the database in the target host.</param>
+        /// <param name="isAutoCreateDatabase">When TRUE, creates the database in the target host.</param>
         /// <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
-        /// <param name="verifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
+        /// <param name="isVerifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
         /// <param name="bulkSeparator">Bulk file values separator character in the CSV bulk import files. When NULL, uses comma.</param>
         /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
         /// <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
@@ -51,16 +51,16 @@ namespace Yuniql.Core
         /// <param name="bulkBatchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
         /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
-        /// <param name="environmentCode">Environment code for environment-aware scripts.</param>
-        /// <param name="continueAfterFailure">The resume from failure.</param>
+        /// <param name="environment">Environment code for environment-aware scripts.</param>
+        /// <param name="isContinueAfterFailure">The resume from failure.</param>
         /// <param name="transactionMode"></param>
-        /// <param name="requiredClearedDraft">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration.</param>
+        /// <param name="isRequiredClearedDraft">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration.</param>
         void Run(
-            string workingPath, 
+            string workspace, 
             string targetVersion = null, 
-            bool? autoCreateDatabase = null, 
+            bool? isAutoCreateDatabase = null, 
             List<KeyValuePair<string, string>> tokens = null, 
-            bool? verifyOnly = null, 
+            bool? isVerifyOnly = null, 
             string bulkSeparator = null,
             string metaSchemaName = null, 
             string metaTableName = null,
@@ -68,10 +68,10 @@ namespace Yuniql.Core
             int? bulkBatchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string environmentCode = null,
-            bool? continueAfterFailure = null,
+            string environment = null,
+            bool? isContinueAfterFailure = null,
             string transactionMode = null,
-            bool requiredClearedDraft = false
+            bool isRequiredClearedDraft = false
         );
 
         /// <summary>
@@ -79,23 +79,23 @@ namespace Yuniql.Core
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="transaction"></param>
-        /// <param name="workingPath"></param>
-        /// <param name="tokenKeyPairs"></param>
+        /// <param name="workspace"></param>
+        /// <param name="tokens"></param>
         /// <param name="bulkSeparator"></param>
         /// <param name="commandTimeout"></param>
-        /// <param name="environmentCode"></param>
+        /// <param name="environment"></param>
         /// <param name="transactionMode"></param>
-        /// <param name="requiredClearedDraftFolder"></param>
+        /// <param name="isRequiredClearedDraft"></param>
         void RunNonVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            string workingPath,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            string workspace,
+            List<KeyValuePair<string, string>> tokens = null,
             string bulkSeparator = null,
             int? commandTimeout = null,
-            string environmentCode = null,
+            string environment = null,
             string transactionMode = null,
-            bool requiredClearedDraftFolder = false
+            bool isRequiredClearedDraft = false
         );
 
         /// <summary>
@@ -103,11 +103,11 @@ namespace Yuniql.Core
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="transaction"></param>
-        /// <param name="dbVersions"></param>
-        /// <param name="workingPath"></param>
+        /// <param name="versions"></param>
+        /// <param name="workspace"></param>
         /// <param name="targetVersion"></param>
-        /// <param name="nonTransactionalContext"></param>
-        /// <param name="tokenKeyPairs"></param>
+        /// <param name="transactionContext"></param>
+        /// <param name="tokens"></param>
         /// <param name="bulkSeparator"></param>
         /// <param name="metaSchemaName"></param>
         /// <param name="metaTableName"></param>
@@ -115,16 +115,16 @@ namespace Yuniql.Core
         /// <param name="bulkBatchSize"></param>
         /// <param name="appliedByTool"></param>
         /// <param name="appliedByToolVersion"></param>
-        /// <param name="environmentCode"></param>
+        /// <param name="environment"></param>
         /// <param name="transactionMode"></param>
         void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            List<string> dbVersions,
-            string workingPath,
+            List<string> versions,
+            string workspace,
             string targetVersion,
-            TransactionContext nonTransactionalContext,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            TransactionContext transactionContext,
+            List<KeyValuePair<string, string>> tokens = null,
             string bulkSeparator = null,
             string metaSchemaName = null,
             string metaTableName = null,
@@ -132,7 +132,7 @@ namespace Yuniql.Core
             int? bulkBatchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string environmentCode = null,
+            string environment = null,
             string transactionMode = null
         );
 
@@ -141,21 +141,21 @@ namespace Yuniql.Core
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="transaction"></param>
-        /// <param name="workingPath"></param>
+        /// <param name="workspace"></param>
         /// <param name="scriptDirectory"></param>
         /// <param name="bulkSeparator"></param>
         /// <param name="bulkBatchSize"></param>
         /// <param name="commandTimeout"></param>
-        /// <param name="environmentCode"></param>
+        /// <param name="environment"></param>
         void RunBulkImport(
             IDbConnection connection,
             IDbTransaction transaction,
-            string workingPath,
+            string workspace,
             string scriptDirectory,
             string bulkSeparator = null,
             int? bulkBatchSize = null,
             int? commandTimeout = null,
-            string environmentCode = null
+            string environment = null
         );
 
         /// <summary>
@@ -163,29 +163,29 @@ namespace Yuniql.Core
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="transaction"></param>
-        /// <param name="nonTransactionalContext"></param>
+        /// <param name="transactionContext"></param>
         /// <param name="version"></param>
-        /// <param name="workingPath"></param>
+        /// <param name="workspace"></param>
         /// <param name="scriptDirectory"></param>
         /// <param name="metaSchemaName"></param>
         /// <param name="metaTableName"></param>
-        /// <param name="tokenKeyPairs"></param>
+        /// <param name="tokens"></param>
         /// <param name="commandTimeout"></param>
-        /// <param name="environmentCode"></param>
+        /// <param name="environment"></param>
         /// <param name="appliedByTool"></param>
         /// <param name="appliedByToolVersion"></param>
         void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            TransactionContext nonTransactionalContext,
+            TransactionContext transactionContext,
             string version,
-            string workingPath,
+            string workspace,
             string scriptDirectory,
             string metaSchemaName,
             string metaTableName,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            List<KeyValuePair<string, string>> tokens = null,
             int? commandTimeout = null,
-            string environmentCode = null,
+            string environment = null,
             string appliedByTool = null,
             string appliedByToolVersion = null
         );

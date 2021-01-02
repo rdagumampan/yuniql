@@ -109,7 +109,7 @@ namespace Yuniql.PostgreSql
             => @"INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version, additional_artifacts) VALUES (@version, @toolName, @toolVersion, @additionalArtifacts);";
 
         ///<inheritdoc/>
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)
+        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {
             //no need to update tracking table as the structure has no been changed so far
             return false;

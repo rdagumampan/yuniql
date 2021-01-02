@@ -8,7 +8,7 @@ using System;
 namespace Yuniql.MySql
 {
     ///<inheritdoc/>
-    public class MySqlDataService : IDataService, INonTransactionalFlow
+    public class MySqlDataService : IDataService, IMixableTransaction
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
@@ -128,38 +128,38 @@ namespace Yuniql.MySql
             ";
 
         ///<inheritdoc/>
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null)
+        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {
-            var columnsTable = GetVersionTableColumns(dbConnection, traceService, tableName);
+            var columnsTable = GetVersionTableColumns(dbConnection, traceService, metaTableName);
             var columnsTableRows = columnsTable.Rows.Cast<DataRow>().Select(x => new { ColumnName = x.Field<string>("COLUMN_NAME"), ColumnType = x.Field<string>("COLUMN_TYPE") }).ToDictionary(x => x.ColumnName, StringComparer.OrdinalIgnoreCase);
 
             //Add new columns into old version of table
             bool databaseUpdated = false;
             if (!columnsTableRows.ContainsKey("status"))
             {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {tableName ?? this.TableName} ADD COLUMN status VARCHAR(32) NOT NULL", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {metaTableName ?? this.TableName} ADD COLUMN status VARCHAR(32) NOT NULL", traceService);
                 databaseUpdated = true;
             }
 
             if (!columnsTableRows.ContainsKey("failed_script_path"))
             {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {tableName ?? this.TableName} ADD COLUMN failed_script_path VARCHAR(4000) NULL", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {metaTableName ?? this.TableName} ADD COLUMN failed_script_path VARCHAR(4000) NULL", traceService);
                 databaseUpdated = true;
             }
 
             if (!columnsTableRows.ContainsKey("failed_script_error"))
             {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {tableName ?? this.TableName} ADD COLUMN failed_script_error VARCHAR(4000) NULL", traceService);
+                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {metaTableName ?? this.TableName} ADD COLUMN failed_script_error VARCHAR(4000) NULL", traceService);
                 databaseUpdated = true;
             }
 
             return databaseUpdated;
         }
 
-        private DataTable GetVersionTableColumns(IDbConnection dbConnection, ITraceService traceService = null, string tableName = null)
+        private DataTable GetVersionTableColumns(IDbConnection dbConnection, ITraceService traceService = null, string metaTableName = null)
         {
             var dbCommand = (MySqlCommand)dbConnection.CreateCommand();
-            dbCommand.CommandText = $"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{tableName ?? this.TableName}' AND table_schema = DATABASE()";
+            dbCommand.CommandText = $"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{metaTableName ?? this.TableName}' AND table_schema = DATABASE()";
 
             return this.FillDataTable(dbCommand, traceService);
         }
