@@ -8,6 +8,7 @@ COPY . .
 WORKDIR /code/yuniql-cli
 RUN dotnet publish -c release -r win-x64 /p:publishtrimmed=true -o ./app
 
+#https://github.com/dotnet/dotnet-docker/issues/1332
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime-env
 
 WORKDIR app
