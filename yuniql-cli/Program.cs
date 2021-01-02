@@ -57,7 +57,7 @@ namespace Yuniql.CLI
             Console.WriteLine($"Visit https://yuniql.io for documentation & more samples{Environment.NewLine}");
             Console.ResetColor();
 
-            traceService.IsDebugEnabled = opts.Debug;
+            traceService.IsDebugEnabled = opts.IsDebug;
             return command.Invoke(opts);
         }
     }

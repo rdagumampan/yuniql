@@ -55,7 +55,7 @@ namespace Yuniql.UnitTests
             migrationServiceFactory.Setup(s => s.Create("sqlserver")).Returns(migrationService.Object);
 
             //act
-            var option = new InitOption { Path = @"c:\temp\yuniql" };
+            var option = new InitOption { Workspace = @"c:\temp\yuniql" };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunInitOption(option);
 
@@ -455,7 +455,7 @@ namespace Yuniql.UnitTests
             var localVersionService = new Mock<ILocalVersionService>();
 
             //act
-            var option = new RunOption { Debug = debugEnabled };
+            var option = new RunOption { IsDebug = debugEnabled };
             var sut = new CommandLineService(migrationServiceFactory.Object, localVersionService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             var returnCode = sut.RunRunOption(option);
 
