@@ -39,8 +39,8 @@ namespace Yuniql.PlatformTests
         public void Test_Init()
         {
             //act
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //assert
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)).ShouldBe(true);
@@ -70,10 +70,10 @@ namespace Yuniql.PlatformTests
         public void Test_Init_Called_Multiple_Is_Handled()
         {
             //act
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //assert
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT)).ShouldBe(true);
@@ -90,9 +90,9 @@ namespace Yuniql.PlatformTests
         public void Test_Vnext_Major_Version()
         {
             //act
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             //assert
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "v1.00")).ShouldBe(true);
@@ -102,9 +102,9 @@ namespace Yuniql.PlatformTests
         public void Test_Vnext_Major_Version_With_Template_File()
         {
             //act
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, "Test.sql");
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, "Test.sql");
 
             //assert
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "v1.00")).ShouldBe(true);
@@ -115,9 +115,9 @@ namespace Yuniql.PlatformTests
         public void Test_Vnext_Minor_Version()
         {
             //act
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
 
             //assert
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "v0.01")).ShouldBe(true);
@@ -127,9 +127,9 @@ namespace Yuniql.PlatformTests
         public void Test_Vnext_Minor_Version_With_Template_File()
         {
             //act
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, "Test.sql");
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, "Test.sql");
 
             //assert
             Directory.Exists(Path.Combine(_testConfiguration.WorkspacePath, "v0.01")).ShouldBe(true);
@@ -140,14 +140,14 @@ namespace Yuniql.PlatformTests
         public void Test_Get_Latest_Version()
         {
             //act
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
 
             //assert
-            localVersionService.GetLatestVersion(_testConfiguration.WorkspacePath).ShouldBe("v1.02");
+            workspaceService.GetLatestVersion(_testConfiguration.WorkspacePath).ShouldBe("v1.02");
         }
     }
 }

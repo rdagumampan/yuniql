@@ -15,12 +15,12 @@ namespace Yuniql.CLI
         {
             var environmentService = new EnvironmentService();
             var traceService = new FileTraceService();
-            var localVersionService = new LocalVersionService(traceService);
-            var configurationService = new ConfigurationService(environmentService, localVersionService, traceService);
+            var workspaceService = new WorkspaceService(traceService);
+            var configurationService = new ConfigurationService(environmentService, workspaceService, traceService);
             
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var commandLineService = new CommandLineService(migrationServiceFactory,
-                                                            localVersionService,
+                                                            workspaceService,
                                                             environmentService,
                                                             traceService,
                                                             configurationService);

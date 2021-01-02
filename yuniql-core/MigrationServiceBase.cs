@@ -10,7 +10,7 @@ namespace Yuniql.Core
     ///<inheritdoc/>
     public abstract class MigrationServiceBase : IMigrationService
     {
-        private readonly ILocalVersionService _localVersionService;
+        private readonly IWorkspaceService _workspaceService;
         private readonly IDataService _dataService;
         private readonly IBulkImportService _bulkImportService;
         private readonly ITokenReplacementService _tokenReplacementService;
@@ -22,7 +22,7 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public MigrationServiceBase(
-            ILocalVersionService localVersionService,
+            IWorkspaceService workspaceService,
             IDataService dataService,
             IBulkImportService bulkImportService,
             IMetadataService metadataService,
@@ -32,7 +32,7 @@ namespace Yuniql.Core
             ITraceService traceService,
             IConfigurationService configurationService)
         {
-            this._localVersionService = localVersionService;
+            this._workspaceService = workspaceService;
             this._dataService = dataService;
             this._bulkImportService = bulkImportService;
             this._tokenReplacementService = tokenReplacementService;

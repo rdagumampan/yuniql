@@ -10,19 +10,19 @@ namespace Yuniql.CLI
     public class CommandLineService : ICommandLineService
     {
         private IMigrationServiceFactory _migrationServiceFactory;
-        private readonly ILocalVersionService _localVersionService;
+        private readonly IWorkspaceService _workspaceService;
         private readonly IEnvironmentService _environmentService;
         private ITraceService _traceService;
         private readonly IConfigurationService _configurationService;
 
         public CommandLineService(
             IMigrationServiceFactory migrationServiceFactory,
-            ILocalVersionService localVersionService,
+            IWorkspaceService workspaceService,
             IEnvironmentService environmentService,
             ITraceService traceService,
             IConfigurationService configurationService)
         {
-            this._localVersionService = localVersionService;
+            this._workspaceService = workspaceService;
             this._environmentService = environmentService;
             this._traceService = traceService;
             this._configurationService = configurationService;
@@ -34,7 +34,7 @@ namespace Yuniql.CLI
             try
             {
                 opts.Workspace = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
-                _localVersionService.Init(opts.Workspace);
+                _workspaceService.Init(opts.Workspace);
                 _traceService.Success($"Initialized {opts.Workspace}.");
                 return 0;
             }
@@ -51,12 +51,12 @@ namespace Yuniql.CLI
                 opts.Workspace = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
                 if (opts.IncrementMajorVersion)
                 {
-                    var nextVersion = _localVersionService.IncrementMajorVersion(opts.Workspace, opts.File);
+                    var nextVersion = _workspaceService.IncrementMajorVersion(opts.Workspace, opts.File);
                     _traceService.Success($"New major version created {nextVersion} on {opts.Workspace}.");
                 }
                 else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
                 {
-                    var nextVersion = _localVersionService.IncrementMinorVersion(opts.Workspace, opts.File);
+                    var nextVersion = _workspaceService.IncrementMinorVersion(opts.Workspace, opts.File);
                     _traceService.Success($"New minor version created {nextVersion} on {opts.Workspace}.");
                 }
 

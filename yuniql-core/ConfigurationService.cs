@@ -10,17 +10,17 @@ namespace Yuniql.Core
     public class ConfigurationService : IConfigurationService
     {
         private readonly IEnvironmentService _environmentService;
-        private readonly ILocalVersionService _localVersionService;
+        private readonly IWorkspaceService _workspaceService;
         private readonly ITraceService _traceService;
 
         ///<inheritdoc/>
         public ConfigurationService(
             IEnvironmentService environmentService,
-            ILocalVersionService localVersionService,
+            IWorkspaceService workspaceService,
             ITraceService traceService)
         {
             this._environmentService = environmentService;
-            this._localVersionService = localVersionService;
+            this._workspaceService = workspaceService;
             this._traceService = traceService;
         }
 

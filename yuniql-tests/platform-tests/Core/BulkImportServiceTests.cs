@@ -42,10 +42,10 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Default_Separated()
         {
             //arrange - prepare bulk destination table
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsv.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsv"));
 
@@ -60,7 +60,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeTrue();
 
             //arrange - add new minor version with csv files
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v101Directory, "TestCsv.csv"));
 
@@ -93,10 +93,10 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Pipe_Separated()
         {
             //arrange - pre-create destination bulk tables
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvPipeSeparated.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvPipeSeparated"));
 
@@ -111,7 +111,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvPipeSeparated").ShouldBeTrue();
 
             //arrange - add new version with csv files
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvPipeSeparated.csv"), Path.Combine(v101Directory, "TestCsvPipeSeparated.csv"));
 
@@ -141,10 +141,10 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Utf8()
         {
             //arrange - pre-create destination bulk tables
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvUtf8.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvUtf8"));
 
@@ -159,7 +159,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvUtf8").ShouldBeTrue();
 
             //arrange - add new version with csv files
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUtf8.csv"), Path.Combine(v101Directory, "TestCsvUtf8.csv"));
 
@@ -189,10 +189,10 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Null_Columns()
         {
             //arrange - pre-create destination bulk tables
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvNullColumn.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvNullColumn"));
 
@@ -207,7 +207,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvNullColumn").ShouldBeTrue();
 
             //arrange - add new version with csv files
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullColumn.csv"), Path.Combine(v101Directory, "TestCsvNullColumn.csv"));
 
@@ -236,10 +236,10 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Unquoted()
         {
             //arrange - pre-create destination bulk tables
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvUnquoted.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvUnquoted"));
 
@@ -254,7 +254,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvUnquoted").ShouldBeTrue();
 
             //arrange - add new version with csv files
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUnquoted.csv"), Path.Combine(v101Directory, "TestCsvUnquoted.csv"));
 
@@ -284,8 +284,8 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_Destination_Table_Does_Not_Exist_Throws_Error()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //we simulate a importing data into TestCsvBulkTable that doesnt exist
             string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
@@ -311,10 +311,10 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_Mismatch_Columns_But_Nullable()
         {
             //arrange - pre-create destination bulk tables
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvMismatchColumn.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvMismatchColumn"));
 
@@ -329,7 +329,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvMismatchColumn").ShouldBeTrue();
 
             //arrange - add new version with csv files
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvMismatchColumn.csv"), Path.Combine(v101Directory, "TestCsvMismatchColumn.csv"));
 
@@ -358,8 +358,8 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_Mismatch_Columns_But_Not_Nullable()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
             string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
             _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
@@ -389,10 +389,10 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_NonDefault_Schema_Destination_Table()
         {            
             //arrange - pre-create destination bulk tables
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"__CreateSchema.sql"), _testDataService.GetSqlForCreateDbSchema("TestSchema"));
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvWithSchema.sql"), _testDataService.GetSqlForCreateBulkTable("TestSchema.TestCsv"));
@@ -408,7 +408,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestSchema.TestCsv").ShouldBeTrue();
 
             //arrange - add new version with csv files
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v101Directory, "TestSchema.TestCsv.csv"));
 
@@ -441,10 +441,10 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Null_Word_Value()
         {
             //arrange - prepare bulk destination table
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvNullWordValue.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsvNullWordValue"));
 
@@ -459,7 +459,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsvNullWordValue").ShouldBeTrue();
 
             //arrange - add new minor version with csv files
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullWordValue.csv"), Path.Combine(v101Directory, "TestCsvNullWordValue.csv"));
 

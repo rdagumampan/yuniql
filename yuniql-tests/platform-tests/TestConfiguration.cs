@@ -22,8 +22,8 @@ namespace Yuniql.PlatformTests
         {
             var traceService = new FileTraceService();
             var environmentService = new EnvironmentService();
-            var localVersionService = new LocalVersionService(traceService);
-            var configurationService = new ConfigurationService(environmentService, localVersionService, traceService);
+            var workspaceService = new WorkspaceService(traceService);
+            var configurationService = new ConfigurationService(environmentService, workspaceService, traceService);
             configurationService.Reset();
 
             var configuration = Configuration.Instance;

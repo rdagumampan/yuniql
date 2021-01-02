@@ -45,8 +45,8 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Without_AutocreateDB_Throws_Exception()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //act and assert
             try
@@ -69,10 +69,10 @@ namespace Yuniql.PlatformTests
         public void Test_Run_With_AutocreateDB()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
 
             //act
             var configuration = _testConfiguration.GetFreshConfiguration();
@@ -87,10 +87,10 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Database_Already_Updated()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
 
             //act
             var configuration = _testConfiguration.GetFreshConfiguration();
@@ -122,8 +122,8 @@ namespace Yuniql.PlatformTests
         public void Test_Run_All_NonVersion_Scripts_Executed(string scriptFolder)
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, scriptFolder), $"test_{scriptFolder}.sql"), _testDataService.GetSqlForCreateDbObject($"test_{scriptFolder}"));
 
             //act
@@ -139,16 +139,16 @@ namespace Yuniql.PlatformTests
         public void Test_Run_All_Version_Scripts_Executed()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
@@ -166,13 +166,13 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Skipped_Versions_Lower_Or_Same_As_Latest()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
             //act
@@ -188,7 +188,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00_added_later.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00_added_later"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01_added_later.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01_added_later"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             migrationService.Run();
@@ -203,19 +203,19 @@ namespace Yuniql.PlatformTests
         public void Test_Run_With_Target_Version_Skipped_Versions_Higher_Than_Target_Version()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v2.00"), $"test_v2_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v2_00"));
 
             //act
@@ -240,10 +240,10 @@ namespace Yuniql.PlatformTests
         public void Test_Run_With_Parameterized_Tokens(string versionFolder, string scriptName)
         {
             //arrange           
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, versionFolder), $"{scriptName}.sql"), _testDataService.GetSqlForCreateDbObjectWithTokens($"{scriptName}"));
 
             //act
@@ -267,10 +267,10 @@ namespace Yuniql.PlatformTests
         public void Test_Run_All_Version_SubDirectories_Executed()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v1rootDirectory = Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"));
             _testDataService.CreateScriptFile(Path.Combine(v1rootDirectory, $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00")); ;
 
@@ -282,7 +282,7 @@ namespace Yuniql.PlatformTests
             Directory.CreateDirectory(v1level1SubDirectory);
             _testDataService.CreateScriptFile(Path.Combine(v1level1SubDirectory, $"test_v1_00_level1_sublevel1.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00_level1_sublevel1"));
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v2rootDirectory = Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v2.00"));
             _testDataService.CreateScriptFile(Path.Combine(v2rootDirectory, $"test_v2_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v2_00")); ;
 
@@ -313,10 +313,10 @@ namespace Yuniql.PlatformTests
         public void Test_Run_With_Faulty_Script_Throws_Error_Must_Rollback_All_Changes()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $".sql"), _testDataService.GetSqlForCreateBulkTable("TestCsv"));
             File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), "TestCsv.csv"));
@@ -346,20 +346,20 @@ namespace Yuniql.PlatformTests
         public void Test_Verify()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
             var configuration = _testConfiguration.GetFreshConfiguration();
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
             migrationService.Run();
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
@@ -377,10 +377,10 @@ namespace Yuniql.PlatformTests
         public void Test_Erase()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"script1.sql"), _testDataService.GetSqlForCreateDbObject($"script1"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"script2.sql"), _testDataService.GetSqlForCreateDbObject($"script2"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"script3.sql"), _testDataService.GetSqlForCreateDbObject($"script3"));
@@ -425,8 +425,8 @@ namespace Yuniql.PlatformTests
         public void Test_Run_With_Missing_Directories_In_Workspace_Must_Throw_Exception()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
             Directory.Delete(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT), true);
@@ -456,8 +456,8 @@ namespace Yuniql.PlatformTests
         public void Test_Run_With_User_Custom_Directories_In_Workspace()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
             Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "user_created_folder"));
@@ -476,8 +476,8 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Dash_Character_In_Database_Name()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
             //use database name with dash
@@ -498,8 +498,8 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Draft_Always_Executed()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
 
             //act, run with _draft is empty at this point
@@ -526,16 +526,16 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Transaction_Mode_Every_Session()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
@@ -554,16 +554,16 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Transaction_Mode_Every_Version()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act
@@ -582,16 +582,16 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Transaction_Mode_None()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.01"), $"test_v1_01.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_01"));
 
-            localVersionService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.02"), $"test_v1_02.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_02"));
 
             //act

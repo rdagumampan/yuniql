@@ -20,7 +20,7 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
 
             //act
-            var sut = new LocalVersionService(traceService.Object);
+            var sut = new WorkspaceService(traceService.Object);
             sut.Validate(@"c:\temp\yuniql");
 
             //assert

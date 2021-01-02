@@ -40,9 +40,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_SingleLine_Empty_Script()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlStatement = $@"
 ";
@@ -61,9 +61,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_SingleLine_Script_With_Terminator()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlObjectName = "Test_Object_1";
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLine(sqlObjectName));
@@ -81,9 +81,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_SingleLine_Script_Without_Terminator()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlObjectName = "Test_Object_1";
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLineWithoutTerminator(sqlObjectName));
@@ -101,9 +101,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_Multiline_Script_Without_Terminator_In_LastLine()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlFileName = "Test_Single_Run_Single_Standard";
             string sqlObjectName1 = "Test_Object_1";
@@ -127,9 +127,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_Multiline_Script_With_Terminator_In_Comment_Block()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlFileName = "Test_Single_Run_Single_Standard";
             string sqlObjectName1 = "Test_Object_1";
@@ -155,9 +155,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_Multiline_Script_With_Terminator_Inside_Statements()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlFileName = "Test_Single_Run_Single_Standard";
             string sqlObjectName1 = "Test_Object_1";
@@ -181,9 +181,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_Multiline_Script_With_Error_Must_Rollback()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
-            localVersionService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlFileName = "Test_Single_Run_Failed_Script_Must_Rollback";
             string sqlObjectName1 = "Test_Object_1";

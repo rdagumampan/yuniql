@@ -47,7 +47,7 @@ namespace Yuniql.UnitTests
         {
             //arrange
             var traceService = new Mock<ITraceService>();
-            var localVersionService = new Mock<ILocalVersionService>();
+            var workspaceService = new Mock<IWorkspaceService>();
 
             var parameters = GetFreshConfiguration();
             var environmentService = new Mock<IEnvironmentService>();
@@ -56,7 +56,7 @@ namespace Yuniql.UnitTests
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING)).Returns(parameters.ConnectionString);
 
             //act
-            var sut = new ConfigurationService(environmentService.Object, localVersionService.Object, traceService.Object);
+            var sut = new ConfigurationService(environmentService.Object, workspaceService.Object, traceService.Object);
             sut.Initialize();
             var configuration = sut.GetConfiguration();
 
@@ -71,7 +71,7 @@ namespace Yuniql.UnitTests
         {
             //arrange
             var traceService = new Mock<ITraceService>();
-            var localVersionService = new Mock<ILocalVersionService>();
+            var workspaceService = new Mock<IWorkspaceService>();
 
             var parameters = GetFreshConfiguration();
             var environmentService = new Mock<IEnvironmentService>();
@@ -80,7 +80,7 @@ namespace Yuniql.UnitTests
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING)).Returns(parameters.ConnectionString);
 
             //act
-            var sut = new ConfigurationService(environmentService.Object, localVersionService.Object, traceService.Object);
+            var sut = new ConfigurationService(environmentService.Object, workspaceService.Object, traceService.Object);
             sut.Initialize();
             var configurationJson = sut.PrintAsJson(redactSensitiveText: true);
 
@@ -94,7 +94,7 @@ namespace Yuniql.UnitTests
         {
             //arrange
             var traceService = new Mock<ITraceService>();
-            var localVersionService = new Mock<ILocalVersionService>();
+            var workspaceService = new Mock<IWorkspaceService>();
 
             var parameters = GetFreshConfiguration();
             var environmentService = new Mock<IEnvironmentService>();
@@ -103,7 +103,7 @@ namespace Yuniql.UnitTests
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING)).Returns(parameters.ConnectionString);
 
             //act
-            var sut = new ConfigurationService(environmentService.Object, localVersionService.Object, traceService.Object);
+            var sut = new ConfigurationService(environmentService.Object, workspaceService.Object, traceService.Object);
             sut.Initialize();
             var configurationJson = sut.PrintAsJson(redactSensitiveText: false);
 
@@ -118,10 +118,10 @@ namespace Yuniql.UnitTests
             //arrange
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
-            var localVersionService = new Mock<ILocalVersionService>();
+            var workspaceService = new Mock<IWorkspaceService>();
 
             //act
-            var sut = new ConfigurationService(environmentService.Object, localVersionService.Object, traceService.Object);
+            var sut = new ConfigurationService(environmentService.Object, workspaceService.Object, traceService.Object);
             var result = sut.GetValueOrDefault("mariadb", ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER);
 
             //assert
@@ -135,10 +135,10 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM)).Returns(SUPPORTED_DATABASES.MARIADB);
-            var localVersionService = new Mock<ILocalVersionService>();
+            var workspaceService = new Mock<IWorkspaceService>();
 
             //act
-            var sut = new ConfigurationService(environmentService.Object, localVersionService.Object, traceService.Object);
+            var sut = new ConfigurationService(environmentService.Object, workspaceService.Object, traceService.Object);
             var result = sut.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER);
 
             //assert
@@ -151,10 +151,10 @@ namespace Yuniql.UnitTests
             //arrange
             var traceService = new Mock<ITraceService>();
             var environmentService = new Mock<IEnvironmentService>();
-            var localVersionService = new Mock<ILocalVersionService>();
+            var workspaceService = new Mock<IWorkspaceService>();
 
             //act
-            var sut = new ConfigurationService(environmentService.Object, localVersionService.Object, traceService.Object);
+            var sut = new ConfigurationService(environmentService.Object, workspaceService.Object, traceService.Object);
             var result = sut.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER);
 
             //assert

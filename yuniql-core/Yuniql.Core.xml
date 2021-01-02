@@ -153,7 +153,7 @@
         <member name="T:Yuniql.Core.ConfigurationService">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationService.#ctor(Yuniql.Core.IEnvironmentService,Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.ITraceService)">
+        <member name="M:Yuniql.Core.ConfigurationService.#ctor(Yuniql.Core.IEnvironmentService,Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.ITraceService)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.ConfigurationService.GetConfiguration">
@@ -342,46 +342,6 @@
             </summary>
             <param name="path">Returns true if file exists.</param>
             <returns></returns>
-        </member>
-        <member name="T:Yuniql.Core.ILocalVersionService">
-            <summary>
-            Interface for implementing service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are operated from.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Core.ILocalVersionService.Init(System.String)">
-            <summary>
-            Creates the baseline directory structure in the target workspace path.
-            </summary>
-            <param name="workingPath">The directory path where workspace structure will be created.</param>
-        </member>
-        <member name="M:Yuniql.Core.ILocalVersionService.GetLatestVersion(System.String)">
-            <summary>
-            Gets the latest version available in the local workspace.
-            </summary>
-            <param name="workingPath">The directory path when yuniql operations are executed from.</param>
-        </member>
-        <member name="M:Yuniql.Core.ILocalVersionService.IncrementMajorVersion(System.String,System.String)">
-            <summary>
-            Creates a new major version migration directory by incrementing the latest major version.
-            </summary>
-            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
-            <param name="sqlFileName">File name of sql file to be created.</param>
-            <returns>The version created in v{Major}.{Minor} format.</returns>
-        </member>
-        <member name="M:Yuniql.Core.ILocalVersionService.IncrementMinorVersion(System.String,System.String)">
-            <summary>
-            Creates a new minor version migration directory by incrementing tha latest version.
-            </summary>
-            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
-            <param name="sqlFileName">File name of sql file to be created.</param>
-            <returns>The version created in v{Major}.{Minor} format.</returns>
-        </member>
-        <member name="M:Yuniql.Core.ILocalVersionService.Validate(System.String)">
-            <summary>
-            Validates the baseline directory structure. The following directories are always required to be present in the workspace else the migration would fail.
-            Required folders are _init, _pre, v0.00, _draft, _post, and _erase.
-            </summary>
-            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
         </member>
         <member name="T:Yuniql.Core.IMetadataService">
             <summary>
@@ -642,6 +602,46 @@
             <param name="sqlStatement">Raw SQL statement where tokens maybe present.</param>
             <returns>SQL statement where tokens are successfully replaced.</returns>
         </member>
+        <member name="T:Yuniql.Core.IWorkspaceService">
+            <summary>
+            Interface for implementing service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are operated from.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IWorkspaceService.Init(System.String)">
+            <summary>
+            Creates the baseline directory structure in the target workspace path.
+            </summary>
+            <param name="workingPath">The directory path where workspace structure will be created.</param>
+        </member>
+        <member name="M:Yuniql.Core.IWorkspaceService.GetLatestVersion(System.String)">
+            <summary>
+            Gets the latest version available in the local workspace.
+            </summary>
+            <param name="workingPath">The directory path when yuniql operations are executed from.</param>
+        </member>
+        <member name="M:Yuniql.Core.IWorkspaceService.IncrementMajorVersion(System.String,System.String)">
+            <summary>
+            Creates a new major version migration directory by incrementing the latest major version.
+            </summary>
+            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
+            <param name="sqlFileName">File name of sql file to be created.</param>
+            <returns>The version created in v{Major}.{Minor} format.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IWorkspaceService.IncrementMinorVersion(System.String,System.String)">
+            <summary>
+            Creates a new minor version migration directory by incrementing tha latest version.
+            </summary>
+            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
+            <param name="sqlFileName">File name of sql file to be created.</param>
+            <returns>The version created in v{Major}.{Minor} format.</returns>
+        </member>
+        <member name="M:Yuniql.Core.IWorkspaceService.Validate(System.String)">
+            <summary>
+            Validates the baseline directory structure. The following directories are always required to be present in the workspace else the migration would fail.
+            Required folders are _init, _pre, v0.00, _draft, _post, and _erase.
+            </summary>
+            <param name="workingPath">The directory path where yuniql operations are executed from.</param>
+        </member>
         <member name="T:Yuniql.Core.LocalVersion">
             <summary>
             Representions individual migration version entry.
@@ -673,30 +673,6 @@
             Retuns verion in v{Major}.{Minor} format.
             Example v0.00 for baseline version.
             </summary>
-        </member>
-        <member name="T:Yuniql.Core.LocalVersionService">
-            <summary>
-            Service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are executed from.
-            When user calls yuniql-init, a directory structure is created in the target workspace directory.
-            </summary>
-        </member>
-        <member name="M:Yuniql.Core.LocalVersionService.#ctor(Yuniql.Extensibility.ITraceService)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.LocalVersionService.Init(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.LocalVersionService.GetLatestVersion(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.LocalVersionService.IncrementMajorVersion(System.String,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.LocalVersionService.IncrementMinorVersion(System.String,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.LocalVersionService.Validate(System.String)">
-            <inheritdoc/>
         </member>
         <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.MetadataService" -->
         <member name="M:Yuniql.Core.MetadataService.#ctor(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.ITraceService,Yuniql.Core.ITokenReplacementService)">
@@ -738,7 +714,7 @@
         <member name="T:Yuniql.Core.MigrationServiceBase">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
+        <member name="M:Yuniql.Core.MigrationServiceBase.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.MigrationServiceBase.Initialize">
@@ -791,7 +767,7 @@
         <member name="T:Yuniql.Core.MigrationServiceNonTransactional">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
+        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.MigrationServiceNonTransactional.Run">
@@ -809,7 +785,7 @@
         <member name="T:Yuniql.Core.MigrationServiceTransactional">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceTransactional.#ctor(Yuniql.Core.ILocalVersionService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
+        <member name="M:Yuniql.Core.MigrationServiceTransactional.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationServiceTransactional.Run">
@@ -955,6 +931,30 @@
             Sets the failed script path as matched.
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Yuniql.Core.WorkspaceService">
+            <summary>
+            Service responsible for initializing and managing the local workspace. A local workspace is a directory where yuniql operations are executed from.
+            When user calls yuniql-init, a directory structure is created in the target workspace directory.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.WorkspaceService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.WorkspaceService.Init(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.WorkspaceService.GetLatestVersion(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.WorkspaceService.IncrementMajorVersion(System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.WorkspaceService.IncrementMinorVersion(System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.WorkspaceService.Validate(System.String)">
+            <inheritdoc/>
         </member>
         <member name="T:Yuniql.Core.YuniqlMigrationException">
             <summary>

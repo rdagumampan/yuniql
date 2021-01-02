@@ -39,8 +39,8 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Environment_Aware_Scripts_All_Directories()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //creare environment-aware directories
             var init_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.INIT, "_dev")).FullName;
@@ -117,8 +117,8 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Environment_Aware_Scripts_Placed_In_Sub_Directory()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //creare environment-aware directories
             var v00_dev = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.00", "tables", "_dev")).FullName;
@@ -152,8 +152,8 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Environment_Aware_Scripts_Placed_In_Sub_Directory_With_Scripts_Outside()
         {
             //arrange
-            var localVersionService = new LocalVersionService(_traceService);
-            localVersionService.Init(_testConfiguration.WorkspacePath);
+            var workspaceService = new WorkspaceService(_traceService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //creare environment-aware directories
             var v00 = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.00")).FullName;

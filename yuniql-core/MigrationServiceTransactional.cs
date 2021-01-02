@@ -11,7 +11,7 @@ namespace Yuniql.Core
     /// <inheritdoc />
     public class MigrationServiceTransactional : MigrationServiceBase
     {
-        private readonly ILocalVersionService _localVersionService;
+        private readonly IWorkspaceService _workspaceService;
         private readonly IDataService _dataService;
         private readonly IBulkImportService _bulkImportService;
         private readonly ITokenReplacementService _tokenReplacementService;
@@ -23,7 +23,7 @@ namespace Yuniql.Core
 
         /// <inheritdoc />
         public MigrationServiceTransactional(
-            ILocalVersionService localVersionService,
+            IWorkspaceService workspaceService,
             IDataService dataService,
             IBulkImportService bulkImportService,
             IMetadataService metadataService,
@@ -33,7 +33,7 @@ namespace Yuniql.Core
             ITraceService traceService,
             IConfigurationService configurationService)
             : base(
-                localVersionService,
+                workspaceService,
                 dataService,
                 bulkImportService,
                 metadataService,
@@ -44,7 +44,7 @@ namespace Yuniql.Core
                 configurationService
             )
         {
-            this._localVersionService = localVersionService;
+            this._workspaceService = workspaceService;
             this._dataService = dataService;
             this._bulkImportService = bulkImportService;
             this._tokenReplacementService = tokenReplacementService;
@@ -106,7 +106,7 @@ namespace Yuniql.Core
             _traceService.Info($"Run configuration: {Environment.NewLine}{_configurationService.PrintAsJson()}");
 
             //check the workspace structure if required directories are present
-            _localVersionService.Validate(workspace);
+            _workspaceService.Validate(workspace);
 
             //when uncomitted run is not supported, fail migration, throw exceptions and return error exit code
             if (isVerifyOnly.HasValue && isVerifyOnly == true && !_dataService.IsTransactionalDdlSupported)
@@ -120,7 +120,7 @@ namespace Yuniql.Core
             //when no target version specified, we use the latest local version available
             if (string.IsNullOrEmpty(targetVersion))
             {
-                targetVersion = _localVersionService.GetLatestVersion(workspace);
+                targetVersion = _workspaceService.GetLatestVersion(workspace);
                 _traceService.Info($"No explicit target version requested. We'll use latest available locally {targetVersion} on {workspace}.");
             }
 
