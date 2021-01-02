@@ -1,24 +1,18 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-env
 
 WORKDIR /code
-RUN git clone https://github.com/rdagumampan/yuniql.git /code
+
+# copy all files and directories from root src folder
+COPY . .
 
 WORKDIR /code/yuniql-cli
 RUN dotnet publish -c release -r linux-x64 /p:publishtrimmed=true -o ./app
-
-#WORKDIR /code/yuniql-platforms/postgresql/src
-#RUN dotnet publish -c release -r linux-x64 -o ./app
-
-#WORKDIR /code/yuniql-platforms/mysql/src
-#RUN dotnet publish -c release -r linux-x64 -o ./app
 
 #https://github.com/dotnet/dotnet-docker/issues/1332
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime-env
 
 WORKDIR app
 COPY --from=build-env /code/yuniql-cli/app .
-#COPY --from=build-env /code/yuniql-platforms/postgresql/src/app ./.plugins/postgresql
-#COPY --from=build-env /code/yuniql-platforms/mysql/src/app ./.plugins/mysql
 
 ENTRYPOINT ["dotnet", "yuniql.dll", "run", "-p", "db"]
 CMD ["additional-arguments-captured-from-docker-run"]
