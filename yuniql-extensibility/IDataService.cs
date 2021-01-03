@@ -118,8 +118,10 @@ namespace Yuniql.Extensibility
         /// </summary>
         /// <param name="dbConnection">The database connection.</param>
         /// <param name="traceService">The trace service.</param>
+        /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <returns>True if target database was updated, otherwise returns false</returns>
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string schemaName = null, string tableName = null);
+        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null);
 
         /// <summary>
         /// Try parses error from database specific exception.

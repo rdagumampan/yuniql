@@ -36,7 +36,7 @@ namespace Yuniql.Core
         /// The directory where yuniql-based migration project is placed.
         /// This is a required property.
         /// </summary>
-        public string WorkspacePath { get; set; } = null;
+        public string Workspace { get; set; } = null;
 
         /// <summary>
         /// Target database platform. Value can be `sqlserver`,`postgresql`, or `mysql`.
@@ -54,7 +54,7 @@ namespace Yuniql.Core
         /// When true, automatically creates database in target database server.
         /// This is defaulted to false.
         /// </summary>
-        public bool AutoCreateDatabase { get; set; } = false;
+        public bool IsAutoCreateDatabase { get; set; } = false;
 
         /// <summary>
         /// Runs migration only up to the version specified in this property. 
@@ -73,7 +73,7 @@ namespace Yuniql.Core
         /// All changes are rolledback after a successful verification run.
         /// This is defaulted to false.
         /// </summary>
-        public bool VerifyOnly { get; set; } = false;
+        public bool IsVerifyOnly { get; set; } = false;
 
         /// <summary>
         /// Bulk file values separator to use when parsing CSV bulk import files.
@@ -99,7 +99,7 @@ namespace Yuniql.Core
         /// Use this when you are investigating some failed migrations.
         /// This is defaulted to false.
         /// </summary>
-        public bool DebugTraceMode { get; set; } = false;
+        public bool IsDebug { get; set; } = false;
 
         /// <summary>
         /// Describes the source of migration applied to target database.
@@ -134,7 +134,7 @@ namespace Yuniql.Core
         /// <summary>
         /// When true, forces to skip the the last failed script file and run from next available script in the failed version
         /// </summary>
-        public bool? ContinueAfterFailure { get; set; } = null;
+        public bool? IsContinueAfterFailure { get; set; } = null;
 
         /// <summary>
         /// Transaction mode to use in the migration. Valid options are session, version and none.
@@ -149,7 +149,7 @@ namespace Yuniql.Core
         /// When true, migration will fail if the _draft directory is not empty. This option ideal when targeting staging/production environment.
         /// This is defaulted to false.
         /// </summary>
-        public bool RequiredClearedDraft { get; set; } = false;
+        public bool IsRequiredClearedDraft { get; set; } = false;
 
         /// <summary>
         /// When true, action would be executed. This is required when executing potentially damaging actions such as yuniql-erase and yuniql-drop.

@@ -10,17 +10,17 @@ namespace Yuniql.Core
     public class ConfigurationService : IConfigurationService
     {
         private readonly IEnvironmentService _environmentService;
-        private readonly ILocalVersionService _localVersionService;
+        private readonly IWorkspaceService _workspaceService;
         private readonly ITraceService _traceService;
 
         ///<inheritdoc/>
         public ConfigurationService(
             IEnvironmentService environmentService,
-            ILocalVersionService localVersionService,
+            IWorkspaceService workspaceService,
             ITraceService traceService)
         {
             this._environmentService = environmentService;
-            this._localVersionService = localVersionService;
+            this._workspaceService = workspaceService;
             this._traceService = traceService;
         }
 
@@ -36,17 +36,17 @@ namespace Yuniql.Core
             //cli parameters -> environment variables -> defaults from internal core logic
 
             //BaseOption
-            configuration.WorkspacePath = GetValueOrDefault(configuration.WorkspacePath, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
-            configuration.DebugTraceMode = configuration.DebugTraceMode;
+            configuration.Workspace = GetValueOrDefault(configuration.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
+            configuration.IsDebug = configuration.IsDebug;
 
             //BasePlatformOption
-            configuration.Platform = GetValueOrDefault(configuration.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+            configuration.Platform = GetValueOrDefault(configuration.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
             configuration.ConnectionString = GetValueOrDefault(configuration.ConnectionString, ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
             configuration.CommandTimeout = configuration.CommandTimeout;
 
             //BaseRunPlatformOption (refer to Runption, VerifyOption)
             configuration.TargetVersion = configuration.TargetVersion;
-            configuration.AutoCreateDatabase = configuration.AutoCreateDatabase;
+            configuration.IsAutoCreateDatabase = configuration.IsAutoCreateDatabase;
             configuration.Tokens = configuration.Tokens;
             configuration.BulkSeparator = configuration.BulkSeparator;
             configuration.BulkBatchSize = configuration.BulkBatchSize;
@@ -54,14 +54,14 @@ namespace Yuniql.Core
             configuration.MetaSchemaName = configuration.MetaSchemaName;
             configuration.MetaTableName = configuration.MetaTableName;
             configuration.TransactionMode = configuration.TransactionMode;
-            configuration.ContinueAfterFailure = configuration.ContinueAfterFailure;
-            configuration.RequiredClearedDraft = configuration.RequiredClearedDraft;
+            configuration.IsContinueAfterFailure = configuration.IsContinueAfterFailure;
+            configuration.IsRequiredClearedDraft = configuration.IsRequiredClearedDraft;
 
             //EraseOption
             configuration.IsForced = configuration.IsForced;
 
             //Non-cli captured configuration
-            configuration.VerifyOnly = configuration.VerifyOnly;
+            configuration.IsVerifyOnly = configuration.IsVerifyOnly;
             configuration.AppliedByTool = configuration.AppliedByTool;
             configuration.AppliedByToolVersion = configuration.AppliedByToolVersion;
 
@@ -75,8 +75,8 @@ namespace Yuniql.Core
             var configuration = Configuration.Instance;
 
             //BaseOption
-            configuration.WorkspacePath = null;
-            configuration.DebugTraceMode = false;
+            configuration.Workspace = null;
+            configuration.IsDebug = false;
 
             //BasePlatformOption
             configuration.Platform = null;
@@ -85,7 +85,7 @@ namespace Yuniql.Core
 
             //BaseRunPlatformOption (refer to Runption, VerifyOption)
             configuration.TargetVersion = null;
-            configuration.AutoCreateDatabase = false;
+            configuration.IsAutoCreateDatabase = false;
             configuration.Tokens = null;
             configuration.BulkSeparator = DEFAULT_CONSTANTS.BULK_SEPARATOR;
             configuration.BulkBatchSize = DEFAULT_CONSTANTS.BULK_BATCH_SIZE;
@@ -93,14 +93,14 @@ namespace Yuniql.Core
             configuration.MetaSchemaName = null;
             configuration.MetaTableName = null;
             configuration.TransactionMode = TRANSACTION_MODE.SESSION;
-            configuration.ContinueAfterFailure = null;
-            configuration.RequiredClearedDraft = false;
+            configuration.IsContinueAfterFailure = null;
+            configuration.IsRequiredClearedDraft = false;
 
             //EraseOption
             configuration.IsForced = configuration.IsForced;
 
             //Non-cli captured configuration
-            configuration.VerifyOnly = configuration.VerifyOnly;
+            configuration.IsVerifyOnly = configuration.IsVerifyOnly;
             configuration.AppliedByTool = configuration.AppliedByTool;
             configuration.AppliedByToolVersion = configuration.AppliedByToolVersion;
 
@@ -133,10 +133,10 @@ namespace Yuniql.Core
 
             //platform
             if (string.IsNullOrEmpty(_configuration.Platform))
-                validationResults.Add(new Tuple<string, string, string, string>("Platform", "--platform", ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, $"{helpLink}"));
+                validationResults.Add(new Tuple<string, string, string, string>("Platform", "--platform", ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, $"{helpLink}"));
 
             //workspace
-            if (string.IsNullOrEmpty(_configuration.WorkspacePath))
+            if (string.IsNullOrEmpty(_configuration.Workspace))
                 validationResults.Add(new Tuple<string, string, string, string>("Workspace", "-p | --path", ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, $"{helpLink}"));
 
             //connection string

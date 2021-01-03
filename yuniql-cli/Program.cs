@@ -13,14 +13,17 @@ namespace Yuniql.CLI
 
         public static int Main(string[] args)
         {
-            var environmentService = new EnvironmentService();
             var traceService = new FileTraceService();
-            var localVersionService = new LocalVersionService(traceService);
-            var configurationService = new ConfigurationService(environmentService, localVersionService, traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(traceService, directoryService, fileService);
+
+            var environmentService = new EnvironmentService();
+            var configurationService = new ConfigurationService(environmentService, workspaceService, traceService);
             
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var commandLineService = new CommandLineService(migrationServiceFactory,
-                                                            localVersionService,
+                                                            workspaceService,
                                                             environmentService,
                                                             traceService,
                                                             configurationService);
@@ -57,7 +60,7 @@ namespace Yuniql.CLI
             Console.WriteLine($"Visit https://yuniql.io for documentation & more samples{Environment.NewLine}");
             Console.ResetColor();
 
-            traceService.IsDebugEnabled = opts.Debug;
+            traceService.IsDebugEnabled = opts.IsDebug;
             return command.Invoke(opts);
         }
     }

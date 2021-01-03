@@ -10,7 +10,7 @@ namespace Yuniql.PlatformTests
 
         public override TestResult[] Execute(ITestMethod testMethod)
         {
-            var platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
+            var platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_PLATFORM);
             var testDataServiceFactory = new TestDataServiceFactory();
             var testDataService = testDataServiceFactory.Create(platform);
 

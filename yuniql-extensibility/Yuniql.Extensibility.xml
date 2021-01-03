@@ -435,6 +435,8 @@
             </summary>
             <param name="dbConnection">The database connection.</param>
             <param name="traceService">The trace service.</param>
+            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
             <returns>True if target database was updated, otherwise returns false</returns>
         </member>
         <member name="M:Yuniql.Extensibility.IDataService.TryParseErrorFromException(System.Exception,System.String@)">
@@ -447,12 +449,12 @@
             True, if the parsing was sucessfull otherwise false
             </returns>
         </member>
-        <member name="T:Yuniql.Extensibility.INonTransactionalFlow">
+        <member name="T:Yuniql.Extensibility.IMixableTransaction">
             <summary>
             Support for non-transactional flow (when version scripts are not executed in transaction)
             </summary>
         </member>
-        <member name="M:Yuniql.Extensibility.INonTransactionalFlow.GetSqlForUpsertVersion">
+        <member name="M:Yuniql.Extensibility.IMixableTransaction.GetSqlForUpsertVersion">
             <summary>
             Gets the SQL for insert or update version for non-transactional platform.
             </summary>

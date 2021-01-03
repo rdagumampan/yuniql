@@ -20,7 +20,6 @@
         /// </summary>
         public bool IsDebugEnabled { get; set; }
 
-        //TODO: Fix this crappy singleton approach with right one
         /// <summary>
         /// Global singleton instance of trace settings
         /// </summary>

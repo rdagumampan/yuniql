@@ -11,7 +11,7 @@ namespace Yuniql.CLI
 
         //yuniql <command> -a true | --auto-create-db true
         [Option('a', "auto-create-db", Required = false, HelpText = "Create database automatically.", Default = false)]
-        public bool AutoCreateDatabase { get; set; }
+        public bool IsAutoCreateDatabase { get; set; }
 
         //yuniql <command> -k "Token1=TokenValue1" -k "Token2=TokenValue2" -k "Token3=TokenValue3" | --token "..." --token "..." --token "..."
         //yuniql <command> -k "Token1=TokenValue1,Token2=TokenValue2,Token3=TokenValue3" | --token "...,...,..."
@@ -32,11 +32,11 @@ namespace Yuniql.CLI
 
         //yuniql <command> --meta-schema "yuniql" 
         [Option("meta-schema", Required = false, HelpText = "Schema name for schema versions table.")]
-        public string MetaSchema { get; set; }
+        public string MetaSchemaName { get; set; }
 
         //yuniql <command> --meta-table "__yuniqlschemaversions" 
         [Option("meta-table", Required = false, HelpText = "Table name for schema versions table.")]
-        public string MetaTable { get; set; }
+        public string MetaTableName { get; set; }
 
         //yuniql <command> --transaction-mode "full" | "partial" | "none" 
         [Option("transaction-mode", Required = false, HelpText = "Transaction mode to use in the migration.", Default = "session")]
@@ -44,11 +44,11 @@ namespace Yuniql.CLI
 
         //yuniql <command> --continue-after-failure
         [Option("continue-after-failure", Required = false, HelpText = "Skip failed script and continue with migration (Only for platforms which doesn't fully support transactions).", Default = false)]
-        public bool ContinueAfterFailure { get; set; }
+        public bool IsContinueAfterFailure { get; set; }
 
         //yuniql <command> --require-cleared-draft
         [Option("require-cleared-draft", Required = false, HelpText = "When set, migration will fail if the _draft directory is not empty. This option ideal when targeting staging/production environment.", Default = false)]
-        public bool RequiredClearedDraft { get; set; }
+        public bool IsRequiredClearedDraft { get; set; }
 
     }
 }

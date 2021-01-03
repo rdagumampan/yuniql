@@ -61,16 +61,16 @@ namespace Yuniql.PlatformTests
 
         private IMigrationService CreateTransactionalMigrationService(IDataService dataService, IBulkImportService bulkImportService)
         {
-            var localVersionService = new LocalVersionService(_traceService);
-            var tokenReplacementService = new TokenReplacementService(_traceService);
             var directoryService = new DirectoryService();
             var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
+            var tokenReplacementService = new TokenReplacementService(_traceService);
             var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
             var environmentService = new EnvironmentService();
-            var configurationService = new ConfigurationService(environmentService, localVersionService, _traceService);
+            var configurationService = new ConfigurationService(environmentService, workspaceService, _traceService);
 
             var migrationService = new MigrationServiceTransactional(
-                localVersionService,
+                workspaceService,
                 dataService,
                 bulkImportService,
                 metadataService,
@@ -84,16 +84,16 @@ namespace Yuniql.PlatformTests
 
         private IMigrationService CreateNonTransactionalMigrationService(IDataService dataService, IBulkImportService bulkImportService)
         {
-            var localVersionService = new LocalVersionService(_traceService);
-            var tokenReplacementService = new TokenReplacementService(_traceService);
             var directoryService = new DirectoryService();
             var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
+            var tokenReplacementService = new TokenReplacementService(_traceService);
             var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
             var environmentService = new EnvironmentService();
-            var configurationService = new ConfigurationService(environmentService, localVersionService, _traceService);
+            var configurationService = new ConfigurationService(environmentService, workspaceService, _traceService);
 
             var migrationService = new MigrationServiceNonTransactional(
-                localVersionService,
+                workspaceService,
                 dataService,
                 bulkImportService,
                 metadataService,

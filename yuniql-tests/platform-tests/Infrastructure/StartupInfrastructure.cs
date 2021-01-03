@@ -13,7 +13,7 @@ namespace Yuniql.PlatformTests
         public static void SetupInfrastrucuture(TestContext testContext)
         {
             var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_HOST);
-            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
+            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_PLATFORM);
 
             if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("CONTAINER"))
             {
@@ -44,7 +44,7 @@ namespace Yuniql.PlatformTests
         public static void TearDownInfrastructure()
         {
             var testAgentHost = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_HOST);
-            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM);
+            var targetPlatform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_PLATFORM);
 
             if (string.IsNullOrEmpty(testAgentHost) || string.IsNullOrWhiteSpace(testAgentHost) || testAgentHost.ToUpper().Equals("CONTAINER"))
             {

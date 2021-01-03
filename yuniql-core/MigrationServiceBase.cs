@@ -10,7 +10,7 @@ namespace Yuniql.Core
     ///<inheritdoc/>
     public abstract class MigrationServiceBase : IMigrationService
     {
-        private readonly ILocalVersionService _localVersionService;
+        private readonly IWorkspaceService _workspaceService;
         private readonly IDataService _dataService;
         private readonly IBulkImportService _bulkImportService;
         private readonly ITokenReplacementService _tokenReplacementService;
@@ -22,7 +22,7 @@ namespace Yuniql.Core
 
         ///<inheritdoc/>
         public MigrationServiceBase(
-            ILocalVersionService localVersionService,
+            IWorkspaceService workspaceService,
             IDataService dataService,
             IBulkImportService bulkImportService,
             IMetadataService metadataService,
@@ -32,7 +32,7 @@ namespace Yuniql.Core
             ITraceService traceService,
             IConfigurationService configurationService)
         {
-            this._localVersionService = localVersionService;
+            this._workspaceService = workspaceService;
             this._dataService = dataService;
             this._bulkImportService = bulkImportService;
             this._tokenReplacementService = tokenReplacementService;
@@ -64,6 +64,7 @@ namespace Yuniql.Core
             return _metadataService.GetCurrentVersion(metaSchemaName, metaTableName);
         }
 
+        /// <inheritdoc />
         public virtual List<DbVersion> GetAllVersions(string metaSchemaName = null, string metaTableName = null)
         {
             var configuration = _configurationService.GetConfiguration();
@@ -78,11 +79,11 @@ namespace Yuniql.Core
 
         /// <inheritdoc />
         public abstract void Run(
-            string workingPath,
+            string workspace,
             string targetVersion = null,
-            bool? autoCreateDatabase = false,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
-            bool? verifyOnly = false,
+            bool? isAutoCreateDatabase = false,
+            List<KeyValuePair<string, string>> tokens = null,
+            bool? isVerifyOnly = false,
             string bulkSeparator = null,
             string metaSchemaName = null,
             string metaTableName = null,
@@ -90,10 +91,10 @@ namespace Yuniql.Core
             int? bulkBatchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string environmentCode = null,
-            bool? continueAfterFailure = null,
+            string environment = null,
+            bool? isContinueAfterFailure = null,
             string transactionMode = null,
-            bool requiredClearedDraftFolder = false
+            bool isRequiredClearedDraft = false
          );
 
         /// <inheritdoc />
@@ -114,13 +115,13 @@ namespace Yuniql.Core
         public virtual void RunNonVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            string workingPath,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            string workspace,
+            List<KeyValuePair<string, string>> tokens = null,
             string bulkSeparator = null,
             int? commandTimeout = null,
-            string environmentCode = null,
+            string environment = null,
             string transactionMode = null,
-            bool requiredClearedDraft = false
+            bool isRequiredClearedDraft = false
         )
         {
             if (!string.IsNullOrEmpty(transactionMode) && transactionMode.Equals(TRANSACTION_MODE.VERSION))
@@ -154,17 +155,17 @@ namespace Yuniql.Core
             void RunNonVersionScriptsInternal(IDbConnection connection, IDbTransaction transaction)
             {
                 //extract and filter out scripts when environment code is used
-                var sqlScriptFiles = _directoryService.GetAllFiles(workingPath, "*.sql").ToList();
+                var sqlScriptFiles = _directoryService.GetAllFiles(workspace, "*.sql").ToList();
 
                 // Throw exception when --require-cleared-draft is set to TRUE 
-                if (sqlScriptFiles.Any() && requiredClearedDraft && workingPath.Contains(RESERVED_DIRECTORY_NAME.DRAFT))
+                if (sqlScriptFiles.Any() && isRequiredClearedDraft && workspace.Contains(RESERVED_DIRECTORY_NAME.DRAFT))
                 {
                     throw new YuniqlMigrationException($"Special {RESERVED_DIRECTORY_NAME.DRAFT} directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
                         $"Move the script files to a version directory and re-execute the migration. Or remove --require-cleared-draft in parameter.");
                 }
 
-                sqlScriptFiles = _directoryService.FilterFiles(workingPath, environmentCode, sqlScriptFiles).ToList();
-                _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workingPath}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine : string.Empty) +
+                sqlScriptFiles = _directoryService.FilterFiles(workspace, environment, sqlScriptFiles).ToList();
+                _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workspace}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine : string.Empty) +
                        $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
 
                 //execute all script files in the target folder
@@ -180,7 +181,7 @@ namespace Yuniql.Core
                     {
                         try
                         {
-                            sqlStatement = _tokenReplacementService.Replace(tokenKeyPairs, sqlStatement);
+                            sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
                             _traceService.Debug($"Executing sql statement as part of : {scriptFile}");
 
                             _metadataService.ExecuteSql(
@@ -209,19 +210,19 @@ namespace Yuniql.Core
         public abstract void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            List<string> dbVersions,
-            string workingPath,
+            List<string> versions,
+            string workspace,
             string targetVersion,
-            TransactionContext nonTransactionalContext,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            TransactionContext transactionContext,
+            List<KeyValuePair<string, string>> tokens = null,
             string bulkSeparator = null,
-            string metaschemaName = null,
+            string metaSchemaName = null,
             string metaTableName = null,
             int? commandTimeout = null,
             int? bulkBatchSize = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string environmentCode = null,
+            string environment = null,
             string transactionMode = null
         );
 
@@ -229,17 +230,17 @@ namespace Yuniql.Core
         public virtual void RunBulkImport(
             IDbConnection connection,
             IDbTransaction transaction,
-            string workingPath,
+            string workspace,
             string scriptDirectory,
             string bulkSeparator = null,
             int? bulkBatchSize = null,
             int? commandTimeout = null,
-            string environmentCode = null
+            string environment = null
         )
         {
             //extract and filter out scripts when environment code is used
             var bulkFiles = _directoryService.GetFiles(scriptDirectory, "*.csv").ToList();
-            bulkFiles = _directoryService.FilterFiles(workingPath, environmentCode, bulkFiles).ToList();
+            bulkFiles = _directoryService.FilterFiles(workspace, environment, bulkFiles).ToList();
             _traceService.Info($"Found {bulkFiles.Count} script files on {scriptDirectory}" + (bulkFiles.Count > 0 ? Environment.NewLine : string.Empty) +
                    $"{string.Join(Environment.NewLine, bulkFiles.Select(s => "  + " + new FileInfo(s).Name))}");
             bulkFiles.Sort();
@@ -254,15 +255,15 @@ namespace Yuniql.Core
         public abstract void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            TransactionContext nonTransactionalContext,
+            TransactionContext transactionContext,
             string version,
-            string workingPath,
+            string workspace,
             string scriptDirectory,
             string metaSchemaName,
             string metaTableName,
-            List<KeyValuePair<string, string>> tokenKeyPairs = null,
+            List<KeyValuePair<string, string>> tokens = null,
             int? commandTimeout = null,
-            string environmentCode = null,
+            string environment = null,
             string appliedByTool = null,
             string appliedByToolVersion = null
         );
@@ -284,8 +285,8 @@ namespace Yuniql.Core
                     try
                     {
                         //runs all scripts in the _erase folder
-                        RunNonVersionScripts(connection, transaction, Path.Combine(configuration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE), tokenKeyPairs: configuration.Tokens, bulkSeparator: DEFAULT_CONSTANTS.BULK_SEPARATOR, commandTimeout: configuration.CommandTimeout, environmentCode: configuration.Environment);
-                        _traceService.Info($"Executed script files on {Path.Combine(configuration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE)}");
+                        RunNonVersionScripts(connection, transaction, Path.Combine(configuration.Workspace, RESERVED_DIRECTORY_NAME.ERASE), tokens: configuration.Tokens, bulkSeparator: DEFAULT_CONSTANTS.BULK_SEPARATOR, commandTimeout: configuration.CommandTimeout, environment: configuration.Environment);
+                        _traceService.Info($"Executed script files on {Path.Combine(configuration.Workspace, RESERVED_DIRECTORY_NAME.ERASE)}");
 
                         transaction.Commit();
                     }

@@ -9,8 +9,6 @@ namespace Yuniql.Core
     /// </summary>
     public class DirectoryService : IDirectoryService
     {
-        private const string ENVIRONMENT_CODE_PREFIX = "_";
-
         ///<inheritdoc/>
         public string[] GetDirectories(string path, string searchPattern)
         {
@@ -60,7 +58,7 @@ namespace Yuniql.Core
             {
                 var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).Where(x=> !x.Equals(RESERVED_DIRECTORY_NAME.TRANSACTION, System.StringComparison.InvariantCultureIgnoreCase)).ToList();
                 fileParts.Reverse();
-                return fileParts.Skip(rootParts.Count).Any(a => a.StartsWith(ENVIRONMENT_CODE_PREFIX));
+                return fileParts.Skip(rootParts.Count).Any(a => a.StartsWith(RESERVED_DIRECTORY_NAME.PREFIX));
             });
 
             if (string.IsNullOrEmpty(environmentCode) && !hasEnvironmentAwareDirectories)
@@ -78,7 +76,7 @@ namespace Yuniql.Core
                 var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).Where(x => !x.Equals(RESERVED_DIRECTORY_NAME.TRANSACTION, System.StringComparison.InvariantCultureIgnoreCase)).ToList();
                 fileParts.Reverse();
 
-                var foundFile = fileParts.Skip(rootParts.Count).FirstOrDefault(a => a.StartsWith(ENVIRONMENT_CODE_PREFIX) && a.ToLower()!= $"{ENVIRONMENT_CODE_PREFIX}{environmentCode}");
+                var foundFile = fileParts.Skip(rootParts.Count).FirstOrDefault(a => a.StartsWith(RESERVED_DIRECTORY_NAME.PREFIX) && a.ToLower()!= $"{RESERVED_DIRECTORY_NAME.PREFIX}{environmentCode}");
                 if (null != foundFile)
                     sqlScriptFiles.Remove(f);
             });
@@ -99,6 +97,11 @@ namespace Yuniql.Core
                 yield return directory.Name;
                 directory = directory.Parent;
             }
+        }
+
+        ///<inheritdoc/>
+        public DirectoryInfo CreateDirectory(string path) {
+            return Directory.CreateDirectory(path);
         }
     }
 }

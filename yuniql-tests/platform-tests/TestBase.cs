@@ -50,7 +50,7 @@ namespace Yuniql.PlatformTests
 
             return new TestConfiguration
             {
-                Platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM),
+                Platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_PLATFORM),
                 ConnectionString = connectionString,
                 DatabaseName = databaseName,
                 WorkspacePath = workspacePath,
@@ -75,7 +75,7 @@ namespace Yuniql.PlatformTests
 
             return new TestConfiguration
             {
-                Platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_TARGET_PLATFORM),
+                Platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_PLATFORM),
                 ConnectionString = connectionString,
                 DatabaseName = databaseName,
                 WorkspacePath = workspacePath,

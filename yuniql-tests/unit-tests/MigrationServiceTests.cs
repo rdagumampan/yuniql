@@ -21,8 +21,8 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
 
-            var localVersionService = new Mock<ILocalVersionService>();
-            localVersionService.Setup(s => s.Validate(@"c:\temp")).Verifiable();
+            var workspaceService = new Mock<IWorkspaceService>();
+            workspaceService.Setup(s => s.Validate(@"c:\temp")).Verifiable();
 
             var metadataService = new Mock<IMetadataService>();
             metadataService.Setup(s => s.IsDatabaseExists(null)).Returns(false);
@@ -103,19 +103,19 @@ namespace Yuniql.UnitTests
             };
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = @"c:\temp";
+            configuration.Workspace = @"c:\temp";
             configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
             configuration.TargetVersion = "v0.00";
-            configuration.AutoCreateDatabase = true;
+            configuration.IsAutoCreateDatabase = true;
             configuration.Tokens = tokenKeyPairs;
-            configuration.VerifyOnly = false;
+            configuration.IsVerifyOnly = false;
 
             var configurationService = new Mock<IConfigurationService>();
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceTransactional(
-                localVersionService.Object,
+                workspaceService.Object,
                 dataService.Object,
                 bulkImportService.Object,
                 metadataService.Object,
@@ -127,7 +127,7 @@ namespace Yuniql.UnitTests
             sut.Run();
 
             //asset
-            localVersionService.Verify(s => s.Validate(@"c:\temp"));
+            workspaceService.Verify(s => s.Validate(@"c:\temp"));
 
             metadataService.Verify(s => s.IsDatabaseExists(null));
             metadataService.Verify(s => s.CreateDatabase(null));
@@ -214,8 +214,8 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
 
-            var localVersionService = new Mock<ILocalVersionService>();
-            localVersionService.Setup(s => s.Validate(@"c:\temp")).Verifiable();
+            var workspaceService = new Mock<IWorkspaceService>();
+            workspaceService.Setup(s => s.Validate(@"c:\temp")).Verifiable();
 
             var metadataService = new Mock<IMetadataService>();
             metadataService.Setup(s => s.IsDatabaseExists(null)).Returns(false);
@@ -294,19 +294,19 @@ namespace Yuniql.UnitTests
             };
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = @"c:\temp";
+            configuration.Workspace = @"c:\temp";
             configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
             configuration.TargetVersion = "v0.00";
-            configuration.AutoCreateDatabase = true;
+            configuration.IsAutoCreateDatabase = true;
             configuration.Tokens = tokenKeyPairs;
-            configuration.VerifyOnly = false;
+            configuration.IsVerifyOnly = false;
 
             var configurationService = new Mock<IConfigurationService>();
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceTransactional(
-                localVersionService.Object,
+                workspaceService.Object,
                 dataService.Object,
                 bulkImportService.Object,
                 metadataService.Object,
@@ -318,7 +318,7 @@ namespace Yuniql.UnitTests
             sut.Run();
 
             //asset
-            localVersionService.Verify(s => s.Validate(@"c:\temp"));
+            workspaceService.Verify(s => s.Validate(@"c:\temp"));
 
             metadataService.Verify(s => s.IsDatabaseExists(null));
             metadataService.Verify(s => s.CreateDatabase(null));
@@ -403,7 +403,7 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
 
-            var localVersionService = new Mock<ILocalVersionService>();
+            var workspaceService = new Mock<IWorkspaceService>();
 
             var metadataService = new Mock<IMetadataService>();
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'erase'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
@@ -429,15 +429,15 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = @"c:\temp";
+            configuration.Workspace = @"c:\temp";
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceTransactional(
-                localVersionService.Object,
+                workspaceService.Object,
                 dataService.Object,
                 bulkImportService.Object,
                 metadataService.Object,
@@ -469,7 +469,7 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
 
-            var localVersionService = new Mock<ILocalVersionService>();
+            var workspaceService = new Mock<IWorkspaceService>();
 
             var metadataService = new Mock<IMetadataService>();
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'erase'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
@@ -494,16 +494,16 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = @"C:\temp";
+            configuration.Workspace = @"C:\temp";
             configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             var sut = new MigrationServiceNonTransactional(
-                localVersionService.Object,
+                workspaceService.Object,
                 dataService.Object,
                 bulkImportService.Object,
                 metadataService.Object,
@@ -533,7 +533,7 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
 
-            var localVersionService = new Mock<ILocalVersionService>();
+            var workspaceService = new Mock<IWorkspaceService>();
 
             var metadataService = new Mock<IMetadataService>();
 
@@ -560,18 +560,18 @@ namespace Yuniql.UnitTests
             var environmentService = new Mock<IEnvironmentService>();
 
             var configuration = Configuration.Instance;
-            configuration.WorkspacePath = @"C:\temp";
+            configuration.Workspace = @"C:\temp";
             configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
 
             var configurationService = new Mock<IConfigurationService>();
-            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
+            configurationService.Setup(s => s.GetValueOrDefault(null, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, SUPPORTED_DATABASES.SQLSERVER)).Returns(SUPPORTED_DATABASES.SQLSERVER);
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
             Assert.ThrowsException<ApplicationException>(() =>
             {
                 var sut = new MigrationServiceTransactional(
-                    localVersionService.Object,
+                    workspaceService.Object,
                     dataService.Object,
                     bulkImportService.Object,
                     metadataService.Object,
@@ -621,7 +621,7 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new MigrationServiceTransactional(
-                new Mock<ILocalVersionService>().Object,
+                new Mock<IWorkspaceService>().Object,
                 dataService.Object,
                 new Mock<IBulkImportService>().Object,
                 configurationDataService.Object,
@@ -667,7 +667,7 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new MigrationServiceTransactional(
-                new Mock<ILocalVersionService>().Object,
+                new Mock<IWorkspaceService>().Object,
                 dataService.Object,
                 new Mock<IBulkImportService>().Object,
                 metadataService.Object,
@@ -713,7 +713,7 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new MigrationServiceTransactional(
-                new Mock<ILocalVersionService>().Object,
+                new Mock<IWorkspaceService>().Object,
                 dataService.Object,
                 new Mock<IBulkImportService>().Object,
                 metadataService.Object,

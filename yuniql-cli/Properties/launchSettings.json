@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "run -a -p C:\\play\\yuniql\\samples\\basic-sqlserver-sample --platform sqlserver --debug"
+      "commandLineArgs": "init"
     }
   }
 }

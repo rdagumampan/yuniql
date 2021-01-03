@@ -14,8 +14,10 @@ namespace Yuniql.UnitTests
         {
             var traceService = new FileTraceService();
             var environmentService = new EnvironmentService();
-            var localVersionService = new LocalVersionService(traceService);
-            var configurationService = new ConfigurationService(environmentService, localVersionService, traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(traceService, directoryService, fileService);
+            var configurationService = new ConfigurationService(environmentService, workspaceService, traceService);
             configurationService.Reset();
         }
 

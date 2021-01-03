@@ -10,19 +10,19 @@ namespace Yuniql.CLI
     public class CommandLineService : ICommandLineService
     {
         private IMigrationServiceFactory _migrationServiceFactory;
-        private readonly ILocalVersionService _localVersionService;
+        private readonly IWorkspaceService _workspaceService;
         private readonly IEnvironmentService _environmentService;
         private ITraceService _traceService;
         private readonly IConfigurationService _configurationService;
 
         public CommandLineService(
             IMigrationServiceFactory migrationServiceFactory,
-            ILocalVersionService localVersionService,
+            IWorkspaceService workspaceService,
             IEnvironmentService environmentService,
             ITraceService traceService,
             IConfigurationService configurationService)
         {
-            this._localVersionService = localVersionService;
+            this._workspaceService = workspaceService;
             this._environmentService = environmentService;
             this._traceService = traceService;
             this._configurationService = configurationService;
@@ -33,14 +33,14 @@ namespace Yuniql.CLI
         {
             try
             {
-                opts.Path = _configurationService.GetValueOrDefault(opts.Path, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
-                _localVersionService.Init(opts.Path);
-                _traceService.Success($"Initialized {opts.Path}.");
+                opts.Workspace = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
+                _workspaceService.Init(opts.Workspace);
+                _traceService.Success($"Initialized {opts.Workspace}.");
                 return 0;
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute init function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute init function", opts.IsDebug, _traceService);
             }
         }
 
@@ -48,49 +48,54 @@ namespace Yuniql.CLI
         {
             try
             {
-                opts.Path = _configurationService.GetValueOrDefault(opts.Path, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
+                opts.Workspace = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
                 if (opts.IncrementMajorVersion)
                 {
-                    var nextVersion = _localVersionService.IncrementMajorVersion(opts.Path, opts.File);
-                    _traceService.Success($"New major version created {nextVersion} on {opts.Path}.");
+                    var nextVersion = _workspaceService.IncrementMajorVersion(opts.Workspace, opts.File);
+                    _traceService.Success($"New major version created {nextVersion} on {opts.Workspace}.");
                 }
                 else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
                 {
-                    var nextVersion = _localVersionService.IncrementMinorVersion(opts.Path, opts.File);
-                    _traceService.Success($"New minor version created {nextVersion} on {opts.Path}.");
+                    var nextVersion = _workspaceService.IncrementMinorVersion(opts.Workspace, opts.File);
+                    _traceService.Success($"New minor version created {nextVersion} on {opts.Workspace}.");
                 }
 
                 return 0;
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute vnext function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute vnext function", opts.IsDebug, _traceService);
             }
         }
 
-        private Configuration SetupRunConfiguration(BaseRunPlatformOption opts, bool verifyOnly = false)
+        private Configuration SetupRunConfiguration(BaseRunPlatformOption opts, bool isVerifyOnly = false)
         {
             var configuration = Configuration.Instance;
 
-            var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+            var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
             var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
+            configuration.Workspace = opts.Workspace;
+            configuration.IsDebug = opts.IsDebug;
+
             configuration.Platform = platform;
-            configuration.WorkspacePath = opts.Path;
             configuration.ConnectionString = opts.ConnectionString;
+            configuration.CommandTimeout = opts.CommandTimeout;
+
             configuration.TargetVersion = opts.TargetVersion;
-            configuration.AutoCreateDatabase = opts.AutoCreateDatabase;
+            configuration.IsAutoCreateDatabase = opts.IsAutoCreateDatabase;
             configuration.Tokens = tokens;
-            configuration.VerifyOnly = verifyOnly;
             configuration.BulkSeparator = opts.BulkSeparator;
             configuration.BulkBatchSize = opts.BulkBatchSize;
-            configuration.MetaSchemaName = opts.MetaSchema;
-            configuration.MetaTableName = opts.MetaTable;
-            configuration.CommandTimeout = opts.CommandTimeout;
+            configuration.MetaSchemaName = opts.MetaSchemaName;
+            configuration.MetaTableName = opts.MetaTableName;
             configuration.Environment = opts.Environment;
-            configuration.ContinueAfterFailure = opts.ContinueAfterFailure;
             configuration.TransactionMode = opts.TransactionMode;
-            configuration.RequiredClearedDraft = opts.RequiredClearedDraft;
+            configuration.IsContinueAfterFailure = opts.IsContinueAfterFailure;
+            configuration.IsRequiredClearedDraft = opts.IsRequiredClearedDraft;
+
+            configuration.IsVerifyOnly = isVerifyOnly;
+
             configuration.AppliedByTool = "yuniql-cli";
             configuration.AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString();
 
@@ -102,16 +107,16 @@ namespace Yuniql.CLI
             try
             {
                 //run the migration
-                var configuration = SetupRunConfiguration(opts, verifyOnly: false);
+                var configuration = SetupRunConfiguration(opts, isVerifyOnly: false);
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 migrationService.Run();
 
-                _traceService.Success($"Schema migration completed successfuly on {configuration.WorkspacePath}.");
+                _traceService.Success($"Schema migration completed successfuly on {configuration.Workspace}.");
                 return 0;
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute run function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute run function", opts.IsDebug, _traceService);
             }
         }
         
@@ -120,16 +125,16 @@ namespace Yuniql.CLI
             try
             {
                 //run the migration
-                var configuration = SetupRunConfiguration(opts, verifyOnly: true);
+                var configuration = SetupRunConfiguration(opts, isVerifyOnly: true);
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 migrationService.Run();
 
-                _traceService.Success($"Schema migration verification completed successfuly on {configuration.WorkspacePath}.");
+                _traceService.Success($"Schema migration verification completed successfuly on {configuration.Workspace}.");
                 return 0;
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute verification function. Target database will be rolled back to its previous state", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute verification function. Target database will be rolled back to its previous state", opts.IsDebug, _traceService);
             }
         }
 
@@ -137,15 +142,18 @@ namespace Yuniql.CLI
         {
             try
             {
-                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
 
                 var configuration = Configuration.Instance;
+                configuration.Workspace = opts.Workspace;
+                configuration.IsDebug = opts.IsDebug;
+
                 configuration.Platform = platform;
-                configuration.WorkspacePath = opts.Path;
                 configuration.ConnectionString = opts.ConnectionString;
+                configuration.CommandTimeout = opts.CommandTimeout;
+
                 configuration.MetaSchemaName = opts.MetaSchema;
                 configuration.MetaTableName = opts.MetaTable;
-                configuration.CommandTimeout = opts.CommandTimeout;
 
                 //get all exsiting db versions
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
@@ -155,14 +163,14 @@ namespace Yuniql.CLI
                 versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}"));
                 versionPrettyPrint.Print();
 
-                _traceService.Success($"Listed all schema versions applied to database on {configuration.WorkspacePath} workspace.{Environment.NewLine}" +
+                _traceService.Success($"Listed all schema versions applied to database on {configuration.Workspace} workspace.{Environment.NewLine}" +
                     $"For platforms not supporting full transactional DDL operations (ex. MySql, CockroachDB, Snowflake), unsuccessful migrations will show the status as Failed and you can look for LastFailedScript and LastScriptError in the schema version tracking table.");
 
                 return 0;
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute info function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute info function", opts.IsDebug, _traceService);
             }
         }
 
@@ -171,15 +179,17 @@ namespace Yuniql.CLI
             try
             {
                 //parse tokens
-                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_TARGET_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
                 var configuration = Configuration.Instance;
+                configuration.Workspace = opts.Workspace;
+                configuration.IsDebug = opts.IsDebug;
+
                 configuration.Platform = platform;
-                configuration.WorkspacePath = opts.Path;
-                configuration.DebugTraceMode = opts.Debug;
                 configuration.ConnectionString = opts.ConnectionString;
                 configuration.CommandTimeout = opts.CommandTimeout;
+
                 configuration.Tokens = tokens;
                 configuration.IsForced = opts.Force;
                 configuration.Environment = opts.Environment;
@@ -188,12 +198,12 @@ namespace Yuniql.CLI
                 var migrationService = _migrationServiceFactory.Create(platform);
                 migrationService.Erase();
 
-                _traceService.Success($"Schema erase completed successfuly on {configuration.WorkspacePath}.");
+                _traceService.Success($"Schema erase completed successfuly on {configuration.Workspace}.");
                 return 0;
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute erase function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute erase function", opts.IsDebug, _traceService);
             }
         }
 
@@ -230,7 +240,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute RunPlatformsOption function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute RunPlatformsOption function", opts.IsDebug, _traceService);
             }
         }
 
@@ -251,7 +261,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute baseline function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute baseline function", opts.IsDebug, _traceService);
 
             }
         }
@@ -264,7 +274,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute rebase function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to execute rebase function", opts.IsDebug, _traceService);
 
             }
         }
@@ -277,7 +287,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to archive function", opts.Debug, _traceService);
+                return OnException(ex, "Failed to archive function", opts.IsDebug, _traceService);
             }
         }
     }
