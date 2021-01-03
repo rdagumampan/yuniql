@@ -260,6 +260,9 @@
         <member name="M:Yuniql.Core.DirectoryService.FilterDirectories(System.String,System.String,System.Collections.Generic.List{System.String})">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.Core.DirectoryService.CreateDirectory(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="T:Yuniql.Core.EnvironmentService">
             <summary>
             Helper class for extracting environment variables.
@@ -277,6 +280,12 @@
             </summary>
         </member>
         <member name="M:Yuniql.Core.FileService.ReadAllText(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.FileService.ReadAllEmbeddedText(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.FileService.AppendAllText(System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.FileService.Exists(System.String)">
@@ -303,12 +312,41 @@
             <inheritdoc/>
         </member>
         <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.IDirectoryService" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetDirectories(System.String,System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetAllDirectories(System.String,System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetFiles(System.String,System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetAllFiles(System.String,System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.Exists(System.String)" -->
-        <!-- Badly formed XML comment ignored for member "M:Yuniql.Core.IDirectoryService.GetFileCaseInsensitive(System.String,System.String)" -->
+        <member name="M:Yuniql.Core.IDirectoryService.GetDirectories(System.String,System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.GetDirectories(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IDirectoryService.GetAllDirectories(System.String,System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.GetDirectories(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IDirectoryService.GetFiles(System.String,System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.GetFiles(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IDirectoryService.GetAllFiles(System.String,System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.GetFiles(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IDirectoryService.Exists(System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.Exists(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IDirectoryService.GetFileCaseInsensitive(System.String,System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.GetFiles(System.String)"/>
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.IDirectoryService.CreateDirectory(System.String)">
+            <summary>
+            Wraps <see cref="M:System.IO.Directory.CreateDirectory(System.String)"/>
+            </summary>
+        </member>
         <member name="T:Yuniql.Core.IEnvironmentService">
             <summary>
             Interface for implementing helper class for extracting environment variables.
@@ -336,12 +374,24 @@
             <param name="path">Path of the file to be created.</param>
             <returns>Returns the path of file created.</returns>
         </member>
+        <member name="M:Yuniql.Core.IFileService.ReadAllEmbeddedText(System.String)">
+            <summary>
+            Opens an embedded text file, reads all the text in the file.
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
         <member name="M:Yuniql.Core.IFileService.Exists(System.String)">
             <summary>
             Determines whether the file exists.
             </summary>
             <param name="path">Returns true if file exists.</param>
             <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.IFileService.AppendAllText(System.String,System.String)">
+            <summary>
+            Wraps <see cref="!:File.AppendAllText"/>
+            </summary>
         </member>
         <member name="T:Yuniql.Core.IMetadataService">
             <summary>
@@ -938,7 +988,7 @@
             When user calls yuniql-init, a directory structure is created in the target workspace directory.
             </summary>
         </member>
-        <member name="M:Yuniql.Core.WorkspaceService.#ctor(Yuniql.Extensibility.ITraceService)">
+        <member name="M:Yuniql.Core.WorkspaceService.#ctor(Yuniql.Extensibility.ITraceService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.WorkspaceService.Init(System.String)">

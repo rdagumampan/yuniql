@@ -42,7 +42,9 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Default_Separated()
         {
             //arrange - prepare bulk destination table
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
@@ -93,7 +95,9 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Pipe_Separated()
         {
             //arrange - pre-create destination bulk tables
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
@@ -141,7 +145,9 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Utf8()
         {
             //arrange - pre-create destination bulk tables
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
@@ -189,7 +195,9 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Null_Columns()
         {
             //arrange - pre-create destination bulk tables
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
@@ -236,7 +244,9 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Unquoted()
         {
             //arrange - pre-create destination bulk tables
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
@@ -284,7 +294,9 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_Destination_Table_Does_Not_Exist_Throws_Error()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //we simulate a importing data into TestCsvBulkTable that doesnt exist
@@ -311,7 +323,9 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_Mismatch_Columns_But_Nullable()
         {
             //arrange - pre-create destination bulk tables
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
@@ -358,7 +372,9 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_Mismatch_Columns_But_Not_Nullable()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
@@ -387,9 +403,11 @@ namespace Yuniql.PlatformTests
 
         [TestMethodEx(Requires = "IsSchemaSupported")]
         public void Test_Bulk_Import_With_NonDefault_Schema_Destination_Table()
-        {            
+        {
             //arrange - pre-create destination bulk tables
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
@@ -441,7 +459,9 @@ namespace Yuniql.PlatformTests
         public void Test_Bulk_Import_With_Null_Word_Value()
         {
             //arrange - prepare bulk destination table
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);

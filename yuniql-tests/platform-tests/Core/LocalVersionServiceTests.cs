@@ -39,7 +39,9 @@ namespace Yuniql.PlatformTests
         public void Test_Init()
         {
             //act
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //assert
@@ -70,7 +72,9 @@ namespace Yuniql.PlatformTests
         public void Test_Init_Called_Multiple_Is_Handled()
         {
             //act
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -90,7 +94,9 @@ namespace Yuniql.PlatformTests
         public void Test_Vnext_Major_Version()
         {
             //act
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
@@ -102,7 +108,9 @@ namespace Yuniql.PlatformTests
         public void Test_Vnext_Major_Version_With_Template_File()
         {
             //act
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, "Test.sql");
 
@@ -115,7 +123,9 @@ namespace Yuniql.PlatformTests
         public void Test_Vnext_Minor_Version()
         {
             //act
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
 
@@ -127,7 +137,9 @@ namespace Yuniql.PlatformTests
         public void Test_Vnext_Minor_Version_With_Template_File()
         {
             //act
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, "Test.sql");
 
@@ -140,7 +152,9 @@ namespace Yuniql.PlatformTests
         public void Test_Get_Latest_Version()
         {
             //act
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);

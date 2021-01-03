@@ -9,37 +9,42 @@ namespace Yuniql.Core
     public interface IDirectoryService
     {
         /// <summary>
-        /// Wraps <see cref="Directory.GetDirectories"./>
+        /// Wraps <see cref="Directory.GetDirectories"/>
         /// </summary>
         string[] GetDirectories(string path, string searchPattern);
 
         /// <summary>
-        /// Wraps <see cref="Directory.GetDirectories"./>
+        /// Wraps <see cref="Directory.GetDirectories"/>
         /// </summary>
         string[] GetAllDirectories(string path, string searchPattern);
 
         /// <summary>
-        /// Wraps <see cref="Directory.GetFiles"./>
+        /// Wraps <see cref="Directory.GetFiles"/>
         /// </summary>
         string[] GetFiles(string path, string searchPattern);
 
         /// <summary>
-        /// Wraps <see cref="Directory.GetFiles"./>
+        /// Wraps <see cref="Directory.GetFiles"/>
         /// </summary>
         string[] GetAllFiles(string path, string searchPattern);
 
         /// <summary>
-        /// Wraps <see cref="Directory.Exists"./>
+        /// Wraps <see cref="Directory.Exists"/>
         /// </summary>
         public bool Exists(string path);
 
         /// <summary>
-        /// Wraps <see cref="Directory.GetFiles"./>
+        /// Wraps <see cref="Directory.GetFiles"/>
         /// </summary>
         string GetFileCaseInsensitive(string path, string fileName);
 
-        string[] FilterFiles(string workingPath, string environmentCode, List<string> files);
+        string[] FilterFiles(string path, string environmentCode, List<string> files);
 
-        string[] FilterDirectories(string workingPath, string environmentCode, List<string> directories);
+        string[] FilterDirectories(string path, string environmentCode, List<string> directories);
+
+        /// <summary>
+        /// Wraps <see cref="Directory.CreateDirectory"/>
+        /// </summary>
+        DirectoryInfo CreateDirectory(string path);
     }
 }

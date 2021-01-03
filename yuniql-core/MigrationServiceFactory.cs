@@ -34,10 +34,10 @@ namespace Yuniql.Core
 
         private IMigrationService CreateInternal(IDataService dataService, IBulkImportService bulkImportService)
         {
-            var workspaceService = new WorkspaceService(_traceService);
-            var tokenReplacementService = new TokenReplacementService(_traceService);
             var directoryService = new DirectoryService();
             var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
+            var tokenReplacementService = new TokenReplacementService(_traceService);
             var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
             var environmentService = new EnvironmentService();
             var configurationService = new ConfigurationService(environmentService, workspaceService, _traceService);

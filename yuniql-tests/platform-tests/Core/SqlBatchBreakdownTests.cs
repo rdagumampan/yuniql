@@ -40,7 +40,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_SingleLine_Empty_Script()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
@@ -61,7 +63,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_SingleLine_Script_With_Terminator()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
@@ -81,7 +85,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_SingleLine_Script_Without_Terminator()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
@@ -101,7 +107,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_Multiline_Script_Without_Terminator_In_LastLine()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
@@ -127,7 +135,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_Multiline_Script_With_Terminator_In_Comment_Block()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
@@ -155,7 +165,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_Multiline_Script_With_Terminator_Inside_Statements()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
@@ -181,7 +193,9 @@ namespace Yuniql.PlatformTests
         public void Test_Create_Multiline_Script_With_Error_Must_Rollback()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 

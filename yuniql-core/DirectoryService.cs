@@ -98,5 +98,10 @@ namespace Yuniql.Core
                 directory = directory.Parent;
             }
         }
+
+        ///<inheritdoc/>
+        public DirectoryInfo CreateDirectory(string path) {
+            return Directory.CreateDirectory(path);
+        }
     }
 }

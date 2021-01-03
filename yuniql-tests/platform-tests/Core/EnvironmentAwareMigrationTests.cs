@@ -39,7 +39,9 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Environment_Aware_Scripts_All_Directories()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //creare environment-aware directories
@@ -117,7 +119,9 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Environment_Aware_Scripts_Placed_In_Sub_Directory()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //creare environment-aware directories
@@ -152,7 +156,9 @@ namespace Yuniql.PlatformTests
         public void Test_Run_Environment_Aware_Scripts_Placed_In_Sub_Directory_With_Scripts_Outside()
         {
             //arrange
-            var workspaceService = new WorkspaceService(_traceService);
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
 
             //creare environment-aware directories

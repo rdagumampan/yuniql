@@ -28,6 +28,8 @@
     <Compile Remove="nupkgs\**" />
     <EmbeddedResource Remove="nupkgs\**" />
     <None Remove="nupkgs\**" />
+    <None Remove="TemplateReadMe.md" />
+    <EmbeddedResource Include="TemplateReadMe.md" />
     <None Include="..\LICENSE.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
