@@ -13,6 +13,54 @@ namespace Yuniql.UnitTests
         [TestMethod]
         public void Test_Init()
         {
+            //arrange
+            var workspace = @"c:\temp\yuniql";
+            var traceService = new Mock<ITraceService>();
+            var fileService = new Mock<IFileService>();
+            fileService.Setup(s => s.Exists(Path.Combine(workspace, RESERVED_FILE_NAME.README))).Returns(false);
+            fileService.Setup(s => s.Exists(Path.Combine(workspace, RESERVED_FILE_NAME.DOCKER_FILE))).Returns(false);
+            fileService.Setup(s => s.Exists(Path.Combine(workspace, RESERVED_FILE_NAME.GIT_IGNORE_FILE))).Returns(false);
+
+            var directoryService = new Mock<IDirectoryService>();
+            directoryService.Setup(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT))).Returns(false);
+            directoryService.Setup(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE))).Returns(false);
+            directoryService.Setup(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT))).Returns(false);
+            directoryService.Setup(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST))).Returns(false);
+            directoryService.Setup(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.ERASE))).Returns(false);
+            directoryService.Setup(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.BASELINE))).Returns(false);
+
+            //act
+            var sut = new WorkspaceService(traceService.Object, directoryService.Object, fileService.Object);
+            sut.Init(workspace);
+
+            //assert
+            directoryService.Verify(s => s.CreateDirectory(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT)));
+            directoryService.Verify(s => s.CreateDirectory(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE)));
+            directoryService.Verify(s => s.CreateDirectory(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT)));
+            directoryService.Verify(s => s.CreateDirectory(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT)));
+            directoryService.Verify(s => s.CreateDirectory(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST)));
+            directoryService.Verify(s => s.CreateDirectory(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.ERASE)));
+            directoryService.Verify(s => s.CreateDirectory(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.BASELINE)));
+
+            fileService.Verify(s => s.AppendAllText(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT, RESERVED_FILE_NAME.README), It.IsAny<string>()));
+            fileService.Verify(s => s.AppendAllText(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE, RESERVED_FILE_NAME.README), It.IsAny<string>()));
+            fileService.Verify(s => s.AppendAllText(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT, RESERVED_FILE_NAME.README), It.IsAny<string>()));
+            fileService.Verify(s => s.AppendAllText(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST, RESERVED_FILE_NAME.README), It.IsAny<string>()));
+            fileService.Verify(s => s.AppendAllText(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.ERASE, RESERVED_FILE_NAME.README), It.IsAny<string>()));
+            fileService.Verify(s => s.AppendAllText(Path.Combine(workspace, RESERVED_FILE_NAME.README), It.IsAny<string>()));
+            fileService.Verify(s => s.AppendAllText(Path.Combine(workspace, RESERVED_FILE_NAME.DOCKER_FILE), It.IsAny<string>()));
+            fileService.Verify(s => s.AppendAllText(Path.Combine(workspace, RESERVED_FILE_NAME.GIT_IGNORE_FILE), It.IsAny<string>()));
+
+            directoryService.Verify(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT)));
+            directoryService.Verify(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE)));
+            directoryService.Verify(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT)));
+            directoryService.Verify(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST)));
+            directoryService.Verify(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.ERASE)));
+            directoryService.Verify(s => s.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.BASELINE)));
+
+            fileService.Verify(s => s.Exists(Path.Combine(workspace, RESERVED_FILE_NAME.README)));
+            fileService.Verify(s => s.Exists(Path.Combine(workspace, RESERVED_FILE_NAME.DOCKER_FILE)));
+            fileService.Verify(s => s.Exists(Path.Combine(workspace, RESERVED_FILE_NAME.GIT_IGNORE_FILE)));
         }
 
 

@@ -35,7 +35,7 @@ namespace Yuniql.Core
             if (!_directoryService.Exists(initDirectoryPath))
             {
                 _directoryService.CreateDirectory(initDirectoryPath);
-                _fileService.AppendAllText(Path.Combine(initDirectoryPath, "README.md"), @$"# The `{RESERVED_DIRECTORY_NAME.INIT}` directory
+                _fileService.AppendAllText(Path.Combine(initDirectoryPath, RESERVED_FILE_NAME.README), @$"# The `{RESERVED_DIRECTORY_NAME.INIT}` directory
 Initialization scripts. Executed once. This is called the first time you do `yuniql run`.");
                 _traceService.Info($"Created script directory {initDirectoryPath}");
             }
@@ -44,17 +44,17 @@ Initialization scripts. Executed once. This is called the first time you do `yun
             if (!_directoryService.Exists(preDirectoryPath))
             {
                 _directoryService.CreateDirectory(preDirectoryPath);
-                _fileService.AppendAllText(Path.Combine(preDirectoryPath, "README.md"), @$"# The `{RESERVED_DIRECTORY_NAME.PRE}` directory
+                _fileService.AppendAllText(Path.Combine(preDirectoryPath, RESERVED_FILE_NAME.README), @$"# The `{RESERVED_DIRECTORY_NAME.PRE}` directory
 Pre migration scripts. Executed every time before any version. 
 ");
                 _traceService.Info($"Created script directory {preDirectoryPath}");
             }
 
-            string defaultVersionDirectoryPath = Path.Combine(workspace, "v0.00");
+            string defaultVersionDirectoryPath = Path.Combine(workspace, RESERVED_DIRECTORY_NAME.BASELINE);
             if (!_directoryService.Exists(defaultVersionDirectoryPath))
             {
                 _directoryService.CreateDirectory(defaultVersionDirectoryPath);
-                _fileService.AppendAllText(Path.Combine(defaultVersionDirectoryPath, "README.md"), @"# The `v0.00` directory
+                _fileService.AppendAllText(Path.Combine(defaultVersionDirectoryPath, RESERVED_FILE_NAME.README), @"# The `v0.00` directory
 Baseline scripts. Executed once. This is called when you do `yuniql run`.");
                 _traceService.Info($"Created script directory {defaultVersionDirectoryPath}");
             }
@@ -63,7 +63,7 @@ Baseline scripts. Executed once. This is called when you do `yuniql run`.");
             if (!_directoryService.Exists(draftDirectoryPath))
             {
                 _directoryService.CreateDirectory(draftDirectoryPath);
-                _fileService.AppendAllText(Path.Combine(draftDirectoryPath, "README.md"), $@"# The `{RESERVED_DIRECTORY_NAME.DRAFT}` directory
+                _fileService.AppendAllText(Path.Combine(draftDirectoryPath, RESERVED_FILE_NAME.README), $@"# The `{RESERVED_DIRECTORY_NAME.DRAFT}` directory
 Scripts in progress. Scripts that you are currently working and have not moved to specific version directory yet. Executed every time after the latest version.");
                 _traceService.Info($"Created script directory {draftDirectoryPath}");
             }
@@ -72,7 +72,7 @@ Scripts in progress. Scripts that you are currently working and have not moved t
             if (!_directoryService.Exists(postDirectoryPath))
             {
                 _directoryService.CreateDirectory(postDirectoryPath);
-                _fileService.AppendAllText(Path.Combine(postDirectoryPath, "README.md"), $@"# The `{RESERVED_DIRECTORY_NAME.POST}` directory
+                _fileService.AppendAllText(Path.Combine(postDirectoryPath, RESERVED_FILE_NAME.README), $@"# The `{RESERVED_DIRECTORY_NAME.POST}` directory
 Post migration scripts. Executed every time and always the last batch to run.");
                 _traceService.Info($"Created script directory {postDirectoryPath}");
             }
@@ -81,12 +81,12 @@ Post migration scripts. Executed every time and always the last batch to run.");
             if (!_directoryService.Exists(eraseDirectoryPath))
             {
                 _directoryService.CreateDirectory(eraseDirectoryPath);
-                _fileService.AppendAllText(Path.Combine(eraseDirectoryPath, "README.md"), $@"# The `{RESERVED_DIRECTORY_NAME.ERASE}` directory
+                _fileService.AppendAllText(Path.Combine(eraseDirectoryPath, RESERVED_FILE_NAME.README), $@"# The `{RESERVED_DIRECTORY_NAME.ERASE}` directory
 Database cleanup scripts. Executed once only when you do `yuniql erase`.");
                 _traceService.Info($"Created script directory {eraseDirectoryPath}");
             }
 
-            var readMeFile = Path.Combine(workspace, "README.md");
+            var readMeFile = Path.Combine(workspace, RESERVED_FILE_NAME.README);
             if (!_fileService.Exists(readMeFile))
             {
                 var assembly = typeof(WorkspaceService).Assembly;
@@ -95,7 +95,7 @@ Database cleanup scripts. Executed once only when you do `yuniql erase`.");
                 _traceService.Info($"Created file {readMeFile}");
             }
 
-            var dockerFile = Path.Combine(workspace, "Dockerfile");
+            var dockerFile = Path.Combine(workspace, RESERVED_FILE_NAME.DOCKER_FILE);
             if (!_fileService.Exists(dockerFile))
             {
                 _fileService.AppendAllText(dockerFile, @"
@@ -105,7 +105,7 @@ COPY . ./db
                 _traceService.Info($"Created file {dockerFile}");
             }
 
-            var gitIgnoreFile = Path.Combine(workspace, ".gitignore");
+            var gitIgnoreFile = Path.Combine(workspace, RESERVED_FILE_NAME.GIT_IGNORE_FILE);
             if (!_fileService.Exists(gitIgnoreFile))
             {
                 _fileService.AppendAllText(gitIgnoreFile, @"

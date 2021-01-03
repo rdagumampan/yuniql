@@ -10,5 +10,6 @@ namespace Yuniql.Core
         public const string ERASE = "_erase";
         public const string DROP = "_drop";
         public const string TRANSACTION = "_transaction";
+        public const string BASELINE = "v0.00";
     }
 }
