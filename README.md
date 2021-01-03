@@ -163,7 +163,7 @@ Amazon Redshift, Amazon Aurora, Snowflake, Azure Synapse are being evaluated/dev
 |postgresql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6, v12.1, latest|
 |mysql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7, v8.0, latest|
 |mariadb|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-9v8am?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-9v8am/build/tests)|MariaDb v10.2, latest|
-|snowflake|development|Development in progress|
+|snowflake|development|Development in progress with preview ETA jan 27 2020|
 |synapse|planned|Development planned with preview ETA jan 27 2020|
 |redshift|planned|Development planned|
 
