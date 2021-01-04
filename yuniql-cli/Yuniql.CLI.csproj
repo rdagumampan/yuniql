@@ -58,6 +58,7 @@
     <ProjectReference Include="..\yuniql-extensibility\Yuniql.Extensibility.csproj" />
     <ProjectReference Include="..\yuniql-platforms\mysql\Yuniql.MySql.csproj" />
     <ProjectReference Include="..\yuniql-platforms\postgresql\Yuniql.PostgreSql.csproj" />
+    <ProjectReference Include="..\yuniql-platforms\snowflake\Yuniql.Snowflake.csproj" />
     <ProjectReference Include="..\yuniql-platforms\sqlserver\Yuniql.SqlServer.csproj" />
   </ItemGroup>
 

@@ -922,6 +922,11 @@
             MariaDB
             </summary>
         </member>
+        <member name="F:Yuniql.Core.SUPPORTED_DATABASES.SNOWFLAKE">
+            <summary>
+            MariaDB
+            </summary>
+        </member>
         <member name="T:Yuniql.Core.TokenReplacementService">
             <summary>
             Replaces tokens in the script using the pattern ${TOKEN_KEY}. 

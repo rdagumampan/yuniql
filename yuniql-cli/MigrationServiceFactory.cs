@@ -3,6 +3,7 @@ using Yuniql.Core;
 using Yuniql.Extensibility;
 using Yuniql.MySql;
 using Yuniql.PostgreSql;
+using Yuniql.Snowflake;
 using Yuniql.SqlServer;
 
 namespace Yuniql.CLI
@@ -49,6 +50,14 @@ namespace Yuniql.CLI
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
+                        return dataService.IsTransactionalDdlSupported
+                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
+                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
+                    }
+                case SUPPORTED_DATABASES.SNOWFLAKE:
+                    {
+                        var dataService = new SnowflakeDataService(_traceService);
+                        var bulkImportService = new SnowflakeBulkImportService(_traceService);
                         return dataService.IsTransactionalDdlSupported
                             ? CreateTransactionalMigrationService(dataService, bulkImportService)
                             : CreateNonTransactionalMigrationService(dataService, bulkImportService);

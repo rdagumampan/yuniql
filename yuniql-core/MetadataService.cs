@@ -245,25 +245,38 @@ namespace Yuniql.Core
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
             var additionalArtifactsByteStream = Encoding.UTF8.GetBytes(additionalArtifacts ?? string.Empty);
 
-            command.Parameters.Add(CreateDbParameter("version", version));
-            command.Parameters.Add(CreateDbParameter("toolName", toolName));
-            command.Parameters.Add(CreateDbParameter("toolVersion", toolVersion));
-            command.Parameters.Add(CreateDbParameter("additionalArtifacts", additionalArtifactsByteStream));
 
-            //in case database supports non-transactional flow
-            if (_dataService is IMixableTransaction nonTransactionalDataService)
-            {
-                //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
-                sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), metaSchemaName, metaTableName);
-                var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
-                command.Parameters.Add(CreateDbParameter("status", status));
-                command.Parameters.Add(CreateDbParameter("failedScriptPath", failedScriptPath));
-                command.Parameters.Add(CreateDbParameter("failedScriptError", failedScriptError));
-            }
-            else
-            {
-                sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), metaSchemaName, metaTableName);
-            }
+            var tokens = new List<KeyValuePair<string, string>> {
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName ?? _dataService.SchemaName),
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, metaTableName?? _dataService.TableName),
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_VERSION, version),
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL, toolName),
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL_VERSION, toolVersion)
+            };
+
+            sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForInsertVersion());
+            _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
+
+            //command.Parameters.Add(CreateDbParameter("version", version));
+            //command.Parameters.Add(CreateDbParameter("toolName", toolName));
+            //command.Parameters.Add(CreateDbParameter("toolVersion", toolVersion));
+            //command.Parameters.Add(CreateDbParameter("additionalArtifacts", additionalArtifactsByteStream));
+
+            ////in case database supports non-transactional flow
+            //if (_dataService is IMixableTransaction nonTransactionalDataService)
+            //{
+            //    //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
+            //    sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), metaSchemaName, metaTableName);
+            //    var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
+            //    command.Parameters.Add(CreateDbParameter("status", status));
+            //    command.Parameters.Add(CreateDbParameter("failedScriptPath", failedScriptPath));
+            //    command.Parameters.Add(CreateDbParameter("failedScriptError", failedScriptError));
+            //}
+            //else
+            //{
+            //    sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), metaSchemaName, metaTableName);
+            //}
 
             //upsert version information
             command.CommandText = sqlStatement;

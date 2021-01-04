@@ -232,7 +232,14 @@ namespace Yuniql.CLI
         Supported versions: https://yuniql.io/docs/supported-platforms/
         Supported versions: 
         Usage: yuniql run -a -c <your-connection-string> --platform mariadb
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample";
+        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
+
+    Snowflake: 
+        Supported versions: https://yuniql.io/docs/supported-platforms/
+        Supported versions: 
+        Usage: yuniql run -a -c <your-connection-string> --platform snowflake
+        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-snowflake-sample
+";
 
                 Console.WriteLine(platforms);
 

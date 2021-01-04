@@ -1,5 +1,6 @@
 ﻿namespace Yuniql.Core
 {
+    //TODO: Move to Yuniql.Extensibility
     /// <summary>
     /// Global constants used for token replacement in sql statements
     /// </summary>
@@ -20,5 +21,10 @@
         /// Token for table name to store schem version tracking data.
         /// </summary>
         public const string YUNIQL_TABLE_NAME = "YUNIQL_TABLE_NAME";
+
+        public const string YUNIQL_VERSION = "YUNIQL_VERSION";
+        public const string YUNIQL_APPLIED_BY_TOOL = "YUNIQL_APPLIED_BY_TOOL";
+        public const string YUNIQL_APPLIED_BY_TOOL_VERSION = "YUNIQL_APPLIED_BY_TOOL_VERSION";
+        public const string YUNIQL_ADDITIONAL_ARTIFACTS = "YUNIQL_ADDITIONAL_ARTIFACTS";
     }
 }

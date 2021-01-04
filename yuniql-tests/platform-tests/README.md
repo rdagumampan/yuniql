@@ -40,6 +40,9 @@ docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433
 Configure your test environment
 
 ```bash
+cd C:\play\yuniql\yuniql-cli
+dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
+
 SETX YUNIQL_TEST_PLATFORM "sqlserver"
 SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-sqlserver-sample"
@@ -67,7 +70,7 @@ Configure your test environment
 
 ```bash
 cd C:\play\yuniql\yuniql-cli
-dotnet publish -c release -r win-x64
+dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
 SETX YUNIQL_TEST_PLATFORM "postgresql"
 SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
@@ -95,7 +98,7 @@ Configure your test environment
 
 ```bash
 cd C:\play\yuniql\yuniql-cli
-dotnet publish -c release -r win-x64
+dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
 SETX YUNIQL_TEST_PLATFORM "mysql"
 SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
@@ -123,11 +126,35 @@ Configure your test environment
 
 ```bash
 cd C:\play\yuniql\yuniql-cli
-dotnet publish -c release -r win-x64
+dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
 SETX YUNIQL_TEST_PLATFORM "mariadb"
 SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-mysql-sample"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_HOST "LOCALSERVER"
+```
+
+Run the platform tests
+	
+```console
+cd C:\play\yuniql\yuniql-tests\platform-tests
+dotnet test -v n
+```
+
+## Run platform tests for Snowflake
+
+Create a database in snowflake management portal and record the connection string
+
+Configure your test environment
+
+```bash
+cd C:\play\yuniql\yuniql-cli
+dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
+
+SETX YUNIQL_TEST_PLATFORM "snowflake"
+SETX YUNIQL_TEST_CONNECTION_STRING "<your-snowflake-connection-string>"
+SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-snowflake-sample"
 SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"
 ```
