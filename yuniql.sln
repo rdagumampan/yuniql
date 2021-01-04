@@ -28,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BF5815B6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Snowflake", "yuniql-platforms\snowflake\Yuniql.Snowflake.csproj", "{29FAAA6B-4C99-4222-91FB-88F200CE25B3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_docs", "_docs", "{6D95A1A2-384F-4C70-A0A7-CF6F53528CAE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{6D95A1A2-384F-4C70-A0A7-CF6F53528CAE}"
 	ProjectSection(SolutionItems) = preProject
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		LICENSE.md = LICENSE.md
