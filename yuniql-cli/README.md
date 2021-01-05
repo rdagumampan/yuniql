@@ -18,6 +18,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 
 cd C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish
 yuniql run -a -p C:\play\yuniql\samples\basic-sqlserver-sample -c  -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
+yuniql list -p C:\play\yuniql\samples\basic-sqlserver-sample -c  -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
 ```
 
 #### Run from Visual Studio (Debug Mode)
@@ -70,7 +71,7 @@ Set Yuniql.CLI as default startup project
 Open Yuniql.CLI project properties -> Debug -> Add these start-up parameters
 
 ```console
-yuniql run -a -p C:\play\yuniql\samples\basic-mysql-sample -c "Server=localhost;Port=3306;Database=helloyuniql;Uid=root;Pwd=P@ssw0rd!;" --platform mysql --debug
+run -a -p C:\play\yuniql\samples\basic-mysql-sample -c "Server=localhost;Port=3306;Database=helloyuniql;Uid=root;Pwd=P@ssw0rd!;" --platform mysql --debug
 ```
 
 Install VSCode Extensions
@@ -80,3 +81,15 @@ Install VSCode Extensions
 
 Browse data from your VS Code
 
+### Debugging with Snowflake
+
+Record your Snowflake account information
+host=<host>com;account=<account>;user=<user-id>;password<password>;db=HELLO_YUNIQL;schema=PUBLIC
+
+
+Set Yuniql.CLI as default startup project
+Open Yuniql.CLI project properties -> Debug -> Add these start-up parameters
+
+```console
+run -p C:\play\yuniql\samples\basic-snowflake-sample -c "" --platform snowflake --debug
+```

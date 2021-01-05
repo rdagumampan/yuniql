@@ -123,10 +123,12 @@ namespace Yuniql.Snowflake
             => "SELECT TOP 1 \"Version\" FROM \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\" ORDER BY \"SequenceId\" DESC;";
 
         public string GetSqlForGetAllVersions()
-            => "SELECT \"SequenceId\", \"Version\", \"AppliedOnUtc\", \"AppliedByUser\", \"AppliedByTool\", \"AppliedByToolVersion\", \"AdditionalArtifacts\" FROM \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\" ORDER BY \"Version\" ASC;";
+            => "SELECT \"SequenceId\", \"Version\", \"AppliedOnUtc\", \"AppliedByUser\", \"AppliedByTool\", \"AppliedByToolVersion\", \"AdditionalArtifacts\" " +
+               "FROM \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\" ORDER BY \"Version\" ASC;";
 
         public string GetSqlForInsertVersion()
-            => "INSERT INTO \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\" (\"Version\", \"AppliedByTool\", \"AppliedByToolVersion\") VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');";
+            => "INSERT INTO \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\" (\"Version\", \"AppliedByTool\", \"AppliedByToolVersion\") " +
+               "VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');";
 
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {

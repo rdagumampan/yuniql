@@ -85,16 +85,18 @@ namespace Yuniql.PostgreSql
 
         ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
-            => @"CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
-                    sequence_id  SMALLSERIAL PRIMARY KEY NOT NULL,
-                    version VARCHAR(512) NOT NULL,
-                    applied_on_utc TIMESTAMP NOT NULL DEFAULT(current_timestamp AT TIME ZONE 'UTC'),
-                    applied_by_user VARCHAR(32) NOT NULL DEFAULT(user),
-                    applied_by_tool VARCHAR(32) NULL,
-                    applied_by_tool_version VARCHAR(16) NULL,
-                    additional_artifacts BYTEA NULL,
-                    CONSTRAINT ix___yuniqldbversion UNIQUE(version)
-	            );";
+            => @"
+CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
+    sequence_id  SMALLSERIAL PRIMARY KEY NOT NULL,
+    version VARCHAR(512) NOT NULL,
+    applied_on_utc TIMESTAMP NOT NULL DEFAULT(current_timestamp AT TIME ZONE 'UTC'),
+    applied_by_user VARCHAR(32) NOT NULL DEFAULT(user),
+    applied_by_tool VARCHAR(32) NULL,
+    applied_by_tool_version VARCHAR(16) NULL,
+    additional_artifacts BYTEA NULL,
+    CONSTRAINT ix___yuniqldbversion UNIQUE(version)
+);
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
@@ -103,15 +105,15 @@ namespace Yuniql.PostgreSql
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"
-                SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts 
-                FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} ORDER BY version ASC;
+SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts 
+FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} ORDER BY version ASC;
             ";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"
-                INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version) 
-                VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');
+INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version) 
+VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');
             ";
 
         ///<inheritdoc/>

@@ -87,19 +87,19 @@ namespace Yuniql.MySql
         ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
             => @"
-                CREATE TABLE ${YUNIQL_TABLE_NAME} (
-	                sequence_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-	                version VARCHAR(190) NOT NULL,
-	                applied_on_utc TIMESTAMP NOT NULL,
-	                applied_by_user VARCHAR(32) NOT NULL,
-	                applied_by_tool VARCHAR(32) NULL,
-	                applied_by_tool_version VARCHAR(16) NULL,
-	                additional_artifacts BLOB NULL,
-                    status VARCHAR(32) NOT NULL,
-                    failed_script_path VARCHAR(4000) NULL,
-                    failed_script_error VARCHAR(4000) NULL,
-	                CONSTRAINT ix___yuniqldbversion UNIQUE (version)
-                ) ENGINE=InnoDB;
+CREATE TABLE ${YUNIQL_TABLE_NAME} (
+	sequence_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	version VARCHAR(190) NOT NULL,
+	applied_on_utc TIMESTAMP NOT NULL,
+	applied_by_user VARCHAR(32) NOT NULL,
+	applied_by_tool VARCHAR(32) NULL,
+	applied_by_tool_version VARCHAR(16) NULL,
+	additional_artifacts VARCHAR(4000) NULL,
+    status VARCHAR(32) NOT NULL,
+    failed_script_path VARCHAR(4000) NULL,
+    failed_script_error VARCHAR(4000) NULL,
+	CONSTRAINT ix___yuniqldbversion UNIQUE (version)
+) ENGINE=InnoDB;
             ";
 
         ///<inheritdoc/>
@@ -109,8 +109,8 @@ namespace Yuniql.MySql
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"
-                SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error 
-                FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;
+SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error 
+FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;
             ";
 
         ///<inheritdoc/>
@@ -119,16 +119,18 @@ namespace Yuniql.MySql
 
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
-            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status, failed_script_path, failed_script_error) 
-                 VALUES ('${YUNIQL_VERSION}', UTC_TIMESTAMP(), CURRENT_USER(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', ${YUNIQL_STATUS}, ${YUNIQL_FAILED_SCRIPT_PATH}, ${YUNIQL_FAILED_SCRIPT_ERROR})
-                    ON DUPLICATE KEY UPDATE
-                    applied_on_utc = VALUES(applied_on_utc),
-                    applied_by_user = VALUES(applied_by_user),
-                    applied_by_tool = VALUES(applied_by_tool),
-                    applied_by_tool_version = VALUES(applied_by_tool_version),
-                    status = VALUES(status),
-                    failed_script_path = VALUES(failed_script_path),
-                    failed_script_error = VALUES(failed_script_error);
+            => @"
+INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error) 
+VALUES ('${YUNIQL_VERSION}', UTC_TIMESTAMP(), CURRENT_USER(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_ADDITIONAL_ARTIFACTS}', '${YUNIQL_STATUS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}')
+ON DUPLICATE KEY UPDATE
+    applied_on_utc = VALUES(applied_on_utc),
+    applied_by_user = VALUES(applied_by_user),
+    applied_by_tool = VALUES(applied_by_tool),
+    applied_by_tool_version = VALUES(applied_by_tool_version),
+    additional_artifacts = VALUES(additional_artifacts),
+    status = VALUES(status),
+    failed_script_path = VALUES(failed_script_path),
+    failed_script_error = VALUES(failed_script_error);
             ";
 
         ///<inheritdoc/>

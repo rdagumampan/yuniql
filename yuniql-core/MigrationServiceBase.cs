@@ -71,7 +71,7 @@ namespace Yuniql.Core
             if (!configuration.IsInitialized)
                 Initialize();
 
-            return _metadataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
+            return _metadataService.GetAllVersions(metaSchemaName, metaTableName);
         }
 
         /// <inheritdoc />

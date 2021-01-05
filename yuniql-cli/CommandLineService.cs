@@ -119,7 +119,7 @@ namespace Yuniql.CLI
                 return OnException(ex, "Failed to execute run function", opts.IsDebug, _traceService);
             }
         }
-        
+
         public int RunVerifyOption(VerifyOption opts)
         {
             try
@@ -159,9 +159,17 @@ namespace Yuniql.CLI
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 var versions = migrationService.GetAllVersions(configuration.MetaSchemaName, configuration.MetaTableName);
 
-                var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool");
-                versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}"));
-                versionPrettyPrint.Print();
+                if (versions.All(v => v.Status == Status.Successful)) {
+                    var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool", "Other Metadata");
+                    versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}", v.AdditionalArtifacts));
+                    versionPrettyPrint.Print();
+                }
+                else
+                {
+                    var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool", "Failed Script", "Failure Message", "Other Metadata");
+                    versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}", v.FailedScriptPath, v.FailedScriptError, v.AdditionalArtifacts));
+                    versionPrettyPrint.Print();
+                }
 
                 _traceService.Success($"Listed all schema versions applied to database on {configuration.Workspace} workspace.{Environment.NewLine}" +
                     $"For platforms not supporting full transactional DDL operations (ex. MySql, CockroachDB, Snowflake), unsuccessful migrations will show the status as Failed and you can look for LastFailedScript and LastScriptError in the schema version tracking table.");

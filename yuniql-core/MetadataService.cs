@@ -197,8 +197,7 @@ namespace Yuniql.Core
                     //capture additional artifacts when present present
                     if (!reader.IsDBNull(6))
                     {
-                        var additionalArtifactsByteStream = reader.GetValue(6) as byte[];
-                        dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(additionalArtifactsByteStream);
+                        dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(Convert.FromBase64String(reader.GetString(6)));
                     }
 
                     //fill up with information only available for platforms not supporting transactional ddl
@@ -206,8 +205,7 @@ namespace Yuniql.Core
                     {
                         dbVersion.Status = Enum.Parse<Status>(reader.GetString(7));
                         dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values
-                        dbVersion.FailedScriptError = reader.GetValue(9) as string;     //as string handles null values
-
+                        dbVersion.FailedScriptError = Encoding.UTF8.GetString(Convert.FromBase64String(reader.GetString(9)));
                     }
 
                     result.Add(dbVersion);
@@ -243,6 +241,9 @@ namespace Yuniql.Core
 
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
+            var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
+            var failedScriptErrorBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(failedScriptError ?? string.Empty)); ;
+            var additionalArtifactsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(additionalArtifacts ?? string.Empty)); ;
 
             var tokens = new List<KeyValuePair<string, string>> {
                  new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
@@ -250,21 +251,24 @@ namespace Yuniql.Core
                  new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, metaTableName?? _dataService.TableName),
                  new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_VERSION, version),
                  new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL, toolName),
-                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL_VERSION, toolVersion)
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL_VERSION, toolVersion),
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_ADDITIONAL_ARTIFACTS, additionalArtifactsBase64)
             };
-            sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForInsertVersion());
 
-            //in case database supports non-transactional flow
             if (_dataService is IMixableTransaction isMixableTransaction)
             {
-                //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
-                sqlStatement = GetPreparedSqlStatement(isMixableTransaction.GetSqlForUpsertVersion(), metaSchemaName, metaTableName);
-                var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
                 tokens.AddRange(new List<KeyValuePair<string, string>> {
                      new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_STATUS, status),
                      new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_PATH, failedScriptPath ?? string.Empty),
-                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_ERROR, failedScriptError ?? string.Empty),
+                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_ERROR, failedScriptErrorBase64),
                 });
+
+                //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
+                sqlStatement = _tokenReplacementService.Replace(tokens, isMixableTransaction.GetSqlForUpsertVersion());
+            }
+            else
+            {
+                sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForInsertVersion());
             }
 
             //upsert version information

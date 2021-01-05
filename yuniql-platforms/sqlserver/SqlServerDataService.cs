@@ -89,23 +89,23 @@ namespace Yuniql.SqlServer
         ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
             => @"
-                    IF OBJECT_ID('[${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]') IS NULL 
-                    BEGIN
-                        CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
-	                        [SequenceId] [SMALLINT] IDENTITY(1,1) NOT NULL,
-	                        [Version] [NVARCHAR](512) NOT NULL,
-	                        [AppliedOnUtc] [DATETIME] NOT NULL,
-	                        [AppliedByUser] [NVARCHAR](32) NOT NULL,
-	                        [AppliedByTool] [NVARCHAR](32) NULL,
-	                        [AppliedByToolVersion] [NVARCHAR](16) NULL,
-	                        [AdditionalArtifacts] [VARBINARY](MAX) NULL,
-                         CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([SequenceId] ASC),
-                         CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED  ([Version] ASC
-                        ));
+IF OBJECT_ID('[${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]') IS NULL 
+BEGIN
+    CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
+	    [SequenceId] [SMALLINT] IDENTITY(1,1) NOT NULL,
+	    [Version] [NVARCHAR](512) NOT NULL,
+	    [AppliedOnUtc] [DATETIME] NOT NULL,
+	    [AppliedByUser] [NVARCHAR](32) NOT NULL,
+	    [AppliedByTool] [NVARCHAR](32) NULL,
+	    [AppliedByToolVersion] [NVARCHAR](16) NULL,
+	    [AdditionalArtifacts] [VARBINARY](MAX) NULL,
+        CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([SequenceId] ASC),
+        CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED  ([Version] ASC
+    ));
 
-                        ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedOnUtc]  DEFAULT (GETUTCDATE()) FOR [AppliedOnUtc];
-                        ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedByUser]  DEFAULT (SUSER_SNAME()) FOR [AppliedByUser];
-                    END                
+    ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedOnUtc]  DEFAULT (GETUTCDATE()) FOR [AppliedOnUtc];
+    ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedByUser]  DEFAULT (SUSER_SNAME()) FOR [AppliedByUser];
+END                
             ";
 
         ///<inheritdoc/>
@@ -115,15 +115,15 @@ namespace Yuniql.SqlServer
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"
-                SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser, AppliedByTool, AppliedByToolVersion, AdditionalArtifacts 
-                FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY Version ASC;
+SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser, AppliedByTool, AppliedByToolVersion, AdditionalArtifacts 
+FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY Version ASC;
             ";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"
-                INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion) 
-                VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');
+INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion) 
+VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');
             ";
 
         ///<inheritdoc/>
