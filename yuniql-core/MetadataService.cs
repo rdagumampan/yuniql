@@ -243,8 +243,6 @@ namespace Yuniql.Core
 
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
-            var additionalArtifactsByteStream = Encoding.UTF8.GetBytes(additionalArtifacts ?? string.Empty);
-
 
             var tokens = new List<KeyValuePair<string, string>> {
                  new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
@@ -254,43 +252,25 @@ namespace Yuniql.Core
                  new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL, toolName),
                  new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL_VERSION, toolVersion)
             };
-
             sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForInsertVersion());
-            _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
 
-            //command.Parameters.Add(CreateDbParameter("version", version));
-            //command.Parameters.Add(CreateDbParameter("toolName", toolName));
-            //command.Parameters.Add(CreateDbParameter("toolVersion", toolVersion));
-            //command.Parameters.Add(CreateDbParameter("additionalArtifacts", additionalArtifactsByteStream));
-
-            ////in case database supports non-transactional flow
-            //if (_dataService is IMixableTransaction nonTransactionalDataService)
-            //{
-            //    //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
-            //    sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), metaSchemaName, metaTableName);
-            //    var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
-            //    command.Parameters.Add(CreateDbParameter("status", status));
-            //    command.Parameters.Add(CreateDbParameter("failedScriptPath", failedScriptPath));
-            //    command.Parameters.Add(CreateDbParameter("failedScriptError", failedScriptError));
-            //}
-            //else
-            //{
-            //    sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), metaSchemaName, metaTableName);
-            //}
+            //in case database supports non-transactional flow
+            if (_dataService is IMixableTransaction isMixableTransaction)
+            {
+                //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
+                sqlStatement = GetPreparedSqlStatement(isMixableTransaction.GetSqlForUpsertVersion(), metaSchemaName, metaTableName);
+                var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
+                tokens.AddRange(new List<KeyValuePair<string, string>> {
+                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_STATUS, status),
+                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_PATH, failedScriptPath ?? string.Empty),
+                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_ERROR, failedScriptError ?? string.Empty),
+                });
+            }
 
             //upsert version information
+            _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
             command.CommandText = sqlStatement;
             command.ExecuteNonQuery();
-
-            //local function
-            IDbDataParameter CreateDbParameter(string name, object value)
-            {
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = name;
-                parameter.Value = value;
-                parameter.Direction = ParameterDirection.Input;
-                return parameter;
-            }
         }
 
         ///<inheritdoc/>

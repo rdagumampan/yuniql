@@ -108,7 +108,10 @@ namespace Yuniql.MySql
 
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
-            => @"SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;";
+            => @"
+                SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error 
+                FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
@@ -116,7 +119,8 @@ namespace Yuniql.MySql
 
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
-            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error) VALUES (@version, UTC_TIMESTAMP(), CURRENT_USER(), @toolName, @toolVersion, @additionalArtifacts, @status, @failedScriptPath, @failedScriptError)
+            => @"INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status, failed_script_path, failed_script_error) 
+                 VALUES ('${YUNIQL_VERSION}', UTC_TIMESTAMP(), CURRENT_USER(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', ${YUNIQL_STATUS}, ${YUNIQL_FAILED_SCRIPT_PATH}, ${YUNIQL_FAILED_SCRIPT_ERROR})
                     ON DUPLICATE KEY UPDATE
                     applied_on_utc = VALUES(applied_on_utc),
                     applied_by_user = VALUES(applied_by_user),
@@ -133,7 +137,7 @@ namespace Yuniql.MySql
             var columnsTable = GetVersionTableColumns(dbConnection, traceService, metaTableName);
             var columnsTableRows = columnsTable.Rows.Cast<DataRow>().Select(x => new { ColumnName = x.Field<string>("COLUMN_NAME"), ColumnType = x.Field<string>("COLUMN_TYPE") }).ToDictionary(x => x.ColumnName, StringComparer.OrdinalIgnoreCase);
 
-            //Add new columns into old version of table
+            //add new columns into old version of table
             bool databaseUpdated = false;
             if (!columnsTableRows.ContainsKey("status"))
             {
