@@ -182,7 +182,7 @@ namespace Yuniql.Core
                 if (isContinueAfterFailure == null)
                 {
                     //program should exit with non zero exit code
-                    var message = @$"Previous migration of ""{failedVersion.Version}"" version was not running in transaction and has failed when executing of script ""{failedVersion.FailedScriptPath}"" with following error: {failedVersion.FailedScriptError} {MESSAGES.ManualResolvingAfterFailureMessage}";
+                    var message = @$"Previous migration of ""{failedVersion.Version}"" version was not running in transaction and has failed when executing of script ""{failedVersion.FailedScriptPath}"" with following error: {failedVersion.FailedScriptError}. {MESSAGES.ManualResolvingAfterFailureMessage}";
                     _traceService.Error(message);
                     throw new InvalidOperationException(message);
                 }
@@ -510,7 +510,7 @@ namespace Yuniql.Core
                         failedScriptPath: currentScriptFile,
                         failedScriptError: sqlExceptionDetail);
 
-                    _traceService.Error(@$"Migration of ""{version}"" version was not running in transaction and has failed when executing of script file ""{currentScriptFile}"" with following error: {sqlExceptionDetail} {MESSAGES.ManualResolvingAfterFailureMessage}");
+                    _traceService.Error(@$"Migration of ""{version}"" version was not running in transaction and has failed when executing of script file ""{currentScriptFile}"" with following error: {sqlExceptionDetail}. {MESSAGES.ManualResolvingAfterFailureMessage}");
                 }
                 else
                 {

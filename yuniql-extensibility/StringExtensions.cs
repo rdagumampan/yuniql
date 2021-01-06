@@ -31,5 +31,16 @@ namespace Yuniql.Extensibility
         public static bool IsDoubleQuoted(this string str) {
             return str.ToString().StartsWith("\"") && str.ToString().EndsWith("\"");
         }
+
+        public static string Escape(this string str)
+        {
+            return str.Replace(@"\", @"\\");
+        }
+
+        public static string Unescape(this string str)
+        {
+            return str.Replace(@"\\", @"\");
+        }
+
     }
 }

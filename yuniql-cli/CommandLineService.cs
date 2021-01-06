@@ -159,20 +159,23 @@ namespace Yuniql.CLI
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 var versions = migrationService.GetAllVersions(configuration.MetaSchemaName, configuration.MetaTableName);
 
-                if (versions.All(v => v.Status == Status.Successful)) {
-                    var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool", "Other Metadata");
-                    versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}", v.AdditionalArtifacts));
-                    versionPrettyPrint.Print();
-                }
-                else
+                var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool");
+                versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}"));
+                versionPrettyPrint.Print();
+
+                var failedVersion = versions.LastOrDefault(v => v.Status == Status.Failed);
+                if(null!= failedVersion)
                 {
-                    var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool", "Failed Script", "Failure Message", "Other Metadata");
-                    versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}", v.FailedScriptPath, v.FailedScriptError, v.AdditionalArtifacts));
-                    versionPrettyPrint.Print();
+                    var failedVersionMessage = $"Previous run was not successful, see details below:{Environment.NewLine}" +
+                        $"Last failed version: {failedVersion.Version}{Environment.NewLine}" +
+                        $"Last failed script: {failedVersion.FailedScriptPath}{Environment.NewLine}" +
+                        $"Last error message: {failedVersion.FailedScriptError}{Environment.NewLine}" +
+                        $"Suggested action: Fix the script and manual run to target database and then issue yuniql run again with --continue-after-failure parameter.{Environment.NewLine}";
+                    _traceService.Error(failedVersionMessage);
                 }
 
                 _traceService.Success($"Listed all schema versions applied to database on {configuration.Workspace} workspace.{Environment.NewLine}" +
-                    $"For platforms not supporting full transactional DDL operations (ex. MySql, CockroachDB, Snowflake), unsuccessful migrations will show the status as Failed and you can look for LastFailedScript and LastScriptError in the schema version tracking table.");
+                    $"For platforms not supporting full transactional DDL operations (ex. MySql, Snowflake, CockroachDB), unsuccessful migrations will show the status as Failed and you can look for FailedScriptPath and FailedScriptError in the schema version tracking table.");
 
                 return 0;
             }

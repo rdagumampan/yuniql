@@ -195,17 +195,14 @@ namespace Yuniql.Core
                     };
 
                     //capture additional artifacts when present present
-                    if (!reader.IsDBNull(6))
-                    {
-                        dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(Convert.FromBase64String(reader.GetString(6)));
-                    }
+                    dbVersion.AdditionalArtifacts = !reader.IsDBNull(6) ? Encoding.UTF8.GetString(Convert.FromBase64String(reader.GetString(6))) : string.Empty;
 
                     //fill up with information only available for platforms not supporting transactional ddl
                     if (!_dataService.IsTransactionalDdlSupported)
                     {
                         dbVersion.Status = Enum.Parse<Status>(reader.GetString(7));
-                        dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values
-                        dbVersion.FailedScriptError = Encoding.UTF8.GetString(Convert.FromBase64String(reader.GetString(9)));
+                        dbVersion.FailedScriptPath = !reader.IsDBNull(8) ? reader.GetString(8).Unescape() : string.Empty;
+                        dbVersion.FailedScriptError = !reader.IsDBNull(9) ? Encoding.UTF8.GetString(Convert.FromBase64String(reader.GetString(9))) : string.Empty;
                     }
 
                     result.Add(dbVersion);
@@ -241,7 +238,8 @@ namespace Yuniql.Core
 
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
-            var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
+            var statusString = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
+            var failedScriptPathEscaped = string.IsNullOrEmpty(failedScriptPath) ? string.Empty : failedScriptPath.Escape();
             var failedScriptErrorBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(failedScriptError ?? string.Empty)); ;
             var additionalArtifactsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(additionalArtifacts ?? string.Empty)); ;
 
@@ -258,8 +256,8 @@ namespace Yuniql.Core
             if (_dataService is IMixableTransaction isMixableTransaction)
             {
                 tokens.AddRange(new List<KeyValuePair<string, string>> {
-                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_STATUS, status),
-                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_PATH, failedScriptPath ?? string.Empty),
+                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_STATUS, statusString),
+                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_PATH, failedScriptPathEscaped),
                      new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_ERROR, failedScriptErrorBase64),
                 });
 
