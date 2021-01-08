@@ -239,6 +239,11 @@
             The status of version execution
             </summary>
         </member>
+        <member name="P:Yuniql.Extensibility.DbVersion.DurationMs">
+            <summary>
+            The execution time of the version in milliseconds
+            </summary>
+        </member>
         <member name="P:Yuniql.Extensibility.DbVersion.FailedScriptPath">
             <summary>
             The full path of last failed script file
@@ -368,6 +373,11 @@
             For example, SQL Server uses GO word as default batch terminator while Snowflow uses semicolon (;).
             </summary>
         </member>
+        <member name="P:Yuniql.Extensibility.IDataService.IsUpsertSupported">
+            <summary>
+            Returns true if the database supports single MERGE or UPSERT sql statement
+            </summary>
+        </member>
         <member name="P:Yuniql.Extensibility.IDataService.SchemaName">
             <summary>
             Default schema name for schema versions table. Leave it null if database doesn't support schema.
@@ -427,6 +437,11 @@
         <member name="M:Yuniql.Extensibility.IDataService.GetSqlForInsertVersion">
             <summary>
             Returns the SQL statement to use for creating new entry into migration tracking table.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForUpsertVersion">
+            <summary>
+            Returns the SQL statement to use for merging new entry into migration tracking table.
             </summary>
         </member>
         <member name="M:Yuniql.Extensibility.IDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">

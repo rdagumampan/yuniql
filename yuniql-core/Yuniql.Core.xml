@@ -836,7 +836,7 @@
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationServiceTransactional.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
-            <inheritdoc />
+            <inheritdoc /> 
         </member>
         <member name="M:Yuniql.Core.MigrationServiceTransactional.Run">
             <inheritdoc />
@@ -845,7 +845,7 @@
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationServiceTransactional.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
-            <inheritdoc/>
+            <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationServiceTransactional.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
             <inheritdoc/>
@@ -884,17 +884,72 @@
         </member>
         <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_DB_NAME">
             <summary>
-            Token for target database name
+            Token for database name value when performing queries in version tracking table
             </summary>
         </member>
         <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_SCHEMA_NAME">
             <summary>
-            Token for schema name to store schema version tracking table.
+            Token for schema name value when performing queries in version tracking table
             </summary>
         </member>
         <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_TABLE_NAME">
             <summary>
-            Token for table name to store schem version tracking data.
+            Token for table name value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_SEQUENCE_ID">
+            <summary>
+            Token for sequence id value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_VERSION">
+            <summary>
+            Token for version value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_APPLIED_ON_UTC">
+            <summary>
+            Token for applied utc date value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_APPLIED_BY_USER">
+            <summary>
+            Token for applied by user value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL">
+            <summary>
+            Token for applied by tool value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL_VERSION">
+            <summary>
+            Token for applied by tool version value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_STATUS">
+            <summary>
+            Token for status value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_DURATION_MS">
+            <summary>
+            Token for duration ms value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_PATH">
+            <summary>
+            Token for failed script value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_ERROR">
+            <summary>
+            Token for failed script error value when performing queries in version tracking table
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_ADDITIONAL_ARTIFACTS">
+            <summary>
+            Token for additional artifacts value when performing queries in version tracking table
             </summary>
         </member>
         <member name="T:Yuniql.Core.SUPPORTED_DATABASES">

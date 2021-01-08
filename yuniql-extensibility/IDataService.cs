@@ -52,6 +52,12 @@ namespace Yuniql.Extensibility
         /// </summary>
         bool IsBatchSqlSupported { get; }
 
+
+        /// <summary>
+        /// Returns true if the database supports single MERGE or UPSERT sql statement
+        /// </summary>
+        bool IsUpsertSupported { get; }
+
         /// <summary>
         /// Default schema name for schema versions table. Leave it null if database doesn't support schema.
         /// For example its dbo in SqlServer and public in PostgreSql
@@ -112,6 +118,11 @@ namespace Yuniql.Extensibility
         /// Returns the SQL statement to use for creating new entry into migration tracking table.
         /// </summary>
         public string GetSqlForInsertVersion();
+
+        /// <summary>
+        /// Returns the SQL statement to use for merging new entry into migration tracking table.
+        /// </summary>
+        public string GetSqlForUpsertVersion();
 
         /// <summary>
         /// Updates the database migration tracking table.

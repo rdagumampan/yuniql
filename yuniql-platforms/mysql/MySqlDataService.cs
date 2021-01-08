@@ -40,6 +40,8 @@ namespace Yuniql.MySql
         ///<inheritdoc/>
         public string SchemaName { get; set; }
 
+        public bool IsUpsertSupported => throw new NotImplementedException();
+
         ///<inheritdoc/>
         public IDbConnection CreateConnection()
         {
@@ -193,12 +195,12 @@ ON DUPLICATE KEY UPDATE
         ///<inheritdoc/>
         public bool TryParseErrorFromException(Exception exception, out string result)
         {
-            if (exception is MySqlException mySqlException)
+            result = null;
+            if (exception is MySqlException sqlException)
             {
-                result = $"(0x{mySqlException.ErrorCode:X}): Error Code: {mySqlException.Number}. {mySqlException.Message}";
+                result = $"(0x{sqlException.ErrorCode:X}) Error {sqlException.Number}: {sqlException.Message}";
                 return true;
             }
-            result = null;
             return false;
         }
     }

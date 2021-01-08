@@ -89,6 +89,8 @@ namespace Yuniql.Snowflake
 
         public string SchemaName { get; set; } = "PUBLIC";
 
+        public bool IsUpsertSupported => throw new NotImplementedException();
+
         public List<string> BreakStatements(string sqlStatementRaw)
         {
             var sqlBatchParser = new SqlBatchParser(_traceService, new GoSqlBatchLineAnalyzer(), new CommentAnalyzer());
@@ -140,6 +142,11 @@ namespace Yuniql.Snowflake
         {
             result = null;
             return false;
+        }
+
+        public string GetSqlForUpsertVersion()
+        {
+            throw new NotImplementedException();
         }
     }
 }

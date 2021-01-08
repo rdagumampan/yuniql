@@ -78,22 +78,23 @@ namespace Yuniql.PlatformTests
                         AppliedOnUtc = reader.GetDateTime(2),
                         AppliedByUser = reader.GetString(3),
                         AppliedByTool = reader.GetString(4),
-                        AppliedByToolVersion = reader.GetString(5)
+                        AppliedByToolVersion = reader.GetString(5),
+                        Status = Enum.Parse<Status>(reader.GetString(6)),
+                        DurationMs = reader.GetInt32(7)
                     };
 
-                    //capture additional artifacts when present present
-                    if (!reader.IsDBNull(6))
+                    dbVersion.FailedScriptPath = !reader.IsDBNull(8) ? reader.GetString(8).Unescape() : string.Empty;
+
+                    var failedScriptErrorBase64 = reader.GetValue(9) as string;
+                    if (!string.IsNullOrEmpty(failedScriptErrorBase64))
                     {
-                        var additionalArtifactsByteStream = reader.GetValue(6) as byte[];
-                        dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(additionalArtifactsByteStream);
+                        dbVersion.FailedScriptError = Encoding.UTF8.GetString(Convert.FromBase64String(failedScriptErrorBase64));
                     }
 
-                    //fill up with information only available for platforms not supporting transactional ddl
-                    if (!_dataService.IsTransactionalDdlSupported)
+                    var additionalArtifactsBase64 = reader.GetValue(10) as string;
+                    if (!string.IsNullOrEmpty(additionalArtifactsBase64))
                     {
-                        dbVersion.Status = Enum.Parse<Status>(reader.GetString(7));
-                        dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values
-                        dbVersion.FailedScriptError = reader.GetValue(9) as string;     //as string handles null values
+                        dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(Convert.FromBase64String(additionalArtifactsBase64));
                     }
 
                     result.Add(dbVersion);

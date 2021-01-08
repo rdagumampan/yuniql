@@ -33,6 +33,8 @@ namespace Yuniql.PostgreSql
         ///<inheritdoc/>
         public string SchemaName { get; set; } = "public";
 
+        public bool IsUpsertSupported => throw new NotImplementedException();
+
         ///<inheritdoc/>
         public void Initialize(string connectionString)
         {
@@ -128,6 +130,11 @@ VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_T
         {
             result = null;
             return false;
+        }
+
+        public string GetSqlForUpsertVersion()
+        {
+            throw new NotImplementedException();
         }
     }
 }

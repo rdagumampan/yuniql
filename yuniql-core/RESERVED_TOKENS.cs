@@ -58,6 +58,11 @@
         public const string YUNIQL_STATUS = "YUNIQL_STATUS";
 
         /// <summary>
+        /// Token for duration ms value when performing queries in version tracking table
+        /// </summary>
+        public const string YUNIQL_DURATION_MS = "YUNIQL_DURATION_MS";
+
+        /// <summary>
         /// Token for failed script value when performing queries in version tracking table
         /// </summary>
         public const string YUNIQL_FAILED_SCRIPT_PATH = "YUNIQL_FAILED_SCRIPT_PATH";

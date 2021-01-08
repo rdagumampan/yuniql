@@ -58,6 +58,9 @@ namespace Yuniql.SqlServer
         public bool IsBatchSqlSupported { get; } = true;
 
         ///<inheritdoc/>
+        public bool IsUpsertSupported { get; } = true;
+
+        ///<inheritdoc/>
         public string TableName { get; set; } = "__yuniqldbversion";
 
         ///<inheritdoc/>
@@ -96,9 +99,13 @@ BEGIN
 	    [Version] [NVARCHAR](512) NOT NULL,
 	    [AppliedOnUtc] [DATETIME] NOT NULL,
 	    [AppliedByUser] [NVARCHAR](32) NOT NULL,
-	    [AppliedByTool] [NVARCHAR](32) NULL,
-	    [AppliedByToolVersion] [NVARCHAR](16) NULL,
-	    [AdditionalArtifacts] [VARBINARY](MAX) NULL,
+	    [AppliedByTool] [NVARCHAR](32) NOT NULL,
+	    [AppliedByToolVersion] [NVARCHAR](16) NOT NULL,
+	    [Status] [NVARCHAR](32) NOT NULL,
+	    [DurationMs] [INT] NOT NULL,
+	    [FailedScriptPath] [NVARCHAR](4000) NULL,
+	    [FailedScriptError] [NVARCHAR](4000) NULL,
+	    [AdditionalArtifacts] [NVARCHAR](4000) NULL,
         CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([SequenceId] ASC),
         CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED  ([Version] ASC
     ));
@@ -110,20 +117,52 @@ END
 
         ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT TOP 1 Version FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY SequenceId DESC;";
+            => @"SELECT TOP 1 [Version] FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] WHERE Status = 'Successful' ORDER BY [SequenceId] DESC;";
 
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"
-SELECT SequenceId, Version, AppliedOnUtc, AppliedByUser, AppliedByTool, AppliedByToolVersion, AdditionalArtifacts 
+SELECT [SequenceId], [Version], [AppliedOnUtc], [AppliedByUser], [AppliedByTool], [AppliedByToolVersion], [Status], [DurationMs], [FailedScriptPath], [FailedScriptError], [AdditionalArtifacts]
 FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY Version ASC;
             ";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"
-INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (Version, AppliedByTool, AppliedByToolVersion) 
-VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');
+INSERT ([Version], [AppliedOnUtc], [AppliedByUser], [AppliedByTool], [AppliedByToolVersion], [Status], [DurationMs], [FailedScriptPath], [FailedScriptError], [AdditionalArtifacts]) 
+VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
+            ";
+
+        ///<inheritdoc/>
+        public string GetSqlForUpsertVersion()
+            => @"
+MERGE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] AS T
+USING (SELECT 
+	'${YUNIQL_VERSION}' [Version], 
+	GETUTCDATE() [AppliedOnUtc], 
+	SUSER_SNAME() [AppliedByUser], 
+	'${YUNIQL_APPLIED_BY_TOOL}' [AppliedByTool], 
+	'${YUNIQL_APPLIED_BY_TOOL_VERSION}' [AppliedByToolVersion], 
+	'${YUNIQL_STATUS}' [Status], 
+	'${YUNIQL_DURATION_MS}' [DurationMs], 
+	'${YUNIQL_FAILED_SCRIPT_PATH}' [FailedScriptPath], 
+	'${YUNIQL_FAILED_SCRIPT_ERROR}' [FailedScriptError], 
+	'${YUNIQL_ADDITIONAL_ARTIFACTS}' [AdditionalArtifacts]) AS S 
+ON T.[Version] = S.[Version]
+WHEN MATCHED THEN
+  UPDATE SET 	
+	T.[AppliedOnUtc] = S.[AppliedOnUtc],
+	T.[AppliedByUser] = S.[AppliedByUser],
+	T.[AppliedByTool]= S.[AppliedByTool], 
+	T.[AppliedByToolVersion] = S.[AppliedByToolVersion],
+	T.[Status] = S.[Status],
+	T.[DurationMs] = S.[DurationMs],
+	T.[FailedScriptPath] = S.[FailedScriptPath],
+	T.[FailedScriptError] = S.[FailedScriptError],
+	T.[AdditionalArtifacts] = S.[AdditionalArtifacts]
+WHEN NOT MATCHED THEN
+  INSERT ([Version], [AppliedOnUtc], [AppliedByUser], [AppliedByTool], [AppliedByToolVersion], [Status], [DurationMs], [FailedScriptPath], [FailedScriptError], [AdditionalArtifacts]) 
+  VALUES (S.[Version], GETUTCDATE(), SUSER_SNAME(), S.[AppliedByTool], S.[AppliedByToolVersion], S.[Status], S.[DurationMs], S.[FailedScriptPath], S.[FailedScriptError], S.[AdditionalArtifacts]);
             ";
 
         ///<inheritdoc/>
@@ -134,9 +173,15 @@ VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_T
         }
 
         ///<inheritdoc/>
-        public bool TryParseErrorFromException(Exception exc, out string result)
+        public bool TryParseErrorFromException(Exception exception, out string result)
         {
             result = null;
+            if (exception is SqlException sqlException)
+            {
+                result = $"(0x{sqlException.ErrorCode:X}) Error {sqlException.Number}: {sqlException.Message}";
+                return true;
+            }
+
             return false;
         }
     }

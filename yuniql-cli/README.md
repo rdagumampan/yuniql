@@ -17,8 +17,8 @@ cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
 cd C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish
-yuniql run -a -p C:\play\yuniql\samples\basic-sqlserver-sample -c  -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
-yuniql list -p C:\play\yuniql\samples\basic-sqlserver-sample -c  -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
+yuniql run -a -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
+yuniql list -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
 ```
 
 #### Run from Visual Studio (Debug Mode)

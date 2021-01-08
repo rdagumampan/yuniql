@@ -43,6 +43,9 @@
         <member name="P:Yuniql.SqlServer.SqlServerDataService.IsBatchSqlSupported">
             <inheritdoc/>
         </member>
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.IsUpsertSupported">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.SqlServer.SqlServerDataService.TableName">
             <inheritdoc/>
         </member>
@@ -74,6 +77,9 @@
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForInsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">

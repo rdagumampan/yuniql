@@ -606,12 +606,14 @@ namespace Yuniql.UnitTests
                                     .Returns(connection.Object);
             dataService.Setup(s => s.GetConnectionInfo())
                                     .Returns(() => new ConnectionInfo { Database = "test", DataSource = "test" });
-            var configurationDataService = new Mock<IMetadataService>();
-            configurationDataService.Setup(s => s.IsDatabaseConfigured(It.IsAny<string>(), It.IsAny<string>(), null))
+            var metadataService = new Mock<IMetadataService>();
+            metadataService.Setup(s => s.IsDatabaseConfigured(It.IsAny<string>(), It.IsAny<string>(), null))
                                     .Returns(true);
-            configurationDataService.Setup(s => s.GetCurrentVersion(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
+            metadataService.Setup(s => s.GetCurrentVersion(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                                     .Returns(string.Empty);
-            configurationDataService.Setup(s => s.GetAllVersions(It.IsAny<string>(), It.IsAny<string>(), null))
+            metadataService.Setup(s => s.GetAllVersions(It.IsAny<string>(), It.IsAny<string>(), null))
+                                    .Returns(new List<DbVersion>());
+            metadataService.Setup(s => s.GetAllAppliedVersions(It.IsAny<string>(), It.IsAny<string>(), null))
                                     .Returns(new List<DbVersion>());
 
             var environmentService = new Mock<IEnvironmentService>();
@@ -624,7 +626,7 @@ namespace Yuniql.UnitTests
                 new Mock<IWorkspaceService>().Object,
                 dataService.Object,
                 new Mock<IBulkImportService>().Object,
-                configurationDataService.Object,
+                metadataService.Object,
                 new Mock<ITokenReplacementService>().Object,
                 new Mock<IDirectoryService>().Object,
                 new Mock<IFileService>().Object,
@@ -658,6 +660,8 @@ namespace Yuniql.UnitTests
             metadataService.Setup(s => s.GetCurrentVersion(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                                     .Returns(string.Empty);
             metadataService.Setup(s => s.GetAllVersions(It.IsAny<string>(), It.IsAny<string>(), null))
+                                    .Returns(new List<DbVersion>());
+            metadataService.Setup(s => s.GetAllAppliedVersions(It.IsAny<string>(), It.IsAny<string>(), null))
                                     .Returns(new List<DbVersion>());
 
             var environmentService = new Mock<IEnvironmentService>();
@@ -704,6 +708,8 @@ namespace Yuniql.UnitTests
             metadataService.Setup(s => s.GetCurrentVersion(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()))
                                     .Returns(string.Empty);
             metadataService.Setup(s => s.GetAllVersions(It.IsAny<string>(), It.IsAny<string>(), null))
+                                    .Returns(new List<DbVersion>());
+            metadataService.Setup(s => s.GetAllAppliedVersions(It.IsAny<string>(), It.IsAny<string>(), null))
                                     .Returns(new List<DbVersion>());
 
             var environmentService = new Mock<IEnvironmentService>();

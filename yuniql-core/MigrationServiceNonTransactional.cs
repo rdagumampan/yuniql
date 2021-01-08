@@ -105,11 +105,6 @@ namespace Yuniql.Core
             //print run configuration information            
             _traceService.Info($"Run configuration: {Environment.NewLine}{_configurationService.PrintAsJson()}");
 
-            if (_dataService.IsTransactionalDdlSupported && isContinueAfterFailure != null)
-            {
-                throw new NotSupportedException(@$"The non-transactional failure resolving option ""{isContinueAfterFailure}"" is not available for this platform.");
-            }
-
             //check the workspace structure if required directories are present
             _workspaceService.Validate(workspace);
 
@@ -227,7 +222,7 @@ namespace Yuniql.Core
             }
 
             //local method
-            void RunAllInternal(IDbConnection connection, IDbTransaction transaction, bool isRrequiredClearedDraft)
+            void RunAllInternal(IDbConnection connection, IDbTransaction transaction, bool isRequiredClearedDraft)
             {
                 //check if database has been pre-configured and execute init scripts
                 if (!targetDatabaseConfigured)
@@ -246,7 +241,7 @@ namespace Yuniql.Core
                 RunVersionScripts(connection, transaction, appliedVersions, workspace, targetVersion, transactionContext, tokens, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environment: environment, transactionMode: transactionMode);
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode, isRequiredClearedDraft: isRrequiredClearedDraft);
+                RunNonVersionScripts(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode, isRequiredClearedDraft: isRequiredClearedDraft);
                 _traceService.Info($"Executed script files on {Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT)}");
 
                 //runs all scripts in the _post folder and subfolders
