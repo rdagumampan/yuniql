@@ -58,7 +58,7 @@ namespace Yuniql.SqlServer
         public bool IsBatchSqlSupported { get; } = true;
 
         ///<inheritdoc/>
-        public bool IsUpsertSupported { get; } = true;
+        public bool IsUpsertSupported { get; } = false;
 
         ///<inheritdoc/>
         public string TableName { get; set; } = "__yuniqldbversion";
@@ -75,19 +75,27 @@ namespace Yuniql.SqlServer
 
         ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseExists()
-            => @"SELECT ISNULL(database_id, 0) FROM [sys].[databases] WHERE name = '${YUNIQL_DB_NAME}'";
+            => @"
+SELECT ISNULL(database_id, 0) FROM [sys].[databases] WHERE name = '${YUNIQL_DB_NAME}';
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForCreateDatabase()
-            => @"CREATE DATABASE [${YUNIQL_DB_NAME}];";
+            => @"
+CREATE DATABASE [${YUNIQL_DB_NAME}];
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForCreateSchema()
-            => @"CREATE SCHEMA [${YUNIQL_SCHEMA_NAME}];";
+            => @"
+CREATE SCHEMA [${YUNIQL_SCHEMA_NAME}];
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseConfigured()
-            => @"SELECT ISNULL(OBJECT_ID('[${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]'), 0)";
+            => @"
+SELECT ISNULL(OBJECT_ID('[${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]'), 0);
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
@@ -135,7 +143,21 @@ VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_T
 
         ///<inheritdoc/>
         public string GetSqlForUpdateVersion()
-            => throw new NotSupportedException("Not supported for the target platform");
+            => @"
+UPDATE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]
+SET 	
+	[AppliedOnUtc] = GETUTCDATE(),
+	[AppliedByUser] = SUSER_SNAME(),
+	[AppliedByTool]= '${YUNIQL_APPLIED_BY_TOOL}', 
+	[AppliedByToolVersion] = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
+	[Status] = '${YUNIQL_STATUS}',
+	[DurationMs] = '${YUNIQL_DURATION_MS}',
+	[FailedScriptPath] = '${YUNIQL_FAILED_SCRIPT_PATH}',
+	[FailedScriptError] = '${YUNIQL_FAILED_SCRIPT_ERROR}',
+	[AdditionalArtifacts] = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
+WHERE
+	[Version] = '${YUNIQL_ADDITIONAL_VERSION}' ,
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
@@ -180,11 +202,15 @@ WHEN NOT MATCHED THEN
         public bool TryParseErrorFromException(Exception exception, out string result)
         {
             result = null;
-            if (exception is SqlException sqlException)
+            try
             {
-                result = $"(0x{sqlException.ErrorCode:X}) Error {sqlException.Number}: {sqlException.Message}";
-                return true;
+                if (exception is SqlException sqlException)
+                {
+                    result = $"(0x{sqlException.ErrorCode:X}) Error {sqlException.Number}: {sqlException.Message}";
+                    return true;
+                }
             }
+            catch (Exception) { return false; }
             return false;
         }
     }

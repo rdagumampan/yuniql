@@ -8,21 +8,25 @@ using Yuniql.Extensibility.SqlBatchParser;
 
 namespace Yuniql.Snowflake
 {
+    ///<inheritdoc/>
     public class SnowflakeDataService : IDataService
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
 
+        ///<inheritdoc/>
         public SnowflakeDataService(ITraceService traceService)
         {
             this._traceService = traceService;
         }
 
+        ///<inheritdoc/>
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
         }
 
+        ///<inheritdoc/>
         public IDbConnection CreateConnection()
         {
             var connection = new SnowflakeDbConnection();
@@ -50,6 +54,7 @@ namespace Yuniql.Snowflake
             return connection;
         }
 
+        ///<inheritdoc/>
         public IDbConnection CreateMasterConnection()
         {
             var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();
@@ -65,6 +70,7 @@ namespace Yuniql.Snowflake
             return connection;
         }
 
+        ///<inheritdoc/>
         public ConnectionInfo GetConnectionInfo()
         {
             var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();
@@ -79,75 +85,138 @@ namespace Yuniql.Snowflake
             return new ConnectionInfo { DataSource = dataSource?.ToString(), Database = database?.ToString() };
         }
 
+        ///<inheritdoc/>
         public bool IsTransactionalDdlSupported => false;
 
+        ///<inheritdoc/>
         public bool IsSchemaSupported { get; } = true;
 
+        ///<inheritdoc/>
         public bool IsBatchSqlSupported => false;
 
-        public bool IsUpsertSupported => throw new NotImplementedException();
+        ///<inheritdoc/>
+        public bool IsUpsertSupported => true;
 
+        ///<inheritdoc/>
         public string TableName { get; set; } = "__YUNIQLDBVERSIONS";
 
+        ///<inheritdoc/>
         public string SchemaName { get; set; } = "PUBLIC";
 
+        ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
         {
             var sqlBatchParser = new SqlBatchParser(_traceService, new GoSqlBatchLineAnalyzer(), new CommentAnalyzer());
             return sqlBatchParser.Parse(sqlStatementRaw).Select(s => s.BatchText).ToList();
         }
 
+        ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseExists()
-            => "SHOW DATABASES LIKE '${YUNIQL_DB_NAME}';";
+            => @"
+SHOW DATABASES LIKE '${YUNIQL_DB_NAME}';
+            ";
 
+        ///<inheritdoc/>
         public string GetSqlForCreateDatabase()
-            => "CREATE DATABASE \"${YUNIQL_DB_NAME}\";";
+            => @"
+CREATE DATABASE ""${YUNIQL_DB_NAME}"";
+            ";
 
+        ///<inheritdoc/>
         public string GetSqlForCreateSchema()
-            => "CREATE SCHEMA \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\";";
+            => @"
+CREATE SCHEMA ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"";
+            ";
 
+        ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseConfigured()
-            => "SELECT 1 WHERE EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_SCHEMA_NAME}' AND TABLE_NAME = '${YUNIQL_TABLE_NAME}' AND TABLE_TYPE = 'BASE TABLE')";
+            => @"
+SELECT 1 WHERE EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_SCHEMA_NAME}' AND TABLE_NAME = '${YUNIQL_TABLE_NAME}' AND TABLE_TYPE = 'BASE TABLE');
+            ";
 
+        ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
-            => "CREATE TABLE \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\"(" +
-            "\"SequenceId\" NUMBER NOT NULL IDENTITY START 1 INCREMENT 1," +
-            "\"Version\" VARCHAR(512) NOT NULL," +
-            "\"AppliedOnUtc\" TIMESTAMP_NTZ(9) NOT NULL DEFAULT CURRENT_TIMESTAMP()," +
-            "\"AppliedByUser\" VARCHAR(32) NOT NULL DEFAULT CURRENT_USER()," +
-            "\"AppliedByTool\" VARCHAR(32) NULL," +
-            "\"AppliedByToolVersion\" VARCHAR(16) NULL," +
-            "\"AdditionalArtifacts\" VARBINARY NULL," +
-            "PRIMARY KEY (\"SequenceId\")" +
-            ");";
+            => @"
+CREATE TABLE ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" (
+    ""SequenceId"" NUMBER NOT NULL IDENTITY START 1 INCREMENT 1,
+    ""Version"" VARCHAR(512) NOT NULL,
+    ""AppliedOnUtc"" TIMESTAMP_NTZ(9) NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    ""AppliedByUser"" VARCHAR(32) NOT NULL DEFAULT CURRENT_USER(),
+    ""AppliedByTool"" VARCHAR(32) NOT NULL,
+    ""AppliedByToolVersion"" VARCHAR(16) NOT NULL,
+    ""Status""  VARCHAR(32) NOT NULL,
+    ""DurationMs"" NUMBER NOT NULL,
+    ""FailedScriptPath""  VARCHAR(4000) NULL,
+    ""FailedScriptError""  VARCHAR(4000) NULL,
+    ""AdditionalArtifacts""  VARCHAR(4000) NULL,
+    PRIMARY KEY (""SequenceId"")
+);
+             ";
 
+        ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
-            => "SELECT TOP 1 \"Version\" FROM \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\" ORDER BY \"SequenceId\" DESC;";
+            => @"
+SELECT TOP 1 ""Version"" FROM ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" WHERE ""Status"" = 'Successful' ORDER BY ""SequenceId"" DESC;
+            ";
 
+        ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
-            => "SELECT \"SequenceId\", \"Version\", \"AppliedOnUtc\", \"AppliedByUser\", \"AppliedByTool\", \"AppliedByToolVersion\", \"AdditionalArtifacts\" " +
-               "FROM \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\" ORDER BY \"Version\" ASC;";
+            => @"
+SELECT ""SequenceId"", ""Version"", ""AppliedOnUtc"", ""AppliedByUser"", ""AppliedByTool"", ""AppliedByToolVersion"", ""Status"", ""DurationMs"", ""FailedScriptPath"", ""FailedScriptError"", ""AdditionalArtifacts""
+FROM ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" ORDER BY ""Version"" ASC;
+            ";
 
+        ///<inheritdoc/>
         public string GetSqlForInsertVersion()
-            => "INSERT INTO \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\" (\"Version\", \"AppliedByTool\", \"AppliedByToolVersion\") " +
-               "VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');";
+            => @"
+INSERT INTO ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" (""Version"", ""AppliedByTool"", ""AppliedByToolVersion"", ""Status"", ""DurationMs"", ""FailedScriptPath"", ""FailedScriptError"", ""AdditionalArtifacts"")
+VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}, '${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForUpdateVersion()
-            => throw new NotSupportedException("Not supported for the target platform");
+            => @"
+UPDATE ""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}""
+SET 	
+	""AppliedOnUtc"" = GETUTCDATE(),
+	""AppliedByUser"" = SUSER_SNAME(),
+	""AppliedByTool""= '${YUNIQL_APPLIED_BY_TOOL}', 
+	""AppliedByToolVersion"" = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
+	""Status"" = '${YUNIQL_STATUS}',
+	""DurationMs"" = '${YUNIQL_DURATION_MS}',
+	""FailedScriptPath"" = '${YUNIQL_FAILED_SCRIPT_PATH}',
+	""FailedScriptError"" = '${YUNIQL_FAILED_SCRIPT_ERROR}',
+	""AdditionalArtifacts"" = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
+WHERE
+	""Version"" = '${YUNIQL_ADDITIONAL_VERSION}' ,
+            ";
 
+        ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
             => throw new NotSupportedException("Not supported for the target platform");
 
+        ///<inheritdoc/>
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {
             //no need to update tracking table as the structure has no been changed so far
             return false;
         }
 
-        public bool TryParseErrorFromException(Exception exc, out string result)
+        ///<inheritdoc/>
+        public bool TryParseErrorFromException(Exception exception, out string result)
         {
             result = null;
+            try
+            {
+                if (exception is SnowflakeDbException sqlException)
+                {
+                    var exceptionData = exception.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
+                    var exceptionMessage = sqlException.Message.Replace("\n", string.Empty).Replace("\r", string.Empty);
+                    result = $"(0x{sqlException.ErrorCode:X}) Error {exceptionMessage} Exception data: {exceptionData}";
+                    return true;
+                }
+            }
+            catch (Exception) { return false; }
             return false;
         }
     }

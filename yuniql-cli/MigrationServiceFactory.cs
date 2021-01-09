@@ -58,9 +58,9 @@ namespace Yuniql.CLI
                     {
                         var dataService = new SnowflakeDataService(_traceService);
                         var bulkImportService = new SnowflakeBulkImportService(_traceService);
-                        return dataService.IsTransactionalDdlSupported
-                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
-                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
+                        if (dataService.IsTransactionalDdlSupported)
+                            Configuration.Instance.TransactionMode = TRANSACTION_MODE.NONE;
+                        return CreateTransactionalMigrationService(dataService, bulkImportService);
                     }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +

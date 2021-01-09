@@ -73,19 +73,27 @@ namespace Yuniql.PostgreSql
 
         ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseExists()
-            => @"SELECT 1 from pg_database WHERE datname = '${YUNIQL_DB_NAME}';";
+            => @"
+SELECT 1 from pg_database WHERE datname = '${YUNIQL_DB_NAME}';
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForCreateDatabase()
-            => "CREATE DATABASE \"${YUNIQL_DB_NAME}\";";
+            => @"
+CREATE DATABASE ""${YUNIQL_DB_NAME}"";
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForCreateSchema()
-            => "CREATE SCHEMA \"${YUNIQL_SCHEMA_NAME}\";";
+            => @"
+CREATE SCHEMA ""${YUNIQL_SCHEMA_NAME}"";
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseConfigured()
-            => @"SELECT 1 FROM pg_tables WHERE  tablename = '${YUNIQL_TABLE_NAME}'";
+            => @"
+SELECT 1 FROM pg_tables WHERE  tablename = '${YUNIQL_TABLE_NAME}';
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
@@ -108,7 +116,9 @@ CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
 
         ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT version FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} WHERE status = 'Successful' ORDER BY sequence_id DESC LIMIT 1;";
+            => @"
+SELECT version FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} WHERE status = 'Successful' ORDER BY sequence_id DESC LIMIT 1;
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
@@ -166,10 +176,7 @@ WHERE
                     return true;
                 }
             }
-            catch (Exception) {
-                return false;
-            }
-
+            catch (Exception) { return false; }
             return false;
         }
     }

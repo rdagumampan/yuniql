@@ -31,6 +31,9 @@
         <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsBatchSqlSupported">
             <inheritdoc/>
         </member>
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsUpsertSupported">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.TableName">
             <inheritdoc/>
         </member>
