@@ -266,9 +266,14 @@ namespace Yuniql.Core
             };
 
             //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
-            sqlStatement = _dataService.IsUpsertSupported ?
-                _tokenReplacementService.Replace(tokens, _dataService.GetSqlForUpsertVersion()) :
-                _tokenReplacementService.Replace(tokens, _dataService.GetSqlForInsertVersion());
+            sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForInsertVersion());
+            var existingVersion = this.GetAllVersions(metaSchemaName, metaTableName).Exists(v => v.Version == version);
+            if (existingVersion)
+            {
+                sqlStatement = _dataService.IsUpsertSupported ?
+                    _tokenReplacementService.Replace(tokens, _dataService.GetSqlForUpsertVersion()) :
+                    _tokenReplacementService.Replace(tokens, _dataService.GetSqlForUpdateVersion());
+            }
 
             //upsert version information
             _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");

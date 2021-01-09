@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using Yuniql.Extensibility;
 using Npgsql;
+using System.Collections;
 
 namespace Yuniql.PostgreSql
 {
@@ -28,12 +29,13 @@ namespace Yuniql.PostgreSql
         public bool IsBatchSqlSupported { get; } = false;
 
         ///<inheritdoc/>
+        public bool IsUpsertSupported => false;
+
+        ///<inheritdoc/>
         public string TableName { get; set; } = "__yuniqldbversion";
 
         ///<inheritdoc/>
         public string SchemaName { get; set; } = "public";
-
-        public bool IsUpsertSupported => throw new NotImplementedException();
 
         ///<inheritdoc/>
         public void Initialize(string connectionString)
@@ -93,32 +95,55 @@ CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
     version VARCHAR(512) NOT NULL,
     applied_on_utc TIMESTAMP NOT NULL DEFAULT(current_timestamp AT TIME ZONE 'UTC'),
     applied_by_user VARCHAR(32) NOT NULL DEFAULT(user),
-    applied_by_tool VARCHAR(32) NULL,
-    applied_by_tool_version VARCHAR(16) NULL,
-    additional_artifacts BYTEA NULL,
+    applied_by_tool VARCHAR(32) NOT NULL,
+    applied_by_tool_version VARCHAR(16) NOT NULL,
+    status VARCHAR(32) NOT NULL,
+    duration_ms INTEGER NOT NULL,
+    failed_script_path VARCHAR(4000) NULL,
+    failed_script_error VARCHAR(4000) NULL,
+    additional_artifacts VARCHAR(4000) NULL,
     CONSTRAINT ix___yuniqldbversion UNIQUE(version)
 );
             ";
 
         ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT version FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} ORDER BY sequence_id DESC LIMIT 1;";
+            => @"SELECT version FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} WHERE status = 'Successful' ORDER BY sequence_id DESC LIMIT 1;";
 
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"
-SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts 
+SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status, duration_ms, failed_script_path, failed_script_error, additional_artifacts 
 FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} ORDER BY version ASC;
             ";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"
-INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version) 
-VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');
+INSERT INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME} (version, applied_by_tool, applied_by_tool_version, status, duration_ms, failed_script_path, failed_script_error, additional_artifacts) 
+VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
             ";
 
         ///<inheritdoc/>
+        public string GetSqlForUpdateVersion()
+            => @"
+UPDATE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}
+SET 
+    applied_by_tool = '${YUNIQL_APPLIED_BY_TOOL}', 
+    applied_by_tool_version = '${YUNIQL_APPLIED_BY_TOOL_VERSION}', 
+    status = '${YUNIQL_STATUS}', 
+    duration_ms = '${YUNIQL_DURATION_MS}', 
+    failed_script_path = '${YUNIQL_FAILED_SCRIPT_PATH}', 
+    failed_script_error = '${YUNIQL_FAILED_SCRIPT_ERROR}', 
+    additional_artifacts = '${YUNIQL_ADDITIONAL_ARTIFACTS}'
+WHERE
+    version = '${YUNIQL_VERSION}';
+            ";
+
+        ///<inheritdoc/>
+        public string GetSqlForUpsertVersion()
+            => throw new NotSupportedException("Not supported for the target platform");
+
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {
             //no need to update tracking table as the structure has no been changed so far
@@ -126,15 +151,26 @@ VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_T
         }
 
         ///<inheritdoc/>
-        public bool TryParseErrorFromException(Exception exc, out string result)
+        public bool TryParseErrorFromException(Exception exception, out string result)
         {
             result = null;
-            return false;
-        }
+            try
+            {
+                if (exception is PostgresException sqlException)
+                {
+                    var dataList = new List<string>();
+                    foreach (DictionaryEntry item in sqlException.Data)
+                        dataList.Add($"{item.Key}: {item.Value}");
 
-        public string GetSqlForUpsertVersion()
-        {
-            throw new NotImplementedException();
+                    result = $"(0x{sqlException.ErrorCode:X}) Error {sqlException.Message}. Exception data: {string.Join(", ", dataList)}";
+                    return true;
+                }
+            }
+            catch (Exception) {
+                return false;
+            }
+
+            return false;
         }
     }
 }

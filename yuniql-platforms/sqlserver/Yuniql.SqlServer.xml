@@ -79,6 +79,9 @@
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForInsertVersion">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForUpdateVersion">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>

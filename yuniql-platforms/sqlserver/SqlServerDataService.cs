@@ -134,6 +134,10 @@ VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_T
             ";
 
         ///<inheritdoc/>
+        public string GetSqlForUpdateVersion()
+            => throw new NotSupportedException("Not supported for the target platform");
+
+        ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
             => @"
 MERGE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] AS T
@@ -181,7 +185,6 @@ WHEN NOT MATCHED THEN
                 result = $"(0x{sqlException.ErrorCode:X}) Error {sqlException.Number}: {sqlException.Message}";
                 return true;
             }
-
             return false;
         }
     }

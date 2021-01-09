@@ -85,11 +85,11 @@ namespace Yuniql.Snowflake
 
         public bool IsBatchSqlSupported => false;
 
+        public bool IsUpsertSupported => throw new NotImplementedException();
+
         public string TableName { get; set; } = "__YUNIQLDBVERSIONS";
 
         public string SchemaName { get; set; } = "PUBLIC";
-
-        public bool IsUpsertSupported => throw new NotImplementedException();
 
         public List<string> BreakStatements(string sqlStatementRaw)
         {
@@ -132,6 +132,13 @@ namespace Yuniql.Snowflake
             => "INSERT INTO \"${YUNIQL_DB_NAME}\".\"${YUNIQL_SCHEMA_NAME}\".\"${YUNIQL_TABLE_NAME}\" (\"Version\", \"AppliedByTool\", \"AppliedByToolVersion\") " +
                "VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}');";
 
+        ///<inheritdoc/>
+        public string GetSqlForUpdateVersion()
+            => throw new NotSupportedException("Not supported for the target platform");
+
+        public string GetSqlForUpsertVersion()
+            => throw new NotSupportedException("Not supported for the target platform");
+
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {
             //no need to update tracking table as the structure has no been changed so far
@@ -142,11 +149,6 @@ namespace Yuniql.Snowflake
         {
             result = null;
             return false;
-        }
-
-        public string GetSqlForUpsertVersion()
-        {
-            throw new NotImplementedException();
         }
     }
 }

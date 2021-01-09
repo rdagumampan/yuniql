@@ -439,6 +439,11 @@
             Returns the SQL statement to use for creating new entry into migration tracking table.
             </summary>
         </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForUpdateVersion">
+            <summary>
+            Returns the SQL statement to use for updating version in migration tracking table.
+            </summary>
+        </member>
         <member name="M:Yuniql.Extensibility.IDataService.GetSqlForUpsertVersion">
             <summary>
             Returns the SQL statement to use for merging new entry into migration tracking table.

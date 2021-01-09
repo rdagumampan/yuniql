@@ -76,7 +76,10 @@
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForInsertVersion">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForUpdateVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.TryParseErrorFromException(System.Exception,System.String@)">

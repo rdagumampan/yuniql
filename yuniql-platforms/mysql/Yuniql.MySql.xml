@@ -76,6 +76,9 @@
         <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForInsertVersion">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForUpdateVersion">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>

@@ -35,12 +35,12 @@ namespace Yuniql.MySql
         public bool IsBatchSqlSupported { get; } = false;
 
         ///<inheritdoc/>
+        public bool IsUpsertSupported => true;
+
         public string TableName { get; set; } = "__yuniqldbversion";
 
         ///<inheritdoc/>
         public string SchemaName { get; set; }
-
-        public bool IsUpsertSupported => throw new NotImplementedException();
 
         ///<inheritdoc/>
         public IDbConnection CreateConnection()
@@ -117,7 +117,14 @@ FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
-            => throw new NotSupportedException("Not supported for current target platform");
+            => @"
+INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error) 
+VALUES ('${YUNIQL_VERSION}', UTC_TIMESTAMP(), CURRENT_USER(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_ADDITIONAL_ARTIFACTS}', '${YUNIQL_STATUS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}');
+            ";
+
+        ///<inheritdoc/>
+        public string GetSqlForUpdateVersion()
+            => throw new NotSupportedException("Not supported for the target platform");
 
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
