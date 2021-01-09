@@ -92,10 +92,10 @@ namespace Yuniql.Snowflake
         public bool IsSchemaSupported { get; } = true;
 
         ///<inheritdoc/>
-        public bool IsBatchSqlSupported => false;
+        public bool IsBatchSqlSupported => true;
 
         ///<inheritdoc/>
-        public bool IsUpsertSupported => true;
+        public bool IsUpsertSupported => false;
 
         ///<inheritdoc/>
         public string TableName { get; set; } = "__YUNIQLDBVERSIONS";
@@ -170,7 +170,7 @@ FROM ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" OR
         public string GetSqlForInsertVersion()
             => @"
 INSERT INTO ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" (""Version"", ""AppliedByTool"", ""AppliedByToolVersion"", ""Status"", ""DurationMs"", ""FailedScriptPath"", ""FailedScriptError"", ""AdditionalArtifacts"")
-VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}, '${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
+VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
             ";
 
         ///<inheritdoc/>
@@ -191,6 +191,7 @@ WHERE
 	""Version"" = '${YUNIQL_ADDITIONAL_VERSION}' ,
             ";
 
+        //https://docs.snowflake.com/en/sql-reference/sql/merge.html
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
             => throw new NotSupportedException("Not supported for the target platform");
