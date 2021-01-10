@@ -178,17 +178,17 @@ VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_T
             => @"
 UPDATE ""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}""
 SET 	
-	""AppliedOnUtc"" = CURRENT_TIMESTAMP(),
-	""AppliedByUser"" = CURRENT_USER(),
-	""AppliedByTool""= '${YUNIQL_APPLIED_BY_TOOL}', 
+	""AppliedOnUtc""         = CURRENT_TIMESTAMP(),
+	""AppliedByUser""        = CURRENT_USER(),
+	""AppliedByTool""        = '${YUNIQL_APPLIED_BY_TOOL}', 
 	""AppliedByToolVersion"" = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
-	""Status"" = '${YUNIQL_STATUS}',
-	""DurationMs"" = '${YUNIQL_DURATION_MS}',
-	""FailedScriptPath"" = '${YUNIQL_FAILED_SCRIPT_PATH}',
-	""FailedScriptError"" = '${YUNIQL_FAILED_SCRIPT_ERROR}',
-	""AdditionalArtifacts"" = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
+	""Status""               = '${YUNIQL_STATUS}',
+	""DurationMs""           = '${YUNIQL_DURATION_MS}',
+	""FailedScriptPath""     = '${YUNIQL_FAILED_SCRIPT_PATH}',
+	""FailedScriptError""    = '${YUNIQL_FAILED_SCRIPT_ERROR}',
+	""AdditionalArtifacts""  = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
 WHERE
-	""Version"" = '${YUNIQL_VERSION}';
+	""Version""              = '${YUNIQL_VERSION}';
             ";
 
         //https://docs.snowflake.com/en/sql-reference/sql/merge.html

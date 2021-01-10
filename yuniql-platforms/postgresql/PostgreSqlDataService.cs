@@ -139,15 +139,17 @@ VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_T
             => @"
 UPDATE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}
 SET 
-    applied_by_tool = '${YUNIQL_APPLIED_BY_TOOL}', 
+    applied_on_utc          =  current_timestamp AT TIME ZONE 'UTC',
+    applied_by_user         =  user,
+    applied_by_tool         = '${YUNIQL_APPLIED_BY_TOOL}', 
     applied_by_tool_version = '${YUNIQL_APPLIED_BY_TOOL_VERSION}', 
-    status = '${YUNIQL_STATUS}', 
-    duration_ms = '${YUNIQL_DURATION_MS}', 
-    failed_script_path = '${YUNIQL_FAILED_SCRIPT_PATH}', 
-    failed_script_error = '${YUNIQL_FAILED_SCRIPT_ERROR}', 
-    additional_artifacts = '${YUNIQL_ADDITIONAL_ARTIFACTS}'
+    status                  = '${YUNIQL_STATUS}', 
+    duration_ms             = '${YUNIQL_DURATION_MS}', 
+    failed_script_path      = '${YUNIQL_FAILED_SCRIPT_PATH}', 
+    failed_script_error     = '${YUNIQL_FAILED_SCRIPT_ERROR}', 
+    additional_artifacts    = '${YUNIQL_ADDITIONAL_ARTIFACTS}'
 WHERE
-    version = '${YUNIQL_VERSION}';
+    version                 = '${YUNIQL_VERSION}';
             ";
 
         ///<inheritdoc/>
