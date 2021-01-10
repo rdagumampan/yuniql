@@ -3,6 +3,7 @@ using Yuniql.Core;
 using Yuniql.Extensibility;
 using Yuniql.MySql;
 using Yuniql.PostgreSql;
+using Yuniql.Snowflake;
 using Yuniql.SqlServer;
 
 namespace Yuniql.PlatformTests
@@ -25,33 +26,31 @@ namespace Yuniql.PlatformTests
                     {
                         var dataService = new SqlServerDataService(_traceService);
                         var bulkImportService = new SqlServerBulkImportService(_traceService);
-                        return dataService.IsTransactionalDdlSupported
-                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
-                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
+                        return CreateTransactionalMigrationService(dataService, bulkImportService);
                     }
                 case SUPPORTED_DATABASES.POSTGRESQL:
                     {
                         var dataService = new PostgreSqlDataService(_traceService);
                         var bulkImportService = new PostgreSqlBulkImportService(_traceService);
-                        return dataService.IsTransactionalDdlSupported
-                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
-                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
+                        return CreateTransactionalMigrationService(dataService, bulkImportService);
                     }
                 case SUPPORTED_DATABASES.MYSQL:
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
-                        return dataService.IsTransactionalDdlSupported
-                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
-                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
+                        return CreateTransactionalMigrationService(dataService, bulkImportService);
                     }
                 case SUPPORTED_DATABASES.MARIADB:
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
-                        return dataService.IsTransactionalDdlSupported
-                            ? CreateTransactionalMigrationService(dataService, bulkImportService)
-                            : CreateNonTransactionalMigrationService(dataService, bulkImportService);
+                        return CreateTransactionalMigrationService(dataService, bulkImportService);
+                    }
+                case SUPPORTED_DATABASES.SNOWFLAKE:
+                    {
+                        var dataService = new SnowflakeDataService(_traceService);
+                        var bulkImportService = new SnowflakeBulkImportService(_traceService);
+                        return CreateTransactionalMigrationService(dataService, bulkImportService);
                     }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +

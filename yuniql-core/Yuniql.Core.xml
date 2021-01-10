@@ -231,6 +231,17 @@
             <param name="traceService">Trace service provider where trace messages will be written.</param>
             <returns></returns>
         </member>
+        <member name="M:Yuniql.Core.ConnectionExtensions.QuerySingleRow(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Executes SQL statement against the active connection and returns scalar value in string.
+            </summary>
+            <param name="connection">An active connection.</param>
+            <param name="commandText">The sql statement to execute with the active connection.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+            <returns></returns>
+        </member>
         <member name="T:Yuniql.Core.DirectoryService">
             <summary>
             Wraps usage of <see cref="T:System.IO.Directory"/>

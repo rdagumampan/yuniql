@@ -170,5 +170,38 @@ namespace Yuniql.Core
 
             return null;
         }
+
+        /// <summary>
+        /// Executes SQL statement against the active connection and returns scalar value in string.
+        /// </summary>
+        /// <param name="connection">An active connection.</param>
+        /// <param name="commandText">The sql statement to execute with the active connection.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="transaction">An active transaction.</param>
+        /// <param name="traceService">Trace service provider where trace messages will be written.</param>
+        /// <returns></returns>
+        public static bool QuerySingleRow(
+            this IDbConnection connection,
+            string commandText,
+            int? commandTimeout = null,
+            IDbTransaction transaction = null,
+            ITraceService traceService = null)
+        {
+            if (null != traceService)
+                traceService.Debug($"Executing statement: {Environment.NewLine}{commandText}");
+
+            var command = connection
+                .KeepOpen()
+                .CreateCommand(
+                commandText: commandText,
+                commandTimeout: commandTimeout,
+                transaction: transaction);
+
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
+                return true;
+
+            return false;
+        }
     }
 }

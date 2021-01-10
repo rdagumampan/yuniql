@@ -48,6 +48,15 @@ namespace Yuniql.PlatformTests
             }
         }
 
+        public virtual bool QuerySingleRow(string connectionString, string sqlStatement)
+        {
+            _dataService.Initialize(connectionString);
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                return connection.QuerySingleRow(sqlStatement);
+            }
+        }
+
         public virtual string GetCurrentDbVersion(string connectionString)
         {
             _dataService.Initialize(connectionString);

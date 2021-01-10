@@ -29,7 +29,7 @@ namespace Yuniql.PlatformTests
         public override bool CheckIfDbExist(string connectionString)
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            var sqlStatement = $"SELECT ISNULL(database_id, 0) FROM [sys].[databases] WHERE name = '{connectionStringBuilder.InitialCatalog}'";
+            var sqlStatement = $"SELECT 1 FROM [sys].[databases] WHERE name = '{connectionStringBuilder.InitialCatalog}'";
 
             //check if database exists and auto-create when its not
             var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);

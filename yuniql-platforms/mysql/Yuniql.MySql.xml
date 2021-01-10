@@ -37,6 +37,9 @@
         <member name="P:Yuniql.MySql.MySqlDataService.IsUpsertSupported">
             <inheritdoc/>
         </member>
+        <member name="P:Yuniql.MySql.MySqlDataService.TableName">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.MySql.MySqlDataService.SchemaName">
             <inheritdoc/>
         </member>

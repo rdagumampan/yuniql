@@ -1,4 +1,5 @@
 ﻿using Snowflake.Data.Client;
+using Snowflake.Data.Log;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -24,6 +25,10 @@ namespace Yuniql.Snowflake
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
+
+            //configure snowflake loggers to follow yuniql debug settings
+            var logger = SFLoggerFactory.GetLogger<SnowflakeDataService>();
+            logger.SetDebugMode(_traceService.IsDebugEnabled);
         }
 
         ///<inheritdoc/>
@@ -32,7 +37,7 @@ namespace Yuniql.Snowflake
             var connection = new SnowflakeDbConnection();
             connection.ConnectionString = _connectionString;
 
-            //replace original database name with quoted name for case-sensitivity
+            //NOTE: replace original database name with quoted name for case-sensitivity
             //by default snowflake converts all object identifies into upper case unless it is enclosed in double quote
             //do not rebuild the connection string because it will add single quote to the value
             //https://docs.snowflake.com/en/sql-reference/identifiers-syntax.html
@@ -60,7 +65,7 @@ namespace Yuniql.Snowflake
             var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();
             connectionStringBuilder.ConnectionString = _connectionString;
 
-            //remove existing db & schema from connection string parameters
+            //NOTW: remove existing db & schema from connection string parameters
             //this is necessary to avoid connection errors as it will attempt to connect to non-existing database
             connectionStringBuilder.Remove("db");
             connectionStringBuilder.Remove("schema");

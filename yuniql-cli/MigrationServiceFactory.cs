@@ -58,6 +58,7 @@ namespace Yuniql.CLI
             }
         }
 
+        //TODO: Rename this CreateTransactionalMigrationService
         private IMigrationService CreateTransactionalMigrationService(IDataService dataService, IBulkImportService bulkImportService)
         {
             var directoryService = new DirectoryService();
@@ -81,6 +82,7 @@ namespace Yuniql.CLI
             return migrationService;
         }
 
+        //TODO: Remove this CreateNonTransactionalMigrationService
         private IMigrationService CreateNonTransactionalMigrationService(IDataService dataService, IBulkImportService bulkImportService)
         {
             var directoryService = new DirectoryService();

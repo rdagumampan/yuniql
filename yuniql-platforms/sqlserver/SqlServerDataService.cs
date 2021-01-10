@@ -76,7 +76,7 @@ namespace Yuniql.SqlServer
         ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseExists()
             => @"
-SELECT ISNULL(database_id, 0) FROM [sys].[databases] WHERE name = '${YUNIQL_DB_NAME}';
+SELECT 1 FROM [sys].[databases] WHERE name = '${YUNIQL_DB_NAME}';
             ";
 
         ///<inheritdoc/>

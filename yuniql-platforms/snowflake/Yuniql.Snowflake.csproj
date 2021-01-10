@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Snowflake.Data.Unofficial" Version="1.1.2" />
+    <PackageReference Include="Snowflake.Data.Unofficial" Version="0.7.0" />
   </ItemGroup>
 
 </Project>

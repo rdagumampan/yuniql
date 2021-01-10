@@ -48,7 +48,7 @@ namespace Yuniql.Core
             var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCheckIfDatabaseExists());
             using (var connection = _dataService.CreateMasterConnection())
             {
-                return connection.QuerySingleBool(
+                return connection.QuerySingleRow(
                     commandText: sqlStatement,
                     commandTimeout: commandTimeout,
                     transaction: null,

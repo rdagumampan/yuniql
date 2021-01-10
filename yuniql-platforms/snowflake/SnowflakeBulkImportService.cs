@@ -1,4 +1,5 @@
 ﻿using Snowflake.Data.Client;
+using Snowflake.Data.Log;
 using System;
 using System.Data;
 using System.IO;
@@ -22,6 +23,10 @@ namespace Yuniql.Snowflake
         public void Initialize(string connectionString)
         {
             this._connectionString = connectionString;
+
+            //configure snowflake loggers to follow yuniql debug settings
+            var logger = SFLoggerFactory.GetLogger<SnowflakeDataService>();
+            logger.SetDebugMode(_traceService.IsDebugEnabled);
         }
 
         public void Run(
