@@ -48,6 +48,8 @@ namespace Yuniql.PlatformTests
 
         bool IsTransactionalDdlSupported { get; }
 
+        bool IsTransactionalDdlNotSupported { get; }
+
         bool IsSchemaSupported { get; }
 
         bool IsBatchSqlSupported { get; }
@@ -57,5 +59,7 @@ namespace Yuniql.PlatformTests
         string SchemaName { get; }
 
         List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName);
+
+        void DropDatabase(string connectionString);
     }
 }

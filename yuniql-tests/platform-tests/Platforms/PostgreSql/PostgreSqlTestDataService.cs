@@ -184,5 +184,9 @@ DROP TABLE script3;
             return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
         }
 
+        public override void DropDatabase(string connectionString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

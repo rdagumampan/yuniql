@@ -14,8 +14,8 @@ namespace Yuniql.PlatformTests
             var testDataServiceFactory = new TestDataServiceFactory();
             var testDataService = testDataServiceFactory.Create(platform);
 
-            //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlSupported")] attribute
-            if (this.Requires.Contains(nameof(testDataService.IsTransactionalDdlSupported)) && !testDataService.IsTransactionalDdlSupported)
+            //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlNotSupported")] attribute
+            if (this.Requires.Contains(nameof(testDataService.IsTransactionalDdlNotSupported)))
             {
                 var message = $"Target database platform or version does not support atomic DDL operations. " +
                     $"DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.";
@@ -28,7 +28,6 @@ namespace Yuniql.PlatformTests
                     }
                 };
             }
-
 
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlSupported")] attribute
             if (this.Requires.Contains("IsTransactionalDdlSupported") && testDataService.IsTransactionalDdlSupported)
@@ -62,7 +61,7 @@ namespace Yuniql.PlatformTests
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsBatchSqlSupported")] attribute
             if (this.Requires.Contains(nameof(testDataService.IsBatchSqlSupported)) && !testDataService.IsBatchSqlSupported)
             {
-                var message = $"Target database platform or version does not support schema within the same database.";
+                var message = $"Target database platform or version does not support batching sql statements in single session or request.";
                 return new[]
                 {
                     new TestResult

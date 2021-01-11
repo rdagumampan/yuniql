@@ -130,7 +130,7 @@ CREATE DATABASE ""${YUNIQL_DB_NAME}"";
         ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => @"
-CREATE SCHEMA ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"";
+CREATE SCHEMA ""${YUNIQL_SCHEMA_NAME}"";
             ";
 
         ///<inheritdoc/>

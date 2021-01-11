@@ -170,5 +170,9 @@ DROP TABLE script3;
 CREATE SCHEMA {schemaName};
 ";
         }
+        public override void DropDatabase(string connectionString)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

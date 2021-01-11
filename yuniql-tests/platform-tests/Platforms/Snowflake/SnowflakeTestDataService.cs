@@ -31,6 +31,7 @@ namespace Yuniql.PlatformTests
                 throw new ApplicationException("Missing environment variable YUNIQL_TEST_CONNECTION_STRING. See WIKI for developer guides.");
             }
 
+            //extract the default database name from connection string and replaced with test database name
             var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();
             connectionStringBuilder.ConnectionString = connectionString;
             connectionStringBuilder.Remove("db");
@@ -40,16 +41,15 @@ namespace Yuniql.PlatformTests
 
         public override bool CheckIfDbExist(string connectionString)
         {
+            //extract the test database name from connection string
             var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();
             connectionStringBuilder.ConnectionString = connectionString;
-
-            //extract the test database name from connection string
             connectionStringBuilder.TryGetValue("db", out object databaseName);
 
             //prepare the sql statement
             var tokens = new List<KeyValuePair<string, string>> {
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, databaseName.ToString()),
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, base.SchemaName),
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, databaseName.ToString()),
+                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, base.SchemaName),
             };
             var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCheckIfDatabaseExists());
 
@@ -59,7 +59,7 @@ namespace Yuniql.PlatformTests
             masterConnectionStringBuilder.Remove("db");
             masterConnectionStringBuilder.Remove("schema");
 
-            return QuerySingleRow(connectionStringBuilder.ConnectionString, sqlStatement);
+            return QuerySingleRow(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
 
         public override bool CheckIfDbObjectExist(string connectionString, string objectName)
@@ -85,6 +85,13 @@ CREATE TABLE {objectName.DoubleQuote()}(
     TEST_COLUMN_2 VARCHAR(50) NOT NULL,
     TEST_COLUMN_3 DATETIME NULL
 );
+";
+        }
+
+        public override string GetSqlForCreateDbSchema(string schemaName)
+        {
+            return $@"
+CREATE SCHEMA {schemaName.DoubleQuote()};
 ";
         }
 
@@ -179,11 +186,43 @@ $$
 
         public override string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3)
         {
-            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
-                $"See {nameof(SnowflakeDataService)}.{nameof(SnowflakeDataService.IsBatchSqlSupported)}");
-        }
+            return $@"
+--GO inline comment
+CREATE PROCEDURE {objectName1.DoubleQuote()}()
+RETURNS INT
+AS
+$$
+    SELECT 1
+$$
+GO
 
-        public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
+/*
+GO in inline comment block
+*/
+
+CREATE PROCEDURE {objectName2.DoubleQuote()}()
+RETURNS INT
+AS
+$$
+    SELECT 1
+$$
+GO
+
+/*
+GO in inline comment block
+*/
+
+CREATE PROCEDURE {objectName3.DoubleQuote()}()
+RETURNS INT
+AS
+$$
+    SELECT 1
+$$
+GO
+";
+    }
+
+    public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE PROCEDURE {objectName1.DoubleQuote()}()
@@ -216,8 +255,23 @@ $$
 
         public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
-            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
-                $"See {nameof(SnowflakeDataService)}.{nameof(SnowflakeDataService.IsBatchSqlSupported)}");
+            return $@"
+CREATE PROCEDURE {objectName1.DoubleQuote()}()
+RETURNS INT
+AS
+$$
+    SELECT 1
+$$
+GO
+
+CREATE PROCEDURE {objectName2.DoubleQuote()}()
+RETURNS INT
+AS
+$$
+    SELECT 1 THIS CAUSES ERROR
+$$
+GO
+";
         }
 
         public override void CreateScriptFile(string sqlFilePath, string sqlStatement)
@@ -238,11 +292,29 @@ GO
 ";
         }
 
-        public override string GetSqlForCreateDbSchema(string schemaName)
+        public override void DropDatabase(string connectionString)
         {
-            return $@"
-CREATE SCHEMA {schemaName.DoubleQuote()};
-";
+            //extract the test database name from connection string
+            var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();
+            connectionStringBuilder.ConnectionString = connectionString;
+            connectionStringBuilder.TryGetValue("db", out object databaseName);
+
+            var sqlStatement = $"DROP DATABASE {databaseName.ToString().DoubleQuote()};";
+
+            //prepare a connection to snowflake without any targetdb or schema, we need to remove these keys else it throws an error that db doesn't exists
+            var masterConnectionStringBuilder = new SnowflakeDbConnectionStringBuilder();
+            masterConnectionStringBuilder.ConnectionString = connectionString;
+            masterConnectionStringBuilder.Remove("db");
+            masterConnectionStringBuilder.Remove("schema");
+
+            base.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
+
+        public override string GetSqlForGetBulkTestData(string tableName)
+        {
+            var dbObject = tableName.SplitSchema(_dataService.SchemaName);
+            return $"SELECT * FROM {dbObject.Item1.DoubleQuote()}.{dbObject.Item2.DoubleQuote()};";
+        }
+
     }
 }

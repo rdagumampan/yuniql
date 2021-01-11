@@ -22,6 +22,8 @@ namespace Yuniql.PlatformTests
 
         public virtual bool IsTransactionalDdlSupported => _dataService.IsTransactionalDdlSupported;
 
+        public virtual bool IsTransactionalDdlNotSupported => _dataService.IsTransactionalDdlSupported == false;
+
         public virtual bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
         public virtual bool IsBatchSqlSupported => _dataService.IsBatchSqlSupported;
@@ -29,7 +31,16 @@ namespace Yuniql.PlatformTests
         public virtual string TableName => _dataService.TableName;
 
         public virtual string SchemaName => _dataService.SchemaName;
-        
+
+        public virtual void ExecuteNonQuery(string connectionString, string sqlStatement)
+        {
+            _dataService.Initialize(connectionString);
+            using (var connection = _dataService.CreateConnection().KeepOpen())
+            {
+                connection.ExecuteNonQuery(sqlStatement);
+            }
+        }
+
         public virtual bool QuerySingleBool(string connectionString, string sqlStatement)
         {
             _dataService.Initialize(connectionString);
@@ -120,10 +131,9 @@ namespace Yuniql.PlatformTests
             {
                 connection.Open();
 
-                var sqlStatement = $"SELECT * FROM {tableName};";
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = sqlStatement;
+                command.CommandText = GetSqlForGetBulkTestData(tableName);
                 command.CommandTimeout = 0;
 
                 using (var reader = command.ExecuteReader())
@@ -173,6 +183,13 @@ namespace Yuniql.PlatformTests
         public abstract string GetSqlForSingleLineWithoutTerminator(string objectName);
 
         public abstract string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3);
+
+        public abstract void DropDatabase(string connectionString);
+
+        public virtual string GetSqlForGetBulkTestData(string tableName)
+        {
+            return $"SELECT * FROM {tableName};";
+        }
 
         private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
         {
