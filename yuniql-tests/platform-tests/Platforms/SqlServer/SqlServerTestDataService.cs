@@ -220,9 +220,9 @@ DROP PROCEDURE script3;
 ";
         }
 
+        //TODO: implement SqlServerTestDataService.DropDatabase
         public override void DropDatabase(string connectionString)
         {
-            throw new NotImplementedException();
         }
     }
 }

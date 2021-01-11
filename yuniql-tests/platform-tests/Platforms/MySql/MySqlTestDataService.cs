@@ -170,9 +170,9 @@ DROP TABLE script3;
 CREATE SCHEMA {schemaName};
 ";
         }
+        //TODO: implement MysqlTestDataService.DropDatabase
         public override void DropDatabase(string connectionString)
         {
-            throw new NotImplementedException();
         }
     }
 }

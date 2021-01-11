@@ -22,8 +22,6 @@ namespace Yuniql.PlatformTests
 
         public virtual bool IsTransactionalDdlSupported => _dataService.IsTransactionalDdlSupported;
 
-        public virtual bool IsTransactionalDdlNotSupported => _dataService.IsTransactionalDdlSupported == false;
-
         public virtual bool IsSchemaSupported => _dataService.IsSchemaSupported;
 
         public virtual bool IsBatchSqlSupported => _dataService.IsBatchSqlSupported;

@@ -6,7 +6,7 @@ namespace Yuniql.Extensibility
     {
         public static string Quote(this string str)
         {
-            return "'{str}'";
+            return $"'{str}'";
         }
 
         public static string DoubleQuote(this string str)

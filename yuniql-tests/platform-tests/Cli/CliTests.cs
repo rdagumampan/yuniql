@@ -43,9 +43,9 @@ namespace Yuniql.PlatformTests
             }
             catch (Exception) { /*swallow exceptions*/ }
 
+            //drop test database
             try
             {
-                //drop test database
                 _testDataService.DropDatabase(_testConfiguration.ConnectionString);
             }
             catch (Exception) { /*swallow exceptions*/ }

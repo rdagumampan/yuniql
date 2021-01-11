@@ -14,26 +14,11 @@ namespace Yuniql.PlatformTests
             var testDataServiceFactory = new TestDataServiceFactory();
             var testDataService = testDataServiceFactory.Create(platform);
 
-            //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlNotSupported")] attribute
-            if (this.Requires.Contains(nameof(testDataService.IsTransactionalDdlNotSupported)))
+            //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlSupported")] attribute
+            if (this.Requires.Contains("IsTransactionalDdlSupported") && !testDataService.IsTransactionalDdlSupported)
             {
                 var message = $"Target database platform or version does not support atomic DDL operations. " +
                     $"DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.";
-                return new[]
-                {
-                    new TestResult
-                    {
-                        Outcome = UnitTestOutcome.NotRunnable,
-                        LogOutput = message
-                    }
-                };
-            }
-
-            //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlSupported")] attribute
-            if (this.Requires.Contains("IsTransactionalDdlSupported") && testDataService.IsTransactionalDdlSupported)
-            {
-                var message = $"Target database platform or version supports atomic DDL operations. " +
-                    $"This test is exclusive for platforms not supporting transaction DDL operations.";
                 return new[]
                 {
                     new TestResult

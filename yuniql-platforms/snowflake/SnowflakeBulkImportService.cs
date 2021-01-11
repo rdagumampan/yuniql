@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Yuniql.Extensibility;
+using Yuniql.Extensibility.BulkCsvParser;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.Snowflake
@@ -79,7 +80,7 @@ namespace Yuniql.Snowflake
 
             //prepare local constants for optimal conditional evaluation
 
-            using (var csvReader = new Extensibility.BulkCsvParser.CsvTextFieldParser(csvFileFullPath))
+            using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
                 csvReader.Separators = (new string[] { delimiter });
                 csvReader.HasFieldsEnclosedInQuotes = true;
@@ -98,6 +99,7 @@ namespace Yuniql.Snowflake
                             return nullValue;
                         return s.Quote();
                     });
+
                     sqlStatement.Append($"{Environment.NewLine}({string.Join(",", fieldData)}),");
                 }
             }

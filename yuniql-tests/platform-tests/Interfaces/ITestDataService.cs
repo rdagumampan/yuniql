@@ -48,8 +48,6 @@ namespace Yuniql.PlatformTests
 
         bool IsTransactionalDdlSupported { get; }
 
-        bool IsTransactionalDdlNotSupported { get; }
-
         bool IsSchemaSupported { get; }
 
         bool IsBatchSqlSupported { get; }
