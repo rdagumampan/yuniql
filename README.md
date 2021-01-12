@@ -167,7 +167,7 @@ Amazon Redshift, Amazon Aurora, Snowflake, Azure Synapse are being evaluated/dev
 |synapse|development|Development planned with preview ETA jan 27 2020|Azure
 |redshift|planned|Development planned| AWS|
 
-> NOTE: Supported cloud platforms are only based on limited testing and community feedbacks where they indicated the platform there were attempting to run against.
+> NOTE: Supported cloud platforms are based on limited testing and community feedbacks where users indicated the platform they were attempting to run against. yuniql primarily uses Amazon RDS as cloud provider for non-vendor specific platforms.
 
 |Distributions|Build Status|Description|
 |---|---|---|
