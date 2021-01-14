@@ -223,6 +223,15 @@ DROP PROCEDURE script3;
         //TODO: implement SqlServerTestDataService.DropDatabase
         public override void DropDatabase(string connectionString)
         {
+            //capture the test database from connection string
+            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            var sqlStatement = $"DROP DATABASE {connectionStringBuilder.InitialCatalog};";
+
+            //switch connection string to use master database
+            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            masterConnectionStringBuilder.InitialCatalog = "master";
+
+            base.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
     }
 }
