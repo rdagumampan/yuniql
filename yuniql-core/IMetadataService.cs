@@ -86,26 +86,28 @@ namespace Yuniql.Core
         /// <param name="connection">Connection to target database. Connection will be open automatically.</param>
         /// <param name="transaction">An active transaction.</param>
         /// <param name="version">Migration version.</param>
+        /// <param name="transactionContext">Transaction context containg last know failed version information.</param>
         /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
         /// <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
         /// <param name="commandTimeout">Command timeout in seconds.</param>
         /// <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
         /// <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
-        /// <param name="additionalArtifacts">Additional infromation to describe the version executed.</param>
         /// <param name="failedScriptPath">The failed script path.</param>
         /// <param name="failedScriptError">The failed script error.</param>
+        /// <param name="additionalArtifacts">Additional infromation to describe the version executed.</param>
         void InsertVersion(
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
+            TransactionContext transactionContext,
             string metaSchemaName,
             string metaTableName,
             int? commandTimeout = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string additionalArtifacts = null,
             string failedScriptPath = null,
-            string failedScriptError = null);
+            string failedScriptError = null,
+            string additionalArtifacts = null);
 
         /// <summary>
         /// Executes sql statement to target database.

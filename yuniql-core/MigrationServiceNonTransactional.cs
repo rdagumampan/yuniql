@@ -398,7 +398,7 @@ namespace Yuniql.Core
                     RunBulkImport(connection, transaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
 
                     //update db version
-                    _metadataService.InsertVersion(connection, transaction, versionName,
+                    _metadataService.InsertVersion(connection, transaction, versionName, transactionContext,
                         metaSchemaName: metaSchemaName,
                         metaTableName: metaTableName,
                         commandTimeout: commandTimeout,
@@ -454,7 +454,7 @@ namespace Yuniql.Core
                         && !transactionContext.IsFailedScriptPathMatched)
                     {
                         //set failed script file as matched
-                        if (string.Equals(scriptFile, transactionContext.FailedScriptPath, StringComparison.InvariantCultureIgnoreCase))
+                        if (string.Equals(scriptFile, transactionContext.LastKnownFailedScriptPath, StringComparison.InvariantCultureIgnoreCase))
                         {
                             transactionContext.SetFailedScriptPathMatch();
                         }
@@ -496,7 +496,7 @@ namespace Yuniql.Core
                 //in case scripts are not executed within transaction, mark version as failed in database
                 if (transaction == null)
                 {
-                    _metadataService.InsertVersion(connection, transaction, version,
+                    _metadataService.InsertVersion(connection, transaction, version, transactionContext,
                         metaSchemaName: metaSchemaName,
                         metaTableName: metaTableName,
                         commandTimeout: commandTimeout,

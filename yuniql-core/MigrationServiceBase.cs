@@ -219,7 +219,7 @@ namespace Yuniql.Core
         public abstract void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            List<string> versions,
+            List<string> appliedVersions,
             string workspace,
             string targetVersion,
             TransactionContext transactionContext,

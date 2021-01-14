@@ -316,7 +316,7 @@ namespace Yuniql.Core
         public override void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            List<string> versions,
+            List<string> appliedVersions,
             string workspace,
             string targetVersion,
             TransactionContext transactionContext,
@@ -334,7 +334,7 @@ namespace Yuniql.Core
         {
             //excludes all versions already executed
             var versionDirectories = _directoryService.GetDirectories(workspace, "v*.*")
-                .Where(v => !versions.Contains(new DirectoryInfo(v).Name))
+                .Where(v => !appliedVersions.Contains(new DirectoryInfo(v).Name))
                 .ToList();
 
             //exclude all versions greater than the target version
@@ -417,7 +417,7 @@ namespace Yuniql.Core
                     RunBulkImport(connection, transaction, workspace, versionDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
 
                     //update db version
-                    _metadataService.InsertVersion(connection, transaction, versionName,
+                    _metadataService.InsertVersion(connection, transaction, versionName, transactionContext,
                         metaSchemaName: metaSchemaName,
                         metaTableName: metaTableName,
                         commandTimeout: commandTimeout,
@@ -473,7 +473,7 @@ namespace Yuniql.Core
                         && !transactionContext.IsFailedScriptPathMatched)
                     {
                         //set failed script file as matched
-                        if (string.Equals(scriptFile, transactionContext.FailedScriptPath, StringComparison.InvariantCultureIgnoreCase))
+                        if (string.Equals(scriptFile, transactionContext.LastKnownFailedScriptPath, StringComparison.InvariantCultureIgnoreCase))
                         {
                             transactionContext.SetFailedScriptPathMatch();
                         }
@@ -513,7 +513,7 @@ namespace Yuniql.Core
                 var configuration = _configurationService.GetConfiguration();
                 if (configuration.TransactionMode == TRANSACTION_MODE.NONE)
                 {
-                    _metadataService.InsertVersion(connection, transaction, version,
+                    _metadataService.InsertVersion(connection, transaction, version, transactionContext,
                         metaSchemaName: metaSchemaName,
                         metaTableName: metaTableName,
                         commandTimeout: commandTimeout,

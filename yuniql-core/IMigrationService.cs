@@ -103,7 +103,7 @@ namespace Yuniql.Core
         /// </summary>
         /// <param name="connection"></param>
         /// <param name="transaction"></param>
-        /// <param name="versions"></param>
+        /// <param name="appliedVersions"></param>
         /// <param name="workspace"></param>
         /// <param name="targetVersion"></param>
         /// <param name="transactionContext"></param>
@@ -120,7 +120,7 @@ namespace Yuniql.Core
         void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
-            List<string> versions,
+            List<string> appliedVersions,
             string workspace,
             string targetVersion,
             TransactionContext transactionContext,

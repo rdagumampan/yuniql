@@ -222,15 +222,15 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
+            TransactionContext transactionContext,
             string metaSchemaName = null,
             string metaTableName = null,
             int? commandTimeout = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string additionalArtifacts = null,
             string failedScriptPath = null,
-            string failedScriptError = null
-            )
+            string failedScriptError = null,
+            string additionalArtifacts = null)
         {
             var sqlStatement = string.Empty;
             var command = connection
@@ -267,8 +267,9 @@ namespace Yuniql.Core
 
             //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
             sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForInsertVersion());
-            var existingVersion = this.GetAllVersions(metaSchemaName, metaTableName).Exists(v => v.Version == version);
-            if (existingVersion)
+            var existingSavedVersion = (null!= transactionContext) && !string.IsNullOrEmpty(transactionContext.LastKnownFailedVersion) 
+                && string.Equals(transactionContext.LastKnownFailedVersion, version, StringComparison.InvariantCultureIgnoreCase);
+            if (existingSavedVersion)
             {
                 sqlStatement = _dataService.IsUpsertSupported ?
                     _tokenReplacementService.Replace(tokens, _dataService.GetSqlForUpsertVersion()) :
