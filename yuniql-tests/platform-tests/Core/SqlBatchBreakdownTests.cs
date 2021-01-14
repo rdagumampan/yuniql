@@ -45,7 +45,7 @@ namespace Yuniql.PlatformTests
             {
                 _testDataService.DropDatabase(_testConfiguration.ConnectionString);
             }
-            catch (Exception) { /*swallow exceptions*/ }
+            catch (Exception ex) { /*swallow exceptions*/ }
         }
 
         [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
@@ -201,7 +201,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName3}").ShouldBeTrue();
         }
 
-        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsTransactionalDdlSupported))]
+        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
         public void Test_Create_Multiline_Script_With_Error_Must_Rollback()
         {
             //arrange

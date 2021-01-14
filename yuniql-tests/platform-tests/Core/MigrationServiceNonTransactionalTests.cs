@@ -52,8 +52,8 @@ namespace Yuniql.PlatformTests
             catch (Exception) { /*swallow exceptions*/ }
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
-        public void Test_Run_Fail_Migration_When_Version_Directory_Has_Other_Directories()
+        [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]
+        public void Test_Run_Fail_Migration_When_Version_Directory_With_Explicit_Transaction_Has_Other_Directories()
         {
             //arrange
             var directoryService = new DirectoryService();
@@ -79,8 +79,8 @@ namespace Yuniql.PlatformTests
             }
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
-        public void Test_Run_Fail_Migration_When_Version_Directory_Has_Files()
+        [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]
+        public void Test_Run_Fail_Migration_When_Version_With_Explicit_Transaction_Directory_Has_Files()
         {
             //arrange
             var directoryService = new DirectoryService();
@@ -106,8 +106,8 @@ namespace Yuniql.PlatformTests
             }
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
-        public void Test_Run_Fail_Migration_When_Non_Transaction_DDL_Failed()
+        [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]
+        public void Test_Run_Fail_Migration_When_DDL_Failed_And_Transactional_DDL_Not_Supported()
         {
             //arrange
             var directoryService = new DirectoryService();
@@ -144,7 +144,7 @@ namespace Yuniql.PlatformTests
             failedVersion.FailedScriptError.ShouldNotBeNullOrEmpty();
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]
         public void Test_Run_Fail_Migration_When_No_Force_Continue_After_Failue_Option_Enabled()
         {
             //arrange
@@ -196,7 +196,7 @@ namespace Yuniql.PlatformTests
             }
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]
         public void Test_Run_Ok_Migration_With_Force_Continue_After_Failue_Option_Enabled()
         {
             //arrange
@@ -248,7 +248,7 @@ namespace Yuniql.PlatformTests
             version.FailedScriptError.ShouldBeNullOrEmpty();
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]
         public void Test_Run_Ok_Without_Explicit_Transaction()
         {
             //arrange
@@ -278,7 +278,7 @@ namespace Yuniql.PlatformTests
         }
 
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]
         public void Test_Run_Ok_With_Explicit_Transaction()
         {
             //arrange
@@ -310,7 +310,7 @@ namespace Yuniql.PlatformTests
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "test_v1_02").ShouldBeTrue();
         }
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]
         public void Test_Run_Ok_Without_Explicit_Transaction_With_SubDirectories()
         {
             //arrange
@@ -361,7 +361,7 @@ namespace Yuniql.PlatformTests
         }
 
 
-        [TestMethodEx(Requires = "IsTransactionalDdlSupported")]
+        [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]
         public void Test_Run_Ok_With_Explicit_Transaction_With_SubDirectories()
         {
             //arrange

@@ -170,9 +170,11 @@ DROP TABLE script3;
 CREATE SCHEMA {schemaName};
 ";
         }
-        //TODO: implement MysqlTestDataService.DropDatabase
+
         public override void DropDatabase(string connectionString)
         {
+            //not needed need since test cases are executed against disposable database containers
+            //we could simply docker rm the running test container after tests completed
         }
     }
 }

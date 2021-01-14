@@ -3,6 +3,7 @@ using System.IO;
 using Shouldly;
 using Yuniql.Core;
 using Yuniql.Extensibility;
+using System;
 
 namespace Yuniql.PlatformTests
 {
@@ -31,8 +32,20 @@ namespace Yuniql.PlatformTests
         [TestCleanup]
         public void Cleanup()
         {
-            if (Directory.Exists(_testConfiguration.WorkspacePath))
-                Directory.Delete(_testConfiguration.WorkspacePath, true);
+            //drop the test directory
+            try
+            {
+                if (Directory.Exists(_testConfiguration.WorkspacePath))
+                    Directory.Delete(_testConfiguration.WorkspacePath, true);
+            }
+            catch (Exception) { /*swallow exceptions*/ }
+
+            //drop test database
+            try
+            {
+                _testDataService.DropDatabase(_testConfiguration.ConnectionString);
+            }
+            catch (Exception) { /*swallow exceptions*/ }
         }
 
         [TestMethod]

@@ -14,8 +14,8 @@ namespace Yuniql.Core
         /// <param name="continueAfterFailure"></param>
         public TransactionContext(DbVersion failedDbVersion, bool continueAfterFailure)
         {
-            this.LastKnownFailedVersion = failedDbVersion.Version;
-            this.LastKnownFailedScriptPath = failedDbVersion.FailedScriptPath;
+            this.LastKnownFailedVersion = failedDbVersion?.Version;
+            this.LastKnownFailedScriptPath = failedDbVersion?.FailedScriptPath;
             this.ContinueAfterFailure = continueAfterFailure;
         }
 

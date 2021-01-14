@@ -225,7 +225,10 @@ DROP PROCEDURE script3;
         {
             //capture the test database from connection string
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            var sqlStatement = $"DROP DATABASE {connectionStringBuilder.InitialCatalog};";
+            var sqlStatement = @$"
+ALTER DATABASE [{connectionStringBuilder.InitialCatalog}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+DROP DATABASE [{connectionStringBuilder.InitialCatalog}];
+";
 
             //switch connection string to use master database
             var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
