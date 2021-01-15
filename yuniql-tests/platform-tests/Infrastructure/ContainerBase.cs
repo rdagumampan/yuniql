@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Infrastructure
 {
-    public class ContainerBase {
+    public class ContainerBase
+    {
 
         public string Id { get; set; }
 

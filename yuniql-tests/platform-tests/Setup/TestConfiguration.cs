@@ -1,6 +1,6 @@
 ﻿using Yuniql.Core;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Setup
 {
     public class TestConfiguration
     {
@@ -29,9 +29,9 @@ namespace Yuniql.PlatformTests
             configurationService.Reset();
 
             var configuration = Configuration.Instance;
-            configuration.Workspace = this.WorkspacePath;
-            configuration.Platform = this.Platform;
-            configuration.ConnectionString = this.ConnectionString;
+            configuration.Workspace = WorkspacePath;
+            configuration.Platform = Platform;
+            configuration.ConnectionString = ConnectionString;
             configuration.IsAutoCreateDatabase = true;
 
             return configuration;

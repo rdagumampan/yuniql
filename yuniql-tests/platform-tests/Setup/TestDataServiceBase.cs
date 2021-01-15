@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using Yuniql.Core;
 using System.Data;
 using System.Text;
+using Yuniql.PlatformTests.Interfaces;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Setup
 {
     public abstract class TestDataServiceBase : ITestDataService
     {
@@ -16,8 +17,8 @@ namespace Yuniql.PlatformTests
             IDataService dataService,
             ITokenReplacementService tokenReplacementService)
         {
-            this._dataService = dataService;
-            this._tokenReplacementService = tokenReplacementService;
+            _dataService = dataService;
+            _tokenReplacementService = tokenReplacementService;
         }
 
         public virtual bool IsTransactionalDdlSupported => _dataService.IsTransactionalDdlSupported;

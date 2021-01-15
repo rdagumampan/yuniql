@@ -183,7 +183,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute info function", opts.IsDebug);
+                return OnException(ex, "Failed to execute list function", opts.IsDebug);
             }
         }
 
@@ -261,7 +261,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute RunPlatformsOption function", opts.IsDebug);
+                return OnException(ex, "Failed to execute platforms function", opts.IsDebug);
             }
         }
 
@@ -299,7 +299,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to archive function", opts.IsDebug);
+                return OnException(ex, "Failed to execute archive function", opts.IsDebug);
             }
         }
 

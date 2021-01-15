@@ -3,8 +3,9 @@ using System;
 using System.Data.SqlClient;
 using System.IO;
 using Yuniql.Core;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Platforms.SqlServer
 {
     public class SqlServerTestDataService : TestDataServiceBase
     {

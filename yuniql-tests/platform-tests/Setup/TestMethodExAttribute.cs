@@ -2,7 +2,7 @@
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Setup
 {
     public class TestMethodExAttribute : TestMethodAttribute
     {
@@ -16,7 +16,7 @@ namespace Yuniql.PlatformTests
 
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlSupported")] attribute
             //For test cases applicable only to platforms that has full support for transactional DDL (sqlserver, pgsql, ...)
-            if (this.Requires.Contains(nameof(testDataService.IsTransactionalDdlSupported)) && !testDataService.IsTransactionalDdlSupported)
+            if (Requires.Contains(nameof(testDataService.IsTransactionalDdlSupported)) && !testDataService.IsTransactionalDdlSupported)
             {
                 var message = $"Target database platform or version does not support atomic DDL operations. " +
                     $"DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.";
@@ -32,7 +32,7 @@ namespace Yuniql.PlatformTests
 
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlNotSupported")] attribute
             //For test cases applicable only to platforms that do not support for transactional DDL (mysql, snowflake, ...)
-            if (this.Requires.Contains("IsTransactionalDdlNotSupported") && testDataService.IsTransactionalDdlSupported)
+            if (Requires.Contains("IsTransactionalDdlNotSupported") && testDataService.IsTransactionalDdlSupported)
             {
                 var message = $"Target database platform or version does not support atomic DDL operations. " +
                     $"DDL operations like CREATE TABLE, CREATE VIEW are not gauranteed to be executed transactional.";
@@ -48,7 +48,7 @@ namespace Yuniql.PlatformTests
 
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsSchemaSupported")] attribute
             //For test cases applicable only to platforms that do not support schema
-            if (this.Requires.Contains(nameof(testDataService.IsSchemaSupported)) && !testDataService.IsSchemaSupported)
+            if (Requires.Contains(nameof(testDataService.IsSchemaSupported)) && !testDataService.IsSchemaSupported)
             {
                 var message = $"Target database platform or version does not support schema within the same database.";
                 return new[]
@@ -62,7 +62,7 @@ namespace Yuniql.PlatformTests
             }
 
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsBatchSqlSupported")] attribute
-            if (this.Requires.Contains(nameof(testDataService.IsBatchSqlSupported)) && !testDataService.IsBatchSqlSupported)
+            if (Requires.Contains(nameof(testDataService.IsBatchSqlSupported)) && !testDataService.IsBatchSqlSupported)
             {
                 var message = $"Target database platform or version does not support batching sql statements in single session or request.";
                 return new[]
@@ -76,7 +76,7 @@ namespace Yuniql.PlatformTests
             }
 
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsBatchSqlSupportedAndIsTransactionalDdlSupported")] attribute
-            if (this.Requires.Contains("IsBatchSqlSupportedAndIsTransactionalDdlSupported") && (!testDataService.IsBatchSqlSupported || !testDataService.IsTransactionalDdlSupported))
+            if (Requires.Contains("IsBatchSqlSupportedAndIsTransactionalDdlSupported") && (!testDataService.IsBatchSqlSupported || !testDataService.IsTransactionalDdlSupported))
             {
                 var message = $"Target database platform or version does not support batching sql statements in single session or request.";
                 return new[]

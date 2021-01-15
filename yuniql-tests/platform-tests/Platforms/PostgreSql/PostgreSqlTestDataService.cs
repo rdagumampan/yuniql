@@ -4,8 +4,9 @@ using Npgsql;
 using System;
 using Yuniql.Core;
 using Yuniql.PostgreSql;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Platforms.PostgreSql
 {
     public class PostgreSqlTestDataService : TestDataServiceBase
     {
@@ -53,7 +54,8 @@ namespace Yuniql.PlatformTests
                 result = QuerySingleBool(connectionString, sqlStatement);
             }
 
-            if (!result) {
+            if (!result)
+            {
                 sqlStatement = $"SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA = '{dbObject.Item1}'  AND TABLE_NAME = '{dbObject.Item2}'";
                 result = QuerySingleBool(connectionString, sqlStatement);
             }

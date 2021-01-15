@@ -2,20 +2,22 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
 using System.IO;
+using Yuniql.PlatformTests.Interfaces;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.CLI
 {
     [TestClass]
-    public class CliTests : TestBase
+    public class CommandLineTests : TestClassBase
     {
         private TestConfiguration _testConfiguration;
-        private CliExecutionService _executionService;
+        private CommandLineExecutionService _executionService;
         private ITestDataService _testDataService;
 
         public void SetupWithWorkspace()
         {
-            _testConfiguration = base.ConfigureWithEmptyWorkspace();
-            _executionService = new CliExecutionService(_testConfiguration.CliProcessPath);
+            _testConfiguration = ConfigureWithEmptyWorkspace();
+            _executionService = new CommandLineExecutionService(_testConfiguration.CliProcessPath);
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();
@@ -24,8 +26,8 @@ namespace Yuniql.PlatformTests
 
         public void SetupWorkspaceWithSampleDb()
         {
-            _testConfiguration = base.ConfigureWorkspaceWithSampleDb();
-            _executionService = new CliExecutionService(_testConfiguration.CliProcessPath);
+            _testConfiguration = ConfigureWorkspaceWithSampleDb();
+            _executionService = new CommandLineExecutionService(_testConfiguration.CliProcessPath);
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();
@@ -54,7 +56,7 @@ namespace Yuniql.PlatformTests
         [DataTestMethod]
         [DataRow("init", "")]
         [DataRow("init", "-d")]
-        public void Test_Cli_init(string command, string arguments)
+        public void Test_yuniql_init(string command, string arguments)
         {
             //arrange
             SetupWithWorkspace();
@@ -74,7 +76,7 @@ namespace Yuniql.PlatformTests
         [DataRow("vnext", "-d -M")]
         [DataRow("vnext", "-d --Major")]
         [DataRow("vnext", "-d --Major -file test-vmajor-script.sql")]
-        public void Test_Cli_vnext(string command, string arguments)
+        public void Test_yuniql_vnext(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -101,7 +103,7 @@ namespace Yuniql.PlatformTests
         [DataRow("run", "-a -d --transaction-mode session")]
         [DataRow("run", "-a -d --transaction-mode version")]
         [DataRow("run", "-a -d --transaction-mode none")]
-        public void Test_Cli_run(string command, string arguments)
+        public void Test_yuniql_run(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -123,7 +125,7 @@ namespace Yuniql.PlatformTests
         [DataRow("verify", "-d --meta-schema \"my_schema\" --meta-table \"my_versions\" ")]
         [DataRow("verify", "-d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
         [DataRow("verify", "-d -k \"VwColumnPrefix1=Vw1\" -k \"VwColumnPrefix2=Vw2\" -k \"VwColumnPrefix3=Vw3\" -k \"VwColumnPrefix4=Vw4\"")]
-        public void Test_Cli_verify(string command, string arguments)
+        public void Test_yuniql_verify(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -145,7 +147,7 @@ namespace Yuniql.PlatformTests
         [DataRow("verify", "-d --command-timeout 10")]
         [DataRow("verify", "-d --environment DEV")]
         [DataRow("verify", "-d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
-        public void Test_Cli_verify_With_Custom_Schema(string command, string arguments)
+        public void Test_yuniql_verify_With_Custom_Schema(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -163,7 +165,7 @@ namespace Yuniql.PlatformTests
         [DataRow("list", "")]
         [DataRow("list", "-d")]
         [DataRow("list", "-d --command-timeout 10")]
-        public void Test_Cli_info(string command, string arguments)
+        public void Test_yuniql_list (string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -181,7 +183,7 @@ namespace Yuniql.PlatformTests
         [DataRow("list", "")]
         [DataRow("list", "-d")]
         [DataRow("list", "-d --command-timeout 10")]
-        public void Test_Cli_info_With_Custom_Schema(string command, string arguments)
+        public void Test_yuniql_list_With_Custom_Schema(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -202,7 +204,7 @@ namespace Yuniql.PlatformTests
         [DataRow("erase", "-d --force")]
         [DataRow("erase", "-d --environment DEV")]
         [DataRow("erase", "-d --command-timeout 10")]
-        public void Test_Cli_erase(string command, string arguments)
+        public void Test_yuniql_erase(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -214,6 +216,73 @@ namespace Yuniql.PlatformTests
             //act & assert
             result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
+        }
+
+        [DataTestMethod]
+        [DataRow("platforms", "-d")]
+        public void Test_yuniql_platforms(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //act & assert
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
+            result.Contains($"Failed to execute run").ShouldBeFalse();
+
+            //act & assert
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeFalse();
+        }
+
+        [DataTestMethod]
+        [DataRow("baseline", "-d")]
+        public void Test_yuniql_baseline(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //act & assert
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
+            result.Contains($"Failed to execute run").ShouldBeFalse();
+
+            //act & assert
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeTrue();
+            result.Contains($"Not yet implemented, stay tune!");
+        }
+
+        [DataTestMethod]
+        [DataRow("rebase", "-d")]
+        public void Test_yuniql_rebase(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //act & assert
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
+            result.Contains($"Failed to execute run").ShouldBeFalse();
+
+            //act & assert
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeTrue();
+            result.Contains($"Not yet implemented, stay tune!");
+        }
+
+        [DataTestMethod]
+        [DataRow("archive", "-d")]
+        public void Test_yuniql_archive(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //act & assert
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
+            result.Contains($"Failed to execute run").ShouldBeFalse();
+
+            //act & assert
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeTrue();
+            result.Contains($"Not yet implemented, stay tune!");
         }
     }
 }

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.CLI
 {
-    public class CliExecutionService
+    public class CommandLineExecutionService
     {
         private readonly string _executionProcessFile;
 
-        public CliExecutionService(string executionProcessFile)
+        public CommandLineExecutionService(string executionProcessFile)
         {
-            this._executionProcessFile = executionProcessFile;
+            _executionProcessFile = executionProcessFile;
         }
         public string Run(string command, string workspace, string connectionString, string platform, string arguments)
         {

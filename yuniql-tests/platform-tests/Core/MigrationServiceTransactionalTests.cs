@@ -6,14 +6,18 @@ using System;
 using System.Data;
 using Yuniql.Core;
 using Yuniql.Extensibility;
+using Yuniql.PlatformTests.Interfaces;
+using Yuniql.PlatformTests.Setup;
+using IMigrationServiceFactory = Yuniql.PlatformTests.Interfaces.IMigrationServiceFactory;
+using MigrationServiceFactory = Yuniql.PlatformTests.Setup.MigrationServiceFactory;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Core
 {
 
     //https://docs.microsoft.com/en-gb/dotnet/standard/assembly/unloadability
     //https://github.com/dotnet/samples/blob/master/core/extensions/AppWithPlugin/AppWithPlugin/Program.cs
     [TestClass]
-    public class MigrationServiceTransactionalTests : TestBase
+    public class MigrationServiceTransactionalTests : TestClassBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;
@@ -23,7 +27,7 @@ namespace Yuniql.PlatformTests
         [TestInitialize]
         public void Setup()
         {
-            _testConfiguration = base.ConfigureWithEmptyWorkspace();
+            _testConfiguration = ConfigureWithEmptyWorkspace();
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();
@@ -351,7 +355,7 @@ namespace Yuniql.PlatformTests
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v1_00"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $".sql"), _testDataService.GetSqlForCreateBulkTable("TestCsv"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), "TestCsv.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), "TestCsv.csv"));
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"test_v1_00_error.sql"), _testDataService.GetSqlForCreateDbObjectWithError($"test_v1_00_error"));
 
             //act

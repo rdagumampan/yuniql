@@ -1,14 +1,12 @@
 ﻿using Yuniql.Extensibility;
 using System.IO;
-using MySql.Data.MySqlClient;
 using System;
 using Yuniql.Core;
-using Yuniql.MySql;
-using Yuniql.Snowflake;
 using Snowflake.Data.Client;
 using System.Collections.Generic;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Platforms.Snowflake
 {
     public class SnowflakeTestDataService : TestDataServiceBase
     {
@@ -16,11 +14,11 @@ namespace Yuniql.PlatformTests
         private readonly ITokenReplacementService _tokenReplacementService;
 
         public SnowflakeTestDataService(
-            IDataService dataService, 
+            IDataService dataService,
             ITokenReplacementService tokenReplacementService) : base(dataService, tokenReplacementService)
         {
-            this._dataService = dataService;
-            this._tokenReplacementService = tokenReplacementService;
+            _dataService = dataService;
+            _tokenReplacementService = tokenReplacementService;
         }
 
         public override string GetConnectionString(string databaseName)
@@ -220,9 +218,9 @@ $$
 $$
 GO
 ";
-    }
+        }
 
-    public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
+        public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
 CREATE PROCEDURE {objectName1.DoubleQuote()}()

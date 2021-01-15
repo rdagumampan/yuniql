@@ -1,7 +1,11 @@
 ﻿using System;
 using Yuniql.Core;
+using Yuniql.PlatformTests.Platforms.MariaDB;
+using Yuniql.PlatformTests.Platforms.MySql;
+using Yuniql.PlatformTests.Platforms.PostgreSql;
+using Yuniql.PlatformTests.Platforms.SqlServer;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Infrastructure
 {
     public class ContainerFactory
     {

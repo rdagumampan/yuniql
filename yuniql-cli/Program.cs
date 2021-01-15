@@ -20,28 +20,39 @@ namespace Yuniql.CLI
 
             var environmentService = new EnvironmentService();
             var configurationService = new ConfigurationService(environmentService, workspaceService, traceService);
-            
+
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var commandLineService = new CommandLineService(migrationServiceFactory,
                                                             workspaceService,
                                                             environmentService,
                                                             traceService,
                                                             configurationService);
-            
-            var resultCode = Parser.Default
-                .ParseArguments<InitOption, RunOption, ListOption, NextVersionOption, VerifyOption, EraseOption, BaselineOption, RebaseOption, PlatformsOption>(args)
-                .MapResult((InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
-                           (RunOption opts) => Dispatch(commandLineService.RunRunOption, opts, traceService),
-                           (NextVersionOption opts) => Dispatch(commandLineService.RunNextVersionOption, opts, traceService),
-                           (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),
-                           (VerifyOption opts) => Dispatch(commandLineService.RunVerifyOption, opts, traceService),
-                           (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
-                           (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
-                           (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
-                           (ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
-                           (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
 
-                           errs => 1);
+            var resultCode = Parser.Default
+                .ParseArguments<
+                    InitOption,
+                    RunOption,
+                    ListOption,
+                    NextVersionOption,
+                    VerifyOption,
+                    EraseOption,
+                    BaselineOption,
+                    RebaseOption,
+                    ArchiveOption,
+                    PlatformsOption
+                >(args).MapResult(
+                    (InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
+                    (RunOption opts) => Dispatch(commandLineService.RunRunOption, opts, traceService),
+                    (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),
+                    (NextVersionOption opts) => Dispatch(commandLineService.RunNextVersionOption, opts, traceService),
+                    (VerifyOption opts) => Dispatch(commandLineService.RunVerifyOption, opts, traceService),
+                    (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
+                    (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
+                    (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
+                    (ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
+                    (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
+
+                    errs => 1);
 
             return resultCode;
         }

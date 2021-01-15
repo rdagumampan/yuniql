@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Yuniql.PlatformTests.Infrastructure;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Platforms.MySql
 {
     //docker run -dit --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
     public class MySqlContainer : ContainerBase

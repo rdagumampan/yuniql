@@ -4,11 +4,15 @@ using Shouldly;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 using System;
+using Yuniql.PlatformTests.Interfaces;
+using Yuniql.PlatformTests.Setup;
+using IMigrationServiceFactory = Yuniql.PlatformTests.Interfaces.IMigrationServiceFactory;
+using MigrationServiceFactory = Yuniql.PlatformTests.Setup.MigrationServiceFactory;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Core
 {
     [TestClass]
-    public class EnvironmentAwareMigrationTests : TestBase
+    public class EnvironmentAwareMigrationTests : TestClassBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;
@@ -18,7 +22,7 @@ namespace Yuniql.PlatformTests
         [TestInitialize]
         public void Setup()
         {
-            _testConfiguration = base.ConfigureWithEmptyWorkspace();
+            _testConfiguration = ConfigureWithEmptyWorkspace();
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();

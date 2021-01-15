@@ -6,11 +6,15 @@ using Yuniql.Core;
 using Yuniql.Extensibility;
 using System.Collections.Generic;
 using System.Linq;
+using Yuniql.PlatformTests.Interfaces;
+using Yuniql.PlatformTests.Setup;
+using IMigrationServiceFactory = Yuniql.PlatformTests.Interfaces.IMigrationServiceFactory;
+using MigrationServiceFactory = Yuniql.PlatformTests.Setup.MigrationServiceFactory;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Core
 {
     [TestClass]
-    public class BulkImportServiceTests : TestBase
+    public class BulkImportServiceTests : TestClassBase
     {
         private ITestDataService _testDataService;
         private ITraceService _traceService;
@@ -20,7 +24,7 @@ namespace Yuniql.PlatformTests
         [TestInitialize]
         public void Setup()
         {
-            _testConfiguration = base.ConfigureWithEmptyWorkspace();
+            _testConfiguration = ConfigureWithEmptyWorkspace();
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();
@@ -51,7 +55,7 @@ namespace Yuniql.PlatformTests
         }
 
         [TestMethod]
-        public void Test_Bulk_Import_With_Default_Separated()
+        public void Test_Bulk_Import_With_Default_Separator()
         {
             //arrange - prepare bulk destination table
             var directoryService = new DirectoryService();
@@ -76,7 +80,7 @@ namespace Yuniql.PlatformTests
             //arrange - add new minor version with csv files
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v101Directory, "TestCsv.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v101Directory, "TestCsv.csv"));
 
             //act
             configuration.TargetVersion = "v1.01";
@@ -104,7 +108,7 @@ namespace Yuniql.PlatformTests
         }
 
         [TestMethod]
-        public void Test_Bulk_Import_With_Pipe_Separated()
+        public void Test_Bulk_Import_With_Pipe_Separator()
         {
             //arrange - pre-create destination bulk tables
             var directoryService = new DirectoryService();
@@ -129,7 +133,7 @@ namespace Yuniql.PlatformTests
             //arrange - add new version with csv files
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvPipeSeparated.csv"), Path.Combine(v101Directory, "TestCsvPipeSeparated.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsvPipeSeparated.csv"), Path.Combine(v101Directory, "TestCsvPipeSeparated.csv"));
 
             //act - bulk load csv files
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true, bulkSeparator: "|");
@@ -154,7 +158,7 @@ namespace Yuniql.PlatformTests
         }
 
         [TestMethod]
-        public void Test_Bulk_Import_With_Utf8()
+        public void Test_Bulk_Import_With_Utf8_Encoded_File()
         {
             //arrange - pre-create destination bulk tables
             var directoryService = new DirectoryService();
@@ -179,7 +183,7 @@ namespace Yuniql.PlatformTests
             //arrange - add new version with csv files
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUtf8.csv"), Path.Combine(v101Directory, "TestCsvUtf8.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsvUtf8.csv"), Path.Combine(v101Directory, "TestCsvUtf8.csv"));
 
             //act - bulk load csv files
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
@@ -229,7 +233,7 @@ namespace Yuniql.PlatformTests
             //arrange - add new version with csv files
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullColumn.csv"), Path.Combine(v101Directory, "TestCsvNullColumn.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsvNullColumn.csv"), Path.Combine(v101Directory, "TestCsvNullColumn.csv"));
 
             //act - bulk load csv files
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
@@ -278,7 +282,7 @@ namespace Yuniql.PlatformTests
             //arrange - add new version with csv files
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvUnquoted.csv"), Path.Combine(v101Directory, "TestCsvUnquoted.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsvUnquoted.csv"), Path.Combine(v101Directory, "TestCsvUnquoted.csv"));
 
             //act - bulk load csv files
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
@@ -313,7 +317,7 @@ namespace Yuniql.PlatformTests
 
             //we simulate a importing data into TestCsvBulkTable that doesnt exist
             string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v000Directory, "TestCsv.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v000Directory, "TestCsv.csv"));
 
             //act - bulk load csv files
             try
@@ -357,7 +361,7 @@ namespace Yuniql.PlatformTests
             //arrange - add new version with csv files
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvMismatchColumn.csv"), Path.Combine(v101Directory, "TestCsvMismatchColumn.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsvMismatchColumn.csv"), Path.Combine(v101Directory, "TestCsvMismatchColumn.csv"));
 
             //act - bulk load csv files
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
@@ -392,7 +396,7 @@ namespace Yuniql.PlatformTests
             string v000Directory = Path.Combine(_testConfiguration.WorkspacePath, "v0.00");
             _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00.sql"), _testDataService.GetSqlForCreateDbObject($"test_v0_00"));
             _testDataService.CreateScriptFile(Path.Combine(v000Directory, $"test_v0_00_TestCsvMismatchColumnNotNullable.sql"), _testDataService.GetSqlForCreateBulkTable("test_v0_00_TestCsvMismatchColumnNotNullable"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvMismatchColumnNotNullable.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvMismatchColumnNotNullable.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsvMismatchColumnNotNullable.csv"), Path.Combine(v000Directory, "test_v0_00_TestCsvMismatchColumnNotNullable.csv"));
 
             //act - bulk load csv files
             try
@@ -440,7 +444,7 @@ namespace Yuniql.PlatformTests
             //arrange - add new version with csv files
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsv.csv"), Path.Combine(v101Directory, "TestSchema.TestCsv.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v101Directory, "TestSchema.TestCsv.csv"));
 
             //act - bulk load csv files
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);
@@ -493,7 +497,7 @@ namespace Yuniql.PlatformTests
             //arrange - add new minor version with csv files
             workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Core"), "TestCsvNullWordValue.csv"), Path.Combine(v101Directory, "TestCsvNullWordValue.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsvNullWordValue.csv"), Path.Combine(v101Directory, "TestCsvNullWordValue.csv"));
 
             //act
             migrationService.Run(_testConfiguration.WorkspacePath, "v1.01", isAutoCreateDatabase: true);

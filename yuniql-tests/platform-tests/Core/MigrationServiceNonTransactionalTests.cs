@@ -5,14 +5,18 @@ using Yuniql.Core;
 using Yuniql.Extensibility;
 using System;
 using System.Linq;
+using Yuniql.PlatformTests.Interfaces;
+using Yuniql.PlatformTests.Setup;
+using IMigrationServiceFactory = Yuniql.PlatformTests.Interfaces.IMigrationServiceFactory;
+using MigrationServiceFactory = Yuniql.PlatformTests.Setup.MigrationServiceFactory;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Core
 {
 
     //https://docs.microsoft.com/en-gb/dotnet/standard/assembly/unloadability
     //https://github.com/dotnet/samples/blob/master/core/extensions/AppWithPlugin/AppWithPlugin/Program.cs
     [TestClass]
-    public class MigrationServiceNonTransactionalTests : TestBase
+    public class MigrationServiceNonTransactionalTests : TestClassBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;
@@ -22,7 +26,7 @@ namespace Yuniql.PlatformTests
         [TestInitialize]
         public void Setup()
         {
-            _testConfiguration = base.ConfigureWithEmptyWorkspace();
+            _testConfiguration = ConfigureWithEmptyWorkspace();
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();

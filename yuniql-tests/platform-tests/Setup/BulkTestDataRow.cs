@@ -1,8 +1,9 @@
 ﻿using System;
 
-namespace Yuniql.Extensibility
+namespace Yuniql.PlatformTests.Setup
 {
-    public class BulkTestDataRow {
+    public class BulkTestDataRow
+    {
 
         public string FirstName { get; set; }
 

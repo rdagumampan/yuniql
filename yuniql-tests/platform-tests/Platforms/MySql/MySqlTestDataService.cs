@@ -4,8 +4,9 @@ using MySql.Data.MySqlClient;
 using System;
 using Yuniql.Core;
 using Yuniql.MySql;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Platforms.MySql
 {
     public class MySqlTestDataService : TestDataServiceBase
     {

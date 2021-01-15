@@ -5,7 +5,7 @@ using Docker.DotNet.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Infrastructure
 {
     public class DockerService : IDisposable
     {

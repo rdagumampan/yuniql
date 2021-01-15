@@ -1,11 +1,16 @@
 ﻿using System;
 using Yuniql.Core;
 using Yuniql.MySql;
+using Yuniql.PlatformTests.Interfaces;
+using Yuniql.PlatformTests.Platforms.MySql;
+using Yuniql.PlatformTests.Platforms.PostgreSql;
+using Yuniql.PlatformTests.Platforms.Snowflake;
+using Yuniql.PlatformTests.Platforms.SqlServer;
 using Yuniql.PostgreSql;
 using Yuniql.Snowflake;
 using Yuniql.SqlServer;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Setup
 {
     //https://github.com/dotnet/samples/tree/master/core/tutorials/Unloading
     public class TestDataServiceFactory : ITestDataServiceFactory

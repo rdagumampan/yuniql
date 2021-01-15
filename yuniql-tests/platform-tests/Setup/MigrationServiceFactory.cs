@@ -5,8 +5,9 @@ using Yuniql.MySql;
 using Yuniql.PostgreSql;
 using Yuniql.Snowflake;
 using Yuniql.SqlServer;
+using IMigrationServiceFactory = Yuniql.PlatformTests.Interfaces.IMigrationServiceFactory;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Setup
 {
     public class MigrationServiceFactory : IMigrationServiceFactory
     {
@@ -15,7 +16,7 @@ namespace Yuniql.PlatformTests
         public MigrationServiceFactory(
             ITraceService traceService)
         {
-            this._traceService = traceService;
+            _traceService = traceService;
         }
 
         public IMigrationService Create(string platform)

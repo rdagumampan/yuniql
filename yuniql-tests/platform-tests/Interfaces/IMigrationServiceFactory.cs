@@ -1,7 +1,7 @@
 ﻿using Yuniql.Core;
 using Yuniql.Extensibility;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Interfaces
 {
     public interface IMigrationServiceFactory
     {

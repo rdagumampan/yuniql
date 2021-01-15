@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using Yuniql.Extensibility;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Interfaces
 {
     public interface ITestDataService
     {
@@ -52,7 +53,7 @@ namespace Yuniql.PlatformTests
 
         bool IsBatchSqlSupported { get; }
 
-        string TableName { get;}
+        string TableName { get; }
 
         string SchemaName { get; }
 

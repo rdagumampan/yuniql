@@ -4,10 +4,10 @@ using System;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Setup
 {
     [TestClass]
-    public class TestBase
+    public class TestClassBase
     {
         public string CreateEmptyWorkspace()
         {
