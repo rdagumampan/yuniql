@@ -308,7 +308,7 @@ namespace Yuniql.Core
                 versionDirectories.Sort();
                 versionDirectories.ForEach(versionDirectory =>
                 {
-                    //run scripts in all sub-directories
+                    //run scripts in all sub-directories in the version
                     var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList(); ;
 
                     //check for special _transaction directory in the version directory
@@ -335,8 +335,9 @@ namespace Yuniql.Core
                             throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory can't contain files.");
                         }
 
-                        isExplicitTransactionDefined = true;
+                        //override the list of subdirectories to process by the list container in _transaction directory
                         scriptSubDirectories = _directoryService.GetAllDirectories(transactionDirectory, "*").ToList();
+                        isExplicitTransactionDefined = true;
                     }
 
                     if (isExplicitTransactionDefined)
@@ -349,6 +350,9 @@ namespace Yuniql.Core
                         {
                             try
                             {
+                                //scriptSubDirectories is the child directories under _transaction directory c:\temp\vxx.xx\_transaction\list_of_directories
+                                //transactionDirectory the path of _transaction directory c:\temp\vxx.xx\_transaction
+                                //versionDirectory path of version c:\temp\vxx.xx
                                 RunVersionScriptsInternal(transaction, scriptSubDirectories, transactionDirectory, versionDirectory, metaSchemaName, metaTableName);
                                 transaction.Commit();
 
@@ -365,6 +369,8 @@ namespace Yuniql.Core
                     else
                     {
                         //run scripts without transaction
+                        //scriptSubDirectories is the child directories under _transaction directory c:\temp\vxx.xx\list_of_directories
+                        //versionDirectory path of version c:\temp\vxx.xx
                         RunVersionScriptsInternal(transaction, scriptSubDirectories, versionDirectory, versionDirectory, metaSchemaName, metaTableName);
                     }
                 });
