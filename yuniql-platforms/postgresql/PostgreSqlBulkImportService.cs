@@ -39,14 +39,15 @@ namespace Yuniql.PostgreSql
             int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
-            //read csv file and load into data table
-            var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
-
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
+            //assumes all objects are not double quoted because pgsql auto-lower case all undouble quoted objects
             var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
             var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "public");
-            var schemaName = fileNameSegments.Item2;
-            var tableName = fileNameSegments.Item3;
+            var schemaName = fileNameSegments.Item2.IsDoubleQuoted() ? fileNameSegments.Item2 : fileNameSegments.Item2.ToLower();
+            var tableName = fileNameSegments.Item3.IsDoubleQuoted() ? fileNameSegments.Item3 : fileNameSegments.Item3.ToLower();   
+
+            //read csv file and load into data table
+            var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(connection, transaction, schemaName, tableName, dataTable);

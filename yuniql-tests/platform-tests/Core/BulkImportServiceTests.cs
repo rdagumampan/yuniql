@@ -562,9 +562,9 @@ namespace Yuniql.PlatformTests.Core
             string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
 
             //deliverately create csv files out of order
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v101Directory, "2.dbo.TestCsv.csv"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v101Directory, "1.dbo.TestCsv.csv"));
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v101Directory, "3.dbo.TestCsv.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v101Directory, $"2.{_testDataService.SchemaName}.TestCsv.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v101Directory, $"1.{_testDataService.SchemaName}.TestCsv.csv"));
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v101Directory, $"3.{_testDataService.SchemaName}.TestCsv.csv"));
 
             //act
             configuration.TargetVersion = "v1.01";

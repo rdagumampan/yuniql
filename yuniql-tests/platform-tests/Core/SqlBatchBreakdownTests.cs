@@ -218,7 +218,7 @@ namespace Yuniql.PlatformTests.Core
             string sqlFileName = "Test_Single_Run_Failed_Script_Must_Rollback";
             string sqlObjectName1 = "Test_Object_1";
             string sqlObjectName2 = "Test_Object_2";
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithError(sqlObjectName1, sqlObjectName2));
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithError(sqlObjectName1, sqlObjectName2));
 
             //act
             try
