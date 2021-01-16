@@ -518,5 +518,63 @@
             <param name="message">The message to write.</param>
             <param name="payload">JSON structured information to support the trace entry.</param>
         </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.Quote(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.IsSingleQuoted(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.DoubleQuote(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.IsDoubleQuoted(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.Escape(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.Unescape(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.SplitSchema(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="objectName"></param>
+            <param name="defaultSchema"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.SplitBulkFileName(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="objectName"></param>
+            <param name="defaultSchema"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>
