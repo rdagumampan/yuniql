@@ -773,43 +773,45 @@
         <member name="M:Yuniql.Core.MetadataService.ExecuteSql(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
             <inheritdoc/>
         </member>
-        <member name="T:Yuniql.Core.MigrationServiceBase">
+        <member name="T:Yuniql.Core.MigrationService">
+            <inheritdoc />
+            <inheritdoc />
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
+            <inheritdoc /> 
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.Run">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.RunNonVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.Initialize">
+        <member name="M:Yuniql.Core.MigrationService.RunBulkImport(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.GetCurrentVersion(System.String,System.String)">
+        <member name="M:Yuniql.Core.MigrationService.Erase">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.GetAllVersions(System.String,System.String)">
+        <member name="M:Yuniql.Core.MigrationService.Initialize">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.Run">
+        <member name="M:Yuniql.Core.MigrationService.GetCurrentVersion(System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
+        <member name="M:Yuniql.Core.MigrationService.GetAllVersions(System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.IsTargetDatabaseLatest(System.String,System.String,System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.RunNonVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.RunBulkImport(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceBase.Erase">
+        <member name="M:Yuniql.Core.MigrationService.IsTargetDatabaseLatest(System.String,System.String,System.String)">
             <inheritdoc />
         </member>
         <member name="T:Yuniql.Core.MigrationServiceFactory">
@@ -824,24 +826,6 @@
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.MigrationServiceFactory.Create(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Yuniql.Core.MigrationServiceTransactional">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceTransactional.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
-            <inheritdoc /> 
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceTransactional.Run">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceTransactional.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceTransactional.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceTransactional.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="T:Yuniql.Core.PluginAssemblyLoadContext">
@@ -973,7 +957,7 @@
         </member>
         <member name="F:Yuniql.Core.SUPPORTED_DATABASES.SNOWFLAKE">
             <summary>
-            MariaDB
+            Snowflake DW
             </summary>
         </member>
         <member name="T:Yuniql.Core.TokenReplacementService">

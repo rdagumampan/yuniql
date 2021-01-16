@@ -8,7 +8,7 @@ using System.IO;
 namespace Yuniql.Core
 {
     /// <inheritdoc />
-    public class MigrationService : MigrationServiceBase
+    public partial class MigrationService : IMigrationService
     {
         private readonly IWorkspaceService _workspaceService;
         private readonly IDataService _dataService;
@@ -31,17 +31,6 @@ namespace Yuniql.Core
             IFileService fileService,
             ITraceService traceService,
             IConfigurationService configurationService)
-            : base(
-                workspaceService,
-                dataService,
-                bulkImportService,
-                metadataService,
-                tokenReplacementService,
-                directoryService,
-                fileService,
-                traceService,
-                configurationService
-            )
         {
             this._workspaceService = workspaceService;
             this._dataService = dataService;
@@ -55,7 +44,7 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
-        public override void Run()
+        public void Run()
         {
             var configuration = _configurationService.GetConfiguration();
             if (!configuration.IsInitialized)
@@ -82,7 +71,7 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
-        public override void Run(
+        public void Run(
             string workspace,
             string targetVersion = null,
             bool? isAutoCreateDatabase = false,
@@ -313,7 +302,7 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
-        public override void RunVersionScripts(
+        public void RunVersionScripts(
             IDbConnection connection,
             IDbTransaction transaction,
             List<string> appliedVersions,
@@ -499,8 +488,103 @@ namespace Yuniql.Core
             }
         }
 
+        /// <inheritdoc />
+        public void RunNonVersionScripts(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string workspace,
+            List<KeyValuePair<string, string>> tokens = null,
+            string bulkSeparator = null,
+            int? commandTimeout = null,
+            string environment = null,
+            string transactionMode = null,
+            bool isRequiredClearedDraft = false
+        )
+        {
+            if (!string.IsNullOrEmpty(transactionMode) && transactionMode.Equals(TRANSACTION_MODE.VERSION))
+            {
+                using (var internalConnection = _dataService.CreateConnection())
+                {
+                    internalConnection.Open();
+                    using (var internalTransaction = internalConnection.BeginTransaction())
+                    {
+                        try
+                        {
+                            if (null != internalTransaction)
+                                _traceService.Info("Transaction created for current version. This version migration run will be executed in this dedicated connection and transaction context.");
+
+                            RunNonVersionScriptsInternal(internalConnection, internalTransaction);
+                            internalTransaction.Commit();
+                        }
+                        catch (Exception)
+                        {
+                            internalTransaction.Rollback();
+                            throw;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                RunNonVersionScriptsInternal(connection, transaction);
+            }
+
+            void RunNonVersionScriptsInternal(IDbConnection connection, IDbTransaction transaction)
+            {
+                //extract and filter out scripts when environment code is used
+                var sqlScriptFiles = _directoryService.GetAllFiles(workspace, "*.sql").ToList();
+
+                // Throw exception when --require-cleared-draft is set to TRUE 
+                if (sqlScriptFiles.Any() && isRequiredClearedDraft && workspace.Contains(RESERVED_DIRECTORY_NAME.DRAFT))
+                {
+                    throw new YuniqlMigrationException($"Special {RESERVED_DIRECTORY_NAME.DRAFT} directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
+                        $"Move the script files to a version directory and re-execute the migration. Or remove --require-cleared-draft in parameter.");
+                }
+
+                sqlScriptFiles = _directoryService.FilterFiles(workspace, environment, sqlScriptFiles).ToList();
+                _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workspace}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine : string.Empty) +
+                       $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
+
+                //execute all script files in the target folder
+                sqlScriptFiles.Sort();
+                sqlScriptFiles.ForEach(scriptFile =>
+                {
+                    var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
+                    var sqlStatements = _dataService.BreakStatements(sqlStatementRaw)
+                        .Where(s => !string.IsNullOrWhiteSpace(s))
+                        .ToList();
+
+                    sqlStatements.ForEach(sqlStatement =>
+                    {
+                        try
+                        {
+                            sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
+                            _traceService.Debug($"Executing sql statement as part of : {scriptFile}");
+
+                            _metadataService.ExecuteSql(
+                                connection: connection,
+                                commandText: sqlStatement,
+                                transaction: transaction,
+                                commandTimeout: commandTimeout,
+                                traceService: _traceService);
+                        }
+                        catch (Exception)
+                        {
+                            _traceService.Error($"Failed to execute sql statements in script file {scriptFile}.{Environment.NewLine}" +
+                                $"The failing statement starts here --------------------------{Environment.NewLine}" +
+                                $"{sqlStatement} {Environment.NewLine}" +
+                                $"The failing statement ends here --------------------------");
+                            throw;
+                        }
+                    });
+
+                    _traceService.Info($"Executed script file {scriptFile}.");
+                });
+            }
+        }
+
         ///<inheritdoc/>
-        public override void RunSqlScripts(
+        public void RunSqlScripts(
             IDbConnection connection,
             IDbTransaction transaction,
             TransactionContext transactionContext,
@@ -593,6 +677,31 @@ namespace Yuniql.Core
                 var exceptionMessage = @$"Migration of version {version} was {transactionModeText} and has failed while attempting to execute script file {currentScriptFile} due to error ""{parsedExceptionMessage}"". {suggestionText}";
                 throw new YuniqlMigrationException(exceptionMessage, exception);
             }
+        }
+
+        /// <inheritdoc />
+        public void RunBulkImport(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string workspace,
+            string scriptDirectory,
+            string bulkSeparator = null,
+            int? bulkBatchSize = null,
+            int? commandTimeout = null,
+            string environment = null
+        )
+        {
+            //extract and filter out scripts when environment code is used
+            var bulkFiles = _directoryService.GetFiles(scriptDirectory, "*.csv").ToList();
+            bulkFiles = _directoryService.FilterFiles(workspace, environment, bulkFiles).ToList();
+            _traceService.Info($"Found {bulkFiles.Count} script files on {scriptDirectory}" + (bulkFiles.Count > 0 ? Environment.NewLine : string.Empty) +
+                   $"{string.Join(Environment.NewLine, bulkFiles.Select(s => "  + " + new FileInfo(s).Name))}");
+            bulkFiles.Sort();
+            bulkFiles.ForEach(csvFile =>
+            {
+                _bulkImportService.Run(connection, transaction, csvFile, bulkSeparator, bulkBatchSize: bulkBatchSize, commandTimeout: commandTimeout);
+                _traceService.Info($"Imported bulk file {csvFile}.");
+            });
         }
     }
 }
