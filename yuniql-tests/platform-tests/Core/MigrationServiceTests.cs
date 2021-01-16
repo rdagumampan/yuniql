@@ -17,7 +17,7 @@ namespace Yuniql.PlatformTests.Core
     //https://docs.microsoft.com/en-gb/dotnet/standard/assembly/unloadability
     //https://github.com/dotnet/samples/blob/master/core/extensions/AppWithPlugin/AppWithPlugin/Program.cs
     [TestClass]
-    public class MigrationServiceTransactionalTests : TestClassBase
+    public class MigrationServiceTests : TestClassBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;

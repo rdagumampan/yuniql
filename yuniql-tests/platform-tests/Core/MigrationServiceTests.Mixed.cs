@@ -16,7 +16,7 @@ namespace Yuniql.PlatformTests.Core
     //https://docs.microsoft.com/en-gb/dotnet/standard/assembly/unloadability
     //https://github.com/dotnet/samples/blob/master/core/extensions/AppWithPlugin/AppWithPlugin/Program.cs
     [TestClass]
-    public class MigrationServiceNonTransactionalTests : TestClassBase
+    public class MigrationServiceMixedTests : TestClassBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;
@@ -239,7 +239,8 @@ namespace Yuniql.PlatformTests.Core
             failedVersion.FailedScriptError.ShouldNotBeNullOrEmpty();
 
             //act & assert - where force to continue on failure
-            migrationService.Run(_testConfiguration.WorkspacePath, isAutoCreateDatabase: true, isContinueAfterFailure: true);
+            configuration.IsContinueAfterFailure = true;
+            migrationService.Run();
 
             //verrity status of migrations
             var retriedVersions = _testDataService.GetAllDbVersions(_testConfiguration.ConnectionString);

@@ -263,24 +263,24 @@ namespace Yuniql.Core
                 if (!targetDatabaseConfigured)
                 {
                     //runs all scripts in the _init folder
-                    RunNonVersionScripts(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
+                    RunNonVersionDirectories(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
                     _traceService.Info($"Executed script files on {Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT)}");
                 }
 
                 //checks if target database already runs the latest version and skips work if it already is
                 //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
+                RunNonVersionDirectories(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE)}");
 
                 //runs all scripts int the vxx.xx folders and subfolders
-                RunVersionScripts(connection, transaction, appliedVersions, workspace, targetVersion, transactionContext, tokens, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environment: environment, transactionMode: transactionMode);
+                RunVersionDirectories(connection, transaction, appliedVersions, workspace, targetVersion, transactionContext, tokens, bulkSeparator: bulkSeparator, metaSchemaName: metaSchemaName, metaTableName: metaTableName, commandTimeout: commandTimeout, bulkBatchSize: bulkBatchSize, appliedByTool: appliedByTool, appliedByToolVersion: appliedByToolVersion, environment: environment, transactionMode: transactionMode);
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode, isRequiredClearedDraft: isRequiredClearedDraft);
+                RunNonVersionDirectories(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode, isRequiredClearedDraft: isRequiredClearedDraft);
                 _traceService.Info($"Executed script files on {Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT)}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
+                RunNonVersionDirectories(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST)}");
             }
 
@@ -288,21 +288,21 @@ namespace Yuniql.Core
             void RunPreDraftPostInternal(IDbConnection connection, IDbTransaction transaction, bool requiredClearedDraft)
             {
                 //runs all scripts in the _pre folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
+                RunNonVersionDirectories(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE)}");
 
                 //runs all scripts in the _draft folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode, isRequiredClearedDraft: requiredClearedDraft);
+                RunNonVersionDirectories(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode, isRequiredClearedDraft: requiredClearedDraft);
                 _traceService.Info($"Executed script files on {Path.Combine(workspace, RESERVED_DIRECTORY_NAME.DRAFT)}");
 
                 //runs all scripts in the _post folder and subfolders
-                RunNonVersionScripts(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
+                RunNonVersionDirectories(connection, transaction, Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST), tokens, bulkSeparator: bulkSeparator, commandTimeout: commandTimeout, environment: environment, transactionMode: transactionMode);
                 _traceService.Info($"Executed script files on {Path.Combine(workspace, RESERVED_DIRECTORY_NAME.POST)}");
             }
         }
 
         /// <inheritdoc />
-        public void RunVersionScripts(
+        public void RunVersionDirectories(
             IDbConnection connection,
             IDbTransaction transaction,
             List<string> appliedVersions,
@@ -357,7 +357,7 @@ namespace Yuniql.Core
 
                                     //run scripts in all sub-directories in the version
                                     var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList(); ;
-                                    RunVersionScriptsInternal(internalConnection, internalTransaction, scriptSubDirectories, versionDirectory, versionDirectory);
+                                    RunVersionDirectoriesInternal(internalConnection, internalTransaction, scriptSubDirectories, versionDirectory, versionDirectory);
 
                                     internalTransaction.Commit();
                                 }
@@ -376,8 +376,8 @@ namespace Yuniql.Core
 
                         //check for special _transaction directory in the version vxx.xx directory
                         var transactionDirectory = Path.Combine(versionDirectory, RESERVED_DIRECTORY_NAME.TRANSACTION);
-                        var isExplicitTransactionDefined = _directoryService.Exists(transactionDirectory);
-                        if (isExplicitTransactionDefined)
+                        var transactionExplicit = _directoryService.Exists(transactionDirectory);
+                        if (transactionExplicit)
                         {
                             //check version directory with _transaction directory only applies to platforms NOT supporting transactional ddl
                             if (_dataService.IsTransactionalDdlSupported)
@@ -403,7 +403,7 @@ namespace Yuniql.Core
                         }
 
 
-                        if (isExplicitTransactionDefined)
+                        if (transactionExplicit)
                         {
                             //run scripts within a single transaction for all scripts inside _transaction directory and scripts in the child directories
                             string versionName = new DirectoryInfo(versionDirectory).Name;
@@ -416,7 +416,7 @@ namespace Yuniql.Core
                                     //scriptSubDirectories is the child directories under _transaction directory c:\temp\vxx.xx\_transaction\list_of_directories
                                     //transactionDirectory the path of _transaction directory c:\temp\vxx.xx\_transaction
                                     //versionDirectory path of version c:\temp\vxx.xx
-                                    RunVersionScriptsInternal(connection, transaction, scriptSubDirectories, transactionDirectory, versionDirectory);
+                                    RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, transactionDirectory, versionDirectory);
                                     transaction.Commit();
 
                                     _traceService.Info(@$"Target database has been commited after running ""{versionName}"" version scripts.");
@@ -437,7 +437,7 @@ namespace Yuniql.Core
                             //run scripts without transaction
                             //scriptSubDirectories is the child directories under _transaction directory c:\temp\vxx.xx\list_of_directories
                             //versionDirectory path of version c:\temp\vxx.xx
-                            RunVersionScriptsInternal(connection, transaction, scriptSubDirectories, versionDirectory, versionDirectory);
+                            RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, versionDirectory, versionDirectory);
                         }
 
                     }
@@ -449,7 +449,7 @@ namespace Yuniql.Core
                 _traceService.Info($"Target database is updated. No migration step executed at {connectionInfo.Database} on {connectionInfo.DataSource}.");
             }
 
-            void RunVersionScriptsInternal(IDbConnection connection, IDbTransaction transaction, List<string> scriptSubDirectories, string scriptDirectory, string versionDirectory)
+            void RunVersionDirectoriesInternal(IDbConnection connection, IDbTransaction transaction, List<string> scriptSubDirectories, string scriptDirectory, string versionDirectory)
             {
                 try
                 {
@@ -458,17 +458,17 @@ namespace Yuniql.Core
                     scriptSubDirectories.ForEach(scriptSubDirectory =>
                     {
                         //run all scripts in the current version folder
-                        RunSqlScripts(connection, transaction, transactionContext, versionName, workspace, scriptSubDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment, appliedByTool, appliedByToolVersion);
+                        RunVersionSqlScripts(connection, transaction, transactionContext, versionName, workspace, scriptSubDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment, appliedByTool, appliedByToolVersion);
 
                         //import csv files into tables of the the same filename as the csv
-                        RunBulkImport(connection, transaction, workspace, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
+                        RunBulkImportScripts(connection, transaction, workspace, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
                     });
 
                     //run all scripts in the current version folder
-                    RunSqlScripts(connection, transaction, transactionContext, versionName, workspace, scriptDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment);
+                    RunVersionSqlScripts(connection, transaction, transactionContext, versionName, workspace, scriptDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment);
 
                     //import csv files into tables of the the same filename as the csv
-                    RunBulkImport(connection, transaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
+                    RunBulkImportScripts(connection, transaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
 
                     //update db version
                     _metadataService.InsertVersion(connection, transaction, versionName, transactionContext,
@@ -489,7 +489,7 @@ namespace Yuniql.Core
         }
 
         /// <inheritdoc />
-        public void RunNonVersionScripts(
+        public void RunNonVersionDirectories(
             IDbConnection connection,
             IDbTransaction transaction,
             string workspace,
@@ -513,7 +513,7 @@ namespace Yuniql.Core
                             if (null != internalTransaction)
                                 _traceService.Info("Transaction created for current version. This version migration run will be executed in this dedicated connection and transaction context.");
 
-                            RunNonVersionScriptsInternal(internalConnection, internalTransaction);
+                            RunNonVersionSqlScripts(internalConnection, internalTransaction, workspace, tokens, environment, commandTimeout, isRequiredClearedDraft);
                             internalTransaction.Commit();
                         }
                         catch (Exception)
@@ -526,182 +526,8 @@ namespace Yuniql.Core
             }
             else
             {
-                RunNonVersionScriptsInternal(connection, transaction);
-            }
-
-            void RunNonVersionScriptsInternal(IDbConnection connection, IDbTransaction transaction)
-            {
-                //extract and filter out scripts when environment code is used
-                var sqlScriptFiles = _directoryService.GetAllFiles(workspace, "*.sql").ToList();
-
-                // Throw exception when --require-cleared-draft is set to TRUE 
-                if (sqlScriptFiles.Any() && isRequiredClearedDraft && workspace.Contains(RESERVED_DIRECTORY_NAME.DRAFT))
-                {
-                    throw new YuniqlMigrationException($"Special {RESERVED_DIRECTORY_NAME.DRAFT} directory is not cleared. Found files in _draft directory while the migration option --require-cleared-draft is set to TRUE." +
-                        $"Move the script files to a version directory and re-execute the migration. Or remove --require-cleared-draft in parameter.");
-                }
-
-                sqlScriptFiles = _directoryService.FilterFiles(workspace, environment, sqlScriptFiles).ToList();
-                _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workspace}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine : string.Empty) +
-                       $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
-
-                //execute all script files in the target folder
-                sqlScriptFiles.Sort();
-                sqlScriptFiles.ForEach(scriptFile =>
-                {
-                    var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
-                    var sqlStatements = _dataService.BreakStatements(sqlStatementRaw)
-                        .Where(s => !string.IsNullOrWhiteSpace(s))
-                        .ToList();
-
-                    sqlStatements.ForEach(sqlStatement =>
-                    {
-                        try
-                        {
-                            sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
-                            _traceService.Debug($"Executing sql statement as part of : {scriptFile}");
-
-                            _metadataService.ExecuteSql(
-                                connection: connection,
-                                commandText: sqlStatement,
-                                transaction: transaction,
-                                commandTimeout: commandTimeout,
-                                traceService: _traceService);
-                        }
-                        catch (Exception)
-                        {
-                            _traceService.Error($"Failed to execute sql statements in script file {scriptFile}.{Environment.NewLine}" +
-                                $"The failing statement starts here --------------------------{Environment.NewLine}" +
-                                $"{sqlStatement} {Environment.NewLine}" +
-                                $"The failing statement ends here --------------------------");
-                            throw;
-                        }
-                    });
-
-                    _traceService.Info($"Executed script file {scriptFile}.");
-                });
-            }
-        }
-
-        ///<inheritdoc/>
-        public void RunSqlScripts(
-            IDbConnection connection,
-            IDbTransaction transaction,
-            TransactionContext transactionContext,
-            string version,
-            string workspace,
-            string scriptDirectory,
-            string metaSchemaName,
-            string metaTableName,
-            List<KeyValuePair<string, string>> tokens = null,
-            int? commandTimeout = null,
-            string environment = null,
-            string appliedByTool = null,
-            string appliedByToolVersion = null
-        )
-        {
-            string currentScriptFile = null;
-            try
-            {
-                //filter out scripts when environment code is used
-                var sqlScriptFiles = _directoryService.GetFiles(scriptDirectory, "*.sql").ToList();
-                sqlScriptFiles = _directoryService.FilterFiles(workspace, environment, sqlScriptFiles).ToList();
-                _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workspace}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine : string.Empty) +
-                       $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
-
-                //execute all script files in the version folder, we also make sure its sorted by file name
-                sqlScriptFiles.Sort();
-                sqlScriptFiles.ForEach(scriptFile =>
-                {
-                    currentScriptFile = scriptFile;
-
-                    //in case the non-transactional failure is resolved, skip scripts
-                    if (null != transactionContext
-                        && transactionContext.ContinueAfterFailure.HasValue
-                        && transactionContext.ContinueAfterFailure.Value
-                        && !transactionContext.IsFailedScriptPathMatched)
-                    {
-                        //set failed script file as matched
-                        if (string.Equals(scriptFile, transactionContext.LastKnownFailedScriptPath, StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            transactionContext.SetFailedScriptPathMatch();
-                        }
-                        _traceService.Info($"Skipping script file {scriptFile} ...");
-                    }
-                    else //otherwise execute them
-                    {
-                        var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
-                        var sqlStatements = _dataService.BreakStatements(sqlStatementRaw)
-                            .Where(s => !string.IsNullOrWhiteSpace(s))
-                            .ToList();
-
-                        sqlStatements.ForEach(sqlStatement =>
-                        {
-                            sqlStatement = _tokenReplacementService.Replace(tokens, sqlStatement);
-                            _traceService.Debug($"Executing sql statement as part of : {scriptFile}");
-
-                            _metadataService.ExecuteSql(
-                                connection: connection,
-                                commandText: sqlStatement,
-                                transaction: transaction,
-                                commandTimeout: commandTimeout,
-                                traceService: _traceService);
-                        });
-
-                        _traceService.Info($"Executed script file {scriptFile}.");
-                    }
-                });
-            }
-            catch (Exception exception)
-            {
-                //try parse the known sql error and if not sucesfull, use the whole exception
-                if (!_dataService.TryParseErrorFromException(exception, out string parsedExceptionMessage))
-                    parsedExceptionMessage = exception.Message;
-
-                //in case scripts are not executed within transaction, mark version as failed in database
-                var configuration = _configurationService.GetConfiguration();
-                if (configuration.TransactionMode == TRANSACTION_MODE.NONE)
-                {
-                    _metadataService.InsertVersion(connection, transaction, version, transactionContext,
-                        metaSchemaName: metaSchemaName,
-                        metaTableName: metaTableName,
-                        commandTimeout: commandTimeout,
-                        appliedByTool: appliedByTool,
-                        appliedByToolVersion: appliedByToolVersion,
-                        failedScriptPath: currentScriptFile,
-                        failedScriptError: parsedExceptionMessage);
-                }
-
-                var transactionModeText = configuration.TransactionMode == TRANSACTION_MODE.NONE ? "not running in transaction" : "running in transaction";
-                var suggestionText = configuration.TransactionMode == TRANSACTION_MODE.NONE ? MESSAGES.ManualResolvingAfterFailureMessage : MESSAGES.TransactionalAfterFailureMessage;
-                var exceptionMessage = @$"Migration of version {version} was {transactionModeText} and has failed while attempting to execute script file {currentScriptFile} due to error ""{parsedExceptionMessage}"". {suggestionText}";
-                throw new YuniqlMigrationException(exceptionMessage, exception);
-            }
-        }
-
-        /// <inheritdoc />
-        public void RunBulkImport(
-            IDbConnection connection,
-            IDbTransaction transaction,
-            string workspace,
-            string scriptDirectory,
-            string bulkSeparator = null,
-            int? bulkBatchSize = null,
-            int? commandTimeout = null,
-            string environment = null
-        )
-        {
-            //extract and filter out scripts when environment code is used
-            var bulkFiles = _directoryService.GetFiles(scriptDirectory, "*.csv").ToList();
-            bulkFiles = _directoryService.FilterFiles(workspace, environment, bulkFiles).ToList();
-            _traceService.Info($"Found {bulkFiles.Count} script files on {scriptDirectory}" + (bulkFiles.Count > 0 ? Environment.NewLine : string.Empty) +
-                   $"{string.Join(Environment.NewLine, bulkFiles.Select(s => "  + " + new FileInfo(s).Name))}");
-            bulkFiles.Sort();
-            bulkFiles.ForEach(csvFile =>
-            {
-                _bulkImportService.Run(connection, transaction, csvFile, bulkSeparator, bulkBatchSize: bulkBatchSize, commandTimeout: commandTimeout);
-                _traceService.Info($"Imported bulk file {csvFile}.");
-            });
+                RunNonVersionSqlScripts(connection, transaction, workspace, tokens, environment, commandTimeout, isRequiredClearedDraft);
+            }           
         }
     }
 }

@@ -537,94 +537,6 @@
             When CSV files are present also run bulk import operations to target database table having same file name.
             </summary>
         </member>
-        <member name="M:Yuniql.Core.IMigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
-            <summary>
-            Runs migrations by executing alls scripts in the workspace directory. 
-            When CSV files are present also run bulk import operations to target database table having same file name.
-            </summary>
-            <param name="workspace">The directory path to migration project.</param>
-            <param name="targetVersion">The maximum version to run to. When NULL, runs migration to the latest version found in the workspace path.</param>
-            <param name="isAutoCreateDatabase">When TRUE, creates the database in the target host.</param>
-            <param name="tokens">Token kev/value pairs to replace tokens in script files.</param>
-            <param name="isVerifyOnly">When TRUE, runs the migration in uncommitted mode. No changes are committed to target database. When NULL, runs migration in atomic mode.</param>
-            <param name="bulkSeparator">Bulk file values separator character in the CSV bulk import files. When NULL, uses comma.</param>
-            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-            <param name="commandTimeout">Command timeout in seconds. When NULL, it uses default provider command timeout.</param>
-            <param name="bulkBatchSize">Batch rows to processed when performing bulk import. When NULL, it uses default provider batch size.</param>
-            <param name="appliedByTool">The source that initiates the migration. This can be yuniql-cli, yuniql-aspnetcore or yuniql-azdevops.</param>
-            <param name="appliedByToolVersion">The version of the source that initiates the migration.</param>
-            <param name="environment">Environment code for environment-aware scripts.</param>
-            <param name="isContinueAfterFailure">The resume from failure.</param>
-            <param name="transactionMode"></param>
-            <param name="isRequiredClearedDraft">When TRUE, migration will fail if the _draft folder is not empty. This is for production migration.</param>
-        </member>
-        <member name="M:Yuniql.Core.IMigrationService.RunNonVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="connection"></param>
-            <param name="transaction"></param>
-            <param name="workspace"></param>
-            <param name="tokens"></param>
-            <param name="bulkSeparator"></param>
-            <param name="commandTimeout"></param>
-            <param name="environment"></param>
-            <param name="transactionMode"></param>
-            <param name="isRequiredClearedDraft"></param>
-        </member>
-        <member name="M:Yuniql.Core.IMigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
-            <summary>
-            
-            </summary>
-            <param name="connection"></param>
-            <param name="transaction"></param>
-            <param name="appliedVersions"></param>
-            <param name="workspace"></param>
-            <param name="targetVersion"></param>
-            <param name="transactionContext"></param>
-            <param name="tokens"></param>
-            <param name="bulkSeparator"></param>
-            <param name="metaSchemaName"></param>
-            <param name="metaTableName"></param>
-            <param name="commandTimeout"></param>
-            <param name="bulkBatchSize"></param>
-            <param name="appliedByTool"></param>
-            <param name="appliedByToolVersion"></param>
-            <param name="environment"></param>
-            <param name="transactionMode"></param>
-        </member>
-        <member name="M:Yuniql.Core.IMigrationService.RunBulkImport(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
-            <summary>
-            
-            </summary>
-            <param name="connection"></param>
-            <param name="transaction"></param>
-            <param name="workspace"></param>
-            <param name="scriptDirectory"></param>
-            <param name="bulkSeparator"></param>
-            <param name="bulkBatchSize"></param>
-            <param name="commandTimeout"></param>
-            <param name="environment"></param>
-        </member>
-        <member name="M:Yuniql.Core.IMigrationService.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
-            <summary>
-            
-            </summary>
-            <param name="connection"></param>
-            <param name="transaction"></param>
-            <param name="transactionContext"></param>
-            <param name="version"></param>
-            <param name="workspace"></param>
-            <param name="scriptDirectory"></param>
-            <param name="metaSchemaName"></param>
-            <param name="metaTableName"></param>
-            <param name="tokens"></param>
-            <param name="commandTimeout"></param>
-            <param name="environment"></param>
-            <param name="appliedByTool"></param>
-            <param name="appliedByToolVersion"></param>
-        </member>
         <member name="M:Yuniql.Core.IMigrationService.Erase">
             <summary>
             Executes erase scripts presentin _erase directory and subdirectories.
@@ -777,6 +689,7 @@
             <inheritdoc />
             <inheritdoc />
             <inheritdoc />
+            <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
             <inheritdoc /> 
@@ -787,19 +700,22 @@
         <member name="M:Yuniql.Core.MigrationService.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationService.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.MigrationService.RunVersionDirectories(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationService.RunNonVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationService.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.MigrationService.RunBulkImport(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
+        <member name="M:Yuniql.Core.MigrationService.RunNonVersionDirectories(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.Erase">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.RunVersionSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.RunNonVersionSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.RunBulkImportScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.Initialize">
