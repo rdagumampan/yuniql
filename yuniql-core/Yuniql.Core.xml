@@ -826,24 +826,6 @@
         <member name="M:Yuniql.Core.MigrationServiceFactory.Create(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService)">
             <inheritdoc/>
         </member>
-        <member name="T:Yuniql.Core.MigrationServiceNonTransactional">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.Run">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.Run(System.String,System.String,System.Nullable{System.Boolean},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Boolean},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Boolean},System.String,System.Boolean)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.RunVersionScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
-            <inheritdoc />
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceNonTransactional.RunSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
-            <inheritdoc />
-        </member>
         <member name="T:Yuniql.Core.MigrationServiceTransactional">
             <inheritdoc />
         </member>

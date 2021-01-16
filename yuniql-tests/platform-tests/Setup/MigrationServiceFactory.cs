@@ -81,30 +81,6 @@ namespace Yuniql.PlatformTests.Setup
                 configurationService);
             return migrationService;
         }
-
-        private IMigrationService CreateNonTransactionalMigrationService(IDataService dataService, IBulkImportService bulkImportService)
-        {
-            var directoryService = new DirectoryService();
-            var fileService = new FileService();
-            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
-            var tokenReplacementService = new TokenReplacementService(_traceService);
-            var metadataService = new MetadataService(dataService, _traceService, tokenReplacementService);
-            var environmentService = new EnvironmentService();
-            var configurationService = new ConfigurationService(environmentService, workspaceService, _traceService);
-
-            var migrationService = new MigrationServiceNonTransactional(
-                workspaceService,
-                dataService,
-                bulkImportService,
-                metadataService,
-                tokenReplacementService,
-                directoryService,
-                fileService,
-                _traceService,
-                configurationService);
-            return migrationService;
-        }
-
     }
 }
 

@@ -502,7 +502,7 @@ namespace Yuniql.UnitTests
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
-            var sut = new MigrationServiceNonTransactional(
+            var sut = new MigrationServiceTransactional(
                 workspaceService.Object,
                 dataService.Object,
                 bulkImportService.Object,
