@@ -38,14 +38,11 @@ namespace Yuniql.Snowflake
             int? batchSize = null,
             int? commandTimeout = null)
         {
-            //check if a non-default dbo schema is used
-            var schemaName = "PUBLIC";
-            var tableName = Path.GetFileNameWithoutExtension(fileFullPath);
-            if (tableName.IndexOf('.') > 0)
-            {
-                schemaName = tableName.Split('.')[0];
-                tableName = tableName.Split('.')[1];
-            }
+            //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
+            var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
+            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "PUBLIC");
+            var schemaName = fileNameSegments.Item2;
+            var tableName = fileNameSegments.Item3;
 
             _traceService.Info($"SnowflakeImportService: Started copying data into destination table {schemaName}.{tableName}");
 

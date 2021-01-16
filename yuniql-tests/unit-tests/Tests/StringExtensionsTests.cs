@@ -61,7 +61,8 @@ namespace Yuniql.UnitTests
             });
 
             //assert
-            exception.Message.Contains("Bulk file name must have maximum 3 segments. These are the valid file name patterns: 1.myschema.mytable, 01.myschema.mytable, myschema.mytable, 1.mytable, 01.mytable, mytable.");
+            exception.Message.Contains("Bulk file name must have maximum 3 segments.");
+            exception.Message.Contains("These are the valid file name patterns: 1.myschema.mytable.csv, 01.myschema.mytable.csv, 1.mytable.csv, 01.mytable.csv, myschema.mytable.csv, mytable.csv.");
         }
 
         [TestMethod]

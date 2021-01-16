@@ -34,14 +34,11 @@ namespace Yuniql.SqlServer
             int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
-            //check if a non-default dbo schema is used
-            var schemaName = "dbo";
-            var tableName = Path.GetFileNameWithoutExtension(fileFullPath);
-            if (tableName.IndexOf('.') > 0)
-            {
-                schemaName = tableName.Split('.')[0];
-                tableName = tableName.Split('.')[1];
-            }
+            //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
+            var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
+            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "dbo");
+            var schemaName = fileNameSegments.Item2;
+            var tableName = fileNameSegments.Item3;
 
             //read csv file and load into data table
             var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);

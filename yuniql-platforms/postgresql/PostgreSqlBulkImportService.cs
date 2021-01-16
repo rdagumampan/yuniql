@@ -42,14 +42,11 @@ namespace Yuniql.PostgreSql
             //read csv file and load into data table
             var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
 
-            //check if a non-default dbo schema is used
-            var schemaName = "public";
-            var tableName = Path.GetFileNameWithoutExtension(fileFullPath).ToLower();
-            if (tableName.IndexOf('.') > 0)
-            {
-                schemaName = tableName.Split('.')[0];
-                tableName = tableName.Split('.')[1];
-            }
+            //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
+            var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
+            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "public");
+            var schemaName = fileNameSegments.Item2;
+            var tableName = fileNameSegments.Item3;
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(connection, transaction, schemaName, tableName, dataTable);

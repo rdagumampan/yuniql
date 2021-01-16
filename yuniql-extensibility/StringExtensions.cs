@@ -2,11 +2,13 @@
 
 namespace Yuniql.Extensibility
 {
-    //TODO: Cover this with unit tests
+    /// <summary>
+    /// Extensions to String class
+    /// </summary>
     public static class StringExtensions
     {
         /// <summary>
-        /// 
+        /// Retursn a single qouted string
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -16,7 +18,7 @@ namespace Yuniql.Extensibility
         }
 
         /// <summary>
-        /// 
+        /// Returns true when string is enclosed in single quote
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -26,7 +28,7 @@ namespace Yuniql.Extensibility
         }
 
         /// <summary>
-        /// 
+        /// Retursn a double qouted string
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -36,7 +38,7 @@ namespace Yuniql.Extensibility
         }
 
         /// <summary>
-        /// 
+        /// Returns true when string is enclosed in double quote
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -46,7 +48,7 @@ namespace Yuniql.Extensibility
         }
 
         /// <summary>
-        /// 
+        /// Replaces \ with \\ in string
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -56,7 +58,7 @@ namespace Yuniql.Extensibility
         }
 
         /// <summary>
-        /// 
+        /// Replaces \\ with \ in string
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
@@ -66,7 +68,7 @@ namespace Yuniql.Extensibility
         }
 
         /// <summary>
-        /// 
+        /// Returns schema name and object name
         /// </summary>
         /// <param name="objectName"></param>
         /// <param name="defaultSchema"></param>
@@ -86,7 +88,9 @@ namespace Yuniql.Extensibility
         }
 
         /// <summary>
-        /// 
+        /// Returns segments of a file to represent sequence no, schema name and table name
+        /// These are the valid file name patterns: 1.myschema.mytable, 01.myschema.mytable, myschema.mytable, 1.mytable, 01.mytable, mytable
+        /// If you dont specify the schema, the default schema will derived from specific database platform
         /// </summary>
         /// <param name="objectName"></param>
         /// <param name="defaultSchema"></param>
@@ -98,7 +102,7 @@ namespace Yuniql.Extensibility
             {
                 throw new ArgumentException(
                     "Bulk file name must have maximum 3 segments. " +
-                    "These are the valid file name patterns: 1.myschema.mytable, 01.myschema.mytable, myschema.mytable, 1.mytable, 01.mytable, mytable." +
+                    "These are the valid file name patterns: 1.myschema.mytable.csv, 01.myschema.mytable.csv, 1.mytable.csv, 01.mytable.csv, myschema.mytable.csv, mytable.csv. " +
                     "If you dont specify the schema, the default schema will derived from specific database platform.");
             }
 

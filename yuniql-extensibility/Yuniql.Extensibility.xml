@@ -518,51 +518,56 @@
             <param name="message">The message to write.</param>
             <param name="payload">JSON structured information to support the trace entry.</param>
         </member>
+        <member name="T:Yuniql.Extensibility.StringExtensions">
+            <summary>
+            Extensions to String class
+            </summary>
+        </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.Quote(System.String)">
             <summary>
-            
+            Retursn a single qouted string
             </summary>
             <param name="str"></param>
             <returns></returns>
         </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.IsSingleQuoted(System.String)">
             <summary>
-            
+            Returns true when string is enclosed in single quote
             </summary>
             <param name="str"></param>
             <returns></returns>
         </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.DoubleQuote(System.String)">
             <summary>
-            
+            Retursn a double qouted string
             </summary>
             <param name="str"></param>
             <returns></returns>
         </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.IsDoubleQuoted(System.String)">
             <summary>
-            
+            Returns true when string is enclosed in double quote
             </summary>
             <param name="str"></param>
             <returns></returns>
         </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.Escape(System.String)">
             <summary>
-            
+            Replaces \ with \\ in string
             </summary>
             <param name="str"></param>
             <returns></returns>
         </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.Unescape(System.String)">
             <summary>
-            
+            Replaces \\ with \ in string
             </summary>
             <param name="str"></param>
             <returns></returns>
         </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.SplitSchema(System.String,System.String)">
             <summary>
-            
+            Returns schema name and object name
             </summary>
             <param name="objectName"></param>
             <param name="defaultSchema"></param>
@@ -570,7 +575,9 @@
         </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.SplitBulkFileName(System.String,System.String)">
             <summary>
-            
+            Returns segments of a file to represent sequence no, schema name and table name
+            These are the valid file name patterns: 1.myschema.mytable, 01.myschema.mytable, myschema.mytable, 1.mytable, 01.mytable, mytable
+            If you dont specify the schema, the default schema will derived from specific database platform
             </summary>
             <param name="objectName"></param>
             <param name="defaultSchema"></param>
