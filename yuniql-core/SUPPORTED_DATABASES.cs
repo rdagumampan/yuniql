@@ -24,5 +24,10 @@
         /// MariaDB
         /// </summary>
         public const string MARIADB = "mariadb";
+
+        /// <summary>
+        /// Snowflake DW
+        /// </summary>
+        public const string SNOWFLAKE = "snowflake";
     }
 }

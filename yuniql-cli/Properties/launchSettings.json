@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "init"
+      "commandLineArgs": "run -p C:\\play\\yuniql\\samples\\basic-snowflake-sample -c \"host=es94926.west-europe.azure.snowflakecomputing.com;account=es94926;user=yuniqldev;password=H58HidNeH*AV;db=HELLO_YUNIQL;schema=PUBLIC\" --platform snowflake --debug"
     }
   }
 }

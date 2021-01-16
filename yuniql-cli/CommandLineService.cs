@@ -40,7 +40,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute init function", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute init function", opts.IsDebug);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute vnext function", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute vnext function", opts.IsDebug);
             }
         }
 
@@ -116,10 +116,10 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute run function", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute run function", opts.IsDebug);
             }
         }
-        
+
         public int RunVerifyOption(VerifyOption opts)
         {
             try
@@ -134,7 +134,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute verification function. Target database will be rolled back to its previous state", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute verification function. Target database will be rolled back to its previous state", opts.IsDebug);
             }
         }
 
@@ -159,18 +159,31 @@ namespace Yuniql.CLI
                 var migrationService = _migrationServiceFactory.Create(configuration.Platform);
                 var versions = migrationService.GetAllVersions(configuration.MetaSchemaName, configuration.MetaTableName);
 
-                var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool");
-                versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}"));
+                //TODO: add duration
+                var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool", "Duration");
+                versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}", $"{v.DurationMs} ms"));
                 versionPrettyPrint.Print();
 
+                var failedVersion = versions.LastOrDefault(v => v.Status == Status.Failed);
+                if(null!= failedVersion)
+                {
+                    var failedVersionMessage = $"Previous run was not successful, see details below:{Environment.NewLine}" +
+                        $"Last failed version: {failedVersion.Version}{Environment.NewLine}" +
+                        $"Last failed script: {failedVersion.FailedScriptPath}{Environment.NewLine}" +
+                        $"Last error message: {failedVersion.FailedScriptError}{Environment.NewLine}" +
+                        $"Suggested action: Fix the failed script and run manually withour yuniql on the target database." +
+                        @$"After that, try to issue ""yuniql run"" command again with ""--continue-after-failure"" parameter.{Environment.NewLine}";
+                    _traceService.Info(failedVersionMessage);
+                }
+
                 _traceService.Success($"Listed all schema versions applied to database on {configuration.Workspace} workspace.{Environment.NewLine}" +
-                    $"For platforms not supporting full transactional DDL operations (ex. MySql, CockroachDB, Snowflake), unsuccessful migrations will show the status as Failed and you can look for LastFailedScript and LastScriptError in the schema version tracking table.");
+                    $"For platforms not supporting full transactional DDL operations (ex. MySql, Snowflake, CockroachDB), unsuccessful migrations will show the status as Failed and you can look for FailedScriptPath and FailedScriptError in the schema version tracking table.");
 
                 return 0;
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute info function", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute list function", opts.IsDebug);
             }
         }
 
@@ -203,7 +216,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute erase function", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute erase function", opts.IsDebug);
             }
         }
 
@@ -213,26 +226,34 @@ namespace Yuniql.CLI
             {
                 string platforms = @"Supported database platforms and available samples. For specific versions, please refer to latest documentation pages.
 
-    SqlServer: 
+    //TODO: show released, preview, alpha, beta
+    SqlServer | Released: 
         Supported versions: https://yuniql.io/docs/supported-platforms/
         Usage: yuniql run -a -c <your-connection-string> --platform sqlserver
         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample
 
-    PostgreSql: 
+    PostgreSql | Released: 
         Supported versions: https://yuniql.io/docs/supported-platforms/
         Usage: yuniql run -a -c <your-connection-string> --platform postgresql
         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-postgresql-sample
 
-    MySql: 
+    MySql | Released: 
         Supported versions: https://yuniql.io/docs/supported-platforms/
         Usage: yuniql run -a -c <your-connection-string> --platform mysql
         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
 
-    MariaDb: 
+    MariaDb | Released: 
         Supported versions: https://yuniql.io/docs/supported-platforms/
         Supported versions: 
         Usage: yuniql run -a -c <your-connection-string> --platform mariadb
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample";
+        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
+
+    Snowflake | Alpha: 
+        Supported versions: https://yuniql.io/docs/supported-platforms/
+        Supported versions: 
+        Usage: yuniql run -a -c <your-connection-string> --platform snowflake
+        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-snowflake-sample
+";
 
                 Console.WriteLine(platforms);
 
@@ -240,17 +261,8 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute RunPlatformsOption function", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute platforms function", opts.IsDebug);
             }
-        }
-
-        private int OnException(Exception exception, string headerMessage, bool debug, ITraceService traceService)
-        {
-            var userMessage = debug ? exception.ToString() : $"{exception.Message} {exception.InnerException?.Message}";
-            traceService.Error($"{headerMessage}. Arrg... something seems broken.{Environment.NewLine}" +
-                $"Internal error message: {userMessage}.{Environment.NewLine}" +
-                $"If you think this is a bug, please report an issue here https://github.com/rdagumampan/yuniql/issues.");
-            return 1;
         }
 
         public int RunBaselineOption(BaselineOption opts)
@@ -261,7 +273,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute baseline function", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute baseline function", opts.IsDebug);
 
             }
         }
@@ -274,7 +286,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute rebase function", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute rebase function", opts.IsDebug);
 
             }
         }
@@ -287,8 +299,20 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to archive function", opts.IsDebug, _traceService);
+                return OnException(ex, "Failed to execute archive function", opts.IsDebug);
             }
         }
+
+        private int OnException(Exception exception, string headerMessage, bool debug)
+        {
+            var stackTraceMessage = debug ? exception.ToString().Replace(exception.Message, string.Empty) 
+                : $"{exception.Message} {exception.InnerException?.Message}";
+            
+            _traceService.Error($"{headerMessage}. {exception.Message}{Environment.NewLine}" +
+                $"Diagnostics stack trace captured a {stackTraceMessage}{Environment.NewLine}" +
+                $"If you think this is a bug, please report an issue here https://github.com/rdagumampan/yuniql/issues."); //TODO: create global constants for url
+            return 1;
+        }
+
     }
 }

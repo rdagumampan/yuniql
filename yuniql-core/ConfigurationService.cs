@@ -100,7 +100,7 @@ namespace Yuniql.Core
             configuration.IsForced = configuration.IsForced;
 
             //Non-cli captured configuration
-            configuration.IsVerifyOnly = configuration.IsVerifyOnly;
+            configuration.IsVerifyOnly = false;
             configuration.AppliedByTool = configuration.AppliedByTool;
             configuration.AppliedByToolVersion = configuration.AppliedByToolVersion;
 

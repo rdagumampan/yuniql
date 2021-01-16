@@ -4,8 +4,9 @@ using MySql.Data.MySqlClient;
 using System;
 using Yuniql.Core;
 using Yuniql.MySql;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Platforms.MySql
 {
     public class MySqlTestDataService : TestDataServiceBase
     {
@@ -169,6 +170,12 @@ DROP TABLE script3;
             return $@"
 CREATE SCHEMA {schemaName};
 ";
+        }
+
+        public override void DropDatabase(string connectionString)
+        {
+            //not needed need since test cases are executed against disposable database containers
+            //we could simply docker rm the running test container after tests completed
         }
     }
 }

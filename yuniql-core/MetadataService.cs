@@ -9,7 +9,7 @@ namespace Yuniql.Core
 {
     /// <summary>
     /// Service responsible for accessing target database configuration and executing sql statement batches.
-    /// This facility is used by MigrationService and must be not be used directly. See <see cref="MigrationServiceTransactional"./>
+    /// This facility is used by MigrationService and must be not be used directly. See <see cref="MigrationService"./>
     /// </summary>
     public class MetadataService : IMetadataService
     {
@@ -48,7 +48,7 @@ namespace Yuniql.Core
             var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCheckIfDatabaseExists());
             using (var connection = _dataService.CreateMasterConnection())
             {
-                return connection.QuerySingleBool(
+                return connection.QuerySingleRow(
                     commandText: sqlStatement,
                     commandTimeout: commandTimeout,
                     transaction: null,
@@ -191,23 +191,23 @@ namespace Yuniql.Core
                         AppliedOnUtc = reader.GetDateTime(2),
                         AppliedByUser = reader.GetString(3),
                         AppliedByTool = reader.GetString(4),
-                        AppliedByToolVersion = reader.GetString(5)
+                        AppliedByToolVersion = reader.GetString(5),
+                        Status = Enum.Parse<Status>(reader.GetString(6)),
+                        DurationMs = reader.GetInt32(7)
                     };
 
-                    //capture additional artifacts when present present
-                    if (!reader.IsDBNull(6))
+                    dbVersion.FailedScriptPath = !reader.IsDBNull(8) ? reader.GetString(8).Unescape() : string.Empty;
+
+                    var failedScriptErrorBase64 = reader.GetValue(9) as string;
+                    if (!string.IsNullOrEmpty(failedScriptErrorBase64))
                     {
-                        var additionalArtifactsByteStream = reader.GetValue(6) as byte[];
-                        dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(additionalArtifactsByteStream);
+                        dbVersion.FailedScriptError = Encoding.UTF8.GetString(Convert.FromBase64String(failedScriptErrorBase64));
                     }
 
-                    //fill up with information only available for platforms not supporting transactional ddl
-                    if (!_dataService.IsTransactionalDdlSupported)
+                    var additionalArtifactsBase64 = reader.GetValue(10) as string;
+                    if (!string.IsNullOrEmpty(additionalArtifactsBase64))
                     {
-                        dbVersion.Status = Enum.Parse<Status>(reader.GetString(7));
-                        dbVersion.FailedScriptPath = reader.GetValue(8) as string;      //as string handles null values
-                        dbVersion.FailedScriptError = reader.GetValue(9) as string;     //as string handles null values
-
+                        dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(Convert.FromBase64String(additionalArtifactsBase64));
                     }
 
                     result.Add(dbVersion);
@@ -222,15 +222,15 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             string version,
+            TransactionContext transactionContext,
             string metaSchemaName = null,
             string metaTableName = null,
             int? commandTimeout = null,
             string appliedByTool = null,
             string appliedByToolVersion = null,
-            string additionalArtifacts = null,
             string failedScriptPath = null,
-            string failedScriptError = null
-            )
+            string failedScriptError = null,
+            string additionalArtifacts = null)
         {
             var sqlStatement = string.Empty;
             var command = connection
@@ -241,43 +241,45 @@ namespace Yuniql.Core
                     transaction: transaction
                 );
 
+            var durationMs = 250; //TODO: pass from migration service
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
-            var additionalArtifactsByteStream = Encoding.UTF8.GetBytes(additionalArtifacts ?? string.Empty);
+            var statusString = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
+            var failedScriptPathEscaped = string.IsNullOrEmpty(failedScriptPath) ? string.Empty : failedScriptPath.Escape();
+            var failedScriptErrorBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(failedScriptError ?? string.Empty)); ;
+            var additionalArtifactsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(additionalArtifacts ?? string.Empty)); ;
 
-            command.Parameters.Add(CreateDbParameter("version", version));
-            command.Parameters.Add(CreateDbParameter("toolName", toolName));
-            command.Parameters.Add(CreateDbParameter("toolVersion", toolVersion));
-            command.Parameters.Add(CreateDbParameter("additionalArtifacts", additionalArtifactsByteStream));
+            var tokens = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName ?? _dataService.SchemaName),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, metaTableName?? _dataService.TableName),
 
-            //in case database supports non-transactional flow
-            if (_dataService is IMixableTransaction nonTransactionalDataService)
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_VERSION, version),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL, toolName),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL_VERSION, toolVersion),
+
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DURATION_MS, durationMs.ToString()),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_STATUS, statusString),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_PATH, failedScriptPathEscaped),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_ERROR, failedScriptErrorBase64),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_ADDITIONAL_ARTIFACTS, additionalArtifactsBase64),
+            };
+
+            //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
+            sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForInsertVersion());
+            var existingSavedVersion = (null!= transactionContext) && !string.IsNullOrEmpty(transactionContext.LastKnownFailedVersion) 
+                && string.Equals(transactionContext.LastKnownFailedVersion, version, StringComparison.InvariantCultureIgnoreCase);
+            if (existingSavedVersion)
             {
-                //override insert statement with upsert when targeting platforms not supporting non-transaction ddl
-                sqlStatement = GetPreparedSqlStatement(nonTransactionalDataService.GetSqlForUpsertVersion(), metaSchemaName, metaTableName);
-                var status = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
-                command.Parameters.Add(CreateDbParameter("status", status));
-                command.Parameters.Add(CreateDbParameter("failedScriptPath", failedScriptPath));
-                command.Parameters.Add(CreateDbParameter("failedScriptError", failedScriptError));
-            }
-            else
-            {
-                sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForInsertVersion(), metaSchemaName, metaTableName);
+                sqlStatement = _dataService.IsUpsertSupported ?
+                    _tokenReplacementService.Replace(tokens, _dataService.GetSqlForUpsertVersion()) :
+                    _tokenReplacementService.Replace(tokens, _dataService.GetSqlForUpdateVersion());
             }
 
             //upsert version information
+            _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
             command.CommandText = sqlStatement;
             command.ExecuteNonQuery();
-
-            //local function
-            IDbDataParameter CreateDbParameter(string name, object value)
-            {
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = name;
-                parameter.Value = value;
-                parameter.Direction = ParameterDirection.Input;
-                return parameter;
-            }
         }
 
         ///<inheritdoc/>

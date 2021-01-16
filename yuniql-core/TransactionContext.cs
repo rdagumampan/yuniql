@@ -14,14 +14,20 @@ namespace Yuniql.Core
         /// <param name="continueAfterFailure"></param>
         public TransactionContext(DbVersion failedDbVersion, bool continueAfterFailure)
         {
-            this.FailedScriptPath = failedDbVersion.FailedScriptPath;
+            this.LastKnownFailedVersion = failedDbVersion?.Version;
+            this.LastKnownFailedScriptPath = failedDbVersion?.FailedScriptPath;
             this.ContinueAfterFailure = continueAfterFailure;
         }
 
         /// <summary>
+        /// Gets the last knwon failed version
+        /// </summary>
+        public string LastKnownFailedVersion{ get; }
+
+        /// <summary>
         /// Gets the failed script path.
         /// </summary>
-        public string FailedScriptPath { get; }
+        public string LastKnownFailedScriptPath { get; }
 
         /// <summary>
         /// Gets the resolution option.

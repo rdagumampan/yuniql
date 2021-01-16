@@ -239,6 +239,11 @@
             The status of version execution
             </summary>
         </member>
+        <member name="P:Yuniql.Extensibility.DbVersion.DurationMs">
+            <summary>
+            The execution time of the version in milliseconds
+            </summary>
+        </member>
         <member name="P:Yuniql.Extensibility.DbVersion.FailedScriptPath">
             <summary>
             The full path of last failed script file
@@ -368,6 +373,11 @@
             For example, SQL Server uses GO word as default batch terminator while Snowflow uses semicolon (;).
             </summary>
         </member>
+        <member name="P:Yuniql.Extensibility.IDataService.IsUpsertSupported">
+            <summary>
+            Returns true if the database supports single MERGE or UPSERT sql statement
+            </summary>
+        </member>
         <member name="P:Yuniql.Extensibility.IDataService.SchemaName">
             <summary>
             Default schema name for schema versions table. Leave it null if database doesn't support schema.
@@ -427,6 +437,16 @@
         <member name="M:Yuniql.Extensibility.IDataService.GetSqlForInsertVersion">
             <summary>
             Returns the SQL statement to use for creating new entry into migration tracking table.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForUpdateVersion">
+            <summary>
+            Returns the SQL statement to use for updating version in migration tracking table.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForUpsertVersion">
+            <summary>
+            Returns the SQL statement to use for merging new entry into migration tracking table.
             </summary>
         </member>
         <member name="M:Yuniql.Extensibility.IDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">
@@ -497,6 +517,71 @@
             </summary>
             <param name="message">The message to write.</param>
             <param name="payload">JSON structured information to support the trace entry.</param>
+        </member>
+        <member name="T:Yuniql.Extensibility.StringExtensions">
+            <summary>
+            Extensions to String class
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.Quote(System.String)">
+            <summary>
+            Retursn a single qouted string
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.IsSingleQuoted(System.String)">
+            <summary>
+            Returns true when string is enclosed in single quote
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.DoubleQuote(System.String)">
+            <summary>
+            Retursn a double qouted string
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.IsDoubleQuoted(System.String)">
+            <summary>
+            Returns true when string is enclosed in double quote
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.Escape(System.String)">
+            <summary>
+            Replaces \ with \\ in string
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.Unescape(System.String)">
+            <summary>
+            Replaces \\ with \ in string
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.SplitSchema(System.String,System.String)">
+            <summary>
+            Returns schema name and object name
+            </summary>
+            <param name="objectName"></param>
+            <param name="defaultSchema"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.SplitBulkFileName(System.String,System.String)">
+            <summary>
+            Returns segments of a file to represent sequence no, schema name and table name
+            These are the valid file name patterns: 1.myschema.mytable, 01.myschema.mytable, myschema.mytable, 1.mytable, 01.mytable, mytable
+            If you dont specify the schema, the default schema will derived from specific database platform
+            </summary>
+            <param name="objectName"></param>
+            <param name="defaultSchema"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

@@ -3,6 +3,7 @@ using System.IO;
 using Yuniql.Extensibility;
 using MySql.Data.MySqlClient;
 using Yuniql.Extensibility.BulkCsvParser;
+using System;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.MySql
@@ -34,8 +35,18 @@ namespace Yuniql.MySql
             int? bulkBatchSize = null,
             int? commandTimeout = null)
         {
-            //extract destination table name, mysql is case sensitive!
-            var tableName = Path.GetFileNameWithoutExtension(fileFullPath);
+            var connectionStringBuilder = new MySqlConnectionStringBuilder(_connectionString);
+
+            //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
+            var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
+            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: connectionStringBuilder.Database);
+            var schemaName = fileNameSegments.Item2;
+            var tableName = fileNameSegments.Item3;
+
+            if(!string.Equals(connectionStringBuilder.Database, schemaName, System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new ApplicationException("MySql does not support custom schema. Your bulk file name must resemble these patterns: 1.mytable.csv, 01.mytable.csv or mytable.csv");
+            }
 
             //read csv file and load into data table
             var dataTable = ParseCsvFile(connection, fileFullPath, tableName, bulkSeparator);

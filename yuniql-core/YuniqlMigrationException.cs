@@ -27,7 +27,7 @@ namespace Yuniql.Core
         /// </summary>
         /// <param name="message">The exception message.</param>
         /// <param name="innerException">The exception captured prior to this exception.</param>
-        public YuniqlMigrationException(string message, Exception innerException)
+        public YuniqlMigrationException(string message, Exception innerException): base(message, innerException)
         {
         }
     }

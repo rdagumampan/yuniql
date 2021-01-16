@@ -4,8 +4,9 @@ using Npgsql;
 using System;
 using Yuniql.Core;
 using Yuniql.PostgreSql;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Platforms.PostgreSql
 {
     public class PostgreSqlTestDataService : TestDataServiceBase
     {
@@ -53,7 +54,8 @@ namespace Yuniql.PlatformTests
                 result = QuerySingleBool(connectionString, sqlStatement);
             }
 
-            if (!result) {
+            if (!result)
+            {
                 sqlStatement = $"SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA = '{dbObject.Item1}'  AND TABLE_NAME = '{dbObject.Item2}'";
                 result = QuerySingleBool(connectionString, sqlStatement);
             }
@@ -184,5 +186,34 @@ DROP TABLE script3;
             return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
         }
 
+        //https://dba.stackexchange.com/questions/11893/force-drop-db-while-others-may-be-connected
+        public override void DropDatabase(string connectionString)
+        {
+            //not needed need since test cases are executed against disposable database containers
+            //we could simply docker rm the running test container after tests completed
+
+            //use the target user database to migrate, this is part of orig connection string
+            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+            var databaseName = connectionStringBuilder.Database;
+
+            var sqlStatement = $@"
+--making sure the database exists
+SELECT * from pg_database where datname = '{databaseName}';
+
+--disallow new connections
+UPDATE pg_database SET datallowconn = 'false' WHERE datname = '{databaseName}';
+ALTER DATABASE {databaseName} CONNECTION LIMIT 1;
+
+--terminate existing connections
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{databaseName}';
+
+--drop database
+DROP DATABASE {databaseName};
+";
+
+            //switch database into master/system database where db catalogs are maintained
+            connectionStringBuilder.Database = "postgres";
+            ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
+        }
     }
 }

@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Extensibility", "yuniql-extensibility\Yuniql.Extensibility.csproj", "{20A86087-B059-442D-8ADB-7D6E16DF1F4D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.CLI", "yuniql-cli\Yuniql.CLI.csproj", "{DE944F58-0D17-4031-849C-FC131F3F6ED4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{29FAAA6B-4C99-4222-91FB-88F200CE25B3} = {29FAAA6B-4C99-4222-91FB-88F200CE25B3}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.PlatformTests", "yuniql-tests\platform-tests\Yuniql.PlatformTests.csproj", "{23C7412F-CF0C-4459-BF0F-D8D0C1463F15}"
 EndProject
@@ -22,6 +25,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "platforms", "platforms", "{1E518201-3021-4406-AE54-3008CC1FF32B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BF5815B6-4EF6-47F9-9E1F-7C909448741B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Snowflake", "yuniql-platforms\snowflake\Yuniql.Snowflake.csproj", "{29FAAA6B-4C99-4222-91FB-88F200CE25B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{6D95A1A2-384F-4C70-A0A7-CF6F53528CAE}"
+	ProjectSection(SolutionItems) = preProject
+		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +73,10 @@ Global
 		{8DA510CC-B99F-4A40-A2C3-BC6D6EFBC6F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DA510CC-B99F-4A40-A2C3-BC6D6EFBC6F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DA510CC-B99F-4A40-A2C3-BC6D6EFBC6F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29FAAA6B-4C99-4222-91FB-88F200CE25B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29FAAA6B-4C99-4222-91FB-88F200CE25B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29FAAA6B-4C99-4222-91FB-88F200CE25B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29FAAA6B-4C99-4222-91FB-88F200CE25B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +87,7 @@ Global
 		{1484AD89-C4B6-4E18-90DB-CC4994A4933E} = {1E518201-3021-4406-AE54-3008CC1FF32B}
 		{E42FAE78-570B-4718-AADF-B30F8678367B} = {1E518201-3021-4406-AE54-3008CC1FF32B}
 		{8DA510CC-B99F-4A40-A2C3-BC6D6EFBC6F8} = {1E518201-3021-4406-AE54-3008CC1FF32B}
+		{29FAAA6B-4C99-4222-91FB-88F200CE25B3} = {1E518201-3021-4406-AE54-3008CC1FF32B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5C66EEC5-39B9-4275-98E1-7D9AFF8FC29C}

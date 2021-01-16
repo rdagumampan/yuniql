@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Infrastructure
 {
     public class DockerImage
     {

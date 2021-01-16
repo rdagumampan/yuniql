@@ -20,28 +20,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Core\TestCsvNullWordValue.csv">
+    <None Update="Data\TestCsvNullWordValue.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Core\TestCsvMismatchColumnNotNullable.csv">
+    <None Update="Data\TestCsvMismatchColumnNotNullable.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Core\TestCsvMismatchColumn.csv">
+    <None Update="Data\TestCsvMismatchColumn.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Core\TestCsvUnquoted.csv">
+    <None Update="Data\TestCsvUnquoted.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Core\TestCsvNullColumn.csv">
+    <None Update="Data\TestCsvNullColumn.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Core\TestCsvUtf8.csv">
+    <None Update="Data\TestCsvUtf8.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Core\TestCsvPipeSeparated.csv">
+    <None Update="Data\TestCsvPipeSeparated.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Core\TestCsv.csv">
+    <None Update="Data\TestCsv.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -43,7 +43,7 @@ namespace Yuniql.Core
             tokens.ForEach(t =>
             {
                 processedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
-                _traceService.Debug($"Replaced {t.Key} with {t.Value}");
+                _traceService.Debug($"Replaced token {t.Key} with {t.Value}");
             });
 
             //when some tokens were not replaced because some token/value keypairs are not passed, we fail the whole migration

@@ -49,6 +49,11 @@ namespace Yuniql.Extensibility
         public Status Status { get; set; } = Status.Successful;
 
         /// <summary>
+        /// The execution time of the version in milliseconds
+        /// </summary>
+        public int DurationMs { get; set; } = 0;
+
+        /// <summary>
         /// The full path of last failed script file
         /// </summary>
         public string FailedScriptPath { get; set; } = string.Empty;

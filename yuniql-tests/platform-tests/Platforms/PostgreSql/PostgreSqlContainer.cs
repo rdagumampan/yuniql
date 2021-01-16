@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Yuniql.PlatformTests.Infrastructure;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Platforms.PostgreSql
 {
     //docker run -dit --name postgresql -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
     public class PostgreSqlContainer : ContainerBase

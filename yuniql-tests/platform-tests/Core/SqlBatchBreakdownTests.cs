@@ -4,11 +4,15 @@ using Shouldly;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 using System;
+using Yuniql.PlatformTests.Interfaces;
+using Yuniql.PlatformTests.Setup;
+using IMigrationServiceFactory = Yuniql.PlatformTests.Interfaces.IMigrationServiceFactory;
+using MigrationServiceFactory = Yuniql.PlatformTests.Setup.MigrationServiceFactory;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Core
 {
     [TestClass]
-    public class SqlBatchBreakdownTests : TestBase
+    public class SqlBatchBreakdownTests : TestClassBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;
@@ -18,7 +22,7 @@ namespace Yuniql.PlatformTests
         [TestInitialize]
         public void Setup()
         {
-            _testConfiguration = base.ConfigureWithEmptyWorkspace();
+            _testConfiguration = ConfigureWithEmptyWorkspace();
 
             //create test data service provider
             var testDataServiceFactory = new TestDataServiceFactory();
@@ -32,8 +36,20 @@ namespace Yuniql.PlatformTests
         [TestCleanup]
         public void Cleanup()
         {
-            if (Directory.Exists(_testConfiguration.WorkspacePath))
-                Directory.Delete(_testConfiguration.WorkspacePath, true);
+            //drop the test directory
+            try
+            {
+                if (Directory.Exists(_testConfiguration.WorkspacePath))
+                    Directory.Delete(_testConfiguration.WorkspacePath, true);
+            }
+            catch (Exception) { /*swallow exceptions*/ }
+
+            //drop test database
+            try
+            {
+                _testDataService.DropDatabase(_testConfiguration.ConnectionString);
+            }
+            catch (Exception ex) { /*swallow exceptions*/ }
         }
 
         [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]

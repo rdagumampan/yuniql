@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using Yuniql.Extensibility;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Interfaces
 {
     public interface ITestDataService
     {
@@ -15,6 +16,7 @@ namespace Yuniql.PlatformTests
 
         string QuerySingleString(string connectionString, string sqlStatement);
 
+        bool QuerySingleRow(string connectionString, string sqlStatement);
         bool CheckIfDbExist(string connectionString);
 
         bool CheckIfDbObjectExist(string connectionString, string objectName);
@@ -51,10 +53,12 @@ namespace Yuniql.PlatformTests
 
         bool IsBatchSqlSupported { get; }
 
-        string TableName { get;}
+        string TableName { get; }
 
         string SchemaName { get; }
 
         List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName);
+
+        void DropDatabase(string connectionString);
     }
 }

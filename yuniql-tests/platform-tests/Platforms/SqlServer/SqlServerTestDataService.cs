@@ -3,8 +3,9 @@ using System;
 using System.Data.SqlClient;
 using System.IO;
 using Yuniql.Core;
+using Yuniql.PlatformTests.Setup;
 
-namespace Yuniql.PlatformTests
+namespace Yuniql.PlatformTests.Platforms.SqlServer
 {
     public class SqlServerTestDataService : TestDataServiceBase
     {
@@ -29,7 +30,7 @@ namespace Yuniql.PlatformTests
         public override bool CheckIfDbExist(string connectionString)
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            var sqlStatement = $"SELECT ISNULL(database_id, 0) FROM [sys].[databases] WHERE name = '{connectionStringBuilder.InitialCatalog}'";
+            var sqlStatement = $"SELECT 1 FROM [sys].[databases] WHERE name = '{connectionStringBuilder.InitialCatalog}'";
 
             //check if database exists and auto-create when its not
             var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
@@ -218,6 +219,22 @@ DROP PROCEDURE script1;
 DROP PROCEDURE script2;
 DROP PROCEDURE script3;
 ";
+        }
+
+        public override void DropDatabase(string connectionString)
+        {
+            //capture the test database from connection string
+            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            var sqlStatement = @$"
+ALTER DATABASE [{connectionStringBuilder.InitialCatalog}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+DROP DATABASE [{connectionStringBuilder.InitialCatalog}];
+";
+
+            //switch connection string to use master database
+            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            masterConnectionStringBuilder.InitialCatalog = "master";
+
+            //base.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
     }
 }
