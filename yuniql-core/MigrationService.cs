@@ -7,9 +7,8 @@ using System.IO;
 
 namespace Yuniql.Core
 {
-    //TOD: Rename MigrationServiceTransactional
     /// <inheritdoc />
-    public class MigrationServiceTransactional : MigrationServiceBase
+    public class MigrationService : MigrationServiceBase
     {
         private readonly IWorkspaceService _workspaceService;
         private readonly IDataService _dataService;
@@ -22,7 +21,7 @@ namespace Yuniql.Core
         private readonly IMetadataService _metadataService;
 
         /// <inheritdoc /> 
-        public MigrationServiceTransactional(
+        public MigrationService(
             IWorkspaceService workspaceService,
             IDataService dataService,
             IBulkImportService bulkImportService,

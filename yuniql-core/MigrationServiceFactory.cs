@@ -42,7 +42,7 @@ namespace Yuniql.Core
             var environmentService = new EnvironmentService();
             var configurationService = new ConfigurationService(environmentService, workspaceService, _traceService);
 
-            var migrationService = new MigrationServiceTransactional(
+            var migrationService = new MigrationService(
                 workspaceService,
                 dataService,
                 bulkImportService,

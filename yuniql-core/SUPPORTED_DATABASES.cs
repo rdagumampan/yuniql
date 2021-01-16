@@ -26,7 +26,7 @@
         public const string MARIADB = "mariadb";
 
         /// <summary>
-        /// MariaDB
+        /// Snowflake DW
         /// </summary>
         public const string SNOWFLAKE = "snowflake";
     }

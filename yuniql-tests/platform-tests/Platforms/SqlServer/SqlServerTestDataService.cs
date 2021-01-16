@@ -221,7 +221,6 @@ DROP PROCEDURE script3;
 ";
         }
 
-        //TODO: implement SqlServerTestDataService.DropDatabase
         public override void DropDatabase(string connectionString)
         {
             //capture the test database from connection string

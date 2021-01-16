@@ -26,31 +26,31 @@ namespace Yuniql.CLI
                     {
                         var dataService = new SqlServerDataService(_traceService);
                         var bulkImportService = new SqlServerBulkImportService(_traceService);
-                        return CreateTransactionalMigrationService(dataService, bulkImportService);
+                        return CreateInternal(dataService, bulkImportService);
                     }
                 case SUPPORTED_DATABASES.POSTGRESQL:
                     {
                         var dataService = new PostgreSqlDataService(_traceService);
                         var bulkImportService = new PostgreSqlBulkImportService(_traceService);
-                        return CreateTransactionalMigrationService(dataService, bulkImportService);
+                        return CreateInternal(dataService, bulkImportService);
                     }
                 case SUPPORTED_DATABASES.MYSQL:
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
-                        return CreateTransactionalMigrationService(dataService, bulkImportService);
+                        return CreateInternal(dataService, bulkImportService);
                     }
                 case SUPPORTED_DATABASES.MARIADB:
                     {
                         var dataService = new MySqlDataService(_traceService);
                         var bulkImportService = new MySqlBulkImportService(_traceService);
-                        return CreateTransactionalMigrationService(dataService, bulkImportService);
+                        return CreateInternal(dataService, bulkImportService);
                     }
                 case SUPPORTED_DATABASES.SNOWFLAKE:
                     {
                         var dataService = new SnowflakeDataService(_traceService);
                         var bulkImportService = new SnowflakeBulkImportService(_traceService);
-                        return CreateTransactionalMigrationService(dataService, bulkImportService);
+                        return CreateInternal(dataService, bulkImportService);
                     }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +
@@ -58,8 +58,7 @@ namespace Yuniql.CLI
             }
         }
 
-        //TODO: Rename this CreateTransactionalMigrationService
-        private IMigrationService CreateTransactionalMigrationService(IDataService dataService, IBulkImportService bulkImportService)
+        private IMigrationService CreateInternal(IDataService dataService, IBulkImportService bulkImportService)
         {
             var directoryService = new DirectoryService();
             var fileService = new FileService();
@@ -69,7 +68,7 @@ namespace Yuniql.CLI
             var environmentService = new EnvironmentService();
             var configurationService = new ConfigurationService(environmentService, workspaceService, _traceService);
 
-            var migrationService = new MigrationServiceTransactional(
+            var migrationService = new MigrationService(
                 workspaceService,
                 dataService,
                 bulkImportService,

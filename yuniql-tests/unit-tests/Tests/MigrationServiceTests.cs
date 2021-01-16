@@ -114,7 +114,7 @@ namespace Yuniql.UnitTests
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
-            var sut = new MigrationServiceTransactional(
+            var sut = new MigrationService(
                 workspaceService.Object,
                 dataService.Object,
                 bulkImportService.Object,
@@ -305,7 +305,7 @@ namespace Yuniql.UnitTests
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
-            var sut = new MigrationServiceTransactional(
+            var sut = new MigrationService(
                 workspaceService.Object,
                 dataService.Object,
                 bulkImportService.Object,
@@ -436,7 +436,7 @@ namespace Yuniql.UnitTests
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
-            var sut = new MigrationServiceTransactional(
+            var sut = new MigrationService(
                 workspaceService.Object,
                 dataService.Object,
                 bulkImportService.Object,
@@ -502,7 +502,7 @@ namespace Yuniql.UnitTests
             configurationService.Setup(s => s.GetConfiguration()).Returns(configuration);
 
             //act
-            var sut = new MigrationServiceTransactional(
+            var sut = new MigrationService(
                 workspaceService.Object,
                 dataService.Object,
                 bulkImportService.Object,
@@ -570,7 +570,7 @@ namespace Yuniql.UnitTests
             //act
             Assert.ThrowsException<ApplicationException>(() =>
             {
-                var sut = new MigrationServiceTransactional(
+                var sut = new MigrationService(
                     workspaceService.Object,
                     dataService.Object,
                     bulkImportService.Object,
@@ -622,7 +622,7 @@ namespace Yuniql.UnitTests
             var transactionMode = TRANSACTION_MODE.SESSION;
 
             //act
-            var sut = new MigrationServiceTransactional(
+            var sut = new MigrationService(
                 new Mock<IWorkspaceService>().Object,
                 dataService.Object,
                 new Mock<IBulkImportService>().Object,
@@ -670,7 +670,7 @@ namespace Yuniql.UnitTests
             var transactionMode = TRANSACTION_MODE.VERSION;
 
             //act
-            var sut = new MigrationServiceTransactional(
+            var sut = new MigrationService(
                 new Mock<IWorkspaceService>().Object,
                 dataService.Object,
                 new Mock<IBulkImportService>().Object,
@@ -718,7 +718,7 @@ namespace Yuniql.UnitTests
             var transactionMode = TRANSACTION_MODE.NONE;
 
             //act
-            var sut = new MigrationServiceTransactional(
+            var sut = new MigrationService(
                 new Mock<IWorkspaceService>().Object,
                 dataService.Object,
                 new Mock<IBulkImportService>().Object,
