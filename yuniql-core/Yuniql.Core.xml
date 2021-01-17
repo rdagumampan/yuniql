@@ -703,7 +703,7 @@
         <member name="M:Yuniql.Core.MigrationService.RunVersionDirectories(System.Data.IDbConnection,System.Data.IDbTransaction,System.Collections.Generic.List{System.String},System.String,System.String,Yuniql.Core.TransactionContext,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationService.RunNonVersionDirectories(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
+        <member name="M:Yuniql.Core.MigrationService.RunNonVersionDirectories(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.Erase">

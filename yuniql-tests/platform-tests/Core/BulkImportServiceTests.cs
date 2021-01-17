@@ -704,5 +704,68 @@ namespace Yuniql.PlatformTests.Core
                 && t.BirthDate == r.BirthDate
             )).ShouldBeTrue();
         }
+
+        [TestMethod]
+        public void Test_Bulk_Import_Csv_Files_In_NonVersion_Directories()
+        {
+            //arrange - prepare bulk destination table
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+
+            workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
+            string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsv.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsv"));
+
+            //arrange - add new minor version with csv files
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v100Directory, "TestCsv.csv"));
+
+            //act
+            var configuration = _testConfiguration.GetFreshConfiguration();
+            configuration.TargetVersion = "v1.00";
+
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Run();
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeTrue();
+
+            //arrange - prepare bulk files in non-version directories
+            string preDirectory = Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE);
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(preDirectory, "TestCsv.csv"));
+
+            string draftDirectory = Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT);
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(draftDirectory, "TestCsv.csv"));
+
+            string postDirectory = Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST);
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(postDirectory, "TestCsv.csv"));
+
+            //act
+            configuration.TargetVersion = "v1.01";
+            migrationService.Run();
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeTrue();
+
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsv");
+            var testDataRows = new List<BulkTestDataRow>
+            {
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+            };
+
+            results.Count.ShouldBe(20);
+            testDataRows.All(t => results.Exists(r =>
+                t.FirstName == r.FirstName
+                && t.LastName == r.LastName
+                && t.BirthDate == r.BirthDate
+            )).ShouldBeTrue();
+        }
+
     }
 }

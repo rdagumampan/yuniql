@@ -51,14 +51,33 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public string[] FilterFiles(string workingPath, string environmentCode, List<string> files)
         {
-            var rootParts = Split(new DirectoryInfo(workingPath)).ToList();
-            rootParts.Reverse();
+            var reservedDirectories = new List<string>
+            {
+                RESERVED_DIRECTORY_NAME.INIT,
+                RESERVED_DIRECTORY_NAME.PRE,
+                RESERVED_DIRECTORY_NAME.DRAFT,
+                RESERVED_DIRECTORY_NAME.POST,
+                RESERVED_DIRECTORY_NAME.ERASE,
+                RESERVED_DIRECTORY_NAME.DROP,
+                RESERVED_DIRECTORY_NAME.TRANSACTION,
+            };
 
+            var directoryPathParts = Split(new DirectoryInfo(workingPath)).ToList();
+            directoryPathParts.Reverse();
+
+            //check for any presence of an environment-specific directory
+            //those are those that starts with "_" such as "_dev", "_test", "_prod" but not the known reserved names
             var hasEnvironmentAwareDirectories = files.Any(f =>
             {
-                var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).Where(x=> !x.Equals(RESERVED_DIRECTORY_NAME.TRANSACTION, System.StringComparison.InvariantCultureIgnoreCase)).ToList();
-                fileParts.Reverse();
-                return fileParts.Skip(rootParts.Count).Any(a => a.StartsWith(RESERVED_DIRECTORY_NAME.PREFIX));
+                var filePathParts = Split(new DirectoryInfo(Path.GetDirectoryName(f)))
+                    .Where(x => !x.Equals(RESERVED_DIRECTORY_NAME.TRANSACTION, System.StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
+                filePathParts.Reverse();
+                
+                return filePathParts.Skip(directoryPathParts.Count).Any(a => 
+                    a.StartsWith(RESERVED_DIRECTORY_NAME.PREFIX) 
+                    && !reservedDirectories.Exists(x => x.Equals(a, System.StringComparison.InvariantCultureIgnoreCase))
+                );
             });
 
             if (string.IsNullOrEmpty(environmentCode) && !hasEnvironmentAwareDirectories)
@@ -76,7 +95,7 @@ namespace Yuniql.Core
                 var fileParts = Split(new DirectoryInfo(Path.GetDirectoryName(f))).Where(x => !x.Equals(RESERVED_DIRECTORY_NAME.TRANSACTION, System.StringComparison.InvariantCultureIgnoreCase)).ToList();
                 fileParts.Reverse();
 
-                var foundFile = fileParts.Skip(rootParts.Count).FirstOrDefault(a => a.StartsWith(RESERVED_DIRECTORY_NAME.PREFIX) && a.ToLower()!= $"{RESERVED_DIRECTORY_NAME.PREFIX}{environmentCode}");
+                var foundFile = fileParts.Skip(directoryPathParts.Count).FirstOrDefault(a => a.StartsWith(RESERVED_DIRECTORY_NAME.PREFIX) && a.ToLower() != $"{RESERVED_DIRECTORY_NAME.PREFIX}{environmentCode}");
                 if (null != foundFile)
                     sqlScriptFiles.Remove(f);
             });
@@ -100,7 +119,8 @@ namespace Yuniql.Core
         }
 
         ///<inheritdoc/>
-        public DirectoryInfo CreateDirectory(string path) {
+        public DirectoryInfo CreateDirectory(string path)
+        {
             return Directory.CreateDirectory(path);
         }
     }

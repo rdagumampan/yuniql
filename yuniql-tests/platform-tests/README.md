@@ -39,7 +39,7 @@ docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433
 
 Configure your test environment
 
-```bash
+```console
 cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
@@ -68,7 +68,7 @@ docker run -dit --name postgresql -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw
 
 Configure your test environment
 
-```bash
+```console
 cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
@@ -96,7 +96,7 @@ docker run -dit --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 my
 
 Configure your test environment
 
-```bash
+```console
 cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
@@ -124,7 +124,7 @@ docker run -dit --name mariadb -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 
 
 Configure your test environment
 
-```bash
+```console
 cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
@@ -148,7 +148,7 @@ Create a database in snowflake management portal and record the connection strin
 
 Configure your test environment
 
-```bash
+```console
 cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
