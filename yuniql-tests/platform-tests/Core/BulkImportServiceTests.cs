@@ -718,10 +718,6 @@ namespace Yuniql.PlatformTests.Core
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
             _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsv.sql"), _testDataService.GetSqlForCreateBulkTable("TestCsv"));
 
-            //arrange - add new minor version with csv files
-            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
-            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v100Directory, "TestCsv.csv"));
-
             //act
             var configuration = _testConfiguration.GetFreshConfiguration();
             configuration.TargetVersion = "v1.00";
@@ -731,6 +727,11 @@ namespace Yuniql.PlatformTests.Core
 
             //assert
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeTrue();
+
+            //arrange - add new minor version with csv files v1.01
+            workspaceService.IncrementMinorVersion(_testConfiguration.WorkspacePath, null);
+            string v101Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.01");
+            File.Copy(Path.Combine(Path.Combine(Environment.CurrentDirectory, "Data"), "TestCsv.csv"), Path.Combine(v101Directory, "TestCsv.csv"));
 
             //arrange - prepare bulk files in non-version directories
             string preDirectory = Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.PRE);
@@ -747,8 +748,6 @@ namespace Yuniql.PlatformTests.Core
             migrationService.Run();
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, "TestCsv").ShouldBeTrue();
-
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, "TestCsv");
             var testDataRows = new List<BulkTestDataRow>
             {

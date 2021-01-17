@@ -76,7 +76,8 @@ namespace Yuniql.PlatformTests.Setup
             }
 
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsBatchSqlSupportedAndIsTransactionalDdlSupported")] attribute
-            if (Requires.Contains("IsBatchSqlSupportedAndIsTransactionalDdlSupported") && (!testDataService.IsBatchSqlSupported || !testDataService.IsTransactionalDdlSupported))
+            if (Requires.Contains(nameof(TestDataServiceBase.IsBatchSqlSupported) + "And" + nameof(TestDataServiceBase.IsTransactionalDdlSupported)) 
+                && (!testDataService.IsBatchSqlSupported || !testDataService.IsTransactionalDdlSupported))
             {
                 var message = $"Target database platform or version does not support batching sql statements in single session or request.";
                 return new[]

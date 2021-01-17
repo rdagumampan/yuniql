@@ -205,7 +205,7 @@ namespace Yuniql.PlatformTests.Core
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{sqlObjectName3}").ShouldBeTrue();
         }
 
-        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported))]
+        [TestMethodEx(Requires = nameof(TestDataServiceBase.IsBatchSqlSupported)+ "And" + nameof(TestDataServiceBase.IsTransactionalDdlSupported))]
         public void Test_Create_Multiline_Script_With_Error_Must_Rollback()
         {
             //arrange
