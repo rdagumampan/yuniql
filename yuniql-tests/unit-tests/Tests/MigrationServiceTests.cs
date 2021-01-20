@@ -6,6 +6,7 @@ using Moq;
 using Yuniql.Extensibility;
 using System.Data;
 using System;
+using System.Diagnostics;
 
 namespace Yuniql.UnitTests
 {
@@ -32,7 +33,7 @@ namespace Yuniql.UnitTests
             metadataService.Setup(s => s.GetAllAppliedVersions(null, null, null)).Returns(new List<DbVersion> { });
             metadataService.Setup(s => s.GetAllVersions(null, null, null)).Returns(new List<DbVersion> { });
             metadataService.Setup(s => s.GetCurrentVersion(null, null, null)).Returns(string.Empty);
-            metadataService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", new TransactionContext(null, false), null, null, null, null, null, null, null, null));
+            metadataService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", new TransactionContext(null, false), null, null, null, null, null, null, null, null, 0));
 
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 1", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
@@ -135,7 +136,7 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
             metadataService.Verify(s => s.GetCurrentVersion(null, null, null)); ;
-            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null));
+            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null, 0));
 
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());
@@ -225,7 +226,7 @@ namespace Yuniql.UnitTests
             metadataService.Setup(s => s.GetAllAppliedVersions(null, null, null)).Returns(new List<DbVersion> { });
             metadataService.Setup(s => s.GetAllVersions(null, null, null)).Returns(new List<DbVersion> { });
             metadataService.Setup(s => s.GetCurrentVersion(null, null, null)).Returns(string.Empty);
-            metadataService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", new TransactionContext(null, false), null, null, null, null, null, null, null, null));
+            metadataService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", new TransactionContext(null, false), null, null, null, null, null, null, null, null, 0));
 
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 1", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'init'", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
@@ -326,7 +327,7 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
             metadataService.Verify(s => s.GetCurrentVersion(null, null, null)); ;
-            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null));
+            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null, 0));
 
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());
