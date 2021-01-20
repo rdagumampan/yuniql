@@ -136,7 +136,7 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
             metadataService.Verify(s => s.GetCurrentVersion(null, null, null)); ;
-            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null, 0));
+            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null, It.IsAny<int>()));
 
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());
@@ -327,7 +327,7 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
             metadataService.Verify(s => s.GetCurrentVersion(null, null, null)); ;
-            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null, 0));
+            metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "v1.0.0.0", null, null, null, It.IsAny<int>()));
 
             dataService.Verify(s => s.GetConnectionInfo());
             dataService.Verify(s => s.CreateConnection());

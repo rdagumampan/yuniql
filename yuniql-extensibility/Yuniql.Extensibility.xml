@@ -523,6 +523,13 @@
             Extensions to String class
             </summary>
         </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.Fixed(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.Quote(System.String)">
             <summary>
             Retursn a single qouted string
