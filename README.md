@@ -157,7 +157,7 @@ To prepare your dev machine, please visit https://github.com/rdagumampan/yuniql/
 ## Supported databases and platform tests
 Amazon Redshift, Amazon Aurora, Snowflake, Azure Synapse are being evaluated/developed/tested. For running migration from docker container, [see instructions here](https://yuniql.io/docs/migrate-via-docker-container/).
 
-|Platforms|Build Status|Description|Cloud|
+|Platforms|Build Status|Description|Managed Infrastructure|
 |---|---|---|---|
 |sqlserver|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017, Azure SQL Database|Azure, GCP, AWS|
 |postgresql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6, v12.1, latest|Azure, GCP, AWS|
