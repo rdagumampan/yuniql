@@ -161,7 +161,7 @@ namespace Yuniql.CLI
 
                 //TODO: add duration
                 var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool", "Duration");
-                versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}", $"{v.DurationMs} ms"));
+                versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}", $"{v.DurationMs} ms / {v.DurationMs/1000} s"));
                 versionPrettyPrint.Print();
 
                 var failedVersion = versions.LastOrDefault(v => v.Status == Status.Failed);
