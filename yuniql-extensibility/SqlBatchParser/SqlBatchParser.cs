@@ -34,15 +34,15 @@ namespace Yuniql.Extensibility.SqlBatchParser
             //extrat all comments
             var commentBlocks = _commentAnalyzer.Run(sqlStatementRaw);
 
-            _traceService.Debug($"Environment.OSVersion.Platform: {Environment.OSVersion.Platform}, {Environment.OSVersion.VersionString}");
-            _traceService.Debug($"Environment.NewLine.UTF8.byteCount: {Encoding.UTF8.GetByteCount(Environment.NewLine)}");
-            _traceService.Debug($"sqlStatementRaw.Length: {sqlStatementRaw.Length}");
-            _traceService.Debug($"sqlStatementRaw.UTF8.byteCount: {Encoding.UTF8.GetByteCount(sqlStatementRaw)}");
-            commentBlocks.ForEach(s =>
-            {
-                _traceService.Debug($"commentText.byteCount: {Encoding.UTF8.GetByteCount(s.Text)}");
-                _traceService.Debug($"commentText: {s.Text}, {Environment.NewLine}startPosition: {s.Start}, stopPosition: {s.End}");
-            });
+            //_traceService.Debug($"Environment.OSVersion.Platform: {Environment.OSVersion.Platform}, {Environment.OSVersion.VersionString}");
+            //_traceService.Debug($"Environment.NewLine.UTF8.byteCount: {Encoding.UTF8.GetByteCount(Environment.NewLine)}");
+            //_traceService.Debug($"sqlStatementRaw.Length: {sqlStatementRaw.Length}");
+            //_traceService.Debug($"sqlStatementRaw.UTF8.byteCount: {Encoding.UTF8.GetByteCount(sqlStatementRaw)}");
+            //commentBlocks.ForEach(s =>
+            //{
+            //    _traceService.Debug($"commentText.byteCount: {Encoding.UTF8.GetByteCount(s.Text)}");
+            //    _traceService.Debug($"commentText: {s.Text}, {Environment.NewLine}startPosition: {s.Start}, stopPosition: {s.End}");
+            //});
 
             using (var sr = new StringReader(sqlStatementRaw))
             {
@@ -73,9 +73,9 @@ namespace Yuniql.Extensibility.SqlBatchParser
                         var batchSeparatorStopPosition = batchSeparatorStartPosition + line.Length;
                         var foundInCommentBlock = commentBlocks.FirstOrDefault(c => c.Start <= batchSeparatorStartPosition && c.End >= batchSeparatorStopPosition);
 
-                        _traceService.Debug($"Line text: {line}, line.Length: {line.Length}, sqlStatementBuilder.Length: {sqlStatementBuilder.Length}, envNewLine.Length: {Environment.NewLine.Length}");
-                        _traceService.Debug($"Line text: {line}, startPosition: {batchSeparatorStartPosition}, stopPosition: {batchSeparatorStopPosition}");
-                        _traceService.Debug($"Line text: {line}, foundInCommentBlock: {foundInCommentBlock != null}");
+                        //_traceService.Debug($"Line text: {line}, line.Length: {line.Length}, sqlStatementBuilder.Length: {sqlStatementBuilder.Length}, envNewLine.Length: {Environment.NewLine.Length}");
+                        //_traceService.Debug($"Line text: {line}, startPosition: {batchSeparatorStartPosition}, stopPosition: {batchSeparatorStopPosition}");
+                        //_traceService.Debug($"Line text: {line}, foundInCommentBlock: {foundInCommentBlock != null}");
 
                         if (null != foundInCommentBlock)
                         {
