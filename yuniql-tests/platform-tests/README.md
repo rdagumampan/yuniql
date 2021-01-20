@@ -166,6 +166,33 @@ cd C:\play\yuniql\yuniql-tests\platform-tests
 dotnet test -v n
 ```
 
+
+## Run platform tests for Redshift
+
+Create a database in redshift management portal and record the connection string
+
+Configure your test environment
+
+```console
+cd C:\play\yuniql\yuniql-cli
+dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
+
+SETX YUNIQL_TEST_PLATFORM "redshift"
+SETX YUNIQL_TEST_CONNECTION_STRING "<your-redshift-connection-string>"
+SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-redshift-sample"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_HOST "LOCALSERVER"
+```
+
+Run the platform tests
+	
+```console
+cd C:\play\yuniql\yuniql-tests\platform-tests
+dotnet test -v n
+```
+
+
+
 ## Alternatives
 
 You can also run the batch file `setup_test_envs_sqlserver.bat` register all these variables.

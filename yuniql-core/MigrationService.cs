@@ -212,7 +212,14 @@ namespace Yuniql.Core
                             if (isVerifyOnly.HasValue && isVerifyOnly == true)
                                 transaction?.Rollback();
                             else
-                                transaction?.Commit();
+                            {
+                                if (transaction?.Connection == null)
+                                    _traceService.Warn("Transaction has been committed before the end of the session. " +
+                                        "Please verify if all schema migrations has been successfully applied. " +
+                                        "If there was fault in the process, the database changes during migration process will be rolled back.");
+                                else
+                                    transaction?.Commit();
+                            }
                         }
                         catch (Exception)
                         {
@@ -407,7 +414,7 @@ namespace Yuniql.Core
                         {
                             //run scripts within a single transaction for all scripts inside _transaction directory and scripts in the child directories
                             string versionName = new DirectoryInfo(versionDirectory).Name;
-                            _traceService.Info(@$"The ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" directory has been detected and therefore ""{versionName}"" version scripts will run in single transaction. The rollback will not be reliable in case the version scripts contain commands causing implicit commit (e.g. DDL)!");
+                            _traceService.Warn(@$"The ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" directory has been detected and therefore ""{versionName}"" version scripts will run in single transaction. The rollback will not be reliable in case the version scripts contain commands causing implicit commit (e.g. DDL)!");
 
                             using (var transaction = connection.BeginTransaction())
                             {
@@ -432,7 +439,7 @@ namespace Yuniql.Core
                         else
                         {
                             if (null == transaction)
-                                _traceService.Info("Transaction is disabled for current session. This version migration run will be executed without explicit transaction context.");
+                                _traceService.Warn("Transaction is disabled for current session. This version migration run will be executed without explicit transaction context.");
 
                             //run scripts without transaction
                             //scriptSubDirectories is the child directories under _transaction directory c:\temp\vxx.xx\list_of_directories

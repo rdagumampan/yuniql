@@ -60,6 +60,7 @@
     <ProjectReference Include="..\yuniql-platforms\postgresql\Yuniql.PostgreSql.csproj" />
     <ProjectReference Include="..\yuniql-platforms\snowflake\Yuniql.Snowflake.csproj" />
     <ProjectReference Include="..\yuniql-platforms\sqlserver\Yuniql.SqlServer.csproj" />
+    <ProjectReference Include="..\yuniql-platforms\redshift\Yuniql.Redshift.csproj" />
   </ItemGroup>
 
 </Project>

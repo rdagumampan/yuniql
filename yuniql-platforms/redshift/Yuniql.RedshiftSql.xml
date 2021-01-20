@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Yuniql.PostgreSql</name>
+    </assembly>
+    <members>
+        <member name="T:Yuniql.PostgreSql.PostgreSqlBulkImportService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlBulkImportService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlBulkImportService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="T:Yuniql.PostgreSql.PostgreSqlDataService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsTransactionalDdlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsSchemaSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsBatchSqlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsUpsertSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.TableName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.SchemaName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.CreateConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.CreateMasterConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.BreakStatements(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetConnectionInfo">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForCheckIfDatabaseExists">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForCreateDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForCreateSchema">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForCheckIfDatabaseConfigured">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForConfigureDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForGetCurrentVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForGetAllVersions">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForInsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForUpdateVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForUpsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.TryParseErrorFromException(System.Exception,System.String@)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

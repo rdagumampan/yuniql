@@ -241,7 +241,7 @@ namespace Yuniql.Core
                     transaction: transaction
                 );
 
-            var durationMs = 250; //TODO: pass from migration service
+            var durationMs = 0; //TODO: pass from migration service
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
             var statusString = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();

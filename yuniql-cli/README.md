@@ -84,12 +84,23 @@ Browse data from your VS Code
 ### Debugging with Snowflake
 
 Record your Snowflake account information
-host=<host>com;account=<account>;user=<user-id>;password<password>;db=HELLO_YUNIQL;schema=PUBLIC
-
+host=<your-snowflake-host>com;account=<your-snowflake-account>;user=<your-snowflake-user>;password<your-snowflake-pwd>;db=<your-snowflake-db>;schema=PUBLIC
 
 Set Yuniql.CLI as default startup project
 Open Yuniql.CLI project properties -> Debug -> Add these start-up parameters
 
 ```console
-run -p C:\play\yuniql\samples\basic-snowflake-sample -c "" --platform snowflake --debug
+run -p C:\play\yuniql\samples\basic-snowflake-sample -c "<your-snowflake-connection-string>" --platform snowflake --debug
+```
+
+### Debugging with Redshift
+
+Record your Snowflake account information
+Server=<your-redshift-instance>.redshift.amazonaws.com;Port=5439;Database=<your-redshift-db>;User Id=<your-redshift-user>;Password=<your-redshift-pwd>;
+
+Set Yuniql.CLI as default startup project
+Open Yuniql.CLI project properties -> Debug -> Add these start-up parameters
+
+```console
+run -p C:\play\yuniql\samples\basic-redshift-sample -c "" --platform snowflake --debug
 ```

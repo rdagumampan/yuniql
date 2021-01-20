@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Yuniql.Redshift</name>
+    </assembly>
+    <members>
+        <member name="T:Yuniql.Redshift.RedshiftBulkImportService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftBulkImportService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftBulkImportService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="T:Yuniql.Redshift.RedshiftDataService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Redshift.RedshiftDataService.IsTransactionalDdlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Redshift.RedshiftDataService.IsSchemaSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Redshift.RedshiftDataService.IsBatchSqlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Redshift.RedshiftDataService.IsUpsertSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Redshift.RedshiftDataService.TableName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Redshift.RedshiftDataService.SchemaName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.CreateConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.CreateMasterConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.BreakStatements(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetConnectionInfo">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForCheckIfDatabaseExists">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForCreateDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForCreateSchema">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForCheckIfDatabaseConfigured">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForConfigureDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForGetCurrentVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForGetAllVersions">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForInsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForUpdateVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForUpsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.TryParseErrorFromException(System.Exception,System.String@)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

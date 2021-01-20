@@ -3,6 +3,7 @@ using Yuniql.Core;
 using Yuniql.Extensibility;
 using Yuniql.MySql;
 using Yuniql.PostgreSql;
+using Yuniql.Redshift;
 using Yuniql.Snowflake;
 using Yuniql.SqlServer;
 using IMigrationServiceFactory = Yuniql.PlatformTests.Interfaces.IMigrationServiceFactory;
@@ -51,6 +52,12 @@ namespace Yuniql.PlatformTests.Setup
                     {
                         var dataService = new SnowflakeDataService(_traceService);
                         var bulkImportService = new SnowflakeBulkImportService(_traceService);
+                        return CreateInternal(dataService, bulkImportService);
+                    }
+                case SUPPORTED_DATABASES.REDSHIFT:
+                    {
+                        var dataService = new RedshiftDataService(_traceService);
+                        var bulkImportService = new RedshiftBulkImportService(_traceService);
                         return CreateInternal(dataService, bulkImportService);
                     }
                 default:

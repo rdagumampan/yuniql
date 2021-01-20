@@ -46,6 +46,10 @@ namespace Yuniql.PlatformTests.Setup
 
             //prepare a unique connection string for each test case
             var connectionString = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_CONNECTION_STRING);
+            if (!connectionString.Contains("=yuniqldb"))
+            {
+                throw new Exception("Your default database in your test connection string must be \"yuniqldb\". This is replaced during test execution with test database per test case.");
+            }
             connectionString = connectionString.Replace("yuniqldb", databaseName);
 
             return new TestConfiguration

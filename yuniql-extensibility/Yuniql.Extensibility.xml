@@ -490,6 +490,13 @@
             When true, debug messages are always written in Trace logs.
             </summary>
         </member>
+        <member name="M:Yuniql.Extensibility.ITraceService.Debug(System.String,System.Object)">
+            <summary>
+            Writes debug messages.
+            </summary>
+            <param name="message">The message to write.</param>
+            <param name="payload">JSON structured information to support the trace entry.</param>
+        </member>
         <member name="M:Yuniql.Extensibility.ITraceService.Info(System.String,System.Object)">
             <summary>
             Writes informational messages.
@@ -497,16 +504,16 @@
             <param name="message">The message to write.</param>
             <param name="payload">JSON structured information to support the trace entry.</param>
         </member>
-        <member name="M:Yuniql.Extensibility.ITraceService.Error(System.String,System.Object)">
+        <member name="M:Yuniql.Extensibility.ITraceService.Warn(System.String,System.Object)">
             <summary>
-            Writes error messages.
+            Writes warning messages.
             </summary>
             <param name="message">The message to write.</param>
             <param name="payload">JSON structured information to support the trace entry.</param>
         </member>
-        <member name="M:Yuniql.Extensibility.ITraceService.Debug(System.String,System.Object)">
+        <member name="M:Yuniql.Extensibility.ITraceService.Error(System.String,System.Object)">
             <summary>
-            Writes debug messages.
+            Writes error messages.
             </summary>
             <param name="message">The message to write.</param>
             <param name="payload">JSON structured information to support the trace entry.</param>
