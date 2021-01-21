@@ -96,8 +96,8 @@ namespace Yuniql.Core
                         metaSchemaName: metaSchemaName,
                         metaTableName: metaTableName,
                         commandTimeout: commandTimeout,
-                        appliedByTool: appliedByTool,
-                        appliedByToolVersion: appliedByToolVersion,
+                        appliedByTool: configuration.AppliedByTool,
+                        appliedByToolVersion: configuration.AppliedByToolVersion,
                         failedScriptPath: currentScriptFile,
                         failedScriptError: parsedExceptionMessage,
                         durationMs: Convert.ToInt32(stopwatch.ElapsedMilliseconds));
