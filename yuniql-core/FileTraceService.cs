@@ -18,27 +18,6 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public bool IsDebugEnabled { get; set; } = false;
 
-        ///<inheritdoc/>
-        public void Info(string message, object payload = null)
-        {
-            var traceFile = GetTraceSessionFilePath();
-            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
-
-            File.AppendAllText(traceFile, traceMessage);
-            Console.Write(traceMessage);
-        }
-
-        ///<inheritdoc/>
-        public void Error(string message, object payload = null)
-        {
-            var traceFile = GetTraceSessionFilePath();
-            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
-
-            File.AppendAllText(traceFile, traceMessage);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(traceMessage);
-            Console.ResetColor();
-        }
 
         ///<inheritdoc/>
         public void Debug(string message, object payload = null)
@@ -53,6 +32,41 @@ namespace Yuniql.Core
                 Console.Write(traceMessage);
                 Console.ResetColor();
             }
+        }
+
+        ///<inheritdoc/>
+        public void Info(string message, object payload = null)
+        {
+            var traceFile = GetTraceSessionFilePath();
+            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
+
+            File.AppendAllText(traceFile, traceMessage);
+            Console.Write(traceMessage);
+        }
+
+
+        ///<inheritdoc/>
+        public void Warn(string message, object payload = null)
+        {
+            var traceFile = GetTraceSessionFilePath();
+            var traceMessage = $"WRN   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
+
+            File.AppendAllText(traceFile, traceMessage);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write(traceMessage);
+            Console.ResetColor();
+        }
+
+        ///<inheritdoc/>
+        public void Error(string message, object payload = null)
+        {
+            var traceFile = GetTraceSessionFilePath();
+            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
+
+            File.AppendAllText(traceFile, traceMessage);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(traceMessage);
+            Console.ResetColor();
         }
 
         ///<inheritdoc/>

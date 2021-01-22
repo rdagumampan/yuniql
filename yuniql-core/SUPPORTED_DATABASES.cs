@@ -29,5 +29,10 @@
         /// Snowflake DW
         /// </summary>
         public const string SNOWFLAKE = "snowflake";
+
+        /// <summary>
+        /// Redshift DW
+        /// </summary>
+        public const string REDSHIFT = "redshift";
     }
 }

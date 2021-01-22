@@ -310,13 +310,16 @@
         <member name="P:Yuniql.Core.FileTraceService.IsDebugEnabled">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.Core.FileTraceService.Debug(System.String,System.Object)">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.Core.FileTraceService.Info(System.String,System.Object)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.FileTraceService.Error(System.String,System.Object)">
+        <member name="M:Yuniql.Core.FileTraceService.Warn(System.String,System.Object)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.FileTraceService.Debug(System.String,System.Object)">
+        <member name="M:Yuniql.Core.FileTraceService.Error(System.String,System.Object)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.FileTraceService.Success(System.String,System.Object)">
@@ -875,6 +878,11 @@
         <member name="F:Yuniql.Core.SUPPORTED_DATABASES.SNOWFLAKE">
             <summary>
             Snowflake DW
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.SUPPORTED_DATABASES.REDSHIFT">
+            <summary>
+            Redshift DW
             </summary>
         </member>
         <member name="T:Yuniql.Core.TokenReplacementService">

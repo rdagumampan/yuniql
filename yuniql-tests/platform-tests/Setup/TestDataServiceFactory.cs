@@ -1,14 +1,16 @@
 ﻿using System;
 using Yuniql.Core;
-using Yuniql.MySql;
 using Yuniql.PlatformTests.Interfaces;
 using Yuniql.PlatformTests.Platforms.MySql;
 using Yuniql.PlatformTests.Platforms.PostgreSql;
+using Yuniql.PlatformTests.Platforms.Redshift;
 using Yuniql.PlatformTests.Platforms.Snowflake;
 using Yuniql.PlatformTests.Platforms.SqlServer;
-using Yuniql.PostgreSql;
-using Yuniql.Snowflake;
 using Yuniql.SqlServer;
+using Yuniql.PostgreSql;
+using Yuniql.MySql;
+using Yuniql.Snowflake;
+using Yuniql.Redshift;
 
 namespace Yuniql.PlatformTests.Setup
 {
@@ -45,6 +47,10 @@ namespace Yuniql.PlatformTests.Setup
                 case SUPPORTED_DATABASES.SNOWFLAKE:
                     {
                         return new SnowflakeTestDataService(new SnowflakeDataService(traceService), tokenReplacementService);
+                    }
+                case SUPPORTED_DATABASES.REDSHIFT:
+                    {
+                        return new RedshiftTestDataService(new RedshiftDataService(traceService), tokenReplacementService);
                     }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +
