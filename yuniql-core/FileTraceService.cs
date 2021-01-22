@@ -52,7 +52,7 @@ namespace Yuniql.Core
             var traceMessage = $"WRN   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
             File.AppendAllText(traceFile, traceMessage);
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write(traceMessage);
             Console.ResetColor();
         }

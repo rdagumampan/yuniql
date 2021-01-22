@@ -171,9 +171,9 @@ namespace Yuniql.CLI
                         $"Last failed version: {failedVersion.Version}{Environment.NewLine}" +
                         $"Last failed script: {failedVersion.FailedScriptPath}{Environment.NewLine}" +
                         $"Last error message: {failedVersion.FailedScriptError}{Environment.NewLine}" +
-                        $"Suggested action: Fix the failed script and run manually withour yuniql on the target database." +
+                        $"Suggested action: Fix the failed script and run manually outside of yuniql." +
                         @$"After that, try to issue ""yuniql run"" command again with ""--continue-after-failure"" parameter.{Environment.NewLine}";
-                    _traceService.Info(failedVersionMessage);
+                    _traceService.Warn(failedVersionMessage);
                 }
 
                 _traceService.Success($"Listed all schema versions applied to database on {configuration.Workspace} workspace.{Environment.NewLine}" +

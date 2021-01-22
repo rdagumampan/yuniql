@@ -20,9 +20,8 @@ namespace Yuniql.Core
             var configuration = _configurationService.GetConfiguration();
             if (!_dataService.IsTransactionalDdlSupported)
             {
-                //TODO: Log this as Warn
                 configuration.TransactionMode = TRANSACTION_MODE.NONE;
-                _traceService.Info($"Target platform does not support for full transactional DDL operations. All operations will be executed with transaction mode = none. " +
+                _traceService.Warn($"Target platform does not support for full transactional DDL operations. All operations will be executed with transaction mode = none. " +
                     $"When transaction mode is set to none, each batch of sql statement does not participate in a shared transaction context. In the event of failure, the rollback attempt is limited to the individual batch of statement.");
             }
 

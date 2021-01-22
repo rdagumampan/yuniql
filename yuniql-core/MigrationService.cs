@@ -172,7 +172,7 @@ namespace Yuniql.Core
                     throw new InvalidOperationException(message);
                 }
 
-                _traceService.Info($@"The non-transactional failure resolving option ""{isContinueAfterFailure}"" was used. Version scripts already applied by previous migration run will be skipped.");
+                _traceService.Warn($@"The non-transactional failure resolving option ""{isContinueAfterFailure}"" was used. Version scripts already applied by previous migration run will be skipped.");
                 transactionContext = new TransactionContext(failedVersion, isContinueAfterFailure.Value);
             }
             else
@@ -181,7 +181,7 @@ namespace Yuniql.Core
                 if (isContinueAfterFailure != null)
                 {
                     //program should exit with non zero exit code
-                    _traceService.Info(@$"The transaction handling parameter --continue-after-failure received ""{isContinueAfterFailure}"" but no previous failed migrations recorded.");
+                    _traceService.Warn(@$"The transaction handling parameter --continue-after-failure received ""{isContinueAfterFailure}"" but no previous failed migrations recorded.");
                 }
             }
 

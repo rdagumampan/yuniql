@@ -2,6 +2,14 @@
 
 ## Running from your local machine
 
+### Publish the CLI app
+
+```console
+cd C:\play\yuniql\yuniql-cli
+dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
+```
+
+
 ### Debugging with SqlServer
 
 Deploy a sqlserver container
@@ -13,9 +21,6 @@ docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433
 #### Run from CLI
 
 ```console
-cd C:\play\yuniql\yuniql-cli
-dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
-
 cd C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish
 yuniql run -a -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
 yuniql list -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
