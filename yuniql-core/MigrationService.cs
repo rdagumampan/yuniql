@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.IO;
+using System.Diagnostics;
 
 namespace Yuniql.Core
 {
@@ -350,6 +351,10 @@ namespace Yuniql.Core
                 versionDirectories.Sort();
                 versionDirectories.ForEach(versionDirectory =>
                 {
+                    //initialize stop watch to measure duration of execution per version
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+
                     if (!string.IsNullOrEmpty(transactionMode) && transactionMode.Equals(TRANSACTION_MODE.VERSION))
                     {
                         using (var internalConnection = _dataService.CreateConnection())
@@ -364,7 +369,7 @@ namespace Yuniql.Core
 
                                     //run scripts in all sub-directories in the version
                                     var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList(); ;
-                                    RunVersionDirectoriesInternal(internalConnection, internalTransaction, scriptSubDirectories, versionDirectory, versionDirectory);
+                                    RunVersionDirectoriesInternal(internalConnection, internalTransaction, scriptSubDirectories, versionDirectory, versionDirectory, stopwatch);
 
                                     internalTransaction.Commit();
                                 }
@@ -423,7 +428,7 @@ namespace Yuniql.Core
                                     //scriptSubDirectories is the child directories under _transaction directory c:\temp\vxx.xx\_transaction\list_of_directories
                                     //transactionDirectory the path of _transaction directory c:\temp\vxx.xx\_transaction
                                     //versionDirectory path of version c:\temp\vxx.xx
-                                    RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, transactionDirectory, versionDirectory);
+                                    RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, transactionDirectory, versionDirectory, stopwatch);
                                     transaction.Commit();
 
                                     _traceService.Info(@$"Target database has been commited after running ""{versionName}"" version scripts.");
@@ -444,10 +449,13 @@ namespace Yuniql.Core
                             //run scripts without transaction
                             //scriptSubDirectories is the child directories under _transaction directory c:\temp\vxx.xx\list_of_directories
                             //versionDirectory path of version c:\temp\vxx.xx
-                            RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, versionDirectory, versionDirectory);
+                            RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, versionDirectory, versionDirectory, stopwatch);
                         }
 
                     }
+
+                    //reset duration timer
+                    stopwatch.Restart();
                 });
             }
             else
@@ -456,7 +464,7 @@ namespace Yuniql.Core
                 _traceService.Info($"Target database is updated. No migration step executed at {connectionInfo.Database} on {connectionInfo.DataSource}.");
             }
 
-            void RunVersionDirectoriesInternal(IDbConnection connection, IDbTransaction transaction, List<string> scriptSubDirectories, string scriptDirectory, string versionDirectory)
+            void RunVersionDirectoriesInternal(IDbConnection connection, IDbTransaction transaction, List<string> scriptSubDirectories, string scriptDirectory, string versionDirectory, Stopwatch stopwatch)
             {
                 try
                 {
@@ -465,27 +473,29 @@ namespace Yuniql.Core
                     scriptSubDirectories.ForEach(scriptSubDirectory =>
                     {
                         //run all scripts in the current version folder
-                        RunVersionSqlScripts(connection, transaction, transactionContext, versionName, workspace, scriptSubDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment, appliedByTool, appliedByToolVersion);
+                        RunVersionSqlScripts(connection, transaction, transactionContext, stopwatch, versionName, workspace, scriptSubDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment, appliedByTool, appliedByToolVersion);
 
                         //import csv files into tables of the the same filename as the csv
                         RunBulkImportScripts(connection, transaction, workspace, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
                     });
 
                     //run all scripts in the current version folder
-                    RunVersionSqlScripts(connection, transaction, transactionContext, versionName, workspace, scriptDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment);
+                    RunVersionSqlScripts(connection, transaction, transactionContext, stopwatch, versionName, workspace, scriptDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment);
 
                     //import csv files into tables of the the same filename as the csv
                     RunBulkImportScripts(connection, transaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
 
                     //update db version
+                    stopwatch.Stop();
                     _metadataService.InsertVersion(connection, transaction, versionName, transactionContext,
                         metaSchemaName: metaSchemaName,
                         metaTableName: metaTableName,
                         commandTimeout: commandTimeout,
                         appliedByTool: appliedByTool,
-                        appliedByToolVersion: appliedByToolVersion);
+                        appliedByToolVersion: appliedByToolVersion,
+                        durationMs: Convert.ToInt32(stopwatch.ElapsedMilliseconds));
 
-                    _traceService.Info($"Completed migration to version {versionDirectory}");
+                    _traceService.Info($"Completed migration to version {versionDirectory} in {Convert.ToInt32(stopwatch.ElapsedMilliseconds)} ms");
                 }
                 finally
                 {

@@ -7,6 +7,17 @@ namespace Yuniql.Extensibility
     /// </summary>
     public static class StringExtensions
     {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string Fixed(this string str)
+        {
+            return str.Substring(0, 6).ToUpper().Replace("-","");
+        }
+
         /// <summary>
         /// Retursn a single qouted string
         /// </summary>

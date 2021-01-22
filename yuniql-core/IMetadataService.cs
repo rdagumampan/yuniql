@@ -95,6 +95,7 @@ namespace Yuniql.Core
         /// <param name="failedScriptPath">The failed script path.</param>
         /// <param name="failedScriptError">The failed script error.</param>
         /// <param name="additionalArtifacts">Additional infromation to describe the version executed.</param>
+        /// <param name="durationMs">The duration it takes to complete the version in milliseconds</param>
         void InsertVersion(
             IDbConnection connection,
             IDbTransaction transaction,
@@ -107,7 +108,8 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string failedScriptPath = null,
             string failedScriptError = null,
-            string additionalArtifacts = null);
+            string additionalArtifacts = null,
+            int durationMs = 0);
 
         /// <summary>
         /// Executes sql statement to target database.

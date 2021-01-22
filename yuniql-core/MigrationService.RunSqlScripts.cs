@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.IO;
+using System.Diagnostics;
 
 namespace Yuniql.Core
 {
@@ -15,6 +16,7 @@ namespace Yuniql.Core
             IDbConnection connection,
             IDbTransaction transaction,
             TransactionContext transactionContext,
+            Stopwatch stopwatch,
             string version,
             string workspace,
             string scriptDirectory,
@@ -89,14 +91,16 @@ namespace Yuniql.Core
                 var configuration = _configurationService.GetConfiguration();
                 if (configuration.TransactionMode == TRANSACTION_MODE.NONE)
                 {
+                    stopwatch.Stop();
                     _metadataService.InsertVersion(connection, transaction, version, transactionContext,
                         metaSchemaName: metaSchemaName,
                         metaTableName: metaTableName,
                         commandTimeout: commandTimeout,
-                        appliedByTool: appliedByTool,
-                        appliedByToolVersion: appliedByToolVersion,
+                        appliedByTool: configuration.AppliedByTool,
+                        appliedByToolVersion: configuration.AppliedByToolVersion,
                         failedScriptPath: currentScriptFile,
-                        failedScriptError: parsedExceptionMessage);
+                        failedScriptError: parsedExceptionMessage,
+                        durationMs: Convert.ToInt32(stopwatch.ElapsedMilliseconds));
                 }
 
                 var transactionModeText = configuration.TransactionMode == TRANSACTION_MODE.NONE ? "not running in transaction" : "running in transaction";
