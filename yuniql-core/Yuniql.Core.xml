@@ -482,7 +482,7 @@
             <param name="commandTimeout">Command timeout in seconds.</param>
             <returns>All versions applied in the target database.</returns>
         </member>
-        <member name="M:Yuniql.Core.IMetadataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,Yuniql.Core.TransactionContext,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.IMetadataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,Yuniql.Core.TransactionContext,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.Int32)">
             <summary>
             Creates new entry to version tracking table after all versions were successfully executed.
             </summary>
@@ -498,6 +498,7 @@
             <param name="failedScriptPath">The failed script path.</param>
             <param name="failedScriptError">The failed script error.</param>
             <param name="additionalArtifacts">Additional infromation to describe the version executed.</param>
+            <param name="durationMs">The duration it takes to complete the version in milliseconds</param>
         </member>
         <member name="M:Yuniql.Core.IMetadataService.ExecuteSql(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
             <summary>
@@ -682,7 +683,7 @@
         <member name="M:Yuniql.Core.MetadataService.GetAllVersions(System.String,System.String,System.Nullable{System.Int32})">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.MetadataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,Yuniql.Core.TransactionContext,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.MetadataService.InsertVersion(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,Yuniql.Core.TransactionContext,System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.MetadataService.ExecuteSql(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
@@ -712,7 +713,7 @@
         <member name="M:Yuniql.Core.MigrationService.Erase">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationService.RunVersionSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
+        <member name="M:Yuniql.Core.MigrationService.RunVersionSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,Yuniql.Core.TransactionContext,System.Diagnostics.Stopwatch,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.MigrationService.RunNonVersionSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.Boolean)">

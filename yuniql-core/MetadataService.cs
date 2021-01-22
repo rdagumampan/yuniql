@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Yuniql.Extensibility;
@@ -230,7 +231,8 @@ namespace Yuniql.Core
             string appliedByToolVersion = null,
             string failedScriptPath = null,
             string failedScriptError = null,
-            string additionalArtifacts = null)
+            string additionalArtifacts = null,
+            int durationMs = 0)
         {
             var sqlStatement = string.Empty;
             var command = connection
@@ -241,7 +243,6 @@ namespace Yuniql.Core
                     transaction: transaction
                 );
 
-            var durationMs = 0; //TODO: pass from migration service
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
             var statusString = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
@@ -277,9 +278,17 @@ namespace Yuniql.Core
             }
 
             //upsert version information
-            _traceService.Debug($"Executing statement: {Environment.NewLine}{sqlStatement}");
+            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
+            _traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{sqlStatement}");
             command.CommandText = sqlStatement;
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             command.ExecuteNonQuery();
+
+            stopwatch.Stop();
+            _traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
         }
 
         ///<inheritdoc/>

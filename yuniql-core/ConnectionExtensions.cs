@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
 using Yuniql.Extensibility;
 
 namespace Yuniql.Core
@@ -62,8 +63,10 @@ namespace Yuniql.Core
             IDbTransaction transaction = null,
             ITraceService traceService = null)
         {
-            if (null != traceService)
-                traceService.Debug($"Executing statement: {Environment.NewLine}{commandText}");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
+            traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{commandText}");
 
             var command = connection
                 .KeepOpen()
@@ -72,7 +75,12 @@ namespace Yuniql.Core
                 commandTimeout: commandTimeout,
                 transaction: transaction);
 
-            return command.ExecuteNonQuery();
+            var result = command.ExecuteNonQuery();
+
+            stopwatch.Stop();
+            traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
+
+            return result;
         }
 
         /// <summary>
@@ -91,8 +99,10 @@ namespace Yuniql.Core
             IDbTransaction transaction = null,
             ITraceService traceService = null)
         {
-            if (null != traceService)
-                traceService.Debug($"Executing statement: {Environment.NewLine}{commandText}");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
+            traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{commandText}");
 
             var command = connection
                 .KeepOpen()
@@ -100,9 +110,13 @@ namespace Yuniql.Core
                 commandText: commandText,
                 commandTimeout: commandTimeout,
                 transaction: transaction);
-            var result = command.ExecuteScalar();
+            var resultTmp = command.ExecuteScalar();
+            var result = DBNull.Value != resultTmp ? Convert.ToInt32(resultTmp) : 0;
 
-            return DBNull.Value != result ? Convert.ToInt32(result) : 0;
+            stopwatch.Stop();
+            traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
+
+            return result;
         }
 
         /// <summary>
@@ -121,8 +135,10 @@ namespace Yuniql.Core
             IDbTransaction transaction = null,
             ITraceService traceService = null)
         {
-            if (null != traceService)
-                traceService.Debug($"Executing statement: {Environment.NewLine}{commandText}");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
+            traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{commandText}");
 
             var command = connection
                 .KeepOpen()
@@ -131,11 +147,15 @@ namespace Yuniql.Core
                 commandTimeout: commandTimeout,
                 transaction: transaction);
 
+            var result = false;
             using var reader = command.ExecuteReader();
             if (reader.Read())
-                return Convert.ToBoolean(reader.GetValue(0));
+                result = Convert.ToBoolean(reader.GetValue(0));
 
-            return false;
+            stopwatch.Stop();
+            traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
+
+            return result;
         }
 
         /// <summary>
@@ -154,8 +174,10 @@ namespace Yuniql.Core
             IDbTransaction transaction = null,
             ITraceService traceService = null)
         {
-            if (null != traceService)
-                traceService.Debug($"Executing statement: {Environment.NewLine}{commandText}");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
+            traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{commandText}");
 
             var command = connection
                 .KeepOpen()
@@ -164,11 +186,15 @@ namespace Yuniql.Core
                 commandTimeout: commandTimeout,
                 transaction: transaction);
 
+            string result = null;
             using var reader = command.ExecuteReader();
             if (reader.Read())
-                return reader.GetString(0);
+                result = reader.GetString(0);
 
-            return null;
+            stopwatch.Stop();
+            traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
+
+            return result;
         }
 
         /// <summary>
@@ -187,8 +213,10 @@ namespace Yuniql.Core
             IDbTransaction transaction = null,
             ITraceService traceService = null)
         {
-            if (null != traceService)
-                traceService.Debug($"Executing statement: {Environment.NewLine}{commandText}");
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
+            traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{commandText}");
 
             var command = connection
                 .KeepOpen()
@@ -197,11 +225,15 @@ namespace Yuniql.Core
                 commandTimeout: commandTimeout,
                 transaction: transaction);
 
+            var result = false;
             using var reader = command.ExecuteReader();
             if (reader.Read())
-                return true;
+                result = true;
 
-            return false;
+            stopwatch.Stop();
+            traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
+
+            return result;
         }
     }
 }
