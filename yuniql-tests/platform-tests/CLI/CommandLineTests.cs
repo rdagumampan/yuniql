@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
+using System.Diagnostics;
 using System.IO;
 using Yuniql.PlatformTests.Interfaces;
 using Yuniql.PlatformTests.Setup;
@@ -43,14 +44,20 @@ namespace Yuniql.PlatformTests.CLI
                 if (Directory.Exists(_testConfiguration.WorkspacePath))
                     Directory.Delete(_testConfiguration.WorkspacePath, true);
             }
-            catch (Exception) { /*swallow exceptions*/ }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
 
             //drop test database
             try
             {
                 _testDataService.DropDatabase(_testConfiguration.ConnectionString);
             }
-            catch (Exception) { /*swallow exceptions*/ }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
         [DataTestMethod]

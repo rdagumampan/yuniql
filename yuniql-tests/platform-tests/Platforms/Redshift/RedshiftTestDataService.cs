@@ -5,6 +5,7 @@ using System;
 using Yuniql.Core;
 using Yuniql.PostgreSql;
 using Yuniql.PlatformTests.Setup;
+using System.Collections.Generic;
 
 namespace Yuniql.PlatformTests.Platforms.Redshift
 {
@@ -186,6 +187,7 @@ DROP TABLE script3;
             return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
         }
 
+        //SELECT '"'+datname+'",' FROM pg_database where datname like '%yuniql_test%'
         //https://dba.stackexchange.com/questions/11893/force-drop-db-while-others-may-be-connected
         public override void DropDatabase(string connectionString)
         {
@@ -196,24 +198,27 @@ DROP TABLE script3;
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
             var databaseName = connectionStringBuilder.Database;
 
-            var sqlStatement = $@"
---making sure the database exists
-SELECT * from pg_database where datname = '{databaseName}';
-
+            var sqlStatements = new List<string> {
+$@"
 --disallow new connections
-UPDATE pg_database SET datallowconn = 'false' WHERE datname = '{databaseName}';
-ALTER DATABASE {databaseName} CONNECTION LIMIT 1;
-
+ALTER DATABASE {databaseName.DoubleQuote()} CONNECTION LIMIT 1;
+",
+$@"
 --terminate existing connections
-SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{databaseName}';
-
+SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE datname = '{databaseName}';
+",
+$@"
 --drop database
-DROP DATABASE {databaseName};
-";
+DROP DATABASE {databaseName.DoubleQuote()};
+",
+            };
 
             //switch database into master/system database where db catalogs are maintained
             connectionStringBuilder.Database = "dev";
-            ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
+            sqlStatements.ForEach(sqlStatement =>
+            {
+                ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
+            });
         }
     }
 }

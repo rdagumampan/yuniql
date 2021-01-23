@@ -6,6 +6,7 @@ using Yuniql.Extensibility;
 
 namespace Yuniql.PlatformTests.Setup
 {
+
     [TestClass]
     public class TestClassBase
     {

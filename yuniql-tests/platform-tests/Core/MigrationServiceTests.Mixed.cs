@@ -9,6 +9,7 @@ using Yuniql.PlatformTests.Interfaces;
 using Yuniql.PlatformTests.Setup;
 using IMigrationServiceFactory = Yuniql.PlatformTests.Interfaces.IMigrationServiceFactory;
 using MigrationServiceFactory = Yuniql.PlatformTests.Setup.MigrationServiceFactory;
+using System.Diagnostics;
 
 namespace Yuniql.PlatformTests.Core
 {
@@ -46,14 +47,20 @@ namespace Yuniql.PlatformTests.Core
                 if (Directory.Exists(_testConfiguration.WorkspacePath))
                     Directory.Delete(_testConfiguration.WorkspacePath, true);
             }
-            catch (Exception) { /*swallow exceptions*/ }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
 
             //drop test database
             try
             {
                 _testDataService.DropDatabase(_testConfiguration.ConnectionString);
             }
-            catch (Exception) { /*swallow exceptions*/ }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
         }
 
         [TestMethodEx(Requires = "IsTransactionalDdlNotSupported")]

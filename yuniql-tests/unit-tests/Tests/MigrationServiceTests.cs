@@ -21,6 +21,7 @@ namespace Yuniql.UnitTests
 
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
+            transaction.Setup(t => t.Connection).Returns(connection.Object);
 
             var workspaceService = new Mock<IWorkspaceService>();
             workspaceService.Setup(s => s.Validate(@"c:\temp")).Verifiable();
@@ -533,6 +534,7 @@ namespace Yuniql.UnitTests
 
             var connection = new Mock<IDbConnection>();
             connection.Setup(s => s.BeginTransaction()).Returns(transaction.Object);
+            transaction.Setup(t => t.Connection).Returns(connection.Object);
 
             var workspaceService = new Mock<IWorkspaceService>();
 
@@ -601,6 +603,7 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(c => c.BeginTransaction())
                       .Returns(transaction.Object);
+            transaction.Setup(t => t.Connection).Returns(connection.Object);
 
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.CreateConnection())
@@ -649,6 +652,7 @@ namespace Yuniql.UnitTests
             var connection = new Mock<IDbConnection>();
             connection.Setup(c => c.BeginTransaction())
                       .Returns(transaction.Object);
+            transaction.Setup(t => t.Connection).Returns(connection.Object);
 
             var dataService = new Mock<IDataService>();
             dataService.Setup(s => s.CreateConnection())
