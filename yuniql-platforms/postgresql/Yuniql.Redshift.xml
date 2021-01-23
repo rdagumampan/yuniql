@@ -4,18 +4,6 @@
         <name>Yuniql.Redshift</name>
     </assembly>
     <members>
-        <member name="T:Yuniql.Redshift.RedshiftBulkImportService">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Redshift.RedshiftBulkImportService.#ctor(Yuniql.Extensibility.ITraceService)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Redshift.RedshiftBulkImportService.Initialize(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Redshift.RedshiftBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <inheritdoc/>
-        </member>
         <member name="T:Yuniql.Redshift.RedshiftDataService">
             <inheritdoc/>
         </member>

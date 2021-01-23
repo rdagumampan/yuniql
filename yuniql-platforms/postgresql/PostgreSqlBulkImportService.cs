@@ -7,6 +7,7 @@ using Npgsql;
 using System;
 using System.Linq;
 using Yuniql.Extensibility.BulkCsvParser;
+using System.Diagnostics;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.PostgreSql
@@ -44,13 +45,20 @@ namespace Yuniql.PostgreSql
             var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
             var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "public");
             var schemaName = fileNameSegments.Item2.IsDoubleQuoted() ? fileNameSegments.Item2 : fileNameSegments.Item2.ToLower();
-            var tableName = fileNameSegments.Item3.IsDoubleQuoted() ? fileNameSegments.Item3 : fileNameSegments.Item3.ToLower();   
+            var tableName = fileNameSegments.Item3.IsDoubleQuoted() ? fileNameSegments.Item3 : fileNameSegments.Item3.ToLower();
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            _traceService.Info($"PostgreSqlBulkImportService: Started copying data into destination table {schemaName}.{tableName}");
 
             //read csv file and load into data table
             var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(connection, transaction, schemaName, tableName, dataTable);
+
+            stopwatch.Stop();
+            _traceService.Info($"PostgreSqlBulkImportService: Finished copying data into destination table {schemaName}.{tableName} in {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private DataTable ParseCsvFile(string csvFileFullPath, string bulkSeparator)
@@ -98,8 +106,6 @@ namespace Yuniql.PostgreSql
             string tableName,
             DataTable dataTable)
         {
-            _traceService.Info($"PostgreSqlBulkImportService: Started copying data into destination table {schemaName}.{tableName}");
-
             //get destination table schema and filter out columns not in csv file
             var destinationSchema = GetDestinationSchema(schemaName, tableName);
             var destinationColumns = destinationSchema.ToList().Where(f => dataTable.Columns.Contains(f.Key)).Select(k => k.Key).ToArray();
@@ -230,8 +236,6 @@ namespace Yuniql.PostgreSql
                 //wraps up everything, closes the stream
                 writer.Complete();
             }
-
-            _traceService.Info($"PostgreSqlBulkImportService: Finished copying data into destination table {tableName}");
         }
 
         //https://www.npgsql.org/doc/types/basic.html

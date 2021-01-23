@@ -2,6 +2,7 @@
 using Snowflake.Data.Log;
 using System;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -44,10 +45,15 @@ namespace Yuniql.Snowflake
             var schemaName = fileNameSegments.Item2;
             var tableName = fileNameSegments.Item3;
 
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             _traceService.Info($"SnowflakeImportService: Started copying data into destination table {schemaName}.{tableName}");
 
             //read csv file and load into data table
             var sqlStatement = PrepareMultiRowInsertStatement(schemaName, tableName, fileFullPath, delimiter);
+            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
+            _traceService.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{sqlStatement}");
+
             using (var cmd = new SnowflakeDbCommand())
             {
                 cmd.Connection = connection as SnowflakeDbConnection;
@@ -56,7 +62,9 @@ namespace Yuniql.Snowflake
                 cmd.ExecuteNonQuery();
             }
 
-            _traceService.Info($"SnowflakeImportService: Finished copying data into destination table {schemaName}.{tableName}");
+            stopwatch.Stop();
+            _traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
+            _traceService.Info($"SnowflakeImportService: Finished copying data into destination table {schemaName}.{tableName} in {stopwatch.ElapsedMilliseconds} ms");
         }
 
         //NOTE: This is not the most typesafe and performant way to do this and this is just to demonstrate
@@ -86,7 +94,7 @@ namespace Yuniql.Snowflake
                 var csvColumns = csvReader.ReadFields().Select(f => f.DoubleQuote());
 
                 sqlStatement.Append($"INSERT INTO {schemaName.DoubleQuote()}.{tableName.DoubleQuote()} ({string.Join(",", csvColumns)}) {Environment.NewLine}");
-                sqlStatement.AppendFormat("VALUES {0}", Environment.NewLine);
+                sqlStatement.Append("VALUES ");
 
                 while (!csvReader.EndOfData)
                 {
@@ -97,12 +105,12 @@ namespace Yuniql.Snowflake
                         return s.Quote();
                     });
 
-                    sqlStatement.Append($"{Environment.NewLine}({string.Join(",", fieldData)}),");
+                    sqlStatement.Append($"  {Environment.NewLine}({string.Join(",", fieldData)}),");
                 }
             }
-
             return sqlStatement
-                .ToString().TrimEnd(',');
+                .ToString()
+                .TrimEnd(',') + ";";
         }
     }
 }

@@ -4,6 +4,7 @@ using Yuniql.Extensibility;
 using MySql.Data.MySqlClient;
 using Yuniql.Extensibility.BulkCsvParser;
 using System;
+using System.Diagnostics;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.MySql
@@ -48,11 +49,18 @@ namespace Yuniql.MySql
                 throw new ApplicationException("MySql does not support custom schema. Your bulk file name must resemble these patterns: 1.mytable.csv, 01.mytable.csv or mytable.csv");
             }
 
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            _traceService.Info($"MySqlBulkImportService: Started copying data into destination table {schemaName}.{tableName}");
+
             //read csv file and load into data table
             var dataTable = ParseCsvFile(connection, fileFullPath, tableName, bulkSeparator);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(connection, transaction, bulkBatchSize, tableName, dataTable);
+
+            stopwatch.Stop();
+            _traceService.Info($"MySqlBulkImportService: Finished copying data into destination table {schemaName}.{tableName} in {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private DataTable ParseCsvFile(
@@ -108,8 +116,6 @@ namespace Yuniql.MySql
             string tableName,
             DataTable dataTable)
         {
-            _traceService.Info($"MySqlBulkImportService: Started copying data into destination table {tableName}");
-
             using (var cmd = new MySqlCommand())
             {
                 cmd.Connection = connection as MySqlConnection;
@@ -125,8 +131,6 @@ namespace Yuniql.MySql
                         adapter.Update(dataTable);
                     }
                 };
-
-                _traceService.Info($"MySqlBulkImportService: Finished copying data into destination table {tableName}");
             }
         }
     }

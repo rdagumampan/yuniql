@@ -3,6 +3,7 @@ using System.Data;
 using System.IO;
 using Yuniql.Extensibility;
 using Yuniql.Extensibility.BulkCsvParser;
+using System.Diagnostics;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.SqlServer
@@ -40,6 +41,10 @@ namespace Yuniql.SqlServer
             var schemaName = fileNameSegments.Item2;
             var tableName = fileNameSegments.Item3;
 
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            _traceService.Info($"SqlServerBulkImportService: Started copying data into destination table {schemaName}.{tableName}");
+
             //read csv file and load into data table
             var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
 
@@ -52,6 +57,10 @@ namespace Yuniql.SqlServer
                 dataTable,
                 bulkBatchSize,
                 commandTimeout);
+
+            stopwatch.Stop();
+            _traceService.Info($"SqlServerBulkImportService: Finished copying data into destination table {schemaName}.{tableName} in {stopwatch.ElapsedMilliseconds} ms");
+
         }
 
         private DataTable ParseCsvFile(
