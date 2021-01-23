@@ -143,38 +143,38 @@ SELECT 1 WHERE EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEM
         public string GetSqlForConfigureDatabase()
             => @"
 CREATE TABLE ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" (
-    ""SequenceId"" NUMBER NOT NULL IDENTITY START 1 INCREMENT 1,
-    ""Version"" VARCHAR(512) NOT NULL,
-    ""AppliedOnUtc"" TIMESTAMP_NTZ(9) NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    ""AppliedByUser"" VARCHAR(32) NOT NULL DEFAULT CURRENT_USER(),
-    ""AppliedByTool"" VARCHAR(32) NOT NULL,
-    ""AppliedByToolVersion"" VARCHAR(16) NOT NULL,
-    ""Status""  VARCHAR(32) NOT NULL,
-    ""DurationMs"" NUMBER NOT NULL,
-    ""FailedScriptPath""  VARCHAR(4000) NULL,
-    ""FailedScriptError""  VARCHAR(4000) NULL,
-    ""AdditionalArtifacts""  VARCHAR(4000) NULL,
-    PRIMARY KEY (""SequenceId"")
+    ""sequence_id"" NUMBER NOT NULL IDENTITY START 1 INCREMENT 1,
+    ""version"" VARCHAR(512) NOT NULL,
+    ""applied_on_utc"" TIMESTAMP_NTZ(9) NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    ""applied_by_user"" VARCHAR(32) NOT NULL DEFAULT CURRENT_USER(),
+    ""applied_by_tool"" VARCHAR(32) NOT NULL,
+    ""applied_by_tool_version"" VARCHAR(16) NOT NULL,
+    ""status""  VARCHAR(32) NOT NULL,
+    ""duration_ms"" NUMBER NOT NULL,
+    ""failed_script_path""  VARCHAR(4000) NULL,
+    ""failed_script_error""  VARCHAR(4000) NULL,
+    ""additional_artifacts""  VARCHAR(4000) NULL,
+    PRIMARY KEY (""sequence_id"")
 );
              ";
 
         ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
             => @"
-SELECT TOP 1 ""Version"" FROM ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" WHERE ""Status"" = 'Successful' ORDER BY ""SequenceId"" DESC;
+SELECT TOP 1 ""version"" FROM ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" WHERE ""status"" = 'Successful' ORDER BY ""sequence_id"" DESC;
             ";
 
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"
-SELECT ""SequenceId"", ""Version"", ""AppliedOnUtc"", ""AppliedByUser"", ""AppliedByTool"", ""AppliedByToolVersion"", ""Status"", ""DurationMs"", ""FailedScriptPath"", ""FailedScriptError"", ""AdditionalArtifacts""
-FROM ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" ORDER BY ""Version"" ASC;
+SELECT ""sequence_id"", ""version"", ""applied_on_utc"", ""applied_by_user"", ""applied_by_tool"", ""applied_by_tool_version"", ""status"", ""duration_ms"", ""failed_script_path"", ""failed_script_error"", ""additional_artifacts""
+FROM ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" ORDER BY ""version"" ASC;
             ";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"
-INSERT INTO ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" (""Version"", ""AppliedByTool"", ""AppliedByToolVersion"", ""Status"", ""DurationMs"", ""FailedScriptPath"", ""FailedScriptError"", ""AdditionalArtifacts"")
+INSERT INTO ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" (""version"", ""applied_by_tool"", ""applied_by_tool_version"", ""status"", ""duration_ms"", ""failed_script_path"", ""failed_script_error"", ""additional_artifacts"")
 VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
             ";
 
@@ -183,17 +183,17 @@ VALUES ('${YUNIQL_VERSION}', '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_T
             => @"
 UPDATE ""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}""
 SET 	
-	""AppliedOnUtc""         = CURRENT_TIMESTAMP(),
-	""AppliedByUser""        = CURRENT_USER(),
-	""AppliedByTool""        = '${YUNIQL_APPLIED_BY_TOOL}', 
-	""AppliedByToolVersion"" = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
-	""Status""               = '${YUNIQL_STATUS}',
-	""DurationMs""           = '${YUNIQL_DURATION_MS}',
-	""FailedScriptPath""     = '${YUNIQL_FAILED_SCRIPT_PATH}',
-	""FailedScriptError""    = '${YUNIQL_FAILED_SCRIPT_ERROR}',
-	""AdditionalArtifacts""  = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
+	""applied_on_utc""         =  CURRENT_TIMESTAMP(),
+	""applied_by_user""        =  CURRENT_USER(),
+	""applied_by_tool""        = '${YUNIQL_APPLIED_BY_TOOL}', 
+	""applied_by_toolVersion"" = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
+	""status""                 = '${YUNIQL_STATUS}',
+	""duration_ms""            = '${YUNIQL_DURATION_MS}',
+	""failed_script_path""     = '${YUNIQL_FAILED_SCRIPT_PATH}',
+	""failed_script_error""    = '${YUNIQL_FAILED_SCRIPT_ERROR}',
+	""additional_artifacts""   = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
 WHERE
-	""Version""              = '${YUNIQL_VERSION}';
+	""version""                = '${YUNIQL_VERSION}';
             ";
 
         //https://docs.snowflake.com/en/sql-reference/sql/merge.html
