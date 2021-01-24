@@ -55,7 +55,7 @@ Run the platform tests from cli
 ```console
 cd C:\play\yuniql\yuniql-tests\platform-tests
 dotnet test -v n
-dotnet test --filter Test_Bulk_Import_With_Pipe_Separated -v n
+dotnet test --filter Test_Init -v n
 ```
 
 ## Run platform tests for PostgreSql

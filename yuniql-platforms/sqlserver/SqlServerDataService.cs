@@ -101,40 +101,42 @@ SELECT ISNULL(OBJECT_ID('[${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]'), 0);
         public string GetSqlForConfigureDatabase()
             => @"
 CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
-	[SequenceId] [SMALLINT] IDENTITY(1,1) NOT NULL,
-	[Version] [NVARCHAR](512) NOT NULL,
-	[AppliedOnUtc] [DATETIME] NOT NULL,
-	[AppliedByUser] [NVARCHAR](32) NOT NULL,
-	[AppliedByTool] [NVARCHAR](32) NOT NULL,
-	[AppliedByToolVersion] [NVARCHAR](16) NOT NULL,
-	[Status] [NVARCHAR](32) NOT NULL,
-	[DurationMs] [INT] NOT NULL,
-	[FailedScriptPath] [NVARCHAR](4000) NULL,
-	[FailedScriptError] [NVARCHAR](4000) NULL,
-	[AdditionalArtifacts] [NVARCHAR](4000) NULL,
-    CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([SequenceId] ASC),
-    CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED  ([Version] ASC
+	[sequence_id] [SMALLINT] IDENTITY(1,1) NOT NULL,
+	[version] [NVARCHAR](512) NOT NULL,
+	[applied_on_utc] [DATETIME] NOT NULL,
+	[applied_by_user] [NVARCHAR](32) NOT NULL,
+	[applied_by_tool] [NVARCHAR](32) NOT NULL,
+	[applied_by_tool_version] [NVARCHAR](16) NOT NULL,
+	[status] [NVARCHAR](32) NOT NULL,
+	[duration_ms] [INT] NOT NULL,
+	[failed_script_path] [NVARCHAR](4000) NULL,
+	[failed_script_error] [NVARCHAR](4000) NULL,
+	[additional_artifacts] [NVARCHAR](4000) NULL,
+    CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([sequence_id] ASC),
+    CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED  ([version] ASC
 ));
 
-ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedOnUtc]  DEFAULT (GETUTCDATE()) FOR [AppliedOnUtc];
-ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_AppliedByUser]  DEFAULT (SUSER_SNAME()) FOR [AppliedByUser];
+ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_applied_on_utc]  DEFAULT (GETUTCDATE()) FOR [applied_on_utc];
+ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_applied_by_user]  DEFAULT (SUSER_SNAME()) FOR [applied_by_user];
             ";
 
         ///<inheritdoc/>
         public string GetSqlForGetCurrentVersion()
-            => @"SELECT TOP 1 [Version] FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] WHERE Status = 'Successful' ORDER BY [SequenceId] DESC;";
+            => @"
+SELECT TOP 1 [version] FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] WHERE status = 'Successful' ORDER BY [sequence_id] DESC;
+            ";
 
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"
-SELECT [SequenceId], [Version], [AppliedOnUtc], [AppliedByUser], [AppliedByTool], [AppliedByToolVersion], [Status], [DurationMs], [FailedScriptPath], [FailedScriptError], [AdditionalArtifacts]
-FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY Version ASC;
+SELECT [sequence_id], [version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [failed_script_path], [failed_script_error], [additional_artifacts]
+FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY version ASC;
             ";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"
-INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ([Version], [AppliedOnUtc], [AppliedByUser], [AppliedByTool], [AppliedByToolVersion], [Status], [DurationMs], [FailedScriptPath], [FailedScriptError], [AdditionalArtifacts]) 
+INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ([version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [failed_script_path], [failed_script_error], [additional_artifacts]) 
 VALUES ('${YUNIQL_VERSION}', GETUTCDATE(), SUSER_SNAME(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
             ";
 
@@ -143,17 +145,17 @@ VALUES ('${YUNIQL_VERSION}', GETUTCDATE(), SUSER_SNAME(), '${YUNIQL_APPLIED_BY_T
             => @"
 UPDATE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]
 SET 	
-	[AppliedOnUtc]          = GETUTCDATE(),
-	[AppliedByUser]         = SUSER_SNAME(),
-	[AppliedByTool]         = '${YUNIQL_APPLIED_BY_TOOL}', 
-	[AppliedByToolVersion]  = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
-	[Status]                = '${YUNIQL_STATUS}',
-	[DurationMs]            = '${YUNIQL_DURATION_MS}',
-	[FailedScriptPath]      = '${YUNIQL_FAILED_SCRIPT_PATH}',
-	[FailedScriptError]     = '${YUNIQL_FAILED_SCRIPT_ERROR}',
-	[AdditionalArtifacts]   = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
+	[applied_on_utc]          = GETUTCDATE(),
+	[applied_by_user]         = SUSER_SNAME(),
+	[applied_by_tool]         = '${YUNIQL_APPLIED_BY_TOOL}', 
+	[applied_by_tool_version]  = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
+	[status]                = '${YUNIQL_STATUS}',
+	[duration_ms]            = '${YUNIQL_DURATION_MS}',
+	[failed_script_path]      = '${YUNIQL_FAILED_SCRIPT_PATH}',
+	[failed_script_error]     = '${YUNIQL_FAILED_SCRIPT_ERROR}',
+	[additional_artifacts]   = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
 WHERE
-	[Version]               = '${YUNIQL_VERSION}';
+	[version]               = '${YUNIQL_VERSION}';
             ";
 
         ///<inheritdoc/>
@@ -161,31 +163,31 @@ WHERE
             => @"
 MERGE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] AS T
 USING (SELECT 
-	'${YUNIQL_VERSION}' [Version], 
-	GETUTCDATE() [AppliedOnUtc], 
-	SUSER_SNAME() [AppliedByUser], 
-	'${YUNIQL_APPLIED_BY_TOOL}' [AppliedByTool], 
-	'${YUNIQL_APPLIED_BY_TOOL_VERSION}' [AppliedByToolVersion], 
-	'${YUNIQL_STATUS}' [Status], 
-	'${YUNIQL_DURATION_MS}' [DurationMs], 
-	'${YUNIQL_FAILED_SCRIPT_PATH}' [FailedScriptPath], 
-	'${YUNIQL_FAILED_SCRIPT_ERROR}' [FailedScriptError], 
-	'${YUNIQL_ADDITIONAL_ARTIFACTS}' [AdditionalArtifacts]) AS S 
-ON T.[Version] = S.[Version]
+	'${YUNIQL_VERSION}' [version], 
+	GETUTCDATE() [applied_on_utc], 
+	SUSER_SNAME() [applied_by_user], 
+	'${YUNIQL_APPLIED_BY_TOOL}' [applied_by_tool], 
+	'${YUNIQL_APPLIED_BY_TOOL_VERSION}' [applied_by_tool_version], 
+	'${YUNIQL_STATUS}' [status], 
+	'${YUNIQL_DURATION_MS}' [duration_ms], 
+	'${YUNIQL_FAILED_SCRIPT_PATH}' [failed_script_path], 
+	'${YUNIQL_FAILED_SCRIPT_ERROR}' [failed_script_error], 
+	'${YUNIQL_ADDITIONAL_ARTIFACTS}' [additional_artifacts]) AS S 
+ON T.[version] = S.[version]
 WHEN MATCHED THEN
   UPDATE SET 	
-	T.[AppliedOnUtc] = S.[AppliedOnUtc],
-	T.[AppliedByUser] = S.[AppliedByUser],
-	T.[AppliedByTool]= S.[AppliedByTool], 
-	T.[AppliedByToolVersion] = S.[AppliedByToolVersion],
-	T.[Status] = S.[Status],
-	T.[DurationMs] = S.[DurationMs],
-	T.[FailedScriptPath] = S.[FailedScriptPath],
-	T.[FailedScriptError] = S.[FailedScriptError],
-	T.[AdditionalArtifacts] = S.[AdditionalArtifacts]
+	T.[applied_on_utc] = S.[applied_on_utc],
+	T.[applied_by_user] = S.[applied_by_user],
+	T.[applied_by_tool]= S.[applied_by_tool], 
+	T.[applied_by_tool_version] = S.[applied_by_tool_version],
+	T.[status] = S.[status],
+	T.[duration_ms] = S.[duration_ms],
+	T.[failed_script_path] = S.[failed_script_path],
+	T.[failed_script_error] = S.[failed_script_error],
+	T.[additional_artifacts] = S.[additional_artifacts]
 WHEN NOT MATCHED THEN
-  INSERT ([Version], [AppliedOnUtc], [AppliedByUser], [AppliedByTool], [AppliedByToolVersion], [Status], [DurationMs], [FailedScriptPath], [FailedScriptError], [AdditionalArtifacts]) 
-  VALUES (S.[Version], GETUTCDATE(), SUSER_SNAME(), S.[AppliedByTool], S.[AppliedByToolVersion], S.[Status], S.[DurationMs], S.[FailedScriptPath], S.[FailedScriptError], S.[AdditionalArtifacts]);
+  INSERT ([version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [failed_script_path], [failed_script_error], [additional_artifacts]) 
+  VALUES (S.[version], GETUTCDATE(), SUSER_SNAME(), S.[applied_by_tool], S.[applied_by_tool_version], S.[status], S.[duration_ms], S.[failed_script_path], S.[failed_script_error], S.[additional_artifacts]);
             ";
 
         ///<inheritdoc/>
