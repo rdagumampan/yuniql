@@ -103,7 +103,7 @@ namespace Yuniql.Snowflake
         public bool IsUpsertSupported => false;
 
         ///<inheritdoc/>
-        public string TableName { get; set; } = "__YUNIQLDBVERSIONS";
+        public string TableName { get; set; } = "__YUNIQLDBVERSION";
 
         ///<inheritdoc/>
         public string SchemaName { get; set; } = "PUBLIC";
