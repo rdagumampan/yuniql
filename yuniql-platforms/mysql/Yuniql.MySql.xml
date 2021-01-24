@@ -88,6 +88,9 @@
         <member name="M:Yuniql.MySql.MySqlDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForUpgradeSchema(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.MySql.MySqlDataService.TryParseErrorFromException(System.Exception,System.String@)">
             <inheritdoc/>
         </member>

@@ -459,6 +459,18 @@
             <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
             <returns>True if target database was updated, otherwise returns false</returns>
         </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCheckRequireSchemaUpgrade(System.String)">
+            <summary>
+            Returns true if the version tracking table requires upgrade for this release
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForUpgradeSchema(System.String)">
+            <summary>
+            Returns sql for upgrade the existing version tracking table
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Yuniql.Extensibility.IDataService.TryParseErrorFromException(System.Exception,System.String@)">
             <summary>
             Try parses error from database specific exception.

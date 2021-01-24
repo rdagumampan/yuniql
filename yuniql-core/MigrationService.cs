@@ -153,7 +153,7 @@ namespace Yuniql.Core
             var targetDatabaseUpdated = _metadataService.UpdateDatabaseConfiguration(metaSchemaName, metaTableName);
             var databaseUpgradedMessage = targetDatabaseUpdated 
                 ? $"The schema version tracking table has been upgraded for {targetDatabaseName} on {targetDatabaseServer}." 
-                : $"The chema version tracking table is up to date for {targetDatabaseName} on {targetDatabaseServer}.";
+                : $"The schema version tracking table is up to date for {targetDatabaseName} on {targetDatabaseServer}.";
             _traceService.Info(databaseUpgradedMessage);
 
             TransactionContext transactionContext = null;

@@ -131,11 +131,30 @@ namespace Yuniql.Core
             string metaTableName = null,
             int? commandTimeout = null)
         {
+            var version = typeof(IMigrationService).Assembly.GetName().Version.ToString();
             using (var connection = _dataService.CreateConnection())
             {
-                connection.KeepOpen();
-                return _dataService.UpdateDatabaseConfiguration(connection, _traceService, metaSchemaName, metaTableName);
+                var sqlStatementRequireUpgrade = GetPreparedSqlStatement(_dataService.GetSqlForCheckRequireSchemaUpgrade(version), metaSchemaName, metaTableName);
+                var requiredSchemaVersion = connection.QuerySingleString(
+                    commandText: sqlStatementRequireUpgrade,
+                    commandTimeout: commandTimeout,
+                    transaction: null,
+                    traceService: _traceService);
+
+                if (!string.IsNullOrEmpty(requiredSchemaVersion))
+                {
+                    _traceService.Warn("Schema tracking table will be upgraded as required in this release of yuniql.");
+                    var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForUpgradeSchema(requiredSchemaVersion), metaSchemaName, metaTableName);
+                    var result = connection.ExecuteNonQuery(
+                        commandText: sqlStatement,
+                        commandTimeout: commandTimeout,
+                        transaction: null,
+                        traceService: _traceService);
+
+                    return result > 0;
+                }
             }
+            return false;
         }
 
         ///<inheritdoc/>

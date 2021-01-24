@@ -4,6 +4,7 @@ using Yuniql.Extensibility;
 using MySql.Data.MySqlClient;
 using System.Linq;
 using System;
+using System.IO;
 
 namespace Yuniql.MySql
 {
@@ -193,6 +194,27 @@ ON DUPLICATE KEY UPDATE
             }
 
             return databaseUpdated;
+        }
+
+        public string GetSqlForCheckRequireSchemaUpgrade(string version)
+=> @"
+SELECT 'v1_1' FROM INFORMATION_SCHEMA.COLUMNS  
+WHERE 
+    table_name = '${YUNIQL_TABLE_NAME}' 
+    AND table_schema = '${YUNIQL_DB_NAME}' 
+    AND column_name = 'additional_artifacts'
+    AND data_type = 'blob';
+            ";
+
+        ///<inheritdoc/>
+        public string GetSqlForUpgradeSchema(string requiredSchemaVersion)
+        {
+            var assembly = typeof(MySqlDataService).Assembly;
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");
+            using (var reader = new StreamReader(resource))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
         private DataTable GetVersionTableColumns(IDbConnection dbConnection, ITraceService traceService = null, string metaTableName = null)

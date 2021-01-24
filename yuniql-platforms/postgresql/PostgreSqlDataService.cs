@@ -4,6 +4,7 @@ using System.Data;
 using Yuniql.Extensibility;
 using Npgsql;
 using System.Collections;
+using System.IO;
 
 namespace Yuniql.PostgreSql
 {
@@ -156,10 +157,32 @@ WHERE
         public string GetSqlForUpsertVersion()
             => throw new NotSupportedException("Not supported for the target platform");
 
+        public string GetSqlForCheckRequireSchemaUpgrade(string version)
+     => @"
+--validate that current database used yuniql v1.0 version
+SELECT 'v1_1' FROM INFORMATION_SCHEMA.COLUMNS  
+WHERE 
+    table_name = '${YUNIQL_TABLE_NAME}' 
+    AND table_schema = '${YUNIQL_SCHEMA_NAME}' 
+    AND column_name = 'additional_artifacts'
+    AND data_type = 'bytea';
+            ";
+
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {
             //no need to update tracking table as the structure has no been changed so far
             return false;
+        }
+
+        ///<inheritdoc/>
+        public string GetSqlForUpgradeSchema(string requiredSchemaVersion)
+        {
+            var assembly = typeof(PostgreSqlDataService).Assembly;
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");
+            using (var reader = new StreamReader(resource))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
         ///<inheritdoc/>

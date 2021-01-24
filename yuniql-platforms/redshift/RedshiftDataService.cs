@@ -4,6 +4,7 @@ using System.Data;
 using Yuniql.Extensibility;
 using Npgsql;
 using System.Collections;
+using System.IO;
 
 namespace Yuniql.Redshift
 {
@@ -156,6 +157,27 @@ WHERE
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
             => throw new NotSupportedException("Not supported for the target platform");
+
+        ///<inheritdoc/>
+        public string GetSqlForCheckRequireSchemaUpgrade(string version)
+            => @"
+SELECT NULL;
+            ";
+
+        ///<inheritdoc/>
+        public string GetSqlForUpgradeSchema(string version)
+        {
+            var assembly = typeof(RedshiftDataService).Assembly;
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.Schema_v1_0xv1_1.sql.sql");
+
+            var sqlStatement = string.Empty;
+            using (var reader = new StreamReader(resource))
+            {
+                sqlStatement = reader.ReadToEnd();
+            }
+
+            return sqlStatement;
+        }
 
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {

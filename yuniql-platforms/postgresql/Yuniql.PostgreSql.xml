@@ -85,6 +85,9 @@
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForUpgradeSchema(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.TryParseErrorFromException(System.Exception,System.String@)">
             <inheritdoc/>
         </member>

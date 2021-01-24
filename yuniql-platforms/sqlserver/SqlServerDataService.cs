@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Yuniql.Extensibility;
 using Yuniql.Extensibility.SqlBatchParser;
@@ -116,8 +118,8 @@ CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
     CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED  ([version] ASC
 ));
 
-ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_applied_on_utc]  DEFAULT (GETUTCDATE()) FOR [applied_on_utc];
-ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___YuniqlDbVersion_applied_by_user]  DEFAULT (SUSER_SNAME()) FOR [applied_by_user];
+ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___yuniqldbversion_applied_on_utc]  DEFAULT (GETUTCDATE()) FOR [applied_on_utc];
+ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___yuniqldbversion_applied_by_user]  DEFAULT (SUSER_SNAME()) FOR [applied_by_user];
             ";
 
         ///<inheritdoc/>
@@ -145,17 +147,17 @@ VALUES ('${YUNIQL_VERSION}', GETUTCDATE(), SUSER_SNAME(), '${YUNIQL_APPLIED_BY_T
             => @"
 UPDATE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]
 SET 	
-	[applied_on_utc]          = GETUTCDATE(),
-	[applied_by_user]         = SUSER_SNAME(),
-	[applied_by_tool]         = '${YUNIQL_APPLIED_BY_TOOL}', 
-	[applied_by_tool_version]  = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
-	[status]                = '${YUNIQL_STATUS}',
-	[duration_ms]            = '${YUNIQL_DURATION_MS}',
-	[failed_script_path]      = '${YUNIQL_FAILED_SCRIPT_PATH}',
-	[failed_script_error]     = '${YUNIQL_FAILED_SCRIPT_ERROR}',
-	[additional_artifacts]   = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
+	[applied_on_utc]            = GETUTCDATE(),
+	[applied_by_user]           = SUSER_SNAME(),
+	[applied_by_tool]           = '${YUNIQL_APPLIED_BY_TOOL}', 
+	[applied_by_tool_version]   = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
+	[status]                    = '${YUNIQL_STATUS}',
+	[duration_ms]               = '${YUNIQL_DURATION_MS}',
+	[failed_script_path]        = '${YUNIQL_FAILED_SCRIPT_PATH}',
+	[failed_script_error]       = '${YUNIQL_FAILED_SCRIPT_ERROR}',
+	[additional_artifacts]      = '${YUNIQL_ADDITIONAL_ARTIFACTS}' 
 WHERE
-	[version]               = '${YUNIQL_VERSION}';
+	[version]                   = '${YUNIQL_VERSION}';
             ";
 
         ///<inheritdoc/>
@@ -176,25 +178,65 @@ USING (SELECT
 ON T.[version] = S.[version]
 WHEN MATCHED THEN
   UPDATE SET 	
-	T.[applied_on_utc] = S.[applied_on_utc],
-	T.[applied_by_user] = S.[applied_by_user],
-	T.[applied_by_tool]= S.[applied_by_tool], 
+	T.[applied_on_utc]          = S.[applied_on_utc],
+	T.[applied_by_user]         = S.[applied_by_user],
+	T.[applied_by_tool]         = S.[applied_by_tool], 
 	T.[applied_by_tool_version] = S.[applied_by_tool_version],
-	T.[status] = S.[status],
-	T.[duration_ms] = S.[duration_ms],
-	T.[failed_script_path] = S.[failed_script_path],
-	T.[failed_script_error] = S.[failed_script_error],
-	T.[additional_artifacts] = S.[additional_artifacts]
+	T.[status]                  = S.[status],
+	T.[duration_ms]             = S.[duration_ms],
+	T.[failed_script_path]      = S.[failed_script_path],
+	T.[failed_script_error]     = S.[failed_script_error],
+	T.[additional_artifacts]    = S.[additional_artifacts]
 WHEN NOT MATCHED THEN
   INSERT ([version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [failed_script_path], [failed_script_error], [additional_artifacts]) 
   VALUES (S.[version], GETUTCDATE(), SUSER_SNAME(), S.[applied_by_tool], S.[applied_by_tool_version], S.[status], S.[duration_ms], S.[failed_script_path], S.[failed_script_error], S.[additional_artifacts]);
             ";
 
         ///<inheritdoc/>
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
+        public bool UpdateDatabaseConfiguration(IDbConnection connection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
         {
-            //no need to update tracking table as the structure has no been changed so far
-            return false;
+            var version = typeof(SqlServerDataService).Assembly.GetName().Version.ToString();
+            var commandText = GetSqlForUpgradeSchema(version);
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
+            traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{commandText}");
+
+            var command = connection.CreateCommand();
+            command.CommandType = CommandType.Text;
+            command.CommandText = commandText;
+            //command.Transaction = transaction;
+
+            var result = command.ExecuteNonQuery();
+
+            stopwatch.Stop();
+            traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
+            
+            return result > 0;
+        }
+
+        ///<inheritdoc/>
+        public string GetSqlForCheckRequireSchemaUpgrade(string version)
+             => @"
+--validate that current database used yuniql v1.0 version
+--we use pascal case in v1.0 for sql server
+IF EXISTS(SELECT object_id FROM sys.columns  WHERE Name = N'SequenceId' AND Object_ID = OBJECT_ID(N'${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}'))
+BEGIN
+    SELECT 'v1_1';
+	RETURN;
+END
+            ";
+
+        ///<inheritdoc/>
+        public string GetSqlForUpgradeSchema(string requiredSchemaVersion)
+        {
+            var assembly = typeof(SqlServerDataService).Assembly;
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");
+            using (var reader = new StreamReader(resource))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
         ///<inheritdoc/>

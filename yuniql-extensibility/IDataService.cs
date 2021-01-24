@@ -140,6 +140,18 @@ namespace Yuniql.Extensibility
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null);
 
         /// <summary>
+        /// Returns true if the version tracking table requires upgrade for this release
+        /// </summary>
+        /// <returns></returns>
+        public string GetSqlForCheckRequireSchemaUpgrade(string version);
+
+        /// <summary>
+        /// Returns sql for upgrade the existing version tracking table
+        /// </summary>
+        /// <returns></returns>
+        public string GetSqlForUpgradeSchema(string version);
+
+        /// <summary>
         /// Try parses error from database specific exception.
         /// </summary>
         /// <param name="exc">The exc.</param>

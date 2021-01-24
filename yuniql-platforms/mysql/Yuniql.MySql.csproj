@@ -30,6 +30,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="SchemaUpgrade_v1_1.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SchemaUpgrade_v1_1.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\..\LICENSE.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
