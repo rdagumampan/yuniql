@@ -187,7 +187,7 @@ SET
 	""applied_on_utc""         =  CURRENT_TIMESTAMP(),
 	""applied_by_user""        =  CURRENT_USER(),
 	""applied_by_tool""        = '${YUNIQL_APPLIED_BY_TOOL}', 
-	""applied_by_toolVersion"" = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
+	""applied_by_tool_version"" = '${YUNIQL_APPLIED_BY_TOOL_VERSION}',
 	""status""                 = '${YUNIQL_STATUS}',
 	""duration_ms""            = '${YUNIQL_DURATION_MS}',
 	""failed_script_path""     = '${YUNIQL_FAILED_SCRIPT_PATH}',
@@ -209,18 +209,14 @@ SELECT NULL;
             ";
 
         ///<inheritdoc/>
-        public string GetSqlForUpgradeSchema(string version)
+        public string GetSqlForUpgradeSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(SnowflakeDataService).Assembly;
-            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.Schema_v1_0xv1_1.sql.sql");
-
-            var sqlStatement = string.Empty;
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");
             using (var reader = new StreamReader(resource))
             {
-                sqlStatement = reader.ReadToEnd();
+                return reader.ReadToEnd();
             }
-
-            return sqlStatement;
         }
 
         ///<inheritdoc/>

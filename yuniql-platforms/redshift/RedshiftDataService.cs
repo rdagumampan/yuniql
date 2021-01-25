@@ -165,18 +165,14 @@ SELECT NULL;
             ";
 
         ///<inheritdoc/>
-        public string GetSqlForUpgradeSchema(string version)
+        public string GetSqlForUpgradeSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(RedshiftDataService).Assembly;
-            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.Schema_v1_0xv1_1.sql.sql");
-
-            var sqlStatement = string.Empty;
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");
             using (var reader = new StreamReader(resource))
             {
-                sqlStatement = reader.ReadToEnd();
+                return reader.ReadToEnd();
             }
-
-            return sqlStatement;
         }
 
         public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)

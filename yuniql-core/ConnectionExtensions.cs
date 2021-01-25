@@ -189,7 +189,7 @@ namespace Yuniql.Core
             string result = null;
             using var reader = command.ExecuteReader();
             if (reader.Read())
-                result = reader.GetString(0);
+                result = reader.GetValue(0) as string;
 
             stopwatch.Stop();
             traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
