@@ -449,16 +449,6 @@
             Returns the SQL statement to use for merging new entry into migration tracking table.
             </summary>
         </member>
-        <member name="M:Yuniql.Extensibility.IDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">
-            <summary>
-            Updates the database migration tracking table.
-            </summary>
-            <param name="dbConnection">The database connection.</param>
-            <param name="traceService">The trace service.</param>
-            <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
-            <param name="metaTableName">Table name for schema versions table. When empty, uses __yuniqldbversion.</param>
-            <returns>True if target database was updated, otherwise returns false</returns>
-        </member>
         <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCheckRequireSchemaUpgrade(System.String)">
             <summary>
             Returns true if the version tracking table requires upgrade for this release

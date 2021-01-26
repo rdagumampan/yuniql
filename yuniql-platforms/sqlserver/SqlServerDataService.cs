@@ -193,30 +193,6 @@ WHEN NOT MATCHED THEN
             ";
 
         ///<inheritdoc/>
-        public bool UpdateDatabaseConfiguration(IDbConnection connection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
-        {
-            var version = typeof(SqlServerDataService).Assembly.GetName().Version.ToString();
-            var commandText = GetSqlForUpgradeSchema(version);
-
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
-            traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{commandText}");
-
-            var command = connection.CreateCommand();
-            command.CommandType = CommandType.Text;
-            command.CommandText = commandText;
-            //command.Transaction = transaction;
-
-            var result = command.ExecuteNonQuery();
-
-            stopwatch.Stop();
-            traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
-            
-            return result > 0;
-        }
-
-        ///<inheritdoc/>
         public string GetSqlForCheckRequireSchemaUpgrade(string version)
              => @"
 --validate that current database used yuniql v1.0 version

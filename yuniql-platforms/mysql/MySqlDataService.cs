@@ -2,7 +2,6 @@
 using System.Data;
 using Yuniql.Extensibility;
 using MySql.Data.MySqlClient;
-using System.Linq;
 using System;
 using System.IO;
 
@@ -168,34 +167,6 @@ ON DUPLICATE KEY UPDATE
             ";
 
         ///<inheritdoc/>
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
-        {
-            var columnsTable = GetVersionTableColumns(dbConnection, traceService, metaTableName);
-            var columnsTableRows = columnsTable.Rows.Cast<DataRow>().Select(x => new { ColumnName = x.Field<string>("COLUMN_NAME"), ColumnType = x.Field<string>("COLUMN_TYPE") }).ToDictionary(x => x.ColumnName, StringComparer.OrdinalIgnoreCase);
-
-            //add new columns into old version of table
-            bool databaseUpdated = false;
-            if (!columnsTableRows.ContainsKey("status"))
-            {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {metaTableName ?? this.TableName} ADD COLUMN status VARCHAR(32) NOT NULL", traceService);
-                databaseUpdated = true;
-            }
-
-            if (!columnsTableRows.ContainsKey("failed_script_path"))
-            {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {metaTableName ?? this.TableName} ADD COLUMN failed_script_path VARCHAR(4000) NULL", traceService);
-                databaseUpdated = true;
-            }
-
-            if (!columnsTableRows.ContainsKey("failed_script_error"))
-            {
-                this.ExecuteNonQuery(dbConnection, $"ALTER TABLE {metaTableName ?? this.TableName} ADD COLUMN failed_script_error VARCHAR(4000) NULL", traceService);
-                databaseUpdated = true;
-            }
-
-            return databaseUpdated;
-        }
-
         public string GetSqlForCheckRequireSchemaUpgrade(string version)
 => @"
 SELECT 'v1_1' FROM INFORMATION_SCHEMA.COLUMNS  
@@ -215,34 +186,6 @@ WHERE
             {
                 return reader.ReadToEnd();
             }
-        }
-
-        private DataTable GetVersionTableColumns(IDbConnection dbConnection, ITraceService traceService = null, string metaTableName = null)
-        {
-            var dbCommand = (MySqlCommand)dbConnection.CreateCommand();
-            dbCommand.CommandText = $"SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '{metaTableName ?? this.TableName}' AND table_schema = DATABASE()";
-
-            return this.FillDataTable(dbCommand, traceService);
-        }
-
-        private DataTable FillDataTable(MySqlCommand dbCommand, ITraceService traceService = null)
-        {
-            traceService?.Debug($"Executing statement: {Environment.NewLine}{dbCommand.CommandText}");
-            var dataTable = new DataTable();
-            using (var dataAdapter = new MySqlDataAdapter(dbCommand))
-            {
-                dataAdapter.Fill(dataTable);
-            }
-            return dataTable;
-        }
-
-        private int ExecuteNonQuery(IDbConnection dbConnection, string commandText, ITraceService traceService = null)
-        {
-            traceService?.Debug($"Executing statement: {Environment.NewLine}{commandText}");
-
-            var dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandText = commandText;
-            return dbCommand.ExecuteNonQuery();
         }
 
         ///<inheritdoc/>

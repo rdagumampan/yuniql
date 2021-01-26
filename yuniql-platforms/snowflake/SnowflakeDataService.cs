@@ -220,13 +220,6 @@ SELECT NULL;
         }
 
         ///<inheritdoc/>
-        public bool UpdateDatabaseConfiguration(IDbConnection dbConnection, ITraceService traceService = null, string metaSchemaName = null, string metaTableName = null)
-        {
-            //no need to update tracking table as the structure has no been changed so far
-            return false;
-        }
-
-        ///<inheritdoc/>
         public bool TryParseErrorFromException(Exception exception, out string result)
         {
             result = null;

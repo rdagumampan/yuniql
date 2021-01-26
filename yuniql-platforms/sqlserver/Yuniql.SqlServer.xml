@@ -85,9 +85,6 @@
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.SqlServer.SqlServerDataService.UpdateDatabaseConfiguration(System.Data.IDbConnection,Yuniql.Extensibility.ITraceService,System.String,System.String)">
-            <inheritdoc/>
-        </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCheckRequireSchemaUpgrade(System.String)">
             <inheritdoc/>
         </member>

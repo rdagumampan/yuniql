@@ -73,6 +73,9 @@
         <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForCheckRequireSchemaUpgrade(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForUpgradeSchema(System.String)">
             <inheritdoc/>
         </member>
