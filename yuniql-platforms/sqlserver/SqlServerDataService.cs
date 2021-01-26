@@ -199,7 +199,7 @@ WHEN NOT MATCHED THEN
 --we use pascal case in v1.0 for sql server
 IF EXISTS(SELECT object_id FROM sys.columns  WHERE Name = N'SequenceId' AND Object_ID = OBJECT_ID(N'${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}'))
 BEGIN
-    SELECT 'v1_1';
+    SELECT 'v1.1';
 	RETURN;
 END
             ";
@@ -208,11 +208,9 @@ END
         public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(SqlServerDataService).Assembly;
-            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");
-            using (var reader = new StreamReader(resource))
-            {
-                return reader.ReadToEnd();
-            }
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion.Replace(".","_")}.sql");
+            using var reader = new StreamReader(resource);
+            return reader.ReadToEnd();
         }
 
         ///<inheritdoc/>

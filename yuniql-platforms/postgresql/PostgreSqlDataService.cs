@@ -161,7 +161,7 @@ WHERE
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
      => @"
 --validate that current database used yuniql v1.0 version
-SELECT 'v1_1' FROM INFORMATION_SCHEMA.COLUMNS  
+SELECT 'v1.1' FROM INFORMATION_SCHEMA.COLUMNS  
 WHERE 
     table_name = '${YUNIQL_TABLE_NAME}' 
     AND table_schema = '${YUNIQL_SCHEMA_NAME}' 
@@ -173,11 +173,9 @@ WHERE
         public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(PostgreSqlDataService).Assembly;
-            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");
-            using (var reader = new StreamReader(resource))
-            {
-                return reader.ReadToEnd();
-            }
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion.Replace(".", "_")}.sql");
+            using var reader = new StreamReader(resource);
+            return reader.ReadToEnd();
         }
 
         ///<inheritdoc/>

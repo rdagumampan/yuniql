@@ -168,11 +168,9 @@ SELECT NULL;
         public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(RedshiftDataService).Assembly;
-            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");
-            using (var reader = new StreamReader(resource))
-            {
-                return reader.ReadToEnd();
-            }
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion.Replace(".", "_")}.sql");
+            using var reader = new StreamReader(resource);
+            return reader.ReadToEnd();
         }
 
         ///<inheritdoc/>

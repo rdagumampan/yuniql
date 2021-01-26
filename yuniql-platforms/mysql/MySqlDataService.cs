@@ -169,7 +169,7 @@ ON DUPLICATE KEY UPDATE
         ///<inheritdoc/>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
 => @"
-SELECT 'v1_1' FROM INFORMATION_SCHEMA.COLUMNS  
+SELECT 'v1.1' FROM INFORMATION_SCHEMA.COLUMNS  
 WHERE 
     table_name = '${YUNIQL_TABLE_NAME}' 
     AND table_schema = '${YUNIQL_DB_NAME}' 
@@ -181,11 +181,9 @@ WHERE
         public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(MySqlDataService).Assembly;
-            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");
-            using (var reader = new StreamReader(resource))
-            {
-                return reader.ReadToEnd();
-            }
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion.Replace(".", "_")}.sql");
+            using var reader = new StreamReader(resource);
+            return reader.ReadToEnd();
         }
 
         ///<inheritdoc/>
