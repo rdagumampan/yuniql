@@ -134,7 +134,7 @@ namespace Yuniql.Core
             var version = typeof(IMigrationService).Assembly.GetName().Version.ToString();
             using (var connection = _dataService.CreateConnection())
             {
-                var sqlStatementRequireUpgrade = GetPreparedSqlStatement(_dataService.GetSqlForCheckRequireSchemaUpgrade(version), metaSchemaName, metaTableName);
+                var sqlStatementRequireUpgrade = GetPreparedSqlStatement(_dataService.GetSqlForCheckRequireMetaSchemaUpgrade(version), metaSchemaName, metaTableName);
                 var requiredSchemaVersion = connection.QuerySingleString(
                     commandText: sqlStatementRequireUpgrade,
                     commandTimeout: commandTimeout,
@@ -144,7 +144,7 @@ namespace Yuniql.Core
                 if (!string.IsNullOrEmpty(requiredSchemaVersion))
                 {
                     _traceService.Warn("Schema tracking table will be upgraded as required in this release of yuniql.");
-                    var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForUpgradeSchema(requiredSchemaVersion), metaSchemaName, metaTableName);
+                    var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForUpgradeMetaSchema(requiredSchemaVersion), metaSchemaName, metaTableName);
                     var result = connection.ExecuteNonQuery(
                         commandText: sqlStatement,
                         commandTimeout: commandTimeout,

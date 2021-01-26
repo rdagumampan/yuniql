@@ -158,7 +158,7 @@ WHERE
             => throw new NotSupportedException("Not supported for the target platform");
 
         ///<inheritdoc/>
-        public string GetSqlForCheckRequireSchemaUpgrade(string version)
+        public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
      => @"
 --validate that current database used yuniql v1.0 version
 SELECT 'v1_1' FROM INFORMATION_SCHEMA.COLUMNS  
@@ -170,7 +170,7 @@ WHERE
             ";
 
         ///<inheritdoc/>
-        public string GetSqlForUpgradeSchema(string requiredSchemaVersion)
+        public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(PostgreSqlDataService).Assembly;
             var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");

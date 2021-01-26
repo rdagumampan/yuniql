@@ -167,7 +167,7 @@ ON DUPLICATE KEY UPDATE
             ";
 
         ///<inheritdoc/>
-        public string GetSqlForCheckRequireSchemaUpgrade(string version)
+        public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
 => @"
 SELECT 'v1_1' FROM INFORMATION_SCHEMA.COLUMNS  
 WHERE 
@@ -178,7 +178,7 @@ WHERE
             ";
 
         ///<inheritdoc/>
-        public string GetSqlForUpgradeSchema(string requiredSchemaVersion)
+        public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(MySqlDataService).Assembly;
             var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");

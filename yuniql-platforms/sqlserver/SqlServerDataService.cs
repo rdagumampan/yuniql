@@ -193,7 +193,7 @@ WHEN NOT MATCHED THEN
             ";
 
         ///<inheritdoc/>
-        public string GetSqlForCheckRequireSchemaUpgrade(string version)
+        public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
              => @"
 --validate that current database used yuniql v1.0 version
 --we use pascal case in v1.0 for sql server
@@ -205,7 +205,7 @@ END
             ";
 
         ///<inheritdoc/>
-        public string GetSqlForUpgradeSchema(string requiredSchemaVersion)
+        public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(SqlServerDataService).Assembly;
             var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion}.sql");

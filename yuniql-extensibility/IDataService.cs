@@ -133,22 +133,22 @@ namespace Yuniql.Extensibility
         /// Returns true if the version tracking table requires upgrade for this release
         /// </summary>
         /// <returns></returns>
-        public string GetSqlForCheckRequireSchemaUpgrade(string version);
+        public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion);
 
         /// <summary>
         /// Returns sql for upgrade the existing version tracking table
         /// </summary>
         /// <returns></returns>
-        public string GetSqlForUpgradeSchema(string version);
+        public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion);
 
         /// <summary>
         /// Try parses error from database specific exception.
         /// </summary>
-        /// <param name="exc">The exc.</param>
+        /// <param name="exception">The exc.</param>
         /// <param name="result">The parsed error.</param>
         /// <returns>
         /// True, if the parsing was sucessfull otherwise false
         /// </returns>
-        bool TryParseErrorFromException(Exception exc, out string result);
+        bool TryParseErrorFromException(Exception exception, out string result);
     }
 }
