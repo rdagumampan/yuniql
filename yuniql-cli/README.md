@@ -98,7 +98,7 @@ yuniql list -c "<your-snowflake-connection-string>" --platform snowflake --debug
 
 ### Debugging with Redshift
 
-Record your Snowflake account information
+Record your Redshift account information
 Server=<your-redshift-instance>.redshift.amazonaws.com;Port=5439;Database=<your-redshift-db>;User Id=<your-redshift-user>;Password=<your-redshift-pwd>;
 
 Run from CLI
