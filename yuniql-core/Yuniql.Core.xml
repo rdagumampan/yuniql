@@ -835,6 +835,11 @@
             Token for duration ms value when performing queries in version tracking table
             </summary>
         </member>
+        <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_CHECKSUM">
+            <summary>
+            Token for directoru checksum when performing queries in version tracking table
+            </summary>
+        </member>
         <member name="F:Yuniql.Core.RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_PATH">
             <summary>
             Token for failed script value when performing queries in version tracking table

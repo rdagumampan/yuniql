@@ -99,18 +99,19 @@ namespace Yuniql.PlatformTests.Setup
                         AppliedByTool = reader.GetString(4),
                         AppliedByToolVersion = reader.GetString(5),
                         Status = Enum.Parse<Status>(reader.GetString(6)),
-                        DurationMs = reader.GetInt32(7)
+                        DurationMs = reader.GetInt32(7),
+                        Checksum = reader.GetString(8),
                     };
 
-                    dbVersion.FailedScriptPath = !reader.IsDBNull(8) ? reader.GetString(8).Unescape() : string.Empty;
+                    dbVersion.FailedScriptPath = !reader.IsDBNull(9) ? reader.GetString(9).Unescape() : string.Empty;
 
-                    var failedScriptErrorBase64 = reader.GetValue(9) as string;
+                    var failedScriptErrorBase64 = reader.GetValue(10) as string;
                     if (!string.IsNullOrEmpty(failedScriptErrorBase64))
                     {
                         dbVersion.FailedScriptError = Encoding.UTF8.GetString(Convert.FromBase64String(failedScriptErrorBase64));
                     }
 
-                    var additionalArtifactsBase64 = reader.GetValue(10) as string;
+                    var additionalArtifactsBase64 = reader.GetValue(11) as string;
                     if (!string.IsNullOrEmpty(additionalArtifactsBase64))
                     {
                         dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(Convert.FromBase64String(additionalArtifactsBase64));

@@ -244,6 +244,11 @@
             The execution time of the version in milliseconds
             </summary>
         </member>
+        <member name="P:Yuniql.Extensibility.DbVersion.Checksum">
+            <summary>
+            The calculated md5 checksum of the version directory
+            </summary>
+        </member>
         <member name="P:Yuniql.Extensibility.DbVersion.FailedScriptPath">
             <summary>
             The full path of last failed script file
