@@ -85,10 +85,10 @@
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCheckRequireSchemaUpgrade(System.String)">
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForUpgradeSchema(System.String)">
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForUpgradeMetaSchema(System.String)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.TryParseErrorFromException(System.Exception,System.String@)">

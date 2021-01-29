@@ -73,10 +73,10 @@
         <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForCheckRequireSchemaUpgrade(System.String)">
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForUpgradeSchema(System.String)">
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForUpgradeMetaSchema(System.String)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Redshift.RedshiftDataService.TryParseErrorFromException(System.Exception,System.String@)">

@@ -449,13 +449,13 @@
             Returns the SQL statement to use for merging new entry into migration tracking table.
             </summary>
         </member>
-        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCheckRequireSchemaUpgrade(System.String)">
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
             <summary>
             Returns true if the version tracking table requires upgrade for this release
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForUpgradeSchema(System.String)">
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForUpgradeMetaSchema(System.String)">
             <summary>
             Returns sql for upgrade the existing version tracking table
             </summary>
@@ -465,7 +465,7 @@
             <summary>
             Try parses error from database specific exception.
             </summary>
-            <param name="exc">The exc.</param>
+            <param name="exception">The exc.</param>
             <param name="result">The parsed error.</param>
             <returns>
             True, if the parsing was sucessfull otherwise false
