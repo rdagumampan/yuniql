@@ -248,13 +248,13 @@ namespace Yuniql.CLI
         Usage: yuniql run -a -c <your-connection-string> --platform mariadb
         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
 
-    Snowflake | Alpha: 
+    Snowflake | Preview: 
         Supported versions: https://yuniql.io/docs/supported-platforms/
         Supported versions: 
         Usage: yuniql run -a -c <your-connection-string> --platform snowflake
         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-snowflake-sample
 
-    Redshift| Alpha: 
+    Redshift| Preview: 
         Supported versions: https://yuniql.io/docs/supported-platforms/
         Supported versions: 
         Usage: yuniql run -a -c <your-connection-string> --platform redshift
