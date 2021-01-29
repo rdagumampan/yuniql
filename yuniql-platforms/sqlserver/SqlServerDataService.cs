@@ -111,6 +111,7 @@ CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
 	[applied_by_tool_version] [NVARCHAR](16) NOT NULL,
 	[status] [NVARCHAR](32) NOT NULL,
 	[duration_ms] [INT] NOT NULL,
+	[checksum] [NVARCHAR](32) NOT NULL,
 	[failed_script_path] [NVARCHAR](4000) NULL,
 	[failed_script_error] [NVARCHAR](4000) NULL,
 	[additional_artifacts] [NVARCHAR](4000) NULL,
@@ -131,15 +132,15 @@ SELECT TOP 1 [version] FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] WHERE
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"
-SELECT [sequence_id], [version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [failed_script_path], [failed_script_error], [additional_artifacts]
+SELECT [sequence_id], [version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [checksum], [failed_script_path], [failed_script_error], [additional_artifacts]
 FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ORDER BY version ASC;
             ";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"
-INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ([version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [failed_script_path], [failed_script_error], [additional_artifacts]) 
-VALUES ('${YUNIQL_VERSION}', GETUTCDATE(), SUSER_SNAME(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
+INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ([version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [checksum], [failed_script_path], [failed_script_error], [additional_artifacts]) 
+VALUES ('${YUNIQL_VERSION}', GETUTCDATE(), SUSER_SNAME(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_CHECKSUM}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
             ";
 
         ///<inheritdoc/>
@@ -162,35 +163,7 @@ WHERE
 
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
-            => @"
-MERGE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] AS T
-USING (SELECT 
-	'${YUNIQL_VERSION}' [version], 
-	GETUTCDATE() [applied_on_utc], 
-	SUSER_SNAME() [applied_by_user], 
-	'${YUNIQL_APPLIED_BY_TOOL}' [applied_by_tool], 
-	'${YUNIQL_APPLIED_BY_TOOL_VERSION}' [applied_by_tool_version], 
-	'${YUNIQL_STATUS}' [status], 
-	'${YUNIQL_DURATION_MS}' [duration_ms], 
-	'${YUNIQL_FAILED_SCRIPT_PATH}' [failed_script_path], 
-	'${YUNIQL_FAILED_SCRIPT_ERROR}' [failed_script_error], 
-	'${YUNIQL_ADDITIONAL_ARTIFACTS}' [additional_artifacts]) AS S 
-ON T.[version] = S.[version]
-WHEN MATCHED THEN
-  UPDATE SET 	
-	T.[applied_on_utc]          = S.[applied_on_utc],
-	T.[applied_by_user]         = S.[applied_by_user],
-	T.[applied_by_tool]         = S.[applied_by_tool], 
-	T.[applied_by_tool_version] = S.[applied_by_tool_version],
-	T.[status]                  = S.[status],
-	T.[duration_ms]             = S.[duration_ms],
-	T.[failed_script_path]      = S.[failed_script_path],
-	T.[failed_script_error]     = S.[failed_script_error],
-	T.[additional_artifacts]    = S.[additional_artifacts]
-WHEN NOT MATCHED THEN
-  INSERT ([version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [failed_script_path], [failed_script_error], [additional_artifacts]) 
-  VALUES (S.[version], GETUTCDATE(), SUSER_SNAME(), S.[applied_by_tool], S.[applied_by_tool_version], S.[status], S.[duration_ms], S.[failed_script_path], S.[failed_script_error], S.[additional_artifacts]);
-            ";
+            => throw new NotSupportedException("Not supported for the target platform");
 
         ///<inheritdoc/>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)

@@ -14,6 +14,7 @@ CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
 		[applied_by_tool_version] [NVARCHAR](16) NOT NULL,
 		[status] [NVARCHAR](32) NOT NULL,
 		[duration_ms] [INT] NOT NULL,
+		[checksum] [NVARCHAR](32) NOT NULL,
 		[failed_script_path] [NVARCHAR](4000) NULL,
 		[failed_script_error] [NVARCHAR](4000) NULL,
 		[additional_artifacts] [NVARCHAR](4000) NULL,
@@ -25,6 +26,6 @@ ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF__
 ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___yuniqldbversion_applied_by_user]  DEFAULT (SUSER_SNAME()) FOR [applied_by_user];
 
 --restore old values
-INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ([version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [failed_script_path], [failed_script_error], [additional_artifacts])
-SELECT [Version], [AppliedOnUtc], [AppliedByUser], [AppliedByTool], [AppliedByToolVersion], 'Successful', '0', NULL, NULL, NULL
+INSERT INTO [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ([version], [applied_on_utc], [applied_by_user], [applied_by_tool], [applied_by_tool_version], [status], [duration_ms], [checksum], [failed_script_path], [failed_script_error], [additional_artifacts])
+SELECT [Version], [AppliedOnUtc], [AppliedByUser], [AppliedByTool], [AppliedByToolVersion], 'Successful', '0', '', NULL, NULL, NULL
 FROM [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}_v1_0];

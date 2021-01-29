@@ -54,6 +54,11 @@ namespace Yuniql.Extensibility
         public int DurationMs { get; set; } = 0;
 
         /// <summary>
+        /// The calculated md5 checksum of the version directory
+        /// </summary>
+        public string Checksum { get; set; } = string.Empty;
+
+        /// <summary>
         /// The full path of last failed script file
         /// </summary>
         public string FailedScriptPath { get; set; } = string.Empty;

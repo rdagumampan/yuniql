@@ -63,6 +63,11 @@
         public const string YUNIQL_DURATION_MS = "YUNIQL_DURATION_MS";
 
         /// <summary>
+        /// Token for directoru checksum when performing queries in version tracking table
+        /// </summary>
+        public const string YUNIQL_CHECKSUM = "YUNIQL_CHECKSUM";
+
+        /// <summary>
         /// Token for failed script value when performing queries in version tracking table
         /// </summary>
         public const string YUNIQL_FAILED_SCRIPT_PATH = "YUNIQL_FAILED_SCRIPT_PATH";

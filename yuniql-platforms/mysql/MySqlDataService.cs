@@ -105,6 +105,7 @@ CREATE TABLE ${YUNIQL_TABLE_NAME} (
 	applied_by_tool_version VARCHAR(16) NOT NULL,
     status VARCHAR(32) NOT NULL,
     duration_ms INT NOT NULL,
+    checksum VARCHAR(32) NOT NULL,
     failed_script_path VARCHAR(4000) NULL,
     failed_script_error VARCHAR(4000) NULL,
     additional_artifacts VARCHAR(4000) NULL,
@@ -121,15 +122,15 @@ SELECT version FROM ${YUNIQL_TABLE_NAME} WHERE status = 'Successful' ORDER BY se
         ///<inheritdoc/>
         public string GetSqlForGetAllVersions()
             => @"
-SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status, duration_ms, failed_script_path, failed_script_error, additional_artifacts
+SELECT sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status, duration_ms, checksum, failed_script_path, failed_script_error, additional_artifacts
 FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;
             ";
 
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"
-INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status, duration_ms, failed_script_path, failed_script_error, additional_artifacts) 
-VALUES ('${YUNIQL_VERSION}', UTC_TIMESTAMP(), CURRENT_USER(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}','${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
+INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status, duration_ms, checksum, failed_script_path, failed_script_error, additional_artifacts) 
+VALUES ('${YUNIQL_VERSION}', UTC_TIMESTAMP(), CURRENT_USER(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}','${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_CHECKSUM}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
             ";
 
         ///<inheritdoc/>
@@ -153,8 +154,8 @@ WHERE
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
             => @"
-INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, failed_script_path, failed_script_error) 
-VALUES ('${YUNIQL_VERSION}', UTC_TIMESTAMP(), CURRENT_USER(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_ADDITIONAL_ARTIFACTS}', '${YUNIQL_STATUS}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}')
+INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, additional_artifacts, status, checksum, failed_script_path, failed_script_error) 
+VALUES ('${YUNIQL_VERSION}', UTC_TIMESTAMP(), CURRENT_USER(), '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}', '${YUNIQL_ADDITIONAL_ARTIFACTS}', '${YUNIQL_STATUS}', '${YUNIQL_CHECKSUM}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}')
 ON DUPLICATE KEY UPDATE
     applied_on_utc = VALUES(applied_on_utc),
     applied_by_user = VALUES(applied_by_user),

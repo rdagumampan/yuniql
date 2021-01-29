@@ -213,18 +213,19 @@ namespace Yuniql.Core
                         AppliedByTool = reader.GetString(4),
                         AppliedByToolVersion = reader.GetString(5),
                         Status = Enum.Parse<Status>(reader.GetString(6)),
-                        DurationMs = reader.GetInt32(7)
+                        DurationMs = reader.GetInt32(7),
+                        Checksum = reader.GetString(8)
                     };
 
-                    dbVersion.FailedScriptPath = !reader.IsDBNull(8) ? reader.GetString(8).Unescape() : string.Empty;
+                    dbVersion.FailedScriptPath = !reader.IsDBNull(9) ? reader.GetString(9).Unescape() : string.Empty;
 
-                    var failedScriptErrorBase64 = reader.GetValue(9) as string;
+                    var failedScriptErrorBase64 = reader.GetValue(10) as string;
                     if (!string.IsNullOrEmpty(failedScriptErrorBase64))
                     {
                         dbVersion.FailedScriptError = Encoding.UTF8.GetString(Convert.FromBase64String(failedScriptErrorBase64));
                     }
 
-                    var additionalArtifactsBase64 = reader.GetValue(10) as string;
+                    var additionalArtifactsBase64 = reader.GetValue(11) as string;
                     if (!string.IsNullOrEmpty(additionalArtifactsBase64))
                     {
                         dbVersion.AdditionalArtifacts = Encoding.UTF8.GetString(Convert.FromBase64String(additionalArtifactsBase64));
@@ -265,6 +266,7 @@ namespace Yuniql.Core
             var toolName = string.IsNullOrEmpty(appliedByTool) ? "yuniql-nuget" : appliedByTool;
             var toolVersion = string.IsNullOrEmpty(appliedByToolVersion) ? $"v{this.GetType().Assembly.GetName().Version.ToString()}" : $"v{appliedByToolVersion}";
             var statusString = string.IsNullOrEmpty(failedScriptPath) ? Status.Successful.ToString() : Status.Failed.ToString();
+            var versionChecksum = "WIP"; //TODO: Implement directory checksum
             var failedScriptPathEscaped = string.IsNullOrEmpty(failedScriptPath) ? string.Empty : failedScriptPath.Escape();
             var failedScriptErrorBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(failedScriptError ?? string.Empty)); ;
             var additionalArtifactsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(additionalArtifacts ?? string.Empty)); ;
@@ -280,6 +282,8 @@ namespace Yuniql.Core
 
                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DURATION_MS, durationMs.ToString()),
                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_STATUS, statusString),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_CHECKSUM, versionChecksum),
+
                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_PATH, failedScriptPathEscaped),
                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_FAILED_SCRIPT_ERROR, failedScriptErrorBase64),
                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_ADDITIONAL_ARTIFACTS, additionalArtifactsBase64),
