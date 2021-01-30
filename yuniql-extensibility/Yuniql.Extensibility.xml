@@ -392,7 +392,7 @@
         <member name="P:Yuniql.Extensibility.IDataService.TableName">
             <summary>
             Table name for schema versions table.
-            When implementing a new platform, its reccommended to use __yuniqldbversion as default value
+            When implementing a new platform, its reccommended to use __yuniql_schema_version as default value
             </summary>
         </member>
         <member name="M:Yuniql.Extensibility.IDataService.BreakStatements(System.String)">
@@ -422,6 +422,11 @@
         <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCheckIfDatabaseConfigured">
             <summary>
             Returns the SQL statement to use for checking target database has been configured for migration tracking.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCheckIfDatabaseConfiguredv10">
+            <summary>
+            Returns the SQL statement to use for checking target database has been configured for migration tracking in yuniql v1.0.
             </summary>
         </member>
         <member name="M:Yuniql.Extensibility.IDataService.GetSqlForConfigureDatabase">

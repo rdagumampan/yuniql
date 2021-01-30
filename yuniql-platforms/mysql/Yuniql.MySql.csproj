@@ -17,6 +17,7 @@
     <PackageTags>yuniql mysql-migration database-migration sql devops devops-tools database-versioning</PackageTags>
     <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

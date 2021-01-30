@@ -18,6 +18,8 @@
     <Description>The package to use for running yuniql-based database migrations inside .NET Core application or service. See WIKI for how-to instructions.</Description>
     <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -178,10 +178,10 @@ namespace Yuniql.Core
             else
             {
                 //check if the non-txn option is passed even if there was no previous failed runs
-                if (isContinueAfterFailure != null)
+                if (isContinueAfterFailure != null && isContinueAfterFailure.Value == true)
                 {
                     //program should exit with non zero exit code
-                    _traceService.Warn(@$"The transaction handling parameter --continue-after-failure received ""{isContinueAfterFailure}"" but no previous failed migrations recorded.");
+                    _traceService.Warn(@$"The transaction handling parameter --continue-after-failure received but no previous failed migrations recorded.");
                 }
             }
 

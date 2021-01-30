@@ -127,7 +127,7 @@ namespace Yuniql.Core
 
         /// <summary>
         /// Table name for schema versions table.
-        /// This is defaulted to __yuniqldbversion in all target data platforms.
+        /// This is defaulted to __yuniql_schema_version in all target data platforms.
         /// </summary>
         public string MetaTableName { get; set; } = null;
 

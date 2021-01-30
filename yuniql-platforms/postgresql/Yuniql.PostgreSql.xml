@@ -67,6 +67,9 @@
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForCheckIfDatabaseConfigured">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForCheckIfDatabaseConfiguredv10">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForConfigureDatabase">
             <inheritdoc/>
         </member>

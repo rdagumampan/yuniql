@@ -234,7 +234,7 @@ DROP DATABASE [{connectionStringBuilder.InitialCatalog}];
             var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             masterConnectionStringBuilder.InitialCatalog = "master";
 
-            //base.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
+            base.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
     }
 }

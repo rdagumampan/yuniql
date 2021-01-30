@@ -67,6 +67,9 @@
         <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCheckIfDatabaseConfigured">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCheckIfDatabaseConfiguredv10">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForConfigureDatabase">
             <inheritdoc/>
         </member>

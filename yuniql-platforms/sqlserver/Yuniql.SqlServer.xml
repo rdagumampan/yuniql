@@ -67,6 +67,9 @@
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCheckIfDatabaseConfigured">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCheckIfDatabaseConfiguredv10">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForConfigureDatabase">
             <inheritdoc/>
         </member>

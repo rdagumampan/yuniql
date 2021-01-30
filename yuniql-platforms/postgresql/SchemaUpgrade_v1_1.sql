@@ -1,8 +1,8 @@
 ﻿--create backup
-SELECT * INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}_v1_0 FROM ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME};
+SELECT * INTO ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}_v1_0 FROM ${YUNIQL_SCHEMA_NAME}.__yuniqldbversion;
 
 -- --drop old version v1.0 tracking table
-DROP TABLE IF EXISTS ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME};
+DROP TABLE IF EXISTS ${YUNIQL_SCHEMA_NAME}.__yuniqldbversion;
 
 --create version v1.1 tracking table
 CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
@@ -14,7 +14,7 @@ CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
     applied_by_tool_version VARCHAR(16) NOT NULL,
     status VARCHAR(32) NOT NULL,
     duration_ms INTEGER NOT NULL,
-    checksum VARCHAR(32) NOT NULL,
+    checksum VARCHAR(64) NOT NULL,
     failed_script_path VARCHAR(4000) NULL,
     failed_script_error VARCHAR(4000) NULL,
     additional_artifacts VARCHAR(4000) NULL,

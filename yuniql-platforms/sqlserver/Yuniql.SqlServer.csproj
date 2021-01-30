@@ -19,6 +19,7 @@
     <Description>The SQL Server implementation of yuniql-based database migrations and schema versioning. See WIKI for how-to instructions.</Description>
     <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

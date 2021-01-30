@@ -38,7 +38,7 @@ namespace Yuniql.MySql
         public bool IsUpsertSupported => false;
 
         ///<inheritdoc/>
-        public string TableName { get; set; } = "__yuniqldbversion";
+        public string TableName { get; set; } = "__yuniql_schema_version";
 
         ///<inheritdoc/>
         public string SchemaName { get; set; }
@@ -94,6 +94,12 @@ SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_DB_NAME}'
             ";
 
         ///<inheritdoc/>
+        public string GetSqlForCheckIfDatabaseConfiguredv10()
+            => @"
+SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_DB_NAME}' AND TABLE_NAME = '__yuniqldbversion' LIMIT 1;
+            ";
+
+        ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
             => @"
 CREATE TABLE ${YUNIQL_TABLE_NAME} (
@@ -105,11 +111,11 @@ CREATE TABLE ${YUNIQL_TABLE_NAME} (
 	applied_by_tool_version VARCHAR(16) NOT NULL,
     status VARCHAR(32) NOT NULL,
     duration_ms INT NOT NULL,
-    checksum VARCHAR(32) NOT NULL,
+    checksum VARCHAR(64) NOT NULL,
     failed_script_path VARCHAR(4000) NULL,
     failed_script_error VARCHAR(4000) NULL,
     additional_artifacts VARCHAR(4000) NULL,
-	CONSTRAINT ix___yuniqldbversion UNIQUE (version)
+	CONSTRAINT ix_${YUNIQL_TABLE_NAME} UNIQUE (version)
 ) ENGINE=InnoDB;
             ";
 
@@ -169,14 +175,10 @@ ON DUPLICATE KEY UPDATE
 
         ///<inheritdoc/>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
-=> @"
-SELECT 'v1.1' FROM INFORMATION_SCHEMA.COLUMNS  
-WHERE 
-    table_name = '${YUNIQL_TABLE_NAME}' 
-    AND table_schema = '${YUNIQL_DB_NAME}' 
-    AND column_name = 'additional_artifacts'
-    AND data_type = 'blob';
-            ";
+        //when table __yuniqldbversion exists, we need to upgrade from yuniql v1.0 to v1.1 version
+        => @"
+SELECT 'v1.1' FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_DB_NAME}' AND TABLE_NAME = '__yuniqldbversion' LIMIT 1;
+        ";
 
         ///<inheritdoc/>
         public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)

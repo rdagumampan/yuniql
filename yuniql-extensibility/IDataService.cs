@@ -66,7 +66,7 @@ namespace Yuniql.Extensibility
 
         /// <summary>
         /// Table name for schema versions table.
-        /// When implementing a new platform, its reccommended to use __yuniqldbversion as default value
+        /// When implementing a new platform, its reccommended to use __yuniql_schema_version as default value
         /// </summary>
         string TableName { get; }
 
@@ -98,6 +98,11 @@ namespace Yuniql.Extensibility
         /// Returns the SQL statement to use for checking target database has been configured for migration tracking.
         /// </summary>
         public string GetSqlForCheckIfDatabaseConfigured();
+
+        /// <summary>
+        /// Returns the SQL statement to use for checking target database has been configured for migration tracking in yuniql v1.0.
+        /// </summary>
+        string GetSqlForCheckIfDatabaseConfiguredv10();
 
         /// <summary>
         /// Returns the SQL statement to use for configuring the migration tracking table.

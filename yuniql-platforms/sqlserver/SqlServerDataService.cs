@@ -63,7 +63,7 @@ namespace Yuniql.SqlServer
         public bool IsUpsertSupported { get; } = false;
 
         ///<inheritdoc/>
-        public string TableName { get; set; } = "__yuniqldbversion";
+        public string TableName { get; set; } = "__yuniql_schema_version";
 
         ///<inheritdoc/>
         public string SchemaName { get; set; } = "dbo";
@@ -100,6 +100,12 @@ SELECT ISNULL(OBJECT_ID('[${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}]'), 0);
             ";
 
         ///<inheritdoc/>
+        public string GetSqlForCheckIfDatabaseConfiguredv10()
+            => @"
+SELECT ISNULL(OBJECT_ID('[${YUNIQL_SCHEMA_NAME}].[__yuniqldbversion]'), 0);
+            ";
+
+        ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
             => @"
 CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
@@ -111,16 +117,16 @@ CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
 	[applied_by_tool_version] [NVARCHAR](16) NOT NULL,
 	[status] [NVARCHAR](32) NOT NULL,
 	[duration_ms] [INT] NOT NULL,
-	[checksum] [NVARCHAR](32) NOT NULL,
+	[checksum] [NVARCHAR](64) NOT NULL,
 	[failed_script_path] [NVARCHAR](4000) NULL,
 	[failed_script_error] [NVARCHAR](4000) NULL,
 	[additional_artifacts] [NVARCHAR](4000) NULL,
-    CONSTRAINT [PK___YuniqlDbVersion] PRIMARY KEY CLUSTERED ([sequence_id] ASC),
-    CONSTRAINT [IX___YuniqlDbVersion] UNIQUE NONCLUSTERED  ([version] ASC
+    CONSTRAINT [PK___${YUNIQL_TABLE_NAME}] PRIMARY KEY CLUSTERED ([sequence_id] ASC),
+    CONSTRAINT [IX___${YUNIQL_TABLE_NAME}] UNIQUE NONCLUSTERED  ([version] ASC
 ));
 
-ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___yuniqldbversion_applied_on_utc]  DEFAULT (GETUTCDATE()) FOR [applied_on_utc];
-ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF___yuniqldbversion_applied_by_user]  DEFAULT (SUSER_SNAME()) FOR [applied_by_user];
+ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF_${YUNIQL_TABLE_NAME}_applied_on_utc]  DEFAULT (GETUTCDATE()) FOR [applied_on_utc];
+ALTER TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] ADD  CONSTRAINT [DF_${YUNIQL_TABLE_NAME}_applied_by_user]  DEFAULT (SUSER_SNAME()) FOR [applied_by_user];
             ";
 
         ///<inheritdoc/>
@@ -167,14 +173,13 @@ WHERE
 
         ///<inheritdoc/>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
+        //when table __yuniqldbversion exists, we need to upgrade from yuniql v1.0 to v1.1 version
              => @"
---validate that current database used yuniql v1.0 version
---we use pascal case in v1.0 for sql server
-IF EXISTS(SELECT object_id FROM sys.columns  WHERE Name = N'SequenceId' AND Object_ID = OBJECT_ID(N'${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}'))
+IF EXISTS(SELECT 1 WHERE OBJECT_ID('[dbo].[__yuniqldbversion]') IS NOT NULL)
 BEGIN
     SELECT 'v1.1';
 	RETURN;
-END
+END          
             ";
 
         ///<inheritdoc/>

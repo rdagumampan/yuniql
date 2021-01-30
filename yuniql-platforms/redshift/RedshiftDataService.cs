@@ -33,7 +33,7 @@ namespace Yuniql.Redshift
         public bool IsUpsertSupported => false;
 
         ///<inheritdoc/>
-        public string TableName { get; set; } = "__yuniqldbversion";
+        public string TableName { get; set; } = "__yuniql_schema_version";
 
         ///<inheritdoc/>
         public string SchemaName { get; set; } = "public";
@@ -96,6 +96,12 @@ CREATE SCHEMA ""${YUNIQL_SCHEMA_NAME}"";
 SELECT 1 FROM pg_tables WHERE  tablename = '${YUNIQL_TABLE_NAME}';
             ";
 
+        ///<inheritdoc/>
+        public string GetSqlForCheckIfDatabaseConfiguredv10()
+            => @"
+SELECT 1 FROM pg_tables WHERE  tablename = '__yuniqldbversion';
+            ";
+
         //https://docs.aws.amazon.com/redshift/latest/dg/c_Supported_data_types.html
         ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
@@ -109,11 +115,11 @@ CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
     applied_by_tool_version VARCHAR(16) NOT NULL,
     status VARCHAR(32) NOT NULL,
     duration_ms INTEGER NOT NULL,
-    checksum VARCHAR(32) NOT NULL,
+    checksum VARCHAR(64) NOT NULL,
     failed_script_path VARCHAR(4000) NULL,
     failed_script_error VARCHAR(4000) NULL,
     additional_artifacts VARCHAR(4000) NULL,
-    CONSTRAINT ix___yuniqldbversion UNIQUE(version)
+    CONSTRAINT ix_${YUNIQL_TABLE_NAME} UNIQUE(version)
 );
             ";
 

@@ -104,7 +104,7 @@ namespace Yuniql.Snowflake
         public bool IsUpsertSupported => false;
 
         ///<inheritdoc/>
-        public string TableName { get; set; } = "__YUNIQLDBVERSION";
+        public string TableName { get; set; } = "__YUNIQL_SCHEMA_VERSION";
 
         ///<inheritdoc/>
         public string SchemaName { get; set; } = "PUBLIC";
@@ -141,6 +141,12 @@ SELECT 1 WHERE EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEM
             ";
 
         ///<inheritdoc/>
+        public string GetSqlForCheckIfDatabaseConfiguredv10()
+            => @"
+SELECT 1 WHERE EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '__yuniqldbversion' AND TABLE_NAME = '${YUNIQL_TABLE_NAME}' AND TABLE_TYPE = 'BASE TABLE');
+            ";
+
+        ///<inheritdoc/>
         public string GetSqlForConfigureDatabase()
             => @"
 CREATE TABLE ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NAME}"" (
@@ -152,7 +158,7 @@ CREATE TABLE ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NA
     ""applied_by_tool_version"" VARCHAR(16) NOT NULL,
     ""status""  VARCHAR(32) NOT NULL,
     ""duration_ms"" NUMBER NOT NULL,
-    ""checksum"" VARCHAR(32) NOT NULL,
+    ""checksum"" VARCHAR(64) NOT NULL,
     ""failed_script_path""  VARCHAR(4000) NULL,
     ""failed_script_error""  VARCHAR(4000) NULL,
     ""additional_artifacts""  VARCHAR(4000) NULL,

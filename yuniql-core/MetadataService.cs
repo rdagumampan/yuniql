@@ -97,15 +97,38 @@ namespace Yuniql.Core
             string metaTableName = null,
             int? commandTimeout = null)
         {
+            var result = false;
+
+            //check existing of schema history table in current version
             var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForCheckIfDatabaseConfigured(), metaSchemaName, metaTableName);
             using (var connection = _dataService.CreateConnection())
             {
-                return connection.QuerySingleBool(
+                result = connection.QuerySingleBool(
                     commandText: sqlStatement,
                     commandTimeout: commandTimeout,
                     transaction: null,
                     traceService: _traceService);
             }
+
+            if (!result)
+            {
+                //check existing of schema history table created by v1.0 version
+                var sqlStatementv10 = GetPreparedSqlStatement(_dataService.GetSqlForCheckIfDatabaseConfiguredv10(), metaSchemaName, metaTableName);
+                using (var connection = _dataService.CreateConnection())
+                {
+                    result = connection.QuerySingleBool(
+                        commandText: sqlStatementv10,
+                        commandTimeout: commandTimeout,
+                        transaction: null,
+                        traceService: _traceService);
+                }
+
+                if(result)
+                    _traceService.Warn($"Schema version history table {metaSchemaName ?? _dataService.SchemaName}.__yuniqldbversion is deprecated in this release. " +
+                        $"New table {metaSchemaName ?? _dataService.SchemaName}.{metaTableName ?? _dataService.TableName} will be created and existing data will be migrated automaticaly.");
+            }
+
+            return result;
         }
 
         ///<inheritdoc/>
@@ -143,7 +166,7 @@ namespace Yuniql.Core
 
                 if (!string.IsNullOrEmpty(requiredSchemaVersion))
                 {
-                    _traceService.Warn("Schema tracking table will be upgraded as required in this release of yuniql.");
+                    _traceService.Warn("Schema version history table will be upgraded as required in this release of yuniql.");
                     var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForUpgradeMetaSchema(requiredSchemaVersion), metaSchemaName, metaTableName);
                     var result = connection.ExecuteNonQuery(
                         commandText: sqlStatement,

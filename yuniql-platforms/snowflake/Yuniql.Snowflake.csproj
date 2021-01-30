@@ -10,6 +10,7 @@
     <PackageIconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
     <PackageTags>yuniql snowflake-migration database-migration sql devops devops-tools database-versioning</PackageTags>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
