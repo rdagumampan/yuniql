@@ -137,10 +137,10 @@ namespace Yuniql.Core
         public bool? IsContinueAfterFailure { get; set; } = null;
 
         /// <summary>
-        /// Transaction mode to use in the migration. Valid options are session, version and none.
+        /// Transaction mode to use in the migration. Valid options are session, version and statement.
         /// When session, uses single transaction for entire migration run. 
         /// When version, each version is executed in one transaction.
-        /// When none, no explicit transaction is created for migration run.
+        /// When statement, no explicit transaction is created for migration run.
         /// This is defaulted to session.
         /// </summary>
         public string TransactionMode { get; set; } = TRANSACTION_MODE.SESSION;

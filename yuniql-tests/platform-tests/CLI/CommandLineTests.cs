@@ -109,7 +109,7 @@ namespace Yuniql.PlatformTests.CLI
         [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1\" -k \"VwColumnPrefix2=Vw2\" -k \"VwColumnPrefix3=Vw3\" -k \"VwColumnPrefix4=Vw4\"")]
         [DataRow("run", "-a -d --transaction-mode session")]
         [DataRow("run", "-a -d --transaction-mode version")]
-        [DataRow("run", "-a -d --transaction-mode none")]
+        [DataRow("run", "-a -d --transaction-mode statement")]
         public void Test_yuniql_run(string command, string arguments)
         {
             //arrange
