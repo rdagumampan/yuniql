@@ -1,15 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <Description>The Snowflake implementation of yuniql-based database migrations and schema versioning. For technical detailsa and samples, visit https://yuniql.io.</Description>
-    <Company>Rodel E. Dagumampan</Company>
-    <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject></StartupObject>
+    <AssemblyName>Yuniql.Snowflake</AssemblyName>
+    <RootNamespace>Yuniql.Snowflake</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>Rodel E. Dagumampan</Authors>
+    <Product>Yuniql.Snowflake</Product>
+    <Description>Database migrations and schema versioning adaptor for Snowflake. For technical details and samples, visit https://github.com/rdagumampan/yuniql.</Description>
     <PackageProjectUrl>https://github.com/rdagumampan/yuniql</PackageProjectUrl>
-    <PackageIconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
+    <PackageIcon>favicon.png</PackageIcon>
     <PackageTags>yuniql snowflake-migration database-migration sql devops devops-tools database-versioning</PackageTags>
+    <Copyright>Copyright 2020 Rodel E. Dagumampan</Copyright>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
   </PropertyGroup>
 
@@ -33,7 +40,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Snowflake.Data.Unofficial" Version="0.7.0" />
+    <None Include="favicon.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Yuniql.Snowflake.Data" Version="0.9.0" />
   </ItemGroup>
 
 </Project>
