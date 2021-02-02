@@ -9,25 +9,6 @@
 
 <img align="center" src="https://yuniql.io/images/screen-gif-01-gh.gif" width="100%">
 
-Amazon Aurora and Azure Synapse are being evaluated/developed/tested. For running migration from docker container, [see instructions here](https://yuniql.io/docs/migrate-via-docker-container/).
-
-|Platforms|Build Status|Description|Managed Infrastructure|
-|---|---|---|---|
-|sqlserver|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017, Azure SQL Database|Azure, GCP, AWS|
-|postgresql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6, v12.1, latest|Azure, GCP, AWS|
-|mysql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7, v8.0, latest|Azure, GCP, AWS|
-|mariadb|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-9v8am?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-9v8am/build/tests)|MariaDb v10.2, latest|Azure, GCP, AWS|
-|snowflake|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-16r99?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-16r99/build/tests)|Preview in v1.1.55 (latest)|Azure|
-|redshift|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-0shgd?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-0shgd/build/tests)|Preview in v1.1.55 (latest)|AWS|
-|synapse|development|Preview build ETA mar 27 2021|Azure
-
-> NOTE: Supported cloud platforms are based on limited testing and community feedbacks where users indicated the platform they were attempting to run against. yuniql primarily uses Amazon RDS as cloud provider for non-vendor specific platforms.
-
-|Distributions|Build Status|Description|
-|---|---|---|
-|Docker image linux-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
-|Docker imiage win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
-
 ## Working with CLI
 
 Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://yuniql.io/docs/install-yuniql
@@ -60,6 +41,27 @@ Visit https://yuniql.io for documentation & more samples
 | v0.00         | 2020-07-02 21:45:13Z | Successful | sa            | yuniql-cli v1.0.1.0 |
 +---------------+----------------------+------------+---------------+---------------------+
 ```
+
+### Supported databases and platform tests
+
+Amazon Aurora, Azure Synapse and Alibaba Aspara are being evaluated/developed/tested. For running migration from docker container, [see instructions here](https://yuniql.io/docs/migrate-via-docker-container/).
+
+|Platforms|Build Status|Description|Managed Infrastructure|
+|---|---|---|---|
+|sqlserver|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017, Azure SQL Database|Azure, GCP, AWS|
+|postgresql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6, v12.1, latest|Azure, GCP, AWS|
+|mysql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7, v8.0, latest|Azure, GCP, AWS|
+|mariadb|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-9v8am?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-9v8am/build/tests)|MariaDb v10.2, latest|Azure, GCP, AWS|
+|snowflake|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-16r99?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-16r99/build/tests)|Preview in v1.1.55 (latest)|Azure|
+|redshift|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-0shgd?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-0shgd/build/tests)|Preview in v1.1.55 (latest)|AWS|
+|synapse|development|Preview build ETA mar 27 2021|Azure
+
+> NOTE: Supported cloud platforms are based on limited testing and community feedbacks where users indicated the platform they were attempting to run against. yuniql primarily uses Amazon RDS as cloud provider for non-vendor specific platforms.
+
+|Distributions|Build Status|Description|
+|---|---|---|
+|Docker image linux-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:linux-x64-latest`|
+|Docker imiage win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull rdagumampan/yuniql:win-x64-latest`|
 
 ### Run migrations for PostgreSql, MySql and others
 
