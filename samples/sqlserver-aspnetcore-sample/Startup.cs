@@ -1,11 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Yuniql.AspNetCore;
+using Yuniql.Core;
 
 namespace aspnetcore_sample
 {
@@ -22,17 +22,18 @@ namespace aspnetcore_sample
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //1. deploy new sql server on docker
-            //$ docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+            //$ docker run -dit --name yuniql-sqlserver  -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 
-            //2. create custom trace message sinks
+            //2. create custom trace message sinks, this can be your own logger framework
             var traceService = new ConsoleTraceService { IsDebugEnabled = true };
 
             //3. run migrations
-            app.UseYuniql(traceService, new Configuration
+            app.UseYuniql(traceService, new Yuniql.AspNetCore.Configuration
             {
-                WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
-                ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
-                AutoCreateDatabase = true, DebugTraceMode = true
+                Platform = SUPPORTED_DATABASES.SQLSERVER,
+                Workspace = Path.Combine(Environment.CurrentDirectory, "_db"),
+                ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!",
+                IsAutoCreateDatabase = true, IsDebug = true
             });
 
             app.UseRouting();
