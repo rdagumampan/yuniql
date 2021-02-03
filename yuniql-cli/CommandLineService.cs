@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using Yuniql.Core;
 using Yuniql.Extensibility;
+using System.Net.NetworkInformation;
 
 namespace Yuniql.CLI
 {
@@ -42,6 +43,65 @@ namespace Yuniql.CLI
             {
                 return OnException(ex, "Failed to execute init function", opts.IsDebug);
             }
+        }
+
+        public int RunPingOption(PingOption opts)
+        {
+            string platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+            IDataService dataService;
+            string serverToPing;
+
+            try
+            {
+                switch (platform)
+                {
+                    case SUPPORTED_DATABASES.SQLSERVER:
+                        dataService = new SqlServer.SqlServerDataService(_traceService);
+                        break;
+                    case SUPPORTED_DATABASES.MARIADB:
+                        dataService = new MySql.MySqlDataService(_traceService);
+                        break;
+                    case SUPPORTED_DATABASES.MYSQL:
+                        dataService = new MySql.MySqlDataService(_traceService);
+                        break;
+                    case SUPPORTED_DATABASES.POSTGRESQL:
+                        dataService = new PostgreSql.PostgreSqlDataService(_traceService);
+                        break;
+                    case SUPPORTED_DATABASES.REDSHIFT:
+                        dataService = new Redshift.RedshiftDataService(_traceService);
+                        break;
+                    case SUPPORTED_DATABASES.SNOWFLAKE:
+                        dataService = new Snowflake.SnowflakeDataService(_traceService);
+                        break;
+                    default:
+                        throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +
+                        $"See WIKI for supported database platforms and usage guide.");
+                }
+
+                dataService.Initialize(opts.ConnectionString);
+                serverToPing = dataService.GetConnectionInfo().DataSource;
+
+                using(Ping ping = new Ping())
+                {
+                    PingReply pingReply = ping.Send(serverToPing);
+
+                    if(pingReply.Status == IPStatus.Success)
+                    {
+                        _traceService.Success("The destination server is reachable.");
+                    }
+                    else
+                    {
+                        _traceService.Error("The destination server is unreachable");
+                    }
+                }
+
+            }
+
+            catch(Exception e)
+            {
+                _traceService.Error(e.Message);
+            }
+            return 0;
         }
 
         public int RunNextVersionOption(NextVersionOption opts)
