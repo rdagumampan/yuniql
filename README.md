@@ -122,7 +122,7 @@ app.UseYuniql(traceService, new Yuniql.AspNetCore.Configuration
 });
 ```
 
-## Working with Console Application
+## Working with .NET Core Console Application
 Run your database migration when Console App starts. Developer guide is available here https://yuniql.io/docs/migrate-via-netcore-console-application.
  
 ```console
