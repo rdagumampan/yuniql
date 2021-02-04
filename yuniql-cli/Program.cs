@@ -30,6 +30,7 @@ namespace Yuniql.CLI
 
             var resultCode = Parser.Default
                 .ParseArguments<
+                    PingOption,
                     InitOption,
                     RunOption,
                     ListOption,
@@ -41,6 +42,7 @@ namespace Yuniql.CLI
                     ArchiveOption,
                     PlatformsOption
                 >(args).MapResult(
+                    (PingOption opts) => Dispatch(commandLineService.RunPingOption, opts, traceService),
                     (InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
                     (RunOption opts) => Dispatch(commandLineService.RunRunOption, opts, traceService),
                     (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),

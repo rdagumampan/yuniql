@@ -44,6 +44,24 @@ namespace Yuniql.CLI
             }
         }
 
+        public int RunPingOption(PingOption opts)
+        {
+            string connectionString = opts.ConnectionString;
+            string platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+
+            try
+            {
+                IConnectivityChecker connectivityChecker = new ConnectivityChecker(platform, connectionString, _traceService);
+                connectivityChecker.CheckConnectivity();
+            }
+            catch(Exception ex)
+            {
+                return OnException(ex, "Failed to execute ping function", opts.IsDebug);
+            }
+
+            return 0;
+        }
+
         public int RunNextVersionOption(NextVersionOption opts)
         {
             try
