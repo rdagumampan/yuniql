@@ -22,14 +22,15 @@ choco install yuniql
 ```console
 docker run -d -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
+SETX YUNIQL_WORKSPACE "c:\temp\yuniql-cli\samples\basic-sqlserver-sample"
 ```
 
 ```console
 git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
 cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
 
-yuniql run -a
-yuniql list
+yuniql run -a --platform sqlserver
+yuniql list --platform sqlserver
 
 Running yuniql v1.0.1 for windows-x64
 Copyright 2019 (C) Rodel E. Dagumampan. Apache License v2.0
@@ -68,6 +69,7 @@ Amazon Aurora, Azure Synapse and Alibaba Aspara are being evaluated/developed/te
 ```console
 docker run -d -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
 SETX YUNIQL_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
+SETX YUNIQL_WORKSPACE "c:\temp\yuniql-cli\samples\basic-postgresql-sample"
 ```
 
 ```console
