@@ -12,31 +12,25 @@ namespace console_sample
             //1. deploy new sql server on docker
             //$ docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 
-            //2. create custom trace message sinks
+            //2. create custom trace message sinks, this can be your own logger framework
             var traceService = new ConsoleTraceService { IsDebugEnabled = true };
 
             //3. configure your migration run
-            var configuration = new YuniqlConfiguration
-            {
-                WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
-                ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
-                AutoCreateDatabase = true
-            };
+            var configuration = Configuration.Instance;
+            configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
+            configuration.Workspace = Path.Combine(Environment.CurrentDirectory, "_db");
+            configuration.ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!";
+            configuration.IsAutoCreateDatabase = true;
 
             //4. run migrations
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var migrationService = migrationServiceFactory.Create();
-            migrationService.Initialize(configuration.ConnectionString);
-            migrationService.Run(
-                configuration.WorkspacePath,
-                targetVersion: configuration.TargetVersion,
-                autoCreateDatabase: configuration.AutoCreateDatabase
-           );
+            migrationService.Run();
 
-            //5. validate for schema version compatibility
+            //5. alternatively, you can validate app for schema version compatibility
             var requiredDbVersion = "v0.00";
             var currentDbVersion = migrationService.GetCurrentVersion();
-            if(currentDbVersion != requiredDbVersion)
+            if (currentDbVersion != requiredDbVersion)
             {
                 throw new ApplicationException($"Startup failed. " +
                     $"Application requires database version {requiredDbVersion} but current version is {currentDbVersion}." +

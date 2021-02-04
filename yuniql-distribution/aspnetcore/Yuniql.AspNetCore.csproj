@@ -22,11 +22,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Yuniql.Core" Version="1.0.1" />
+    <PackageReference Include="Yuniql.Core" Version="1.1.55" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE.md">
+    <None Include="LICENSE.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

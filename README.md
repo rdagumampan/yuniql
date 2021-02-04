@@ -22,24 +22,25 @@ choco install yuniql
 ```console
 docker run -d -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
+SETX YUNIQL_WORKSPACE "c:\temp\yuniql-cli\samples\basic-sqlserver-sample"
 ```
 
 ```console
 git clone https://github.com/rdagumampan/yuniql.git c:\temp\yuniql-cli
 cd c:\temp\yuniql-cli\samples\basic-sqlserver-sample
 
-yuniql run -a
-yuniql list
+yuniql run -a --platform sqlserver
+yuniql list --platform sqlserver
 
 Running yuniql v1.0.1 for windows-x64
 Copyright 2019 (C) Rodel E. Dagumampan. Apache License v2.0
 Visit https://yuniql.io for documentation & more samples
 
-+---------------+----------------------+------------+---------------+---------------------+
-| SchemaVersion | AppliedOnUtc         | Status     | AppliedByUser | AppliedByTool       |
-+---------------+----------------------+------------+---------------+---------------------+
-| v0.00         | 2020-07-02 21:45:13Z | Successful | sa            | yuniql-cli v1.0.1.0 |
-+---------------+----------------------+------------+---------------+---------------------+
++---------------+----------------------+------------+---------------+----------------------+--------------+
+| SchemaVersion | AppliedOnUtc         | Status     | AppliedByUser | AppliedByTool        | Duration     |
++---------------+----------------------+------------+---------------+----------------------+--------------+
+| v0.00         | 2021-02-04 06:06:46Z | Successful | sa            | yuniql-cli v1.1.55.0 | 164 ms / 0 s |
++---------------+----------------------+------------+---------------+----------------------+--------------+
 ```
 
 ### Supported databases and platform tests
@@ -68,6 +69,7 @@ Amazon Aurora, Azure Synapse and Alibaba Aspara are being evaluated/developed/te
 ```console
 docker run -d -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
 SETX YUNIQL_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
+SETX YUNIQL_WORKSPACE "c:\temp\yuniql-cli\samples\basic-postgresql-sample"
 ```
 
 ```console
@@ -106,23 +108,23 @@ using Yuniql.AspNetCore;
 ...
 ...
 
-//docker run -d -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+//1. deploy new sql server on docker or use existing instance
+//$ docker run -dit --name yuniql-sqlserver  -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+
+//2. create custom trace message sinks, this can be your own logger framework
 var traceService = new ConsoleTraceService { IsDebugEnabled = true };
-app.UseYuniql(traceService, new Configuration
+
+//3. run migrations
+app.UseYuniql(traceService, new Yuniql.AspNetCore.Configuration
 {
-	WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
-	ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
-	AutoCreateDatabase = true,
-	Tokens = new List<KeyValuePair<string, string>> {
-		new KeyValuePair<string, string>("VwColumnPrefix1","Vw1"),
-		new KeyValuePair<string, string>("VwColumnPrefix2","Vw2"),
-		new KeyValuePair<string, string>("VwColumnPrefix3","Vw3"),
-		new KeyValuePair<string, string>("VwColumnPrefix4","Vw4")
-	}
+	Platform = SUPPORTED_DATABASES.SQLSERVER,
+	Workspace = Path.Combine(Environment.CurrentDirectory, "_db"),
+	ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!",
+	IsAutoCreateDatabase = true, IsDebug = true
 });
 ```
 
-## Working with Console Application
+## Working with .NET Core Console Application
 Run your database migration when Console App starts. Developer guide is available here https://yuniql.io/docs/migrate-via-netcore-console-application.
  
 ```console
@@ -136,26 +138,23 @@ using Yuniql.Core;
 
 static void Main(string[] args)
 {
-	//docker run -d -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
-	var traceService = new ConsoleTraceService { IsDebugEnabled = true };
-	var configuration = new Configuration
-	{
-		WorkspacePath = Path.Combine(Environment.CurrentDirectory, "_db"),
-		ConnectionString = "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!",
-		AutoCreateDatabase = true
-	};
+	//1. deploy new sql server on docker or use existing instance
+	//$ docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 
+	//2. create custom trace message sinks, this can be your own logger framework
+	var traceService = new ConsoleTraceService { IsDebugEnabled = true };
+
+	//3. configure your migration run
+	var configuration = Configuration.Instance;
+	configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
+	configuration.Workspace = Path.Combine(Environment.CurrentDirectory, "_db");
+	configuration.ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!";
+	configuration.IsAutoCreateDatabase = true;
+
+	//4. run migrations
 	var migrationServiceFactory = new MigrationServiceFactory(traceService);
 	var migrationService = migrationServiceFactory.Create();
-	migrationService.Initialize(configuration.ConnectionString);
-	migrationService.Run(
-		configuration.WorkspacePath,
-		configuration.TargetVersion,
-		configuration.AutoCreateDatabase,
-		configuration.Tokens,
-		configuration.VerifyOnly,
-		configuration.BulkSeparator);
-}
+	migrationService.Run();
 ```
 
 ## Advanced use cases

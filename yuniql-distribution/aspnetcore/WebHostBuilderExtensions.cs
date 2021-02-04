@@ -17,7 +17,7 @@ namespace Yuniql.AspNetCore
             Configuration configuration
         )
         {
-            var traceService = new FileTraceService { IsDebugEnabled = configuration.DebugTraceMode };
+            var traceService = new FileTraceService { IsDebugEnabled = configuration.IsDebug };
             return builder.UseYuniql(traceService, configuration);
         }
 
@@ -34,26 +34,11 @@ namespace Yuniql.AspNetCore
             Configuration configuration
         )
         {
+            ConfigurationHelper.Initialize(configuration);
+
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var migrationService = migrationServiceFactory.Create();
-            migrationService.Initialize(configuration.ConnectionString);
-            migrationService.Run(
-                configuration.WorkspacePath,
-                targetVersion: configuration.TargetVersion,
-                autoCreateDatabase: configuration.AutoCreateDatabase,
-                tokens: configuration.Tokens,
-                verifyOnly: configuration.VerifyOnly,
-                bulkSeparator: configuration.BulkSeparator,
-                metaSchemaName: configuration.MetaSchemaName,
-                metaTableName: configuration.MetaTableName,
-                commandTimeout: configuration.CommandTimeout,
-                bulkBatchSize: configuration.BulkBatchSize,
-                appliedByTool: configuration.AppliedByTool,
-                appliedByToolVersion: configuration.AppliedByToolVersion,
-                environmentCode: configuration.Environment,
-                resumeFromFailure: configuration.ContinueAfterFailure.HasValue && configuration.ContinueAfterFailure.Value ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?)null,
-                noTransaction: configuration.NoTransaction
-                );
+            migrationService.Run();
 
             return builder;
         }
@@ -75,26 +60,11 @@ namespace Yuniql.AspNetCore
             Configuration configuration
         )
         {
+            ConfigurationHelper.Initialize(configuration);
+
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var migrationService = migrationServiceFactory.Create(dataService, bulkImportService);
-            migrationService.Initialize(configuration.ConnectionString);
-            migrationService.Run(
-                configuration.WorkspacePath,
-                targetVersion: configuration.TargetVersion,
-                autoCreateDatabase: configuration.AutoCreateDatabase,
-                tokens: configuration.Tokens,
-                verifyOnly: configuration.VerifyOnly,
-                bulkSeparator: configuration.BulkSeparator,
-                metaSchemaName: configuration.MetaSchemaName,
-                metaTableName: configuration.MetaTableName,
-                commandTimeout: configuration.CommandTimeout,
-                bulkBatchSize: configuration.BulkBatchSize,
-                appliedByTool: configuration.AppliedByTool,
-                appliedByToolVersion: configuration.AppliedByToolVersion,
-                environmentCode: configuration.Environment,
-                resumeFromFailure: configuration.ContinueAfterFailure.HasValue && configuration.ContinueAfterFailure.Value ? NonTransactionalResolvingOption.ContinueAfterFailure : (NonTransactionalResolvingOption?)null,
-                noTransaction: configuration.NoTransaction
-                );
+            migrationService.Run();
 
             return builder;
         }

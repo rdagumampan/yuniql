@@ -13,18 +13,6 @@ namespace aspnetcore_sample
 
         public bool IsDebugEnabled { get; set; } = false;
 
-        public void Info(string message, object payload = null)
-        {
-            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
-            Console.Write(traceMessage);
-        }
-
-        public void Error(string message, object payload = null)
-        {
-            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
-            Console.Write(traceMessage);
-        }
-
         public void Debug(string message, object payload = null)
         {
             if (IsDebugEnabled)
@@ -32,6 +20,24 @@ namespace aspnetcore_sample
                 var traceMessage = $"DBG   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
                 Console.Write(traceMessage);
             }
+        }
+
+        public void Info(string message, object payload = null)
+        {
+            var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
+            Console.Write(traceMessage);
+        }
+
+        public void Warn(string message, object payload = null)
+        {
+            var traceMessage = $"WRN   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
+            Console.Write(traceMessage);
+        }
+
+        public void Error(string message, object payload = null)
+        {
+            var traceMessage = $"ERR   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
+            Console.Write(traceMessage);
         }
 
         public void Success(string message, object payload = null)
