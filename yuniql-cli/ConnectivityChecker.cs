@@ -63,7 +63,10 @@ namespace Yuniql.CLI
         {
             try
             {
-                _dataService.CreateConnection().Open();
+                using(var connection = _dataService.CreateConnection())
+                {
+                    connection.Open();
+                }
                 this._traceService.Success($"Connectivity to database {_connectionInfo.Database} - OK");
                 return true;
             }
@@ -78,8 +81,10 @@ namespace Yuniql.CLI
         {
             try
             {
-                this._dataService.CreateMasterConnection().Open();
-                
+                using (var connection = _dataService.CreateConnection())
+                {
+                    connection.Open();
+                }
                 this._traceService.Success($"Connectivity to master database - OK");
                 return true;
             }
