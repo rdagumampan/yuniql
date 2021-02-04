@@ -81,7 +81,7 @@ namespace Yuniql.CLI
         {
             try
             {
-                using (var connection = _dataService.CreateConnection())
+                using (var connection = _dataService.CreateMasterConnection())
                 {
                     connection.Open();
                 }
