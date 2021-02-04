@@ -1,0 +1,16 @@
+DROP TABLE IF EXISTS __yuniql_schema_version;
+GO
+DROP TABLE IF EXISTS dependents;
+GO
+DROP TABLE IF EXISTS employees;
+GO
+DROP TABLE IF EXISTS departments;
+GO
+DROP TABLE IF EXISTS locations;
+GO
+DROP TABLE IF EXISTS countries;
+GO
+DROP TABLE IF EXISTS regions;
+GO
+DROP TABLE IF EXISTS jobs;
+GO
