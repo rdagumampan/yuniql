@@ -2,6 +2,8 @@
 {
     public interface ICommandLineService
     {
+        int RunPingOption(PingOption opts);
+
         int RunInitOption(InitOption opts);
 
         int RunNextVersionOption(NextVersionOption opts);
