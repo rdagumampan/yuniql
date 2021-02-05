@@ -67,7 +67,7 @@ namespace Yuniql.UnitTests
         }
 
         [TestMethod]
-        public void Test_Print_Redaction_Enabled()
+        public void Test_Trace_Sensitive_Data_Disabled()
         {
             //arrange
             var traceService = new Mock<ITraceService>();
@@ -82,7 +82,7 @@ namespace Yuniql.UnitTests
             //act
             var sut = new ConfigurationService(environmentService.Object, workspaceService.Object, traceService.Object);
             sut.Initialize();
-            var configurationJson = sut.PrintAsJson(redactSensitiveText: true);
+            var configurationJson = sut.PrintAsJson();
 
             //assert
             var configuration = JsonSerializer.Deserialize<Configuration>(configurationJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -90,13 +90,16 @@ namespace Yuniql.UnitTests
         }
 
         [TestMethod]
-        public void Test_Print_Redaction_Disabled()
+        public void Test_Trace_Sensitive_Data_Enabled()
         {
             //arrange
             var traceService = new Mock<ITraceService>();
             var workspaceService = new Mock<IWorkspaceService>();
 
+            traceService.Setup(property => property.TraceSensitiveData).Returns(true);
+
             var parameters = GetFreshConfiguration();
+
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE)).Returns(parameters.Workspace);
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM)).Returns(parameters.Platform);
@@ -104,8 +107,8 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new ConfigurationService(environmentService.Object, workspaceService.Object, traceService.Object);
-            sut.Initialize();
-            var configurationJson = sut.PrintAsJson(redactSensitiveText: false);
+
+            var configurationJson = sut.PrintAsJson();
 
             //assert
             var configuration = JsonSerializer.Deserialize<Configuration>(configurationJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
