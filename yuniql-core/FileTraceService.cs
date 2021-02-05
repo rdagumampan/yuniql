@@ -18,6 +18,9 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public bool IsDebugEnabled { get; set; } = false;
 
+        ///<inheritdoc/>
+        public bool TraceSensitiveData { get; set; } = false;
+
 
         ///<inheritdoc/>
         public void Debug(string message, object payload = null)

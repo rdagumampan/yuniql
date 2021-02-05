@@ -11,6 +11,11 @@
         bool IsDebugEnabled { get; set; }
 
         /// <summary>
+        /// When true, sensitive data is not getting redacted.
+        /// </summary>
+        bool TraceSensitiveData { get; set; }
+
+        /// <summary>
         /// Writes debug messages.
         /// </summary>
         /// <param name="message">The message to write.</param>
