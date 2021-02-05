@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS __YuniqlDbVersion;
+DROP TABLE IF EXISTS __yuniql_schema_version;
 DROP TABLE IF EXISTS dependents;
 DROP TABLE IF EXISTS employees;
 DROP TABLE IF EXISTS departments;
