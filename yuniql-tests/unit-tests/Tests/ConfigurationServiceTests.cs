@@ -96,7 +96,7 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var workspaceService = new Mock<IWorkspaceService>();
 
-            traceService.Setup(property => property.TraceSensitiveData).Returns(true);
+            traceService.Setup(property => property.TraceSensitiveData).Returns(true); //Enable TraceSensitiveData for the current test
 
             var parameters = GetFreshConfiguration();
 
@@ -107,7 +107,7 @@ namespace Yuniql.UnitTests
 
             //act
             var sut = new ConfigurationService(environmentService.Object, workspaceService.Object, traceService.Object);
-
+            sut.Initialize();
             var configurationJson = sut.PrintAsJson();
 
             //assert
