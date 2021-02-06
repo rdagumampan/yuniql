@@ -74,7 +74,7 @@ namespace Yuniql.CLI
             Console.ResetColor();
 
             traceService.IsDebugEnabled = opts.IsDebug;
-            traceService.TraceSensitiveData = opts.TraceSensitiveData;
+            traceService.IsTraceSensitiveData = opts.TraceSensitiveData;
 
             return command.Invoke(opts);
         }

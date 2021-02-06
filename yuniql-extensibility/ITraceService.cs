@@ -13,7 +13,7 @@
         /// <summary>
         /// When true, sensitive data is not getting redacted.
         /// </summary>
-        bool TraceSensitiveData { get; set; }
+        bool IsTraceSensitiveData { get; set; }
 
         /// <summary>
         /// Writes debug messages.
