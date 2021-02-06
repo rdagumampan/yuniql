@@ -1,4 +1,4 @@
-DROP TABLE [dbo].[__YuniqlDbVersion];
+DROP TABLE [dbo].[__yuniql_schema_version];
 DROP VIEW [dbo].[VwVisitor];
 DROP VIEW [dbo].[VwVisitorTokenized];
 DROP PROC [dbo].[usp_delete_visitor];
