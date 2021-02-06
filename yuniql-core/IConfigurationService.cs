@@ -11,7 +11,7 @@ namespace Yuniql.Core
 
         void Validate();
 
-        string PrintAsJson(bool redactSensitiveText = true);
+        string PrintAsJson();
 
         string GetValueOrDefault(string receivedValue, string environmentVariableName, string defaultValue = null);
     }
