@@ -16,6 +16,11 @@
         bool IsTraceSensitiveData { get; set; }
 
         /// <summary>
+        /// This parameter allows users to define the directory where the log files will be created.
+        /// </summary>
+        string TraceDirectory { get; set; }
+
+        /// <summary>
         /// Writes debug messages.
         /// </summary>
         /// <param name="message">The message to write.</param>

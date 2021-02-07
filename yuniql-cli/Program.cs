@@ -13,8 +13,8 @@ namespace Yuniql.CLI
 
         public static int Main(string[] args)
         {
-            var traceService = new FileTraceService();
             var directoryService = new DirectoryService();
+            var traceService = new FileTraceService(directoryService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(traceService, directoryService, fileService);
 
@@ -74,6 +74,7 @@ namespace Yuniql.CLI
             Console.ResetColor();
 
             traceService.IsDebugEnabled = opts.IsDebug;
+            traceService.TraceDirectory = opts.TraceDirectory;
             traceService.IsTraceSensitiveData = opts.TraceSensitiveData;
 
             return command.Invoke(opts);
