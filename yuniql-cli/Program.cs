@@ -76,6 +76,7 @@ namespace Yuniql.CLI
             traceService.IsDebugEnabled = opts.IsDebug;
             traceService.TraceDirectory = opts.TraceDirectory;
             traceService.IsTraceSensitiveData = opts.TraceSensitiveData;
+            traceService.IsTraceSilent = opts.IsTraceSilent;
 
             return command.Invoke(opts);
         }

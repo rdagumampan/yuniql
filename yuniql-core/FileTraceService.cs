@@ -28,6 +28,9 @@ namespace Yuniql.Core
         public bool IsTraceSensitiveData { get; set; } = false;
 
         ///<inheritdoc/>
+        public bool IsTraceSilent { get; set; } = false;
+
+        ///<inheritdoc/>
         public string TraceDirectory 
         {
             get
@@ -53,10 +56,14 @@ namespace Yuniql.Core
         {
             if (IsDebugEnabled)
             {
-                var traceFile = GetTraceSessionFilePath();
                 var traceMessage = $"DBG   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-                File.AppendAllText(traceFile, traceMessage);
+                if (!IsTraceSilent)
+                {
+                    var traceFile = GetTraceSessionFilePath();
+                    File.AppendAllText(traceFile, traceMessage);
+                }
+
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write(traceMessage);
                 Console.ResetColor();
@@ -66,10 +73,14 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public void Info(string message, object payload = null)
         {
-            var traceFile = GetTraceSessionFilePath();
             var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-            File.AppendAllText(traceFile, traceMessage);
+            if (!IsTraceSilent)
+            {
+                var traceFile = GetTraceSessionFilePath();
+                File.AppendAllText(traceFile, traceMessage);
+            }
+
             Console.Write(traceMessage);
         }
 
@@ -77,10 +88,14 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public void Warn(string message, object payload = null)
         {
-            var traceFile = GetTraceSessionFilePath();
             var traceMessage = $"WRN   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-            File.AppendAllText(traceFile, traceMessage);
+            if (!IsTraceSilent)
+            {
+                var traceFile = GetTraceSessionFilePath();
+                File.AppendAllText(traceFile, traceMessage);
+            }
+
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write(traceMessage);
             Console.ResetColor();
@@ -89,10 +104,14 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public void Error(string message, object payload = null)
         {
-            var traceFile = GetTraceSessionFilePath();
             var traceMessage = $"ERR   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-            File.AppendAllText(traceFile, traceMessage);
+            if (!IsTraceSilent)
+            {
+                var traceFile = GetTraceSessionFilePath();
+                File.AppendAllText(traceFile, traceMessage);
+            }
+
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(traceMessage);
             Console.ResetColor();
@@ -101,10 +120,14 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public void Success(string message, object payload = null)
         {
-            var traceFile = GetTraceSessionFilePath();
             var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-            File.AppendAllText(traceFile, traceMessage);
+            if (!IsTraceSilent)
+            {
+                var traceFile = GetTraceSessionFilePath();
+                File.AppendAllText(traceFile, traceMessage);
+            }
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(traceMessage);
             Console.ResetColor();
