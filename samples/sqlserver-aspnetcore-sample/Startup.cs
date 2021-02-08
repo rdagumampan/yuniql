@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Yuniql.AspNetCore;
-using Yuniql.Core;
 
 namespace aspnetcore_sample
 {
@@ -30,7 +29,7 @@ namespace aspnetcore_sample
             //3. run migrations
             app.UseYuniql(traceService, new Yuniql.AspNetCore.Configuration
             {
-                Platform = SUPPORTED_DATABASES.SQLSERVER,
+                Platform = "sqlserver",
                 Workspace = Path.Combine(Environment.CurrentDirectory, "_db"),
                 ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!",
                 IsAutoCreateDatabase = true, IsDebug = true

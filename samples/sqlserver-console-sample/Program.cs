@@ -21,6 +21,7 @@ namespace console_sample
             configuration.Workspace = Path.Combine(Environment.CurrentDirectory, "_db");
             configuration.ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!";
             configuration.IsAutoCreateDatabase = true;
+            configuration.IsDebug = true;
 
             //4. run migrations
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
