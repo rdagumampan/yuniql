@@ -1,3 +1,2 @@
-
-FROM rdagumampan/yuniql:latest
+FROM yuniql/yuniql:latest
 COPY . ./db                
