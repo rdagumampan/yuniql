@@ -98,8 +98,7 @@ Database cleanup scripts. Executed once only when you do `yuniql erase`.");
             var dockerFile = Path.Combine(workspace, RESERVED_FILE_NAME.DOCKER_FILE);
             if (!_fileService.Exists(dockerFile))
             {
-                _fileService.AppendAllText(dockerFile, @"
-FROM rdagumampan/yuniql:latest
+                _fileService.AppendAllText(dockerFile, @"FROM yuniql/yuniql:latest
 COPY . ./db                
 ");
                 _traceService.Info($"Created file {dockerFile}");
