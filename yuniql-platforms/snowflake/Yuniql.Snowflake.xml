@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Yuniql.Snowflake</name>
+    </assembly>
+    <members>
+        <member name="T:Yuniql.Snowflake.SnowflakeDataService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.CreateConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.CreateMasterConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetConnectionInfo">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Snowflake.SnowflakeDataService.IsTransactionalDdlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Snowflake.SnowflakeDataService.IsSchemaSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Snowflake.SnowflakeDataService.IsBatchSqlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Snowflake.SnowflakeDataService.IsUpsertSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Snowflake.SnowflakeDataService.TableName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Snowflake.SnowflakeDataService.SchemaName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.BreakStatements(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCheckIfDatabaseExists">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCreateDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCreateSchema">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCheckIfDatabaseConfigured">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCheckIfDatabaseConfiguredv10">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForConfigureDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForGetCurrentVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForGetAllVersions">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForInsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForUpdateVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForUpsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForUpgradeMetaSchema(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.TryParseErrorFromException(System.Exception,System.String@)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

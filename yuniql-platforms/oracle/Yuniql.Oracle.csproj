@@ -1,29 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <StartupObject></StartupObject>
-    <Company></Company>
-    <Version>1.0.0</Version>
-    <AssemblyName>Yuniql.SqlServer</AssemblyName>
-    <RootNamespace>Yuniql.SqlServer</RootNamespace>
     <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject></StartupObject>
+    <AssemblyName>Yuniql.Oracle</AssemblyName>
+    <RootNamespace>Yuniql.Oracle</RootNamespace>
+    <Version>0.0.1</Version>
     <Authors>Rodel E. Dagumampan</Authors>
-    <Product />
+    <Product>Yuniql.Oracle</Product>
+    <Description>Database migrations and schema versioning adaptor for Oracle. For technical details and samples, visit https://github.com/rdagumampan/yuniql.</Description>
     <PackageProjectUrl>https://github.com/rdagumampan/yuniql</PackageProjectUrl>
     <RepositoryUrl>https://github.com/rdagumampan/yuniql</RepositoryUrl>
-    <PackageIconUrl>https://github.com/rdagumampan/yuniql/blob/master/assets/favicon.png</PackageIconUrl>
     <PackageIcon>favicon.png</PackageIcon>
-    <PackageTags>yuniql sqlserver-migration database-migration sql devops devops-tools database-versioning</PackageTags>
-    <Description>Database migrations and schema versioning adaptor for SqlServer. For technical details and samples, visit https://github.com/rdagumampan/yuniql.</Description>
-    <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>
+    <PackageTags>yuniql oralce-migration database-migration sql devops devops-tools database-versioning</PackageTags>
+    <Copyright>Copyright 2021 Rodel E. Dagumampan</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <AssemblyVersion>0.0.1.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>Yuniql.SqlServer.xml</DocumentationFile>
+    <DocumentationFile>Yuniql.Oracle.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,14 +39,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\..\LICENSE.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.101" />
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <None Include="favicon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 
