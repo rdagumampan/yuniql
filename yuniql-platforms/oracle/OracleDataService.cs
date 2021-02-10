@@ -119,6 +119,12 @@ CREATE TABLE ${YUNIQL_TABLE_NAME} (
     CONSTRAINT pk_${YUNIQL_TABLE_NAME} PRIMARY KEY (sequence_id),
 	CONSTRAINT ix_${YUNIQL_TABLE_NAME} UNIQUE (version)
 );
+
+CREATE SEQUENCE ${YUNIQL_TABLE_NAME}_SEQ
+  MINVALUE 1
+  START WITH 1
+  INCREMENT BY 1
+  CACHE 20;
             ";
 
         ///<inheritdoc/>
@@ -137,8 +143,8 @@ FROM ${YUNIQL_TABLE_NAME} ORDER BY version ASC;
         ///<inheritdoc/>
         public string GetSqlForInsertVersion()
             => @"
-INSERT INTO ${YUNIQL_TABLE_NAME} (version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status, duration_ms, checksum, failed_script_path, failed_script_error, additional_artifacts) 
-VALUES ('${YUNIQL_VERSION}', SYSDATE, USER, '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}','${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_CHECKSUM}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
+INSERT INTO ${YUNIQL_TABLE_NAME} (sequence_id, version, applied_on_utc, applied_by_user, applied_by_tool, applied_by_tool_version, status, duration_ms, checksum, failed_script_path, failed_script_error, additional_artifacts) 
+VALUES (${YUNIQL_TABLE_NAME}_SEQ.NEXTVAL, '${YUNIQL_VERSION}', SYS_EXTRACT_UTC(SYSTIMESTAMP), USER, '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}','${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_CHECKSUM}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}');
             ";
 
         ///<inheritdoc/>
@@ -146,7 +152,7 @@ VALUES ('${YUNIQL_VERSION}', SYSDATE, USER, '${YUNIQL_APPLIED_BY_TOOL}', '${YUNI
             => @"
 UPDATE ${YUNIQL_TABLE_NAME}
 SET
-    applied_on_utc          =  SYSDATE,
+    applied_on_utc          =  SYS_EXTRACT_UTC(SYSTIMESTAMP),
     applied_by_user         =  USER,
     applied_by_tool         = '${YUNIQL_APPLIED_BY_TOOL}', 
     applied_by_tool_version = '${YUNIQL_APPLIED_BY_TOOL_VERSION}', 
@@ -166,9 +172,7 @@ WHERE
         ///<inheritdoc/>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
         //when table __yuniqldbversion exists, we need to upgrade from yuniql v1.0 to v1.1 version
-        => @"
-SELECT 'v1.1' FROM SYS.ALL_TABLES WHERE OWNER = '${YUNIQL_DB_NAME}' AND TABLE_NAME = '__yuniqldbversion' AND ROWNUM = 1;
-        ";
+        => @"SELECT NULL FROM DUAL;";
 
         ///<inheritdoc/>
         public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
