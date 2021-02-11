@@ -63,8 +63,7 @@ namespace Yuniql.Oracle
         ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
         {
-            var sqlBatchParser = new SqlBatchParser(_traceService, new GoSqlBatchLineAnalyzer(), new CommentAnalyzer());
-            return sqlBatchParser.Parse(sqlStatementRaw).Select(s => s.BatchText).ToList();
+            return new List<string> { sqlStatementRaw };
         }
 
         ///<inheritdoc/>
