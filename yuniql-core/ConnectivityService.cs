@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Net.NetworkInformation;
-using Yuniql.Core;
 using Yuniql.Extensibility;
 
-//TODO: Rename as ConnectivityService, move to Core, add unit tests, add suggested action to users
-namespace Yuniql.CLI
+namespace Yuniql.Core
 {
-    public class ConnectivityChecker : IConnectivityChecker
+    /// <summary>
+    /// Check and test connectivity to target database server.
+    /// </summary>
+    public class ConnectivityService : IConnectivityService
     {
         private ITraceService _traceService;
         private IDataService _dataService;
@@ -15,51 +16,17 @@ namespace Yuniql.CLI
         /// <summary>
         /// Instantiate the ConnectivityChecker using Platform and ConnectionString.
         /// </summary>
-        public ConnectivityChecker(string platform, string connectionString, ITraceService traceService)
-        {
-            if (connectionString == null)
-            {
-                throw new Exception("No connection string was provided.");
-            }
-
-            this._traceService = traceService;
-            this._dataService = GetDataService(platform, this._traceService);
-            this._dataService.Initialize(connectionString);
-            this._connectionInfo = _dataService.GetConnectionInfo();
-        }
-
-        /// <summary>
-        /// Instantiate the ConnectivityChecker using Initialized Data Service.
-        /// </summary>
-        public ConnectivityChecker(IDataService dataService, ITraceService traceService)
+        public ConnectivityService(IDataService dataService, ITraceService traceService)
         {
             this._traceService = traceService;
             this._dataService = dataService;
             this._connectionInfo = _dataService.GetConnectionInfo();
         }
 
-        private IDataService GetDataService(string platform, ITraceService traceService)
-        {
-            switch (platform)
-            {
-                case SUPPORTED_DATABASES.SQLSERVER:
-                    return new SqlServer.SqlServerDataService(traceService);
-                case SUPPORTED_DATABASES.MARIADB:
-                    return new MySql.MySqlDataService(traceService);
-                case SUPPORTED_DATABASES.MYSQL:
-                    return new MySql.MySqlDataService(traceService);
-                case SUPPORTED_DATABASES.POSTGRESQL:
-                    return new PostgreSql.PostgreSqlDataService(traceService);
-                case SUPPORTED_DATABASES.REDSHIFT:
-                    return new Redshift.RedshiftDataService(traceService);
-                case SUPPORTED_DATABASES.SNOWFLAKE:
-                    return new Snowflake.SnowflakeDataService(traceService);
-                default:
-                    throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +
-                    $"See WIKI for supported database platforms and usage guide.");
-            }
-        }
-
+        /// <summary>
+        /// Check for sql/odbc connectivity to database on target server/cluster
+        /// </summary>
+        /// <returns></returns>
         public bool CheckDatabaseConnectivity()
         {
             try
@@ -82,6 +49,10 @@ namespace Yuniql.CLI
             }
         }
 
+        /// <summary>
+        /// Check for sql/odbc connectivity to database master/catalog on target server/cluster
+        /// </summary>
+        /// <returns></returns>
         public bool CheckMasterConnectivity()
         {
             try
@@ -105,7 +76,10 @@ namespace Yuniql.CLI
             }
         }
 
-
+        /// <summary>
+        /// Check for tcp/icmp connectivity to target server/cluster
+        /// </summary>
+        /// <returns></returns>
         public bool CheckServerConnectivity()
         {
             try
@@ -141,6 +115,9 @@ namespace Yuniql.CLI
             }
         }
 
+        /// <summary>
+        /// Check for connectivity to target server/cluster and database
+        /// </summary>
         public void CheckConnectivity()
         {
             CheckServerConnectivity();

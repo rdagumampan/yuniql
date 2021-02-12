@@ -242,6 +242,39 @@
             <param name="traceService">Trace service provider where trace messages will be written.</param>
             <returns></returns>
         </member>
+        <member name="T:Yuniql.Core.ConnectivityService">
+            <summary>
+            Check and test connectivity to target database server.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.#ctor(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Instantiate the ConnectivityChecker using Platform and ConnectionString.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.CheckDatabaseConnectivity">
+            <summary>
+            Check for sql/odbc connectivity to database on target server/cluster
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.CheckMasterConnectivity">
+            <summary>
+            Check for sql/odbc connectivity to database master/catalog on target server/cluster
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.CheckServerConnectivity">
+            <summary>
+            Check for tcp/icmp connectivity to target server/cluster
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.CheckConnectivity">
+            <summary>
+            Check for connectivity to target server/cluster and database
+            </summary>
+        </member>
         <member name="T:Yuniql.Core.DirectoryService">
             <summary>
             Wraps usage of <see cref="T:System.IO.Directory"/>

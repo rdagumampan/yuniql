@@ -21,12 +21,15 @@ namespace Yuniql.CLI
             var environmentService = new EnvironmentService();
             var configurationService = new ConfigurationService(environmentService, workspaceService, traceService);
 
+            var dataServiceFactory = new DataServiceFactory(traceService);
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
-            var commandLineService = new CommandLineService(migrationServiceFactory,
-                                                            workspaceService,
-                                                            environmentService,
-                                                            traceService,
-                                                            configurationService);
+            var commandLineService = new CommandLineService(
+                migrationServiceFactory,
+                dataServiceFactory,
+                workspaceService,
+                environmentService,
+                traceService,
+                configurationService);
 
             var resultCode = Parser.Default
                 .ParseArguments<
