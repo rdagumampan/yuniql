@@ -3,6 +3,7 @@ using System.Net.NetworkInformation;
 using Yuniql.Core;
 using Yuniql.Extensibility;
 
+//TODO: Rename as ConnectivityService, move to Core, add unit tests, add suggested action to users
 namespace Yuniql.CLI
 {
     public class ConnectivityChecker : IConnectivityChecker
@@ -63,16 +64,20 @@ namespace Yuniql.CLI
         {
             try
             {
-                using(var connection = _dataService.CreateConnection())
+                _traceService.Info($"Verifying sql/odbc connectivity to database {_connectionInfo.Database} on {_connectionInfo.DataSource}...");
+                using (var connection = _dataService.CreateConnection())
                 {
                     connection.Open();
                 }
-                this._traceService.Success($"Connectivity to database {_connectionInfo.Database} - OK");
+                _traceService.Success($"Sql/odbc connectivity to database {_connectionInfo.Database} on {_connectionInfo.DataSource} - Successful");
                 return true;
             }
-            catch(Exception e)
+            catch (Exception ex)
             {
-                this._traceService.Error($"Connectivity to database {_connectionInfo.Database} failed with error - { e.Message}");
+                _traceService.Error($"Sql/odbc connectivity to database {_connectionInfo.Database} on {_connectionInfo.DataSource} - Failed. Error message: { ex.Message}. " +
+                                    $"Suggested action: Check your connection string and verify that the user have sufficient permissions to access the database. " +
+                                    $"For sample connection strings, please find your platform at https://www.connectionstrings.com. " +
+                                    $"If you think this is a bug, please create an issue ticket here https://github.com/rdagumampan/yuniql/issues.");
                 return false;
             }
         }
@@ -81,44 +86,58 @@ namespace Yuniql.CLI
         {
             try
             {
+                _traceService.Info($"Verifying sql/odbc connectivity to database master/catalog on {_connectionInfo.DataSource}...");
                 using (var connection = _dataService.CreateMasterConnection())
                 {
                     connection.Open();
                 }
-                this._traceService.Success($"Connectivity to master database - OK");
+                _traceService.Success($"Sql/odbc connectivity to database master/catalog on {_connectionInfo.DataSource} - Successful");
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                this._traceService.Error($"Connectivity to master database failed with error - { e.Message}");
+                _traceService.Error($"Sql/odbc connectivity to database master/catalog on {_connectionInfo.DataSource} - Failed. Error message: { ex.Message}. " +
+                                    $"This maybe an expected behaviour for cloud managed databases such as Azure, AWS and GCP because access to master/catalog databases could be blocked. " +
+                                    $"Suggested action: Check your connection string and verify that the user have sufficient permissions to access the database. " +
+                                    $"For sample connection strings, please find your platform at https://www.connectionstrings.com. " +
+                                    $"If you think this is a bug, please create an issue ticket here https://github.com/rdagumampan/yuniql/issues.");
                 return false;
             }
         }
+
 
         public bool CheckServerConnectivity()
         {
             try
             {
-                using (Ping ping = new Ping())
+                using (var ping = new Ping())
                 {
-                    PingReply pingReply = ping.Send(this._connectionInfo.DataSource);
-
+                    _traceService.Info($"Verifying tcp/icmp connectivity to database server/cluster {_connectionInfo.DataSource}...");
+                    var pingReply = ping.Send(_connectionInfo.DataSource);
                     if (pingReply.Status == IPStatus.Success)
                     {
-                        _traceService.Success($"Ping check on {this._connectionInfo.DataSource} - OK");
+                        _traceService.Success($"Tcp/icmp connectivity to database server/cluster {_connectionInfo.DataSource} - Successful");
                         return true;
                     }
                     else
                     {
-                        _traceService.Error($"Ping check on {this._connectionInfo.DataSource} - FAILED");
+                        WriteTraceError();
                         return false;
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception ex)
             {
-                _traceService.Error(e.Message);
+                WriteTraceError(ex);
                 return false;
+            }
+
+            void WriteTraceError(Exception ex = null)
+            {
+                var errorMessage = null != ex ? "Error message: " + ex.Message : string.Empty;
+                _traceService.Error($"Tcp/icmp connectivity to database server/cluster {_connectionInfo.DataSource} - Failed. {errorMessage} " +
+                                    $"This maybe an expected behaviour when the server/cluster is configured to deny remote ping requests. " +
+                                    $"If you think this is a bug, please create an issue ticket here https://github.com/rdagumampan/yuniql/issues.");
             }
         }
 

@@ -70,7 +70,7 @@ namespace Yuniql.CLI
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine($"Running yuniql v{toolVersion.Major}.{toolVersion.Minor}.{toolVersion.Build} for {toolPlatform}-x64");
             Console.WriteLine($"{toolCopyright}. Apache License v2.0");
-            Console.WriteLine($"Visit https://yuniql.io for documentation & samples{Environment.NewLine}");
+            Console.WriteLine($"Visit https://yuniql.io for documentation and working samples{Environment.NewLine}");
             Console.ResetColor();
 
             traceService.IsDebugEnabled = opts.IsDebug;

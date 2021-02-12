@@ -59,6 +59,27 @@ namespace Yuniql.PlatformTests.CLI
                 Debug.WriteLine(ex.ToString());
             }
         }
+        [DataTestMethod]
+        [DataRow("ping", "")]
+        [DataRow("ping", "-d")]
+        [DataRow("ping", "-d --trace-sensitive-data")]
+        [DataRow("ping", "-d --trace-to-file")]
+        [DataRow("ping", "-d --trace-to-directory c:\\temp\\not-existing")]
+        public void Test_yuniql_ping(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //setup database to ping
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
+            result.Contains($"Failed to execute run").ShouldBeFalse();
+
+            //act & assert
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeFalse();
+        }
+
+
 
         [DataTestMethod]
         [DataRow("init", "")]

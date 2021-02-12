@@ -51,7 +51,7 @@ namespace Yuniql.CLI
 
             try
             {
-                IConnectivityChecker connectivityChecker = new ConnectivityChecker(platform, connectionString, _traceService);
+                var connectivityChecker = new ConnectivityChecker(platform, connectionString, _traceService);
                 connectivityChecker.CheckConnectivity();
             }
             catch(Exception ex)
