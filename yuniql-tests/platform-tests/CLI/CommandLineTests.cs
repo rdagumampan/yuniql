@@ -60,12 +60,12 @@ namespace Yuniql.PlatformTests.CLI
             }
         }
         [DataTestMethod]
-        [DataRow("ping", "")]
-        [DataRow("ping", "-d")]
-        [DataRow("ping", "-d --trace-sensitive-data")]
-        [DataRow("ping", "-d --trace-to-file")]
-        [DataRow("ping", "-d --trace-to-directory c:\\temp\\not-existing")]
-        public void Test_yuniql_ping(string command, string arguments)
+        [DataRow("check", "")]
+        [DataRow("check", "-d")]
+        [DataRow("check", "-d --trace-sensitive-data")]
+        [DataRow("check", "-d --trace-to-file")]
+        [DataRow("check", "-d --trace-to-directory c:\\temp\\not-existing")]
+        public void Test_yuniql_check(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();

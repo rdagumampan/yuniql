@@ -2,7 +2,7 @@
 {
     public interface ICommandLineService
     {
-        int RunPingOption(PingOption opts);
+        int RunCheckOption(CheckOption opts);
 
         int RunInitOption(InitOption opts);
 

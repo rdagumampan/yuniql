@@ -44,7 +44,7 @@ namespace Yuniql.CLI
             }
         }
 
-        public int RunPingOption(PingOption opts)
+        public int RunCheckOption(CheckOption opts)
         {
             string connectionString = opts.ConnectionString;
             string platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
