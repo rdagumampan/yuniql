@@ -15,6 +15,14 @@ namespace Yuniql.CLI
         //yuniql <command> --trace-sensitive-data
         [Option("trace-sensitive-data", Required = false, HelpText = "Include sensitive data in the log.", Default = false)]
         public bool TraceSensitiveData { get; set; } = false;
+
+        //yuniql <command> --trace-directory
+        [Option("trace-directory", Required = false, HelpText = "Define the directory where the log files will be created.")]
+        public string TraceDirectory { get; set; }
+
+        //yuniql <command> --trace-silent
+        [Option("trace-silent", Required = false, HelpText = "Disable the creation of log files.", Default = false)]
+        public bool IsTraceSilent { get; set; } = false;
     }
 
 }

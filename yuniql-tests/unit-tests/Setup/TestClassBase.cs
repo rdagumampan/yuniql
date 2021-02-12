@@ -12,9 +12,9 @@ namespace Yuniql.UnitTests
         [TestInitialize]
         public void Setup()
         {
-            var traceService = new FileTraceService();
-            var environmentService = new EnvironmentService();
             var directoryService = new DirectoryService();
+            var traceService = new FileTraceService(directoryService);
+            var environmentService = new EnvironmentService();
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(traceService, directoryService, fileService);
             var configurationService = new ConfigurationService(environmentService, workspaceService, traceService);
