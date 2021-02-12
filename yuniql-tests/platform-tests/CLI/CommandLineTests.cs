@@ -63,6 +63,9 @@ namespace Yuniql.PlatformTests.CLI
         [DataTestMethod]
         [DataRow("init", "")]
         [DataRow("init", "-d")]
+        [DataRow("init", "-d --trace-sensitive-data")]
+        [DataRow("init", "-d --trace-to-file")]
+        [DataRow("init", "-d --trace-to-directory c:\\temp\\not-existing")]
         public void Test_yuniql_init(string command, string arguments)
         {
             //arrange
@@ -76,6 +79,9 @@ namespace Yuniql.PlatformTests.CLI
         [DataTestMethod]
         [DataRow("vnext", "")]
         [DataRow("vnext", "-d")]
+        [DataRow("vnext", "-d --trace-sensitive-data")]
+        [DataRow("vnext", "-d --trace-to-file")]
+        [DataRow("vnext", "-d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("vnext", "-d -m")]
         [DataRow("vnext", "-d -m -f test-vminor-script.sql")]
         [DataRow("vnext", "-d --minor -f test-vminor-script.sql")]
@@ -95,6 +101,9 @@ namespace Yuniql.PlatformTests.CLI
 
         [DataTestMethod]
         [DataRow("run", "-a -d")]
+        [DataRow("run", "-a -d --trace-sensitive-data")]
+        [DataRow("run", "-a -d --trace-to-file")]
+        [DataRow("run", "-a -d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("run", "--autocreate-db -d")]
         [DataRow("run", "-a -d -t v1.00")]
         [DataRow("run", "-a -d --target-version v1.00")]
@@ -121,6 +130,9 @@ namespace Yuniql.PlatformTests.CLI
         }
 
         [DataTestMethod]
+        [DataRow("verify", "-d --trace-sensitive-data")]
+        [DataRow("verify", "-d --trace-to-file")]
+        [DataRow("verify", "-d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("verify", "-d -t v1.00")]
         [DataRow("verify", "-d --target-version v1.00")]
         [DataRow("verify", "-d --bulk-separator ,")]
@@ -171,6 +183,9 @@ namespace Yuniql.PlatformTests.CLI
         [DataTestMethod]
         [DataRow("list", "")]
         [DataRow("list", "-d")]
+        [DataRow("list", "-d --trace-sensitive-data")]
+        [DataRow("list", "-d --trace-to-file")]
+        [DataRow("list", "-d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("list", "-d --command-timeout 10")]
         public void Test_yuniql_list (string command, string arguments)
         {
@@ -208,6 +223,9 @@ namespace Yuniql.PlatformTests.CLI
         [DataTestMethod]
         [DataRow("erase", "")]
         [DataRow("erase", "-d")]
+        [DataRow("erase", "-d --trace-sensitive-data")]
+        [DataRow("erase", "-d --trace-to-file")]
+        [DataRow("erase", "-d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("erase", "-d --force")]
         [DataRow("erase", "-d --environment DEV")]
         [DataRow("erase", "-d --command-timeout 10")]
@@ -227,6 +245,9 @@ namespace Yuniql.PlatformTests.CLI
 
         [DataTestMethod]
         [DataRow("platforms", "-d")]
+        [DataRow("platforms", "-d --trace-sensitive-data")]
+        [DataRow("platforms", "-d --trace-to-file")]
+        [DataRow("platforms", "-d --trace-to-directory c:\\temp\\not-existing")]
         public void Test_yuniql_platforms(string command, string arguments)
         {
             //arrange

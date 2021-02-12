@@ -70,13 +70,13 @@ namespace Yuniql.CLI
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine($"Running yuniql v{toolVersion.Major}.{toolVersion.Minor}.{toolVersion.Build} for {toolPlatform}-x64");
             Console.WriteLine($"{toolCopyright}. Apache License v2.0");
-            Console.WriteLine($"Visit https://yuniql.io for documentation & more samples{Environment.NewLine}");
+            Console.WriteLine($"Visit https://yuniql.io for documentation & samples{Environment.NewLine}");
             Console.ResetColor();
 
             traceService.IsDebugEnabled = opts.IsDebug;
-            traceService.TraceDirectory = opts.TraceDirectory;
-            traceService.IsTraceSensitiveData = opts.TraceSensitiveData;
-            traceService.IsTraceSilent = opts.IsTraceSilent;
+            traceService.IsTraceSensitiveData = opts.IsTraceSensitiveData;
+            traceService.IsTraceToFile = opts.IsTraceToFile;
+            traceService.TraceToDirectory = opts.TraceToDirectory;
 
             return command.Invoke(opts);
         }

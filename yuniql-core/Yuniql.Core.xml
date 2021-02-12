@@ -171,7 +171,7 @@
         <member name="M:Yuniql.Core.ConfigurationService.Validate">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationService.PrintAsJson(System.Boolean)">
+        <member name="M:Yuniql.Core.ConfigurationService.PrintAsJson">
             <inheritdoc/>
         </member>
         <member name="T:Yuniql.Core.ConnectionExtensions">
@@ -307,7 +307,19 @@
             Writes trace information into a text file in the current workspace directory. 
             </summary>
         </member>
+        <member name="M:Yuniql.Core.FileTraceService.#ctor(Yuniql.Core.IDirectoryService)">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.Core.FileTraceService.IsDebugEnabled">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Core.FileTraceService.IsTraceSensitiveData">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Core.FileTraceService.IsTraceToFile">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Core.FileTraceService.TraceToDirectory">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.FileTraceService.Debug(System.String,System.Object)">

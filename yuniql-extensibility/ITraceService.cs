@@ -18,12 +18,12 @@
         /// <summary>
         /// This parameter allows users to define the directory where the log files will be created.
         /// </summary>
-        string TraceDirectory { get; set; }
+        string TraceToDirectory { get; set; }
 
         /// <summary>
         /// When true, the log creation is disabled.
         /// </summary>
-        bool IsTraceSilent { get; set; }
+        bool IsTraceToFile { get; set; }
 
         /// <summary>
         /// Writes debug messages.

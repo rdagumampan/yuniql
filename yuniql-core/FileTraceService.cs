@@ -10,11 +10,9 @@ namespace Yuniql.Core
     public class FileTraceService : ITraceService
     {
         private string _traceSessionId;
-
         private IDirectoryService _directoryService;
 
-        private string _traceDirectory;
-
+        ///<inheritdoc/>
         public FileTraceService(IDirectoryService directoryService)
         {
             _traceSessionId = DateTime.Now.ToString("MMddyyyy-HHmmss");
@@ -28,10 +26,11 @@ namespace Yuniql.Core
         public bool IsTraceSensitiveData { get; set; } = false;
 
         ///<inheritdoc/>
-        public bool IsTraceSilent { get; set; } = false;
+        public bool IsTraceToFile { get; set; } = true;
 
+        private string _traceDirectory;
         ///<inheritdoc/>
-        public string TraceDirectory 
+        public string TraceToDirectory 
         {
             get
             {
@@ -39,14 +38,15 @@ namespace Yuniql.Core
             }
             set
             {
-                if (_directoryService.Exists(value))
-                {
-                    _traceDirectory = value;
-                }
-                else if (value!=null)
+                //when user specified location but it does not exist
+                if (value != null && !_directoryService.Exists(value))
                 {
                     Warn($"The provided trace directory does not exist. " +
-                        $"Generated logs will be saved in the current execution directory.");
+                        $"Generated logs will be saved in the current directory {Environment.CurrentDirectory}.");
+                } else if (_directoryService.Exists(value))
+                {
+                    //an existing trace directory will be used
+                    _traceDirectory = value;
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace Yuniql.Core
             {
                 var traceMessage = $"DBG   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-                if (!IsTraceSilent)
+                if (IsTraceToFile)
                 {
                     var traceFile = GetTraceSessionFilePath();
                     File.AppendAllText(traceFile, traceMessage);
@@ -75,7 +75,7 @@ namespace Yuniql.Core
         {
             var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-            if (!IsTraceSilent)
+            if (IsTraceToFile)
             {
                 var traceFile = GetTraceSessionFilePath();
                 File.AppendAllText(traceFile, traceMessage);
@@ -90,7 +90,7 @@ namespace Yuniql.Core
         {
             var traceMessage = $"WRN   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-            if (!IsTraceSilent)
+            if (IsTraceToFile)
             {
                 var traceFile = GetTraceSessionFilePath();
                 File.AppendAllText(traceFile, traceMessage);
@@ -106,7 +106,7 @@ namespace Yuniql.Core
         {
             var traceMessage = $"ERR   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-            if (!IsTraceSilent)
+            if (IsTraceToFile)
             {
                 var traceFile = GetTraceSessionFilePath();
                 File.AppendAllText(traceFile, traceMessage);
@@ -122,7 +122,7 @@ namespace Yuniql.Core
         {
             var traceMessage = $"INF   {DateTime.UtcNow.ToString("u")}   {message}{Environment.NewLine}";
 
-            if (!IsTraceSilent)
+            if (IsTraceToFile)
             {
                 var traceFile = GetTraceSessionFilePath();
                 File.AppendAllText(traceFile, traceMessage);
@@ -135,10 +135,9 @@ namespace Yuniql.Core
 
         private string GetTraceSessionFilePath()
         {
-
-            if (TraceDirectory != null)
+            if (TraceToDirectory != null)
             {
-                return Path.Combine(TraceDirectory, $"yuniql-log-{_traceSessionId}.txt");
+                return Path.Combine(TraceToDirectory, $"yuniql-log-{_traceSessionId}.txt");
             }
             else
             {
