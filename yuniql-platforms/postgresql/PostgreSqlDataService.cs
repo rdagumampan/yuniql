@@ -85,6 +85,22 @@ CREATE DATABASE ""${YUNIQL_DB_NAME}"";
             ";
 
         ///<inheritdoc/>
+        public List<string> GetSqlForDropDatabase()
+            => new List<string> { 
+@"
+--disallow new connections, set exclusive to current session
+ALTER DATABASE ${YUNIQL_DB_NAME} CONNECTION LIMIT 1;
+", 
+@"
+--terminate existing connections
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${YUNIQL_DB_NAME}';"
+,
+@"
+--drop database
+DROP DATABASE ${YUNIQL_DB_NAME};
+"};
+
+        ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => @"
 CREATE SCHEMA ""${YUNIQL_SCHEMA_NAME}"";

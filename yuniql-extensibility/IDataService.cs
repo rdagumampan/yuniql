@@ -89,6 +89,11 @@ namespace Yuniql.Extensibility
         public string GetSqlForCreateDatabase();
 
         /// <summary>
+        /// Returns the SQL statement to use for dropping existing database
+        /// </summary>
+        public List<string> GetSqlForDropDatabase();
+
+        /// <summary>
         /// Returns the SQL statement to use for creating schema if the target database supports schemas.
         /// </summary>
         /// <returns></returns>

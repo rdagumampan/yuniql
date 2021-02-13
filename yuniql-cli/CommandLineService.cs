@@ -245,6 +245,41 @@ namespace Yuniql.CLI
             }
         }
 
+        public int RunDestroyOption(DestroyOption opts)
+        {
+            try
+            {
+                //parse tokens
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+                var connectionString = _configurationService.GetValueOrDefault(opts.ConnectionString, ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
+
+                var configuration = Configuration.Instance;
+                configuration.Workspace = opts.Workspace;
+                configuration.IsDebug = opts.IsDebug;
+
+                configuration.Platform = platform;
+                configuration.ConnectionString = connectionString;
+                configuration.CommandTimeout = opts.CommandTimeout;
+
+                configuration.IsForced = opts.Force;
+
+                var dataService = _dataServiceFactory.Create(platform);
+                dataService.Initialize(configuration.ConnectionString);
+                var connectionInfo = dataService.GetConnectionInfo();
+
+                //run all erase scripts
+                var migrationService = _migrationServiceFactory.Create(platform);
+                migrationService.Destroy();
+
+                _traceService.Success($"Database {connectionInfo.Database} destroyed successfuly from {connectionInfo.DataSource}.");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute destroy function", opts.IsDebug);
+            }
+        }
+
         public int RunPlatformsOption(PlatformsOption opts)
         {
             try

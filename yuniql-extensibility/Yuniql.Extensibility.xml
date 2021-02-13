@@ -413,6 +413,11 @@
             Returns the SQL statement to use for creating new database if --auto-createdb flag is set to true.
             </summary>
         </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForDropDatabase">
+            <summary>
+            Returns the SQL statement to use for dropping existing database
+            </summary>
+        </member>
         <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCreateSchema">
             <summary>
             Returns the SQL statement to use for creating schema if the target database supports schemas.

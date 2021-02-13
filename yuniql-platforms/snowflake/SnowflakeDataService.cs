@@ -66,7 +66,7 @@ namespace Yuniql.Snowflake
             var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();
             connectionStringBuilder.ConnectionString = _connectionString;
 
-            //NOTW: remove existing db & schema from connection string parameters
+            //NOTE: remove existing db & schema from connection string parameters
             //this is necessary to avoid connection errors as it will attempt to connect to non-existing database
             connectionStringBuilder.Remove("db");
             connectionStringBuilder.Remove("schema");
@@ -127,6 +127,12 @@ SHOW DATABASES LIKE '${YUNIQL_DB_NAME}';
             => @"
 CREATE DATABASE ""${YUNIQL_DB_NAME}"";
             ";
+
+        ///<inheritdoc/>
+        public List<string> GetSqlForDropDatabase()
+            => new List<string> { @"
+DROP DATABASE ""${YUNIQL_DB_NAME}"";
+            " };
 
         ///<inheritdoc/>
         public string GetSqlForCreateSchema()
