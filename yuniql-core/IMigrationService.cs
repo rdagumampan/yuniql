@@ -38,5 +38,10 @@ namespace Yuniql.Core
         /// Executes erase scripts presentin _erase directory and subdirectories.
         /// </summary>
         void Erase();
+
+        /// <summary>
+        /// Drops previously deployed database.
+        /// </summary>
+        void Destroy();
     }
 }

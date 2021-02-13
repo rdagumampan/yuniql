@@ -591,6 +591,11 @@
             Executes erase scripts presentin _erase directory and subdirectories.
             </summary>
         </member>
+        <member name="M:Yuniql.Core.IMigrationService.Destroy">
+            <summary>
+            Drops previously deployed database.
+            </summary>
+        </member>
         <member name="T:Yuniql.Core.IMigrationServiceFactory">
             <summary>
             Factory class of creating instance of <see cref="T:Yuniql.Core.IMigrationService"/>.
@@ -739,6 +744,7 @@
             <inheritdoc />
             <inheritdoc />
             <inheritdoc />
+            <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
             <inheritdoc /> 
@@ -753,6 +759,9 @@
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.RunNonVersionDirectories(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.Destroy">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.Erase">

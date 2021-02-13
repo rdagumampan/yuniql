@@ -242,14 +242,13 @@ namespace Yuniql.PlatformTests.CLI
 
 
         [DataTestMethod]
-        [DataRow("erase", "")]
         [DataRow("erase", "-d")]
-        [DataRow("erase", "-d --trace-sensitive-data")]
-        [DataRow("erase", "-d --trace-to-file")]
-        [DataRow("erase", "-d --trace-to-directory c:\\temp\\not-existing")]
+        [DataRow("erase", "-d --force --trace-sensitive-data")]
+        [DataRow("erase", "-d --force --trace-to-file")]
+        [DataRow("erase", "-d --force --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("erase", "-d --force")]
-        [DataRow("erase", "-d --environment DEV")]
-        [DataRow("erase", "-d --command-timeout 10")]
+        [DataRow("erase", "-d --force --environment DEV")]
+        [DataRow("erase", "-d --force --command-timeout 10")]
         public void Test_yuniql_erase(string command, string arguments)
         {
             //arrange
@@ -263,6 +262,30 @@ namespace Yuniql.PlatformTests.CLI
             result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
+
+
+
+        [DataTestMethod]
+        [DataRow("destroy", "-d")]
+        [DataRow("destroy", "-d --force --trace-sensitive-data")]
+        [DataRow("destroy", "-d --force --trace-to-file")]
+        [DataRow("destroy", "-d --force --trace-to-directory c:\\temp\\not-existing")]
+        [DataRow("destroy", "-d --force")]
+        public void Test_yuniql_destroy(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //act & assert
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
+            result.Contains($"Failed to execute run").ShouldBeFalse();
+
+            //act & assert
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeFalse();
+        }
+
+
 
         [DataTestMethod]
         [DataRow("platforms", "-d")]

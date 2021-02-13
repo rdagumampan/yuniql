@@ -135,9 +135,9 @@ namespace Yuniql.Core
             if (string.IsNullOrEmpty(_configuration.Platform))
                 validationResults.Add(new Tuple<string, string, string, string>("Platform", "--platform", ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, $"{helpLink}"));
 
-            //workspace
-            if (string.IsNullOrEmpty(_configuration.Workspace))
-                validationResults.Add(new Tuple<string, string, string, string>("Workspace", "-p | --path", ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, $"{helpLink}"));
+            ////workspace, this is not needed for erase and destroy commands
+            //if (string.IsNullOrEmpty(_configuration.Workspace))
+            //    validationResults.Add(new Tuple<string, string, string, string>("Workspace", "-p | --path", ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, $"{helpLink}"));
 
             //connection string
             if (string.IsNullOrEmpty(_configuration.ConnectionString))

@@ -84,6 +84,12 @@ CREATE DATABASE `${YUNIQL_DB_NAME}`;
             ";
 
         ///<inheritdoc/>
+        public List<string> GetSqlForDropDatabase()
+            => new List<string> { @"
+DROP DATABASE `${YUNIQL_DB_NAME}`;
+            " };
+
+        ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => throw new NotSupportedException("Custom schema is not supported in MySql.");
 

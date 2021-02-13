@@ -13,10 +13,11 @@ namespace Yuniql.Core
         /// <inheritdoc />
         public void Erase()
         {
-            Initialize();
+            var configuration = _configurationService.GetConfiguration();
+            if (!configuration.IsInitialized)
+                Initialize();
 
             //create a shared open connection to entire migration run
-            var configuration = _configurationService.GetConfiguration();
             using (var connection = _dataService.CreateConnection())
             {
                 connection.KeepOpen();
