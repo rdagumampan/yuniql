@@ -88,6 +88,13 @@ CREATE DATABASE [${YUNIQL_DB_NAME}];
             ";
 
         ///<inheritdoc/>
+        public List<string> GetSqlForDropDatabase()
+            => new List<string> { @"
+ALTER DATABASE [${YUNIQL_DB_NAME}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+DROP DATABASE [${YUNIQL_DB_NAME}];
+            " };
+
+        ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => @"
 CREATE SCHEMA [${YUNIQL_SCHEMA_NAME}];
@@ -186,7 +193,7 @@ END
         public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
         {
             var assembly = typeof(SqlServerDataService).Assembly;
-            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion.Replace(".","_")}.sql");
+            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion.Replace(".", "_")}.sql");
             using var reader = new StreamReader(resource);
             return reader.ReadToEnd();
         }

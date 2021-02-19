@@ -1,5 +1,4 @@
 ﻿using Yuniql.Core;
-using Yuniql.Extensibility;
 
 namespace Yuniql.CLI
 {
@@ -7,4 +6,5 @@ namespace Yuniql.CLI
     {
         IMigrationService Create(string platform);
     }
+
 }

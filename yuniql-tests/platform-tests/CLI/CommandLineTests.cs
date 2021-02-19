@@ -59,10 +59,34 @@ namespace Yuniql.PlatformTests.CLI
                 Debug.WriteLine(ex.ToString());
             }
         }
+        [DataTestMethod]
+        [DataRow("check", "")]
+        [DataRow("check", "-d")]
+        [DataRow("check", "-d --trace-sensitive-data")]
+        [DataRow("check", "-d --trace-to-file")]
+        [DataRow("check", "-d --trace-to-directory c:\\temp\\not-existing")]
+        public void Test_yuniql_check(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //setup database to ping
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
+            result.Contains($"Failed to execute run").ShouldBeFalse();
+
+            //act & assert
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeFalse();
+        }
+
+
 
         [DataTestMethod]
         [DataRow("init", "")]
         [DataRow("init", "-d")]
+        [DataRow("init", "-d --trace-sensitive-data")]
+        [DataRow("init", "-d --trace-to-file")]
+        [DataRow("init", "-d --trace-to-directory c:\\temp\\not-existing")]
         public void Test_yuniql_init(string command, string arguments)
         {
             //arrange
@@ -76,6 +100,9 @@ namespace Yuniql.PlatformTests.CLI
         [DataTestMethod]
         [DataRow("vnext", "")]
         [DataRow("vnext", "-d")]
+        [DataRow("vnext", "-d --trace-sensitive-data")]
+        [DataRow("vnext", "-d --trace-to-file")]
+        [DataRow("vnext", "-d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("vnext", "-d -m")]
         [DataRow("vnext", "-d -m -f test-vminor-script.sql")]
         [DataRow("vnext", "-d --minor -f test-vminor-script.sql")]
@@ -95,6 +122,9 @@ namespace Yuniql.PlatformTests.CLI
 
         [DataTestMethod]
         [DataRow("run", "-a -d")]
+        [DataRow("run", "-a -d --trace-sensitive-data")]
+        [DataRow("run", "-a -d --trace-to-file")]
+        [DataRow("run", "-a -d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("run", "--autocreate-db -d")]
         [DataRow("run", "-a -d -t v1.00")]
         [DataRow("run", "-a -d --target-version v1.00")]
@@ -121,6 +151,9 @@ namespace Yuniql.PlatformTests.CLI
         }
 
         [DataTestMethod]
+        [DataRow("verify", "-d --trace-sensitive-data")]
+        [DataRow("verify", "-d --trace-to-file")]
+        [DataRow("verify", "-d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("verify", "-d -t v1.00")]
         [DataRow("verify", "-d --target-version v1.00")]
         [DataRow("verify", "-d --bulk-separator ,")]
@@ -171,6 +204,9 @@ namespace Yuniql.PlatformTests.CLI
         [DataTestMethod]
         [DataRow("list", "")]
         [DataRow("list", "-d")]
+        [DataRow("list", "-d --trace-sensitive-data")]
+        [DataRow("list", "-d --trace-to-file")]
+        [DataRow("list", "-d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("list", "-d --command-timeout 10")]
         public void Test_yuniql_list (string command, string arguments)
         {
@@ -206,11 +242,13 @@ namespace Yuniql.PlatformTests.CLI
 
 
         [DataTestMethod]
-        [DataRow("erase", "")]
         [DataRow("erase", "-d")]
+        [DataRow("erase", "-d --force --trace-sensitive-data")]
+        [DataRow("erase", "-d --force --trace-to-file")]
+        [DataRow("erase", "-d --force --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("erase", "-d --force")]
-        [DataRow("erase", "-d --environment DEV")]
-        [DataRow("erase", "-d --command-timeout 10")]
+        [DataRow("erase", "-d --force --environment DEV")]
+        [DataRow("erase", "-d --force --command-timeout 10")]
         public void Test_yuniql_erase(string command, string arguments)
         {
             //arrange
@@ -225,8 +263,35 @@ namespace Yuniql.PlatformTests.CLI
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
+
+
+        [DataTestMethod]
+        [DataRow("destroy", "-d")]
+        [DataRow("destroy", "-d --force --trace-sensitive-data")]
+        [DataRow("destroy", "-d --force --trace-to-file")]
+        [DataRow("destroy", "-d --force --trace-to-directory c:\\temp\\not-existing")]
+        [DataRow("destroy", "-d --force")]
+        public void Test_yuniql_destroy(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //act & assert
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
+            result.Contains($"Failed to execute run").ShouldBeFalse();
+
+            //act & assert
+            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeFalse();
+        }
+
+
+
         [DataTestMethod]
         [DataRow("platforms", "-d")]
+        [DataRow("platforms", "-d --trace-sensitive-data")]
+        [DataRow("platforms", "-d --trace-to-file")]
+        [DataRow("platforms", "-d --trace-to-directory c:\\temp\\not-existing")]
         public void Test_yuniql_platforms(string command, string arguments)
         {
             //arrange
@@ -261,23 +326,6 @@ namespace Yuniql.PlatformTests.CLI
         [DataTestMethod]
         [DataRow("rebase", "-d")]
         public void Test_yuniql_rebase(string command, string arguments)
-        {
-            //arrange
-            SetupWorkspaceWithSampleDb();
-
-            //act & assert
-            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
-            result.Contains($"Failed to execute run").ShouldBeFalse();
-
-            //act & assert
-            result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
-            result.Contains($"Failed to execute {command}").ShouldBeTrue();
-            result.Contains($"Not yet implemented, stay tune!");
-        }
-
-        [DataTestMethod]
-        [DataRow("archive", "-d")]
-        public void Test_yuniql_archive(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();

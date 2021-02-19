@@ -10,6 +10,7 @@ namespace Yuniql.CLI
     public class CommandLineService : ICommandLineService
     {
         private IMigrationServiceFactory _migrationServiceFactory;
+        private readonly IDataServiceFactory _dataServiceFactory;
         private readonly IWorkspaceService _workspaceService;
         private readonly IEnvironmentService _environmentService;
         private ITraceService _traceService;
@@ -17,6 +18,7 @@ namespace Yuniql.CLI
 
         public CommandLineService(
             IMigrationServiceFactory migrationServiceFactory,
+            IDataServiceFactory dataServiceFactory,
             IWorkspaceService workspaceService,
             IEnvironmentService environmentService,
             ITraceService traceService,
@@ -27,63 +29,7 @@ namespace Yuniql.CLI
             this._traceService = traceService;
             this._configurationService = configurationService;
             this._migrationServiceFactory = migrationServiceFactory;
-        }
-
-        public int RunInitOption(InitOption opts)
-        {
-            try
-            {
-                opts.Workspace = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
-                _workspaceService.Init(opts.Workspace);
-                _traceService.Success($"Initialized {opts.Workspace}.");
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                return OnException(ex, "Failed to execute init function", opts.IsDebug);
-            }
-        }
-
-        public int RunPingOption(PingOption opts)
-        {
-            string connectionString = opts.ConnectionString;
-            string platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
-
-            try
-            {
-                IConnectivityChecker connectivityChecker = new ConnectivityChecker(platform, connectionString, _traceService);
-                connectivityChecker.CheckConnectivity();
-            }
-            catch(Exception ex)
-            {
-                return OnException(ex, "Failed to execute ping function", opts.IsDebug);
-            }
-
-            return 0;
-        }
-
-        public int RunNextVersionOption(NextVersionOption opts)
-        {
-            try
-            {
-                opts.Workspace = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
-                if (opts.IncrementMajorVersion)
-                {
-                    var nextVersion = _workspaceService.IncrementMajorVersion(opts.Workspace, opts.File);
-                    _traceService.Success($"New major version created {nextVersion} on {opts.Workspace}.");
-                }
-                else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
-                {
-                    var nextVersion = _workspaceService.IncrementMinorVersion(opts.Workspace, opts.File);
-                    _traceService.Success($"New minor version created {nextVersion} on {opts.Workspace}.");
-                }
-
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                return OnException(ex, "Failed to execute vnext function", opts.IsDebug);
-            }
+            this._dataServiceFactory = dataServiceFactory;
         }
 
         private Configuration SetupRunConfiguration(BaseRunPlatformOption opts, bool isVerifyOnly = false)
@@ -118,6 +64,67 @@ namespace Yuniql.CLI
             configuration.AppliedByToolVersion = this.GetType().Assembly.GetName().Version.ToString();
 
             return configuration;
+        }
+
+        public int RunCheckOption(CheckOption opts)
+        {
+            //run the migration
+            string connectionString = _configurationService.GetValueOrDefault(opts.ConnectionString, ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING); ;
+            string platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+
+            try
+            {
+                var dataService = _dataServiceFactory.Create(platform);
+                dataService.Initialize(connectionString);
+
+                var connectivityService = new ConnectivityService(dataService, _traceService);
+                connectivityService.CheckConnectivity();
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute ping function", opts.IsDebug);
+            }
+
+            return 0;
+        }
+
+        public int RunInitOption(InitOption opts)
+        {
+            try
+            {
+                opts.Workspace = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
+                _workspaceService.Init(opts.Workspace);
+                _traceService.Success($"Initialized {opts.Workspace}.");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute init function", opts.IsDebug);
+            }
+        }
+
+        public int RunNextVersionOption(NextVersionOption opts)
+        {
+            try
+            {
+                opts.Workspace = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE, defaultValue: _environmentService.GetCurrentDirectory());
+                if (opts.IncrementMajorVersion)
+                {
+                    var nextVersion = _workspaceService.IncrementMajorVersion(opts.Workspace, opts.File);
+                    _traceService.Success($"New major version created {nextVersion} on {opts.Workspace}.");
+                }
+                else if (opts.IncrementMinorVersion || (!opts.IncrementMajorVersion && !opts.IncrementMinorVersion))
+                {
+                    var nextVersion = _workspaceService.IncrementMinorVersion(opts.Workspace, opts.File);
+                    _traceService.Success($"New minor version created {nextVersion} on {opts.Workspace}.");
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute vnext function", opts.IsDebug);
+            }
         }
 
         public int RunRunOption(RunOption opts)
@@ -235,6 +242,41 @@ namespace Yuniql.CLI
             catch (Exception ex)
             {
                 return OnException(ex, "Failed to execute erase function", opts.IsDebug);
+            }
+        }
+
+        public int RunDestroyOption(DestroyOption opts)
+        {
+            try
+            {
+                //parse tokens
+                var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+                var connectionString = _configurationService.GetValueOrDefault(opts.ConnectionString, ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING);
+
+                var configuration = Configuration.Instance;
+                configuration.Workspace = opts.Workspace;
+                configuration.IsDebug = opts.IsDebug;
+
+                configuration.Platform = platform;
+                configuration.ConnectionString = connectionString;
+                configuration.CommandTimeout = opts.CommandTimeout;
+
+                configuration.IsForced = opts.Force;
+
+                var dataService = _dataServiceFactory.Create(platform);
+                dataService.Initialize(configuration.ConnectionString);
+                var connectionInfo = dataService.GetConnectionInfo();
+
+                //run all erase scripts
+                var migrationService = _migrationServiceFactory.Create(platform);
+                migrationService.Destroy();
+
+                _traceService.Success($"Database {connectionInfo.Database} destroyed successfuly from {connectionInfo.DataSource}.");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute destroy function", opts.IsDebug);
             }
         }
 

@@ -49,6 +49,9 @@
         <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForCreateDatabase">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForDropDatabase">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.Redshift.RedshiftDataService.GetSqlForCreateSchema">
             <inheritdoc/>
         </member>

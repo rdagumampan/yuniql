@@ -20,4 +20,13 @@ namespace Yuniql.CLI
         [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts.")]
         public string Environment { get; set; }
     }
+
+    //yuniql erase
+    [Verb("destroy", HelpText = "Drops previously deployed database.")]
+    public class DestroyOption : BasePlatformOption
+    {
+        //yuniql erase --force 
+        [Option('f', "force", Required = true, HelpText = "Force execution of erase commands.", Default = false)]
+        public bool Force { get; set; }
+    }
 }

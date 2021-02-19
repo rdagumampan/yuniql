@@ -84,6 +84,23 @@ SELECT 1 from pg_database WHERE datname = '${YUNIQL_DB_NAME}';
 CREATE DATABASE ""${YUNIQL_DB_NAME}"";
             ";
 
+        //NOTE: 25001: DROP DATABASE cannot run inside a multiple commands statement
+        ///<inheritdoc/>
+        public List<string> GetSqlForDropDatabase()
+            => new List<string> {
+@"
+--disallow new connections, set exclusive to current session
+ALTER DATABASE ""${YUNIQL_DB_NAME}"" CONNECTION LIMIT 1;
+", 
+@"
+--terminate existing connections
+SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE datname = '${YUNIQL_DB_NAME}';
+", 
+@"
+--drop database
+DROP DATABASE ""${YUNIQL_DB_NAME}"";
+" };
+
         ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => @"

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Yuniql.CLI
+namespace Yuniql.Core
 {
-    public interface IConnectivityChecker
+    public interface IConnectivityService
     {
         public void CheckConnectivity();
     }

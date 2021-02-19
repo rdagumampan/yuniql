@@ -34,7 +34,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 Deploy local database container
 
 ```console
-docker run -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+docker run --rm -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 ```
 
 Configure your test environment
@@ -63,7 +63,7 @@ dotnet test --filter Test_Init -v n
 Deploy local database container
 
 ```console
-docker run -dit --name postgresql -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
+docker run --rm -dit --name postgresql -e POSTGRES_USER=sa -e POSTGRES_PASSWORD=P@ssw0rd! -e POSTGRES_DB=yuniqldb -p 5432:5432 postgres
 ```
 
 Configure your test environment
@@ -91,7 +91,7 @@ dotnet test -v n
 Deploy local database container
 
 ```console
-docker run -dit --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
+docker run --rm -dit --name mysql -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mysql:latest --default-authentication-plugin=mysql_native_password
 ```
 
 Configure your test environment
@@ -119,7 +119,7 @@ dotnet test -v n
 Deploy local database container
 
 ```console
-docker run -dit --name mariadb -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mariadb:latest --default-authentication-plugin=mysql_native_password
+docker run --rm -dit --name mariadb -e MYSQL_ROOT_PASSWORD=P@ssw0rd! -d -p 3306:3306 mariadb:latest --default-authentication-plugin=mysql_native_password
 ```
 
 Configure your test environment

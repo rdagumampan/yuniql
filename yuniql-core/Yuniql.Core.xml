@@ -171,7 +171,7 @@
         <member name="M:Yuniql.Core.ConfigurationService.Validate">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Core.ConfigurationService.PrintAsJson(System.Boolean)">
+        <member name="M:Yuniql.Core.ConfigurationService.PrintAsJson">
             <inheritdoc/>
         </member>
         <member name="T:Yuniql.Core.ConnectionExtensions">
@@ -242,6 +242,39 @@
             <param name="traceService">Trace service provider where trace messages will be written.</param>
             <returns></returns>
         </member>
+        <member name="T:Yuniql.Core.ConnectivityService">
+            <summary>
+            Check and test connectivity to target database server.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.#ctor(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Instantiate the ConnectivityChecker using Platform and ConnectionString.
+            </summary>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.CheckDatabaseConnectivity">
+            <summary>
+            Check for sql/odbc connectivity to database on target server/cluster
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.CheckMasterConnectivity">
+            <summary>
+            Check for sql/odbc connectivity to database master/catalog on target server/cluster
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.CheckServerConnectivity">
+            <summary>
+            Check for tcp/icmp connectivity to target server/cluster
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.CheckConnectivity">
+            <summary>
+            Check for connectivity to target server/cluster and database
+            </summary>
+        </member>
         <member name="T:Yuniql.Core.DirectoryService">
             <summary>
             Wraps usage of <see cref="T:System.IO.Directory"/>
@@ -307,7 +340,19 @@
             Writes trace information into a text file in the current workspace directory. 
             </summary>
         </member>
+        <member name="M:Yuniql.Core.FileTraceService.#ctor(Yuniql.Core.IDirectoryService)">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.Core.FileTraceService.IsDebugEnabled">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Core.FileTraceService.IsTraceSensitiveData">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Core.FileTraceService.IsTraceToFile">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Core.FileTraceService.TraceToDirectory">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.FileTraceService.Debug(System.String,System.Object)">
@@ -546,6 +591,11 @@
             Executes erase scripts presentin _erase directory and subdirectories.
             </summary>
         </member>
+        <member name="M:Yuniql.Core.IMigrationService.Destroy">
+            <summary>
+            Drops previously deployed database.
+            </summary>
+        </member>
         <member name="T:Yuniql.Core.IMigrationServiceFactory">
             <summary>
             Factory class of creating instance of <see cref="T:Yuniql.Core.IMigrationService"/>.
@@ -694,6 +744,7 @@
             <inheritdoc />
             <inheritdoc />
             <inheritdoc />
+            <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.#ctor(Yuniql.Core.IWorkspaceService,Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService,Yuniql.Core.IMetadataService,Yuniql.Core.ITokenReplacementService,Yuniql.Core.IDirectoryService,Yuniql.Core.IFileService,Yuniql.Extensibility.ITraceService,Yuniql.Core.IConfigurationService)">
             <inheritdoc /> 
@@ -708,6 +759,9 @@
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.RunNonVersionDirectories(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Nullable{System.Int32},System.String,System.Nullable{System.Int32},System.String,System.String,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:Yuniql.Core.MigrationService.Destroy">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.Erase">

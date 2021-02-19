@@ -13,45 +13,50 @@ namespace Yuniql.CLI
 
         public static int Main(string[] args)
         {
-            var traceService = new FileTraceService();
             var directoryService = new DirectoryService();
+            var traceService = new FileTraceService(directoryService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(traceService, directoryService, fileService);
 
             var environmentService = new EnvironmentService();
             var configurationService = new ConfigurationService(environmentService, workspaceService, traceService);
 
+            var dataServiceFactory = new DataServiceFactory(traceService);
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
-            var commandLineService = new CommandLineService(migrationServiceFactory,
-                                                            workspaceService,
-                                                            environmentService,
-                                                            traceService,
-                                                            configurationService);
+            var commandLineService = new CommandLineService(
+                migrationServiceFactory,
+                dataServiceFactory,
+                workspaceService,
+                environmentService,
+                traceService,
+                configurationService);
 
             var resultCode = Parser.Default
                 .ParseArguments<
-                    PingOption,
+                    CheckOption,
                     InitOption,
+                    VerifyOption,
                     RunOption,
                     ListOption,
                     NextVersionOption,
-                    VerifyOption,
                     EraseOption,
+                    DestroyOption,
                     BaselineOption,
                     RebaseOption,
-                    ArchiveOption,
+                    //ArchiveOption,
                     PlatformsOption
                 >(args).MapResult(
-                    (PingOption opts) => Dispatch(commandLineService.RunPingOption, opts, traceService),
+                    (CheckOption opts) => Dispatch(commandLineService.RunCheckOption, opts, traceService),
                     (InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
+                    (VerifyOption opts) => Dispatch(commandLineService.RunVerifyOption, opts, traceService),
                     (RunOption opts) => Dispatch(commandLineService.RunRunOption, opts, traceService),
                     (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),
                     (NextVersionOption opts) => Dispatch(commandLineService.RunNextVersionOption, opts, traceService),
-                    (VerifyOption opts) => Dispatch(commandLineService.RunVerifyOption, opts, traceService),
                     (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
+                    (DestroyOption opts) => Dispatch(commandLineService.RunDestroyOption, opts, traceService),
                     (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
                     (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
-                    (ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
+                    //(ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
                     (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
 
                     errs => 1);
@@ -70,11 +75,13 @@ namespace Yuniql.CLI
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine($"Running yuniql v{toolVersion.Major}.{toolVersion.Minor}.{toolVersion.Build} for {toolPlatform}-x64");
             Console.WriteLine($"{toolCopyright}. Apache License v2.0");
-            Console.WriteLine($"Visit https://yuniql.io for documentation & more samples{Environment.NewLine}");
+            Console.WriteLine($"Visit https://yuniql.io for documentation and working samples{Environment.NewLine}");
             Console.ResetColor();
 
             traceService.IsDebugEnabled = opts.IsDebug;
-            traceService.IsTraceSensitiveData = opts.TraceSensitiveData;
+            traceService.IsTraceSensitiveData = opts.IsTraceSensitiveData;
+            traceService.IsTraceToFile = opts.IsTraceToFile;
+            traceService.TraceToDirectory = opts.TraceToDirectory;
 
             return command.Invoke(opts);
         }

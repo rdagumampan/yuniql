@@ -21,9 +21,24 @@ Run from CLI
 
 ```console
 cd C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish
-yuniql run -a -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
-yuniql list -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
+
+SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!"
+SETX YUNIQL_WORKSPACE "C:\play\yuniql\samples\basic-sqlserver-sample"
+SETX YUNIQL_PLATFORM "sqlserver" 
+
+yuniql run -a --debug
+yuniql list --debug
+yuniql destroy --force --debug
 ```
+
+```console
+cd C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish
+
+yuniql run -a -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
+yuniql list -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
+yuniql destroy --force -c "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
+```
+
 
 Run from Visual Studio (Debug Mode)
 
@@ -47,8 +62,8 @@ docker run -dit --name yuniql-postgresql -e POSTGRES_USER=sa -e POSTGRES_PASSWOR
 Run from CLI
 
 ```console
-yuniql run -a -p C:\play\yuniql\samples\basic-postgresql-sample -c "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb" --platform postgresql --debug
-yuniql list -c "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb" --platform postgresql --debug
+yuniql run -a -p C:\play\yuniql\samples\basic-postgresql-sample -c "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=helloyuniql" --platform postgresql --debug
+yuniql list -c "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=helloyuniql" --platform postgresql --debug
 ```
 
 Run from Visual Studio (Debug Mode)
