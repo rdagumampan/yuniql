@@ -47,15 +47,15 @@ Visit https://yuniql.io for documentation & more samples
 
 Amazon Aurora, Azure Synapse and Alibaba Aspara are being evaluated/developed/tested. For running migration from docker container, [see instructions here](https://yuniql.io/docs/migrate-via-docker-container/).
 
-|Platforms|Build Status|Description|Managed Infrastructure|
-|---|---|---|---|
-|sqlserver|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017, Azure SQL Database|Azure, GCP, AWS|
-|postgresql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6, v12.1, latest|Azure, GCP, AWS|
-|mysql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7, v8.0, latest|Azure, GCP, AWS|
-|mariadb|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-9v8am?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-9v8am/build/tests)|MariaDb v10.2, latest|Azure, GCP, AWS|
-|snowflake|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-16r99?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-16r99/build/tests)|Preview in v1.1.55 (latest)|Azure|
-|redshift|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-0shgd?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-0shgd/build/tests)|Preview in v1.1.55 (latest)|AWS|
-|synapse|development|Preview build ETA mar 27 2021|Azure
+|Platforms|Build Status|Description|Cloud Infrastructure|Documentation|
+|---|---|---|---|---|
+|sqlserver|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017, Azure SQL Database|Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-sqlserver/)|
+|postgresql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6, v12.1, latest|Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-postgresql/)|
+|mysql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7, v8.0, latest|Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-mysql/)|
+|mariadb|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-9v8am?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-9v8am/build/tests)|MariaDb v10.2, latest|Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-mysql/)|
+|snowflake|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-16r99?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-16r99/build/tests)|Preview in v1.1.55 (latest)|Azure|[Get started](https://yuniql.io/docs/get-started-snowflake/)|
+|redshift|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-0shgd?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-0shgd/build/tests)|Preview in v1.1.55 (latest)|AWS|[Get started](https://yuniql.io/docs/get-started-resdshift/)|
+|synapse|development|Preview build ETA mar 27 2021|Azure||
 
 > NOTE: Supported cloud platforms are based on limited testing and community feedbacks where users indicated the platform they were attempting to run against. yuniql primarily uses Amazon RDS as cloud provider for non-vendor specific platforms.
 
