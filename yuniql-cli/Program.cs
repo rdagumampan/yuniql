@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using System;
+using System.Collections;
 using System.Reflection;
 using Yuniql.Core;
 using Yuniql.Extensibility;
@@ -30,7 +31,7 @@ namespace Yuniql.CLI
                 environmentService,
                 traceService,
                 configurationService);
-
+            IEnumerable errors;
             var resultCode = Parser.Default
                 .ParseArguments<
                     CheckOption,
@@ -44,7 +45,8 @@ namespace Yuniql.CLI
                     BaselineOption,
                     RebaseOption,
                     //ArchiveOption,
-                    PlatformsOption
+                    PlatformsOption,
+                    ConfigOption
                 >(args).MapResult(
                     (CheckOption opts) => Dispatch(commandLineService.RunCheckOption, opts, traceService),
                     (InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
@@ -58,8 +60,9 @@ namespace Yuniql.CLI
                     (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
                     //(ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
                     (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
+                    (ConfigOption opts) => Dispatch(commandLineService.RunConfigOption, opts, traceService),
 
-                    errs => 1);
+                    errs => { errors = errs; return 1; });
 
             return resultCode;
         }

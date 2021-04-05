@@ -368,6 +368,18 @@ namespace Yuniql.CLI
                 return OnException(ex, "Failed to execute archive function", opts.IsDebug);
             }
         }
+        public int RunConfigOption(ConfigOption opts)
+        {
+            try
+            {
+                throw new NotImplementedException("Not yet implemented");
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute config function", opts.IsDebug);
+            }
+        }
+
 
         private int OnException(Exception exception, string headerMessage, bool debug)
         {
