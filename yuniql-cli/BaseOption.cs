@@ -10,7 +10,7 @@ namespace Yuniql.CLI
 
         //yuniql <command> -d | --debug
         [Option('d', "debug", Required = false, HelpText = "Print debug information including all raw scripts.")]
-        public bool IsDebug { get; set; }
+        public bool? IsDebug { get; set; } 
 
         //yuniql <command> --trace-sensitive-data
         [Option("trace-sensitive-data", Required = false, HelpText = "Include sensitive data like connection string in the log messages.", Default = false)]

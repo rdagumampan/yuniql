@@ -61,8 +61,7 @@ namespace Yuniql.CLI
                     //(ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
                     (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
                     (ConfigOption opts) => Dispatch(commandLineService.RunConfigOption, opts, traceService),
-
-                    errs => { errors = errs; return 1; });
+                    errs => 1 );
 
             return resultCode;
         }
@@ -81,7 +80,7 @@ namespace Yuniql.CLI
             Console.WriteLine($"Visit https://yuniql.io for documentation and working samples{Environment.NewLine}");
             Console.ResetColor();
 
-            traceService.IsDebugEnabled = opts.IsDebug;
+            traceService.IsDebugEnabled = opts.IsDebug?? false;
             traceService.IsTraceSensitiveData = opts.IsTraceSensitiveData;
             traceService.IsTraceToFile = opts.IsTraceToFile;
             traceService.TraceToDirectory = opts.TraceToDirectory;
