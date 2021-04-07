@@ -372,7 +372,13 @@ namespace Yuniql.CLI
         {
             try
             {
-                var versionPrettyPrint = new TablePrinter("Property", "Value", "Source");
+                IPrinter versionPrettyPrint;
+                if (opts.DataType != null && opts.DataType.Equals("json",
+                    StringComparison.OrdinalIgnoreCase))
+                    versionPrettyPrint = new JsonPrinter();
+                else
+                    versionPrettyPrint = new TablePrinter("Property", "Value", "Source");
+               
                 // platform
                 var platformValue = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
                 var platformSource = opts.Platform != null ? Source.CmdLine_Options :

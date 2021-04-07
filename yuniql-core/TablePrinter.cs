@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Yuniql.CLI
+namespace Yuniql.Core
 {
-    //TODO: Move this into Yuniql.Core as TablePrintService
-    //thanks https://stackoverflow.com/users/1547699/sumudu
-    //https://stackoverflow.com/a/54943087/3449591
-    public class TablePrinter
+    public class TablePrinter : IPrinter
     {
         private readonly string[] titles;
         private readonly List<int> lengths;
@@ -71,5 +68,6 @@ namespace Yuniql.CLI
             Console.WriteLine("+");
             Console.WriteLine();
         }
+
     }
 }
