@@ -8,5 +8,6 @@ namespace Yuniql.Core
     {
         void Print();
         void AddRow(params object[] row);
+
     }
 }

@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Yuniql.CLI": {
-      "commandName": "Project",
-      "commandLineArgs": "destroy --force --debug -c \"Server=localhost;Port=3306;Database=helloyuniql;Uid=root;Pwd=P@ssw0rd!;\""
-    }
-  }
-}

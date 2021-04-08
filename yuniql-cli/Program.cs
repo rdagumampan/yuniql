@@ -31,7 +31,6 @@ namespace Yuniql.CLI
                 environmentService,
                 traceService,
                 configurationService);
-            IEnumerable errors;
             var resultCode = Parser.Default
                 .ParseArguments<
                     CheckOption,
