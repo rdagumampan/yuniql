@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using System;
+using System.Collections;
 using System.Reflection;
 using Yuniql.Core;
 using Yuniql.Extensibility;
@@ -30,7 +31,6 @@ namespace Yuniql.CLI
                 environmentService,
                 traceService,
                 configurationService);
-
             var resultCode = Parser.Default
                 .ParseArguments<
                     CheckOption,
@@ -44,7 +44,8 @@ namespace Yuniql.CLI
                     BaselineOption,
                     RebaseOption,
                     //ArchiveOption,
-                    PlatformsOption
+                    PlatformsOption,
+                    ConfigOption
                 >(args).MapResult(
                     (CheckOption opts) => Dispatch(commandLineService.RunCheckOption, opts, traceService),
                     (InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
@@ -58,8 +59,8 @@ namespace Yuniql.CLI
                     (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
                     //(ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
                     (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
-
-                    errs => 1);
+                    (ConfigOption opts) => Dispatch(commandLineService.RunConfigOption, opts, traceService),
+                    errs => 1 );
 
             return resultCode;
         }
@@ -78,7 +79,7 @@ namespace Yuniql.CLI
             Console.WriteLine($"Visit https://yuniql.io for documentation and working samples{Environment.NewLine}");
             Console.ResetColor();
 
-            traceService.IsDebugEnabled = opts.IsDebug;
+            traceService.IsDebugEnabled = opts.IsDebug?? false;
             traceService.IsTraceSensitiveData = opts.IsTraceSensitiveData;
             traceService.IsTraceToFile = opts.IsTraceToFile;
             traceService.TraceToDirectory = opts.TraceToDirectory;

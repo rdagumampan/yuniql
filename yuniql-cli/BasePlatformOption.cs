@@ -3,8 +3,8 @@
 namespace Yuniql.CLI
 {
     public class BasePlatformOption : BaseOption
-    {
-        //yuniql <command> -d | --debug
+    {      
+        //yuniql <command> -p | --platform
         [Option(longName: "platform", Required = false, HelpText = "Target database platform. Default is sqlserver.")]
         public string Platform { get; set; }
 

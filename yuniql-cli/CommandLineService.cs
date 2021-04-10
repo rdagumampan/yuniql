@@ -40,7 +40,7 @@ namespace Yuniql.CLI
             var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
 
             configuration.Workspace = opts.Workspace;
-            configuration.IsDebug = opts.IsDebug;
+            configuration.IsDebug = opts.IsDebug?? false;
 
             configuration.Platform = platform;
             configuration.ConnectionString = opts.ConnectionString;
@@ -82,7 +82,7 @@ namespace Yuniql.CLI
             }
             catch (Exception ex)
             {
-                return OnException(ex, "Failed to execute ping function", opts.IsDebug);
+                return OnException(ex, "Failed to execute ping function", opts.IsDebug??false);
             }
 
             return 0;
@@ -171,7 +171,7 @@ namespace Yuniql.CLI
 
                 var configuration = Configuration.Instance;
                 configuration.Workspace = opts.Workspace;
-                configuration.IsDebug = opts.IsDebug;
+                configuration.IsDebug = opts.IsDebug??false;
 
                 configuration.Platform = platform;
                 configuration.ConnectionString = opts.ConnectionString;
@@ -222,7 +222,7 @@ namespace Yuniql.CLI
 
                 var configuration = Configuration.Instance;
                 configuration.Workspace = opts.Workspace;
-                configuration.IsDebug = opts.IsDebug;
+                configuration.IsDebug = opts.IsDebug??false;
 
                 configuration.Platform = platform;
                 configuration.ConnectionString = opts.ConnectionString;
@@ -255,7 +255,7 @@ namespace Yuniql.CLI
 
                 var configuration = Configuration.Instance;
                 configuration.Workspace = opts.Workspace;
-                configuration.IsDebug = opts.IsDebug;
+                configuration.IsDebug = opts.IsDebug??false;
 
                 configuration.Platform = platform;
                 configuration.ConnectionString = connectionString;
@@ -368,10 +368,65 @@ namespace Yuniql.CLI
                 return OnException(ex, "Failed to execute archive function", opts.IsDebug);
             }
         }
-
-        private int OnException(Exception exception, string headerMessage, bool debug)
+        public int RunConfigOption(ConfigOption opts)
         {
-            var stackTraceMessage = debug ? exception.ToString().Replace(exception.Message, string.Empty) 
+            try
+            
+            {
+                IPrinter versionPrettyPrint;
+                if (opts.Output != null && opts.Output.Equals("json",
+                    StringComparison.OrdinalIgnoreCase))
+                    versionPrettyPrint = new JsonPrinter();
+                else
+                    versionPrettyPrint = new TablePrinter("Property", "Value", "Source");
+               
+                // platform
+                var platformValue = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
+                var platformSource = opts.Platform != null ? Source.CMD_LINE_OPTIONS :
+                    _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM) != null ? Source.ENVIRONMENT_VARIABLE 
+                    : Source.DEFAULT;
+                versionPrettyPrint.AddRow("Platform", platformValue, platformSource);
+                //workspace
+                var workspaceValue = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE,"undefined");
+                var workspaceSource = opts.Workspace != null ? Source.CMD_LINE_OPTIONS :
+                   _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE) != null ? Source.ENVIRONMENT_VARIABLE
+                   : Source.DEFAULT;
+                versionPrettyPrint.AddRow("Workspace", workspaceValue, workspaceSource);
+
+                //connection string
+                var connectionStringValue = _configurationService.GetValueOrDefault(opts.ConnectionString, ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING,"undefined");
+                var connectionStringSource = opts.ConnectionString != null ? Source.CMD_LINE_OPTIONS :
+                   _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING) != null ? Source.ENVIRONMENT_VARIABLE
+                   : Source.DEFAULT;
+                versionPrettyPrint.AddRow("ConnectionString", connectionStringValue, connectionStringSource);
+
+                //connection string
+                var IsDebugValue = opts.IsDebug?? false;
+                var IsDebugSource = opts.IsDebug != null ? Source.CMD_LINE_OPTIONS : Source.DEFAULT;
+                versionPrettyPrint.AddRow("IsDebug", IsDebugValue, IsDebugSource);
+
+                // Auto Create Database
+                var IsAutoCreateDatabaseValue = opts.IsAutoCreateDatabase ?? false;
+                var IsAutoCreateDatabaseSource = opts.IsAutoCreateDatabase != null ? Source.CMD_LINE_OPTIONS : Source.DEFAULT;
+                versionPrettyPrint.AddRow("IsAutoCreateDatabase", IsAutoCreateDatabaseValue, IsAutoCreateDatabaseSource);
+                
+                //print table
+                versionPrettyPrint.Print();
+                _traceService.Success($"Listed all configuration variables successfully");
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute config function", opts.IsDebug);
+            }
+        }
+
+
+        private int OnException(Exception exception, string headerMessage, bool? debug)
+        {
+            bool debugOption = debug ?? false;
+            var stackTraceMessage = debugOption? exception.ToString().Replace(exception.Message, string.Empty) 
                 : $"{exception.Message} {exception.InnerException?.Message}";
             
             _traceService.Error($"{headerMessage}. {exception.Message}{Environment.NewLine}" +
