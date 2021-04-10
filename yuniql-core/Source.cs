@@ -12,14 +12,14 @@ namespace Yuniql.Core
         /// <summary>
         /// Default value assigned to configuration parameter
         /// </summary>
-        Default,
+        DEFAULT,
         /// <summary>
         /// Environment variable is the source of the configuration parameter
         /// </summary>
-        Environment_variable,
+        ENVIRONMENT_VARIABLE,
         /// <summary>
         /// command line is the source of the configuration parameter
         /// </summary>
-        CmdLine_Options
+        CMD_LINE_OPTIONS
     }
 }

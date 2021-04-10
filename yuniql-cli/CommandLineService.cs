@@ -371,9 +371,10 @@ namespace Yuniql.CLI
         public int RunConfigOption(ConfigOption opts)
         {
             try
+            
             {
                 IPrinter versionPrettyPrint;
-                if (opts.DataType != null && opts.DataType.Equals("json",
+                if (opts.Output != null && opts.Output.Equals("json",
                     StringComparison.OrdinalIgnoreCase))
                     versionPrettyPrint = new JsonPrinter();
                 else
@@ -381,32 +382,32 @@ namespace Yuniql.CLI
                
                 // platform
                 var platformValue = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
-                var platformSource = opts.Platform != null ? Source.CmdLine_Options :
-                    _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM) != null ? Source.Environment_variable 
-                    : Source.Default;
+                var platformSource = opts.Platform != null ? Source.CMD_LINE_OPTIONS :
+                    _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM) != null ? Source.ENVIRONMENT_VARIABLE 
+                    : Source.DEFAULT;
                 versionPrettyPrint.AddRow("Platform", platformValue, platformSource);
                 //workspace
                 var workspaceValue = _configurationService.GetValueOrDefault(opts.Workspace, ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE,"undefined");
-                var workspaceSource = opts.Workspace != null ? Source.CmdLine_Options :
-                   _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE) != null ? Source.Environment_variable
-                   : Source.Default;
+                var workspaceSource = opts.Workspace != null ? Source.CMD_LINE_OPTIONS :
+                   _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE) != null ? Source.ENVIRONMENT_VARIABLE
+                   : Source.DEFAULT;
                 versionPrettyPrint.AddRow("Workspace", workspaceValue, workspaceSource);
 
                 //connection string
                 var connectionStringValue = _configurationService.GetValueOrDefault(opts.ConnectionString, ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING,"undefined");
-                var connectionStringSource = opts.ConnectionString != null ? Source.CmdLine_Options :
-                   _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING) != null ? Source.Environment_variable
-                   : Source.Default;
+                var connectionStringSource = opts.ConnectionString != null ? Source.CMD_LINE_OPTIONS :
+                   _environmentService.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_CONNECTION_STRING) != null ? Source.ENVIRONMENT_VARIABLE
+                   : Source.DEFAULT;
                 versionPrettyPrint.AddRow("ConnectionString", connectionStringValue, connectionStringSource);
 
                 //connection string
                 var IsDebugValue = opts.IsDebug?? false;
-                var IsDebugSource = opts.IsDebug != null ? Source.CmdLine_Options : Source.Default;
+                var IsDebugSource = opts.IsDebug != null ? Source.CMD_LINE_OPTIONS : Source.DEFAULT;
                 versionPrettyPrint.AddRow("IsDebug", IsDebugValue, IsDebugSource);
 
                 // Auto Create Database
                 var IsAutoCreateDatabaseValue = opts.IsAutoCreateDatabase ?? false;
-                var IsAutoCreateDatabaseSource = opts.IsAutoCreateDatabase != null ? Source.CmdLine_Options : Source.Default;
+                var IsAutoCreateDatabaseSource = opts.IsAutoCreateDatabase != null ? Source.CMD_LINE_OPTIONS : Source.DEFAULT;
                 versionPrettyPrint.AddRow("IsAutoCreateDatabase", IsAutoCreateDatabaseValue, IsAutoCreateDatabaseSource);
                 
                 //print table
