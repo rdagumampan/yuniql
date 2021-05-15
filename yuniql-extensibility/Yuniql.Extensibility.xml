@@ -564,7 +564,7 @@
         </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.Fixed(System.String)">
             <summary>
-            
+            Returns 6-char fixed lengh string and removed - 
             </summary>
             <param name="str"></param>
             <returns></returns>
@@ -627,6 +627,13 @@
             </summary>
             <param name="objectName"></param>
             <param name="defaultSchema"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.HasUpper(System.String)">
+            <summary>
+            Returns true when string has capital letters
+            </summary>
+            <param name="str"></param>
             <returns></returns>
         </member>
     </members>

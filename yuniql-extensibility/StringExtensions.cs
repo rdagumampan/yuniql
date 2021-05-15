@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Yuniql.Extensibility
 {
@@ -9,13 +10,13 @@ namespace Yuniql.Extensibility
     {
 
         /// <summary>
-        /// 
+        /// Returns 6-char fixed lengh string and removed - 
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
         public static string Fixed(this string str)
         {
-            return str.Substring(0, 6).ToUpper().Replace("-","");
+            return str.Substring(0, 6).ToUpper().Replace("-", "");
         }
 
         /// <summary>
@@ -109,7 +110,7 @@ namespace Yuniql.Extensibility
         public static Tuple<string, string, string> SplitBulkFileName(this string objectName, string defaultSchema = null)
         {
             var temp = objectName.Split('.');
-            if(temp.Length > 3)
+            if (temp.Length > 3)
             {
                 throw new ArgumentException(
                     "Bulk file name must have maximum 3 segments. " +
@@ -126,7 +127,7 @@ namespace Yuniql.Extensibility
             {
                 //check if first part is inetended as sequence number of schema
                 //example input: myschema.mytable, 1.mytable or 01.mytable
-                if(int.TryParse(temp[0], out int sequenceNo))
+                if (int.TryParse(temp[0], out int sequenceNo))
                 {
                     //covers 1.mytable or 01.mytable
                     return new Tuple<string, string, string>(temp[0], defaultSchema, temp[1]);
@@ -144,6 +145,26 @@ namespace Yuniql.Extensibility
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Returns true when string has capital letters
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static bool HasUpper(this string str)
+        {
+            return str.Any(c => char.IsUpper(c));
+        }
+
+        /// <summary>
+        /// Returns string without single or double quote enclosure
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string UnQuote(this string str)
+        {
+            return $"{str.Substring(1, str.Length - 2)}";
         }
     }
 }

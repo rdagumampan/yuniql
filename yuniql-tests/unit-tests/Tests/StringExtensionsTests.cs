@@ -137,5 +137,25 @@ namespace Yuniql.UnitTests
             result.Item3.ShouldBe("mytable");
         }
 
+        [TestMethod]
+        public void Test_HasUpper_MyTable()
+        {
+            //arrange & act
+            var result = "MyTable".HasUpper();
+
+            //assert
+            result.ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void Test_HasUpper_mytable()
+        {
+            //arrange & act
+            var result = "mytable".HasUpper();
+
+            //assert
+            result.ShouldBeFalse();
+        }
+
     }
 }

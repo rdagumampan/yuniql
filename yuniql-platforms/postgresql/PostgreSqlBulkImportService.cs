@@ -44,8 +44,8 @@ namespace Yuniql.PostgreSql
             //assumes all objects are not double quoted because pgsql auto-lower case all undouble quoted objects
             var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
             var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "public");
-            var schemaName = fileNameSegments.Item2.IsDoubleQuoted() ? fileNameSegments.Item2 : fileNameSegments.Item2.ToLower();
-            var tableName = fileNameSegments.Item3.IsDoubleQuoted() ? fileNameSegments.Item3 : fileNameSegments.Item3.ToLower();
+            var schemaName = fileNameSegments.Item2.HasUpper() ? fileNameSegments.Item2.DoubleQuote() : fileNameSegments.Item2;
+            var tableName = fileNameSegments.Item3.HasUpper() ? fileNameSegments.Item3.DoubleQuote() : fileNameSegments.Item3;
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -75,7 +75,7 @@ namespace Yuniql.PostgreSql
                 string[] csvColumns = csvReader.ReadFields();
                 foreach (string csvColumn in csvColumns)
                 {
-                    var dataColumn = new DataColumn(csvColumn.ToLower());
+                    var dataColumn = new DataColumn(csvColumn);
                     dataColumn.AllowDBNull = true;
                     csvDatatable.Columns.Add(dataColumn);
                 }
@@ -108,7 +108,7 @@ namespace Yuniql.PostgreSql
         {
             //get destination table schema and filter out columns not in csv file
             var destinationSchema = GetDestinationSchema(schemaName, tableName);
-            var destinationColumns = destinationSchema.ToList().Where(f => dataTable.Columns.Contains(f.Key)).Select(k => k.Key).ToArray();
+            var destinationColumns = destinationSchema.ToList().Where(f => dataTable.Columns.Contains(f.Key)).Select(k => k.Value.ColumnName.HasUpper() ? k.Value.ColumnName.DoubleQuote() : k.Value.ColumnName).ToArray();
 
             //prepare statement for binary import
             var sqlStatement = $"COPY {schemaName}.{tableName} ({string.Join(',', destinationColumns)}) FROM STDIN (FORMAT BINARY)";
@@ -130,9 +130,12 @@ namespace Yuniql.PostgreSql
                         }
 
                         if (!destinationSchema.ContainsKey(dataColumn.ColumnName))
+                        {
+                            _traceService.Info($"PostgreSqlBulkImportService: CSV column {dataColumn.ColumnName} not found in destination table {schemaName}.{tableName}.");
                             continue;
+                        }
 
-                        var dataType = destinationSchema[dataColumn.ColumnName.ToLower()].DataType;
+                        var dataType = destinationSchema[dataColumn.ColumnName].DataType;
 
                         if (dataType == "boolean" || dataType == "bit" || dataType == "bit varying")
                         {
@@ -246,9 +249,12 @@ namespace Yuniql.PostgreSql
             {
                 connection.Open();
 
+                var sourceSchemaName = schemaName.IsDoubleQuoted() ? schemaName.UnQuote() : schemaName;
+                var sourceTableName = tableName.IsDoubleQuoted() ? tableName.UnQuote() : tableName;
+
                 var command = connection.CreateCommand();
                 command.CommandType = CommandType.Text;
-                command.CommandText = $"SELECT column_name, data_type FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{schemaName}' AND TABLE_NAME = '{tableName}'";
+                command.CommandText = $"SELECT column_name, data_type FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{sourceSchemaName}' AND TABLE_NAME = '{sourceTableName}'";
                 command.CommandTimeout = 0;
 
                 using (var reader = command.ExecuteReader())
