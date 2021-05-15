@@ -119,7 +119,7 @@ CREATE TABLE [${YUNIQL_SCHEMA_NAME}].[${YUNIQL_TABLE_NAME}] (
 	[sequence_id] [SMALLINT] IDENTITY(1,1) NOT NULL,
 	[version] [NVARCHAR](512) NOT NULL,
 	[applied_on_utc] [DATETIME] NOT NULL,
-	[applied_by_user] [NVARCHAR](32) NOT NULL,
+	[applied_by_user] [NVARCHAR](128) NOT NULL,
 	[applied_by_tool] [NVARCHAR](32) NOT NULL,
 	[applied_by_tool_version] [NVARCHAR](16) NOT NULL,
 	[status] [NVARCHAR](32) NOT NULL,

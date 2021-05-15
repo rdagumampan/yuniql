@@ -125,7 +125,7 @@ CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
     sequence_id  SMALLSERIAL PRIMARY KEY NOT NULL,
     version VARCHAR(512) NOT NULL,
     applied_on_utc TIMESTAMP NOT NULL DEFAULT(current_timestamp AT TIME ZONE 'UTC'),
-    applied_by_user VARCHAR(32) NOT NULL DEFAULT(user),
+    applied_by_user VARCHAR(128) NOT NULL DEFAULT(user),
     applied_by_tool VARCHAR(32) NOT NULL,
     applied_by_tool_version VARCHAR(16) NOT NULL,
     status VARCHAR(32) NOT NULL,

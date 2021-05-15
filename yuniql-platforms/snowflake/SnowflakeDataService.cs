@@ -159,7 +159,7 @@ CREATE TABLE ""${YUNIQL_DB_NAME}"".""${YUNIQL_SCHEMA_NAME}"".""${YUNIQL_TABLE_NA
     ""sequence_id"" NUMBER NOT NULL IDENTITY START 1 INCREMENT 1,
     ""version"" VARCHAR(512) NOT NULL,
     ""applied_on_utc"" TIMESTAMP_NTZ(9) NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    ""applied_by_user"" VARCHAR(32) NOT NULL DEFAULT CURRENT_USER(),
+    ""applied_by_user"" VARCHAR(128) NOT NULL DEFAULT CURRENT_USER(),
     ""applied_by_tool"" VARCHAR(32) NOT NULL,
     ""applied_by_tool_version"" VARCHAR(16) NOT NULL,
     ""status""  VARCHAR(32) NOT NULL,

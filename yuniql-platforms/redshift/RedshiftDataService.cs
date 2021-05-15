@@ -127,7 +127,7 @@ CREATE TABLE ${YUNIQL_SCHEMA_NAME}.${YUNIQL_TABLE_NAME}(
     sequence_id  INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     version VARCHAR(512) NOT NULL,
     applied_on_utc TIMESTAMP NOT NULL DEFAULT(GETDATE()),
-    applied_by_user VARCHAR(32) NOT NULL DEFAULT(CURRENT_USER),
+    applied_by_user VARCHAR(128) NOT NULL DEFAULT(CURRENT_USER),
     applied_by_tool VARCHAR(32) NOT NULL,
     applied_by_tool_version VARCHAR(16) NOT NULL,
     status VARCHAR(32) NOT NULL,

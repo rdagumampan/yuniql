@@ -112,7 +112,7 @@ CREATE TABLE ${YUNIQL_TABLE_NAME} (
 	sequence_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	version VARCHAR(190) NOT NULL,
 	applied_on_utc TIMESTAMP NOT NULL,
-	applied_by_user VARCHAR(32) NOT NULL,
+	applied_by_user VARCHAR(128) NOT NULL,
 	applied_by_tool VARCHAR(32) NOT NULL,
 	applied_by_tool_version VARCHAR(16) NOT NULL,
     status VARCHAR(32) NOT NULL,
