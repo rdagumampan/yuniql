@@ -64,6 +64,9 @@
         <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForDropDatabase">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCheckIfSchemaExists">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCreateSchema">
             <inheritdoc/>
         </member>

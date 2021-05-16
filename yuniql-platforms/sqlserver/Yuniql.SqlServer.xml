@@ -64,6 +64,9 @@
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForDropDatabase">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCheckIfSchemaExists">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCreateSchema">
             <inheritdoc/>
         </member>

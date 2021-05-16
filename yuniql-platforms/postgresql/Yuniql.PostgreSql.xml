@@ -64,6 +64,9 @@
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForDropDatabase">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForCheckIfSchemaExists">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForCreateSchema">
             <inheritdoc/>
         </member>

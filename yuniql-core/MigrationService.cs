@@ -136,7 +136,10 @@ namespace Yuniql.Core
             if (!targetDatabaseConfigured)
             {
                 //create custom schema when user supplied and only if platform supports it
-                if (_dataService.IsSchemaSupported && null != metaSchemaName && !_dataService.SchemaName.Equals(metaSchemaName))
+                if (null != metaSchemaName 
+                    && _dataService.IsSchemaSupported
+                    && !_dataService.SchemaName.Equals(metaSchemaName)
+                    && !_metadataService.IsSchemaExists(metaSchemaName))
                 {
                     _traceService.Info($"Target schema does not exist. Creating schema {metaSchemaName} on {targetDatabaseName} on {targetDatabaseServer}.");
                     _metadataService.CreateSchema(metaSchemaName);

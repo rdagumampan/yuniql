@@ -29,6 +29,7 @@ namespace Yuniql.UnitTests
             var metadataService = new Mock<IMetadataService>();
             metadataService.Setup(s => s.IsDatabaseExists(null)).Returns(false);
             metadataService.Setup(s => s.CreateDatabase(null));
+            metadataService.Setup(s => s.IsSchemaExists("testschema", null)).Returns(false);
             metadataService.Setup(s => s.IsDatabaseConfigured(null, null, null)).Returns(false);
             metadataService.Setup(s => s.ConfigureDatabase(null, null, null));
             metadataService.Setup(s => s.GetAllAppliedVersions(null, null, null)).Returns(new List<DbVersion> { });
@@ -133,6 +134,7 @@ namespace Yuniql.UnitTests
 
             metadataService.Verify(s => s.IsDatabaseExists(null));
             metadataService.Verify(s => s.CreateDatabase(null));
+            metadataService.Verify(s => s.IsSchemaExists(It.IsAny<string>(), null));
             metadataService.Verify(s => s.IsDatabaseConfigured(null, null, null)); ;
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));

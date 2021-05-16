@@ -75,6 +75,23 @@ namespace Yuniql.Core
         }
 
         ///<inheritdoc/>
+        public bool IsSchemaExists(string metaSchemaName, int? commandTimeout = null)
+        {
+            var tokens = new List<KeyValuePair<string, string>> {
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName),
+            };
+            var sqlStatement = _tokenReplacementService.Replace(tokens, _dataService.GetSqlForCheckIfSchemaExists());
+            using (var connection = _dataService.CreateConnection())
+            {
+                return connection.QuerySingleRow(
+                    commandText: sqlStatement,
+                    commandTimeout: commandTimeout,
+                    transaction: null,
+                    traceService: _traceService);
+            }
+        }
+
+        ///<inheritdoc/>
         public void CreateSchema(string metaSchemaName, int? commandTimeout = null)
         {
             var tokens = new List<KeyValuePair<string, string>> {
@@ -99,7 +116,7 @@ namespace Yuniql.Core
         {
             var result = false;
 
-            //check existing of schema history table in current version
+            //check existing of schema history table in version > v1.0
             var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForCheckIfDatabaseConfigured(), metaSchemaName, metaTableName);
             using (var connection = _dataService.CreateConnection())
             {
@@ -112,7 +129,7 @@ namespace Yuniql.Core
 
             if (!result)
             {
-                //check existing of schema history table created by v1.0 version
+                //check existing of schema history table created by version v1.0
                 var sqlStatementv10 = GetPreparedSqlStatement(_dataService.GetSqlForCheckIfDatabaseConfiguredv10(), metaSchemaName, metaTableName);
                 using (var connection = _dataService.CreateConnection())
                 {
