@@ -37,28 +37,29 @@ namespace Yuniql.CLI
                     InitOption,
                     VerifyOption,
                     RunOption,
+                    ApplyOption,
                     ListOption,
                     NextVersionOption,
                     EraseOption,
                     DestroyOption,
+                    PlatformsOption,
                     BaselineOption,
-                    RebaseOption,
+                    RebaseOption
                     //ArchiveOption,
-                    PlatformsOption
                 >(args).MapResult(
                     (CheckOption opts) => Dispatch(commandLineService.RunCheckOption, opts, traceService),
                     (InitOption opts) => Dispatch(commandLineService.RunInitOption, opts, traceService),
                     (VerifyOption opts) => Dispatch(commandLineService.RunVerifyOption, opts, traceService),
                     (RunOption opts) => Dispatch(commandLineService.RunRunOption, opts, traceService),
+                    (ApplyOption opts) => Dispatch(commandLineService.RunApplyOption, opts, traceService),
                     (ListOption opts) => Dispatch(commandLineService.RunListOption, opts, traceService),
                     (NextVersionOption opts) => Dispatch(commandLineService.RunNextVersionOption, opts, traceService),
                     (EraseOption opts) => Dispatch(commandLineService.RunEraseOption, opts, traceService),
                     (DestroyOption opts) => Dispatch(commandLineService.RunDestroyOption, opts, traceService),
+                    (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
                     (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
                     (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
-                    //(ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService),
-                    (PlatformsOption opts) => Dispatch(commandLineService.RunPlatformsOption, opts, traceService),
-
+                    //(ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService)
                     errs => 1);
 
             return resultCode;

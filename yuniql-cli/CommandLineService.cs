@@ -145,6 +145,24 @@ namespace Yuniql.CLI
             }
         }
 
+        public int RunApplyOption(ApplyOption opts)
+        {
+            try
+            {
+                //run the migration
+                var configuration = SetupRunConfiguration(opts, isVerifyOnly: false);
+                var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+                migrationService.Run();
+
+                _traceService.Success($"Schema migration completed successfuly on {configuration.Workspace}.");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return OnException(ex, "Failed to execute apply function", opts.IsDebug);
+            }
+        }
+
         public int RunVerifyOption(VerifyOption opts)
         {
             try

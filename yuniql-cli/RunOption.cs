@@ -7,4 +7,10 @@ namespace Yuniql.CLI
     public class RunOption : BaseRunPlatformOption
     {
     }
+
+    //yuniql apply
+    [Verb("apply", HelpText = "Alias to run command. Use this when yuniql run creates conflict such as when used in docker run.")]
+    public class ApplyOption : BaseRunPlatformOption
+    {
+    }
 }
