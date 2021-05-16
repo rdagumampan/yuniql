@@ -20,6 +20,10 @@
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>Yuniql.Snowflake.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="..\..\LICENSE.md" Link="LICENSE.md">
       <PackagePath></PackagePath>

@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\play\yuniql\yuniql-platforms\sqlserver\Yuniql.SqlServer.xml</DocumentationFile>
+    <DocumentationFile>Yuniql.SqlServer.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
