@@ -19,6 +19,14 @@ namespace Yuniql.CLI
         //yuniql <command> --environment "DEV" | --environment "PROD"
         [Option("environment", Required = false, HelpText = "Environment code for environment-aware scripts.")]
         public string Environment { get; set; }
+
+        //yuniql <command> --meta-schema "yuniql" 
+        [Option("meta-schema", Required = false, HelpText = "Schema name for schema versions table.")]
+        public string MetaSchemaName { get; set; }
+
+        //yuniql <command> --meta-table "__yuniqlschemaversions" 
+        [Option("meta-table", Required = false, HelpText = "Table name for schema versions table.")]
+        public string MetaTableName { get; set; }
     }
 
     //yuniql erase
