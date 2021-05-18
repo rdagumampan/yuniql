@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
@@ -32,7 +33,9 @@ namespace Yuniql.Snowflake
             string fileFullPath,
             string delimiter = null,
             int? batchSize = null,
-            int? commandTimeout = null)
+            int? commandTimeout = null,
+            List<KeyValuePair<string, string>> tokens = null
+        )
         {
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
             var fileName = Path.GetFileNameWithoutExtension(fileFullPath);

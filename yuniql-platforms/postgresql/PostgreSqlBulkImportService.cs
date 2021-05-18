@@ -38,7 +38,9 @@ namespace Yuniql.PostgreSql
             string fileFullPath,
             string bulkSeparator = null,
             int? bulkBatchSize = null,
-            int? commandTimeout = null)
+            int? commandTimeout = null,
+            List<KeyValuePair<string, string>> tokens = null
+        )
         {
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
             //assumes all objects are not double quoted because pgsql auto-lower case all undouble quoted objects

@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 
 namespace Yuniql.Extensibility
 {
@@ -29,6 +30,8 @@ namespace Yuniql.Extensibility
             string fileFullPath,
             string bulkSeparator = null,
             int? bulkBatchSize = null,
-            int? commandTimeout = null);
+            int? commandTimeout = null,
+            List<KeyValuePair<string, string>> tokens = null
+        );
     }
 }

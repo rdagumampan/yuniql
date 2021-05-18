@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using Yuniql.Extensibility.BulkCsvParser;
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.MySql
@@ -34,7 +35,9 @@ namespace Yuniql.MySql
             string fileFullPath,
             string bulkSeparator = null,
             int? bulkBatchSize = null,
-            int? commandTimeout = null)
+            int? commandTimeout = null,
+            List<KeyValuePair<string, string>> tokens = null
+        )
         {
             var connectionStringBuilder = new MySqlConnectionStringBuilder(_connectionString);
 

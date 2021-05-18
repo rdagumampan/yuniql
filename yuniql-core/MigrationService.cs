@@ -479,14 +479,14 @@ namespace Yuniql.Core
                         RunVersionSqlScripts(connection, transaction, transactionContext, stopwatch, versionName, workspace, scriptSubDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment, appliedByTool, appliedByToolVersion);
 
                         //import csv files into tables of the the same filename as the csv
-                        RunBulkImportScripts(connection, transaction, workspace, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
+                        RunBulkImportScripts(connection, transaction, workspace, scriptSubDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment, tokens);
                     });
 
                     //run all scripts in the current version folder
                     RunVersionSqlScripts(connection, transaction, transactionContext, stopwatch, versionName, workspace, scriptDirectory, metaSchemaName, metaTableName, tokens, commandTimeout, environment);
 
                     //import csv files into tables of the the same filename as the csv
-                    RunBulkImportScripts(connection, transaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
+                    RunBulkImportScripts(connection, transaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment, tokens);
 
                     //update db version
                     stopwatch.Stop();
@@ -539,7 +539,7 @@ namespace Yuniql.Core
                             RunNonVersionSqlScripts(internalConnection, internalTransaction, scriptDirectory, tokens, environment, commandTimeout, isRequiredClearedDraft);
 
                             //import csv files into tables of the the same filename as the csv
-                            RunBulkImportScripts(internalConnection, internalTransaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
+                            RunBulkImportScripts(internalConnection, internalTransaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment, tokens);
 
                             internalTransaction.Commit();
                         }
@@ -557,7 +557,7 @@ namespace Yuniql.Core
                 RunNonVersionSqlScripts(connection, transaction, scriptDirectory, tokens, environment, commandTimeout, isRequiredClearedDraft);
 
                 //import csv files into tables of the the same filename as the csv
-                RunBulkImportScripts(connection, transaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment);
+                RunBulkImportScripts(connection, transaction, workspace, scriptDirectory, bulkSeparator, bulkBatchSize, commandTimeout, environment, tokens);
 
             }
         }
