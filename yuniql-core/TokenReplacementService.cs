@@ -39,13 +39,17 @@ namespace Yuniql.Core
                 throw new YuniqlMigrationException($"{errorMessage}{sqlStatement}");
             }
 
-            //attempt to replace tokens in the statement
+            //attempt to replace tokens in the input string or sql statement
             var processedSqlStatement = new StringBuilder(sqlStatement);
-            tokens.ForEach(t =>
-            {
-                processedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
-                _traceService.Debug($"Replaced token {t.Key} with {t.Value}");
-            });
+            tokenMatches
+                .Select(t => t.Value.Substring(2, t.Length - 3))
+                .Distinct().ToList()
+                .ForEach(k =>
+                {
+                    var t = tokens.Single(q => q.Key == k);
+                    processedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
+                    _traceService.Debug($"Replaced token {t.Key} with {t.Value}");
+                });
 
             //when some tokens were not replaced because some token/value keypairs are not passed, we fail the whole migration
             //unreplaced tokens may cause unforseen production issues

@@ -194,10 +194,14 @@ namespace Yuniql.Extensibility
                 throw new ApplicationException($"{errorMessage}{str}");
             }
 
-            //attempt to replace tokens in the statement
+            //attempt to replace tokens in the input string or sql statement
             var processedSqlStatement = new StringBuilder(str);
-            tokens.ForEach(t =>
+            tokenMatches
+                .Select(t => t.Value.Substring(2, t.Length - 3))
+                .Distinct().ToList()
+                .ForEach(k =>
             {
+                var t = tokens.Single(q => q.Key == k);
                 processedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
                 traceService.Debug($"Replaced token {t.Key} with {t.Value}");
             });
