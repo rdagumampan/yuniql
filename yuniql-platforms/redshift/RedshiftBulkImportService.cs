@@ -38,7 +38,8 @@ namespace Yuniql.Snowflake
         )
         {
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
-            var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
+            var fileName = Path.GetFileNameWithoutExtension(fileFullPath)
+                          .ReplaceTokens(_traceService, tokens);
             var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "PUBLIC");
             var schemaName = fileNameSegments.Item2.HasUpper() ? fileNameSegments.Item2.DoubleQuote() : fileNameSegments.Item2;
             var tableName = fileNameSegments.Item3.HasUpper() ? fileNameSegments.Item3.DoubleQuote() : fileNameSegments.Item3;

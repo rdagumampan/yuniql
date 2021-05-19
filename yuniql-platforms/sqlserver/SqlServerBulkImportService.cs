@@ -43,7 +43,6 @@ namespace Yuniql.SqlServer
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
             var fileName = Path.GetFileNameWithoutExtension(fileFullPath)
                           .ReplaceTokens(_traceService, tokens);
-
             var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "dbo");
             var schemaName = fileNameSegments.Item2;
             var tableName = fileNameSegments.Item3;
