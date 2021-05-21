@@ -11,7 +11,7 @@ using System.Diagnostics;
 namespace Yuniql.UnitTests
 {
     [TestClass]
-    public class MigrationServiceTests: TestClassBase
+    public class MigrationServiceTests : TestClassBase
     {
         [TestMethod]
         public void Test_Run_()
@@ -29,7 +29,7 @@ namespace Yuniql.UnitTests
             var metadataService = new Mock<IMetadataService>();
             metadataService.Setup(s => s.IsDatabaseExists(null)).Returns(false);
             metadataService.Setup(s => s.CreateDatabase(null));
-            metadataService.Setup(s => s.IsSchemaExists("testschema", null)).Returns(false);
+            metadataService.Setup(s => s.IsSchemaExists(null, null)).Returns(false);
             metadataService.Setup(s => s.IsDatabaseConfigured(null, null, null)).Returns(false);
             metadataService.Setup(s => s.ConfigureDatabase(null, null, null));
             metadataService.Setup(s => s.GetAllAppliedVersions(null, null, null)).Returns(new List<DbVersion> { });
@@ -56,7 +56,7 @@ namespace Yuniql.UnitTests
             dataService.Setup(s => s.BreakStatements("SELECT 'v0.00'")).Returns(new List<string> { "SELECT 'v0.00'" });
 
             var bulkImportService = new Mock<IBulkImportService>();
-            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<List<KeyValuePair<string, string>>>()));
 
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
@@ -64,7 +64,7 @@ namespace Yuniql.UnitTests
             directoryService.Setup(s => s.GetDirectories(@"c:\temp", "v*.*")).Returns(new string[] { @"c:\temp\v0.00" });
 
             directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql" });
-            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}", null, It.Is<List<string>>(f=> f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql" });
+            directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}", null, It.Is<List<string>>(f => f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.INIT}\sql_init.sql" });
 
             directoryService.Setup(s => s.GetAllFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}", "*.sql")).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql" });
             directoryService.Setup(s => s.FilterFiles($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}", null, It.Is<List<string>>(f => f.Contains($@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql")))).Returns(new string[] { $@"c:\temp\{RESERVED_DIRECTORY_NAME.PRE}\sql_pre.sql" });
@@ -134,7 +134,7 @@ namespace Yuniql.UnitTests
 
             metadataService.Verify(s => s.IsDatabaseExists(null));
             metadataService.Verify(s => s.CreateDatabase(null));
-            metadataService.Verify(s => s.IsSchemaExists(It.IsAny<string>(), null));
+            //metadataService.Verify(s => s.IsSchemaExists(, null));
             metadataService.Verify(s => s.IsDatabaseConfigured(null, null, null)); ;
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
@@ -202,7 +202,7 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'draft'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
             metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
 
-            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<List<KeyValuePair<string, string>>>()));
 
             connection.Verify(s => s.Open());
             connection.Verify(s => s.BeginTransaction());
@@ -249,7 +249,7 @@ namespace Yuniql.UnitTests
             dataService.Setup(s => s.BreakStatements("SELECT 'v0.00'")).Returns(new List<string> { "SELECT 'v0.00'" });
 
             var bulkImportService = new Mock<IBulkImportService>();
-            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            bulkImportService.Setup(s => s.Run(connection.Object, transaction.Object, "file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<List<KeyValuePair<string, string>>>()));
 
             var directoryService = new Mock<IDirectoryService>();
             var fileService = new Mock<IFileService>();
@@ -393,7 +393,7 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'draft'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
             metadataService.Verify(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 'v0.00'", DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
 
-            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS));
+            bulkImportService.Verify(s => s.Run(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), @"c:\temp\v0.00\file.csv", DEFAULT_CONSTANTS.BULK_SEPARATOR, DEFAULT_CONSTANTS.BULK_BATCH_SIZE, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, It.IsAny<List<KeyValuePair<string, string>>>()));
 
             connection.Verify(s => s.Open());
         }

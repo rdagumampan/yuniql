@@ -46,9 +46,13 @@ namespace Yuniql.Core
                 .Distinct().ToList()
                 .ForEach(k =>
                 {
-                    var t = tokens.Single(q => q.Key == k);
-                    processedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
-                    _traceService.Debug($"Replaced token {t.Key} with {t.Value}");
+                    var kv = tokens.Where(q => q.Key == k);
+                    if(kv.Any())
+                    {
+                        var t = kv.Single();
+                        processedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
+                        _traceService.Debug($"Replaced token {t.Key} with {t.Value}");
+                    }
                 });
 
             //when some tokens were not replaced because some token/value keypairs are not passed, we fail the whole migration

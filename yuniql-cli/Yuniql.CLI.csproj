@@ -36,8 +36,8 @@
     <PackageReleaseNotes>https://github.com/rdagumampan/yuniql/wiki/release-notes</PackageReleaseNotes>
     <Copyright>Copyright 2019 (C) Rodel E. Dagumampan</Copyright>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
