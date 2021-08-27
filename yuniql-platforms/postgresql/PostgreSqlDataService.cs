@@ -13,6 +13,14 @@ namespace Yuniql.PostgreSql
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
+        private ManifestData _manifestData = new ManifestData{
+        Name = "PostgreSql | Released:", 
+        SupportedVersions = "https://yuniql.io/docs/supported-platforms/",
+        Usage = "yuniql run -a -c <your-connection-string> --platform postgresql",
+        Samples = "https://github.com/rdagumampan/yuniql/tree/master/samples/basic-postgresql-sample"
+
+        };
+
 
         ///<inheritdoc/>
         public PostgreSqlDataService(ITraceService traceService)
@@ -215,5 +223,11 @@ SELECT 'v1.1' FROM pg_tables WHERE  tablename = '__yuniqldbversion';
             catch (Exception) { return false; }
             return false;
         }
+        
+        ///<inheritdoc/>
+        public ManifestData GetManifestData()
+        {
+            return _manifestData;
+        } 
     }
 }

@@ -302,44 +302,49 @@ namespace Yuniql.CLI
         {
             try
             {
-                string platforms = @"Supported database platforms and available samples. For specific versions, please refer to latest documentation pages.
+                string platforms = @"Supported database platforms and available samples. For specific versions, please refer to latest documentation pages.";
 
-    //TODO: show released, preview, alpha, beta
-    SqlServer | Released: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Usage: yuniql run -a -c <your-connection-string> --platform sqlserver
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample
+//     //TODO: show released, preview, alpha, beta
+//     SqlServer | Released: 
+//         Supported versions: https://yuniql.io/docs/supported-platforms/
+//         Usage: yuniql run -a -c <your-connection-string> --platform sqlserver
+//         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample
 
-    PostgreSql | Released: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Usage: yuniql run -a -c <your-connection-string> --platform postgresql
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-postgresql-sample
+//     PostgreSql | Released: 
+//         Supported versions: https://yuniql.io/docs/supported-platforms/
+//         Usage: yuniql run -a -c <your-connection-string> --platform postgresql
+//         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-postgresql-sample
 
-    MySql | Released: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Usage: yuniql run -a -c <your-connection-string> --platform mysql
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
+//     MySql | Released: 
+//         Supported versions: https://yuniql.io/docs/supported-platforms/
+//         Usage: yuniql run -a -c <your-connection-string> --platform mysql
+//         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
 
-    MariaDb | Released: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Supported versions: 
-        Usage: yuniql run -a -c <your-connection-string> --platform mariadb
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
+//     MariaDb | Released: 
+//         Supported versions: https://yuniql.io/docs/supported-platforms/
+//         Supported versions: 
+//         Usage: yuniql run -a -c <your-connection-string> --platform mariadb
+//         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
 
-    Snowflake | Preview: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Supported versions: 
-        Usage: yuniql run -a -c <your-connection-string> --platform snowflake
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-snowflake-sample
+//     Snowflake | Preview: 
+//         Supported versions: https://yuniql.io/docs/supported-platforms/
+//         Supported versions: 
+//         Usage: yuniql run -a -c <your-connection-string> --platform snowflake
+//         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-snowflake-sample
 
-    Redshift| Preview: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Supported versions: 
-        Usage: yuniql run -a -c <your-connection-string> --platform redshift
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-redshift-sample
-";
+//     Redshift| Preview: 
+//         Supported versions: https://yuniql.io/docs/supported-platforms/
+//         Supported versions: 
+//         Usage: yuniql run -a -c <your-connection-string> --platform redshift
+//         Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-redshift-sample
+// ";
 
                 Console.WriteLine(platforms);
+                
+                var _dataService = _dataServiceFactory.Create("mysql");
+                var _manifestData =_dataService.GetManifestData();
+                _manifestData.printData();
+                 
 
                 return 0;
             }

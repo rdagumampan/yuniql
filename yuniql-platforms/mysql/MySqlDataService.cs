@@ -12,6 +12,13 @@ namespace Yuniql.MySql
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
+        
+        private ManifestData _manifestData = new ManifestData{
+        Name = "SqlServer | Released:",
+        SupportedVersions = "https://yuniql.io/docs/supported-platforms/",
+        Usage = "yuniql run -a -c <your-connection-string> --platform sqlserver",
+        Samples = "https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample"
+        };
 
         ///<inheritdoc/>
         public MySqlDataService(ITraceService traceService)
@@ -205,6 +212,12 @@ SELECT 'v1.1' FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${YUNIQL_DB_N
                 return true;
             }
             return false;
+        }
+        
+        ///<inheritdoc/>
+        public ManifestData GetManifestData()
+        {
+            return _manifestData;
         }
     }
 }
