@@ -14,10 +14,10 @@ namespace Yuniql.MySql
         private readonly ITraceService _traceService;
         
         private ManifestData _manifestData = new ManifestData{
-        Name = "SqlServer | Released:",
+        Name = "MySql | Released:",
         SupportedVersions = "https://yuniql.io/docs/supported-platforms/",
-        Usage = "yuniql run -a -c <your-connection-string> --platform sqlserver",
-        Samples = "https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample"
+        Usage = "yuniql run -a -c <your-connection-string> --platform mysql",
+        Samples = "https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample"
         };
 
         ///<inheritdoc/>
