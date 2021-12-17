@@ -5,6 +5,7 @@ using MySql.Data.MySqlClient;
 using Yuniql.Extensibility.BulkCsvParser;
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.MySql
@@ -34,12 +35,15 @@ namespace Yuniql.MySql
             string fileFullPath,
             string bulkSeparator = null,
             int? bulkBatchSize = null,
-            int? commandTimeout = null)
+            int? commandTimeout = null,
+            List<KeyValuePair<string, string>> tokens = null
+        )
         {
             var connectionStringBuilder = new MySqlConnectionStringBuilder(_connectionString);
 
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
-            var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
+            var fileName = Path.GetFileNameWithoutExtension(fileFullPath)
+                          .ReplaceTokens(_traceService, tokens);
             var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: connectionStringBuilder.Database);
             var schemaName = fileNameSegments.Item2;
             var tableName = fileNameSegments.Item3;

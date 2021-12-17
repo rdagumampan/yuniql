@@ -181,7 +181,8 @@ namespace Yuniql.Core
             string bulkSeparator = null,
             int? bulkBatchSize = null,
             int? commandTimeout = null,
-            string environment = null
+            string environment = null,
+            List<KeyValuePair<string, string>> tokens = null
         )
         {
             //extract and filter out scripts when environment code is used
@@ -192,7 +193,7 @@ namespace Yuniql.Core
             bulkFiles.Sort();
             bulkFiles.ForEach(csvFile =>
             {
-                _bulkImportService.Run(connection, transaction, csvFile, bulkSeparator, bulkBatchSize: bulkBatchSize, commandTimeout: commandTimeout);
+                _bulkImportService.Run(connection, transaction, csvFile, bulkSeparator, bulkBatchSize: bulkBatchSize, commandTimeout: commandTimeout, tokens: tokens);
                 _traceService.Info($"Imported bulk file {csvFile}.");
             });
         }

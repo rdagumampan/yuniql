@@ -32,6 +32,13 @@ namespace Yuniql.Core
         bool IsDatabaseConfigured(string metaSchemaName, string metaTableName, int? commandTimeout = null);
 
         /// <summary>
+        /// Returns true when custom schema for trackinig table is already created.
+        /// </summary>
+        /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        bool IsSchemaExists(string metaSchemaName, int? commandTimeout = null);
+
+        /// <summary>
         /// Creates schema in target databases.
         /// </summary>
         /// <param name="metaSchemaName">Schema name for schema versions table. When empty, uses the default schema in the target data platform. </param>

@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "destroy --force --debug -c \"Server=localhost;Port=3306;Database=helloyuniql;Uid=root;Pwd=P@ssw0rd!;\""
+      "commandLineArgs": "run -a -p C:\\play\\yuniql\\samples\\basic-postgresql-sample -c \"Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=helloyuniql\" --transaction-mode version --platform postgresql --debug --meta-schema yuniql --meta-table accounting"
     }
   }
 }

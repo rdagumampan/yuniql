@@ -2,6 +2,7 @@
 using System.IO;
 using Yuniql.Extensibility;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 
 namespace Yuniql.MySql
 {
@@ -33,7 +34,9 @@ namespace Yuniql.MySql
             string fileFullPath,
             string bulkSeparator = null,
             int? bulkBatchSize = null,
-            int? commandTimeout = null)
+            int? commandTimeout = null,
+            List<KeyValuePair<string, string>> tokens = null
+        )
         {
             var tableName = Path.GetFileNameWithoutExtension(fileFullPath);
 

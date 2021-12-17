@@ -27,9 +27,10 @@ namespace Yuniql.Core
             //check if the sql statement has tokens in it
             var tokenParser = new System.Text.RegularExpressions.Regex(tokenPattern);
             var tokenMatches = tokenParser.Matches(sqlStatement);
-            if (!tokenMatches.Any()) return sqlStatement;
+            if (!tokenMatches.Any()) 
+                return sqlStatement;
 
-            //when no token values passed but sql statement gas tokens, we fail the whole migration
+            //when no token values passed but sql statement has tokens, we fail the whole migration
             var errorMessage = $"Some tokens were not successfully replaced. " +
                     $"This ussually due to missing or insufficient token key/value pairs passed during migration run. " +
                     $"See the faulting script below. {Environment.NewLine}";
@@ -38,13 +39,21 @@ namespace Yuniql.Core
                 throw new YuniqlMigrationException($"{errorMessage}{sqlStatement}");
             }
 
-            //attempt to replace tokens in the statement
+            //attempt to replace tokens in the input string or sql statement
             var processedSqlStatement = new StringBuilder(sqlStatement);
-            tokens.ForEach(t =>
-            {
-                processedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
-                _traceService.Debug($"Replaced token {t.Key} with {t.Value}");
-            });
+            tokenMatches
+                .Select(t => t.Value.Substring(2, t.Length - 3))
+                .Distinct().ToList()
+                .ForEach(k =>
+                {
+                    var kv = tokens.Where(q => q.Key == k);
+                    if(kv.Any())
+                    {
+                        var t = kv.Single();
+                        processedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
+                        _traceService.Debug($"Replaced token {t.Key} with {t.Value}");
+                    }
+                });
 
             //when some tokens were not replaced because some token/value keypairs are not passed, we fail the whole migration
             //unreplaced tokens may cause unforseen production issues

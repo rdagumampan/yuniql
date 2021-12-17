@@ -37,6 +37,20 @@ namespace Yuniql.UnitTests
         }
 
         [TestMethod]
+        public void Test_UnQuote_Single_Quoted()
+        {
+            //arrange, act & assert
+            "'mytext'".UnQuote().ShouldBe("mytext");
+        }
+
+        [TestMethod]
+        public void Test_UnQuote_Double_Quoted()
+        {
+            //arrange, act & assert
+            "\"mytext\"".UnQuote().ShouldBe("mytext");
+        }
+
+        [TestMethod]
         public void Test_Escape()
         {
             //arrange, act & assert
