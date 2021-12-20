@@ -142,6 +142,13 @@ DROP DATABASE ""${YUNIQL_DB_NAME}"";
             " };
 
         ///<inheritdoc/>
+        public string GetSqlForCheckIfSchemaExists()
+            => @"
+SHOW SCHEMAS LIKE '${YUNIQL_SCHEMA_NAME}';
+            ";
+
+        //https://docs.snowflake.com/en/sql-reference/sql/create-schema.html
+        ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => @"
 CREATE SCHEMA ""${YUNIQL_SCHEMA_NAME}"";

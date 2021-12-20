@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
@@ -32,10 +33,13 @@ namespace Yuniql.Snowflake
             string fileFullPath,
             string delimiter = null,
             int? batchSize = null,
-            int? commandTimeout = null)
+            int? commandTimeout = null,
+            List<KeyValuePair<string, string>> tokens = null
+        )
         {
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
-            var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
+            var fileName = Path.GetFileNameWithoutExtension(fileFullPath)
+                          .ReplaceTokens(_traceService, tokens);
             var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "PUBLIC");
             var schemaName = fileNameSegments.Item2.HasUpper() ? fileNameSegments.Item2.DoubleQuote() : fileNameSegments.Item2;
             var tableName = fileNameSegments.Item3.HasUpper() ? fileNameSegments.Item3.DoubleQuote() : fileNameSegments.Item3;

@@ -109,6 +109,13 @@ DROP DATABASE ${YUNIQL_DB_NAME};
 "};
 
         ///<inheritdoc/>
+        public string GetSqlForCheckIfSchemaExists()
+            => @"
+SELECT 1 FROM information_schema.schemata WHERE schema_name = '${YUNIQL_SCHEMA_NAME}';
+            ";
+
+        //https://www.postgresql.org/docs/current/sql-createschema.html
+        ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => @"
 CREATE SCHEMA ""${YUNIQL_SCHEMA_NAME}"";
@@ -117,7 +124,7 @@ CREATE SCHEMA ""${YUNIQL_SCHEMA_NAME}"";
         ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseConfigured()
             => @"
-SELECT 1 FROM pg_tables WHERE  tablename = '${YUNIQL_TABLE_NAME}';
+SELECT 1 FROM pg_tables WHERE  tablename = '${YUNIQL_TABLE_NAME}' AND schemaname = '${YUNIQL_SCHEMA_NAME}';
             ";
 
         ///<inheritdoc/>

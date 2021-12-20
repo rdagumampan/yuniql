@@ -94,6 +94,11 @@ namespace Yuniql.Extensibility
         public List<string> GetSqlForDropDatabase();
 
         /// <summary>
+        /// Returns the SQL statement to use for checking if the target schema already exists
+        /// </summary>
+        public string GetSqlForCheckIfSchemaExists();
+
+        /// <summary>
         /// Returns the SQL statement to use for creating schema if the target database supports schemas.
         /// </summary>
         /// <returns></returns>

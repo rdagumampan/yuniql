@@ -38,6 +38,14 @@ namespace Yuniql.CLI
 
             var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
             var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+            if (!string.IsNullOrEmpty(opts.MetaSchemaName))
+                tokens.Add(new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, opts.MetaSchemaName));
+            if (!string.IsNullOrEmpty(opts.MetaTableName))
+                tokens.Add(new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, opts.MetaTableName));
+            tokens.AddRange(new List<KeyValuePair<string, string>> {
+                    new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL, "yuniql-cli"),
+                    new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL_VERSION, this.GetType().Assembly.GetName().Version.ToString())
+                });
 
             configuration.Workspace = opts.Workspace;
             configuration.IsDebug = opts.IsDebug;
@@ -204,11 +212,11 @@ namespace Yuniql.CLI
 
                 //TODO: add duration
                 var versionPrettyPrint = new TablePrinter("SchemaVersion", "AppliedOnUtc", "Status", "AppliedByUser", "AppliedByTool", "Duration");
-                versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}", $"{v.DurationMs} ms / {v.DurationMs/1000} s"));
+                versions.ForEach(v => versionPrettyPrint.AddRow(v.Version, v.AppliedOnUtc.ToString("u"), v.Status, v.AppliedByUser, $"{v.AppliedByTool} {v.AppliedByToolVersion}", $"{v.DurationMs} ms / {v.DurationMs / 1000} s"));
                 versionPrettyPrint.Print();
 
                 var failedVersion = versions.LastOrDefault(v => v.Status == Status.Failed);
-                if(null!= failedVersion)
+                if (null != failedVersion)
                 {
                     var failedVersionMessage = $"Previous run was not successful, see details below:{Environment.NewLine}" +
                         $"Last failed version: {failedVersion.Version}{Environment.NewLine}" +
@@ -237,6 +245,14 @@ namespace Yuniql.CLI
                 //parse tokens
                 var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+                if (!string.IsNullOrEmpty(opts.MetaSchemaName))
+                    tokens.Add(new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, opts.MetaSchemaName));
+                if (!string.IsNullOrEmpty(opts.MetaTableName))
+                    tokens.Add(new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, opts.MetaTableName));
+                tokens.AddRange(new List<KeyValuePair<string, string>> {
+                    new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL, "yuniql-cli"),
+                    new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL_VERSION, this.GetType().Assembly.GetName().Version.ToString())
+                });
 
                 var configuration = Configuration.Instance;
                 configuration.Workspace = opts.Workspace;
@@ -249,6 +265,8 @@ namespace Yuniql.CLI
                 configuration.Tokens = tokens;
                 configuration.IsForced = opts.Force;
                 configuration.Environment = opts.Environment;
+                configuration.MetaSchemaName = opts.MetaSchemaName;
+                configuration.MetaTableName = opts.MetaTableName;
 
                 //run all erase scripts
                 var migrationService = _migrationServiceFactory.Create(platform);
@@ -364,9 +382,9 @@ namespace Yuniql.CLI
 
         private int OnException(Exception exception, string headerMessage, bool debug)
         {
-            var stackTraceMessage = debug ? exception.ToString().Replace(exception.Message, string.Empty) 
+            var stackTraceMessage = debug ? exception.ToString().Replace(exception.Message, string.Empty)
                 : $"{exception.Message} {exception.InnerException?.Message}";
-            
+
             _traceService.Error($"{headerMessage}. {exception.Message}{Environment.NewLine}" +
                 $"Diagnostics stack trace captured a {stackTraceMessage}{Environment.NewLine}" +
                 $"If you think this is a bug, please report an issue here https://github.com/rdagumampan/yuniql/issues."); //TODO: create global constants for url

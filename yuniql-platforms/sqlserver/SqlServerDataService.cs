@@ -102,6 +102,13 @@ DROP DATABASE [${YUNIQL_DB_NAME}];
             " };
 
         ///<inheritdoc/>
+        public string GetSqlForCheckIfSchemaExists()
+            => @"
+SELECT 1 FROM [sys].[schemas] WHERE name = '${YUNIQL_SCHEMA_NAME}';
+            ";
+
+        //https://docs.microsoft.com/en-us/sql/t-sql/statements/create-schema-transact-sql?view=sql-server-ver15
+        ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => @"
 CREATE SCHEMA [${YUNIQL_SCHEMA_NAME}];

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Yuniql.Extensibility
 {
@@ -165,6 +168,57 @@ namespace Yuniql.Extensibility
         public static string UnQuote(this string str)
         {
             return $"{str.Substring(1, str.Length - 2)}";
+        }
+
+        /// <summary>
+        /// Returns string with token replaced
+        /// </summary>
+        /// <param name="str">The string where tokens can be present</param>
+        /// <param name="tokens">List of token/value pairs</param>
+        /// <returns></returns>
+        public static string ReplaceTokens(this string str, ITraceService traceService, List<KeyValuePair<string, string>> tokens = null)
+        {
+            //check if the sql statement has tokens in it
+            var tokenPattern = @"\${([^}]+)}";
+            var tokenParser = new Regex(tokenPattern);
+            var tokenMatches = tokenParser.Matches(str);
+            if (!tokenMatches.Any())
+                return str;
+
+            //when no token values passed but sql statement has tokens, we fail the whole migration
+            var errorMessage = $"Some tokens were not successfully replaced. " +
+                    $"This ussually due to missing or insufficient token key/value pairs passed during migration run. " +
+                    $"See the faulting script below. {Environment.NewLine}";
+            if ((null == tokens || !tokens.Any()) && tokenMatches.Any())
+            {
+                throw new ApplicationException($"{errorMessage}{str}");
+            }
+
+            //attempt to replace tokens in the input string or sql statement
+            var processedSqlStatement = new StringBuilder(str);
+            tokenMatches
+                .Select(t => t.Value.Substring(2, t.Length - 3))
+                .Distinct().ToList()
+                .ForEach(k =>
+            {
+                var kv = tokens.Where(q => q.Key == k);
+                if (kv.Any())
+                {
+                    var t = kv.Single();
+                    processedSqlStatement.Replace($"${{{t.Key}}}", t.Value);
+                    traceService.Debug($"Replaced token {t.Key} with {t.Value}");
+                }
+            });
+
+            //when some tokens were not replaced because some token/value keypairs are not passed, we fail the whole migration
+            //unreplaced tokens may cause unforseen production issues and better abort entire migration
+            var tokenMatchesAfterReplacement = tokenParser.Matches(processedSqlStatement.ToString());
+            if (tokenMatchesAfterReplacement.Any())
+            {
+                throw new ApplicationException($"{errorMessage}{processedSqlStatement}");
+            }
+
+            return processedSqlStatement.ToString();
         }
     }
 }

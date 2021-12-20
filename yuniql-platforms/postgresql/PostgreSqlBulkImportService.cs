@@ -38,11 +38,14 @@ namespace Yuniql.PostgreSql
             string fileFullPath,
             string bulkSeparator = null,
             int? bulkBatchSize = null,
-            int? commandTimeout = null)
+            int? commandTimeout = null,
+            List<KeyValuePair<string, string>> tokens = null
+        )
         {
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
             //assumes all objects are not double quoted because pgsql auto-lower case all undouble quoted objects
-            var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
+            var fileName = Path.GetFileNameWithoutExtension(fileFullPath)
+                          .ReplaceTokens(_traceService, tokens);
             var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "public");
             var schemaName = fileNameSegments.Item2.HasUpper() ? fileNameSegments.Item2.DoubleQuote() : fileNameSegments.Item2;
             var tableName = fileNameSegments.Item3.HasUpper() ? fileNameSegments.Item3.DoubleQuote() : fileNameSegments.Item3;

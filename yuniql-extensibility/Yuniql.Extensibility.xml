@@ -418,6 +418,11 @@
             Returns the SQL statement to use for dropping existing database
             </summary>
         </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCheckIfSchemaExists">
+            <summary>
+            Returns the SQL statement to use for checking if the target schema already exists
+            </summary>
+        </member>
         <member name="M:Yuniql.Extensibility.IDataService.GetSqlForCreateSchema">
             <summary>
             Returns the SQL statement to use for creating schema if the target database supports schemas.
@@ -632,6 +637,13 @@
         <member name="M:Yuniql.Extensibility.StringExtensions.HasUpper(System.String)">
             <summary>
             Returns true when string has capital letters
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.UnQuote(System.String)">
+            <summary>
+            Returns string without single or double quote enclosure
             </summary>
             <param name="str"></param>
             <returns></returns>
