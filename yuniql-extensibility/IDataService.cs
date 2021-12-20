@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -165,5 +165,10 @@ namespace Yuniql.Extensibility
         /// True, if the parsing was sucessfull otherwise false
         /// </returns>
         bool TryParseErrorFromException(Exception exception, out string result);
+        
+        ///<summary>
+        /// Returns instance of ManifestData in IDataService implementations
+        ///</summary>
+         public ManifestData GetManifestData();
     }
 }

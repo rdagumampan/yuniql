@@ -244,7 +244,6 @@ namespace Yuniql.CLI
             {
                 //parse tokens
                 var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
-
                 var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
                 if (!string.IsNullOrEmpty(opts.MetaSchemaName))
                     tokens.Add(new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, opts.MetaSchemaName));
@@ -321,44 +320,19 @@ namespace Yuniql.CLI
         {
             try
             {
-                string platforms = @"Supported database platforms and available samples. For specific versions, please refer to latest documentation pages.
-
-    //TODO: show released, preview, alpha, beta
-    SqlServer | Released: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Usage: yuniql run -a -c <your-connection-string> --platform sqlserver
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-sqlserver-sample
-
-    PostgreSql | Released: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Usage: yuniql run -a -c <your-connection-string> --platform postgresql
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-postgresql-sample
-
-    MySql | Released: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Usage: yuniql run -a -c <your-connection-string> --platform mysql
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
-
-    MariaDb | Released: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Supported versions: 
-        Usage: yuniql run -a -c <your-connection-string> --platform mariadb
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-mysql-sample
-
-    Snowflake | Preview: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Supported versions: 
-        Usage: yuniql run -a -c <your-connection-string> --platform snowflake
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-snowflake-sample
-
-    Redshift| Preview: 
-        Supported versions: https://yuniql.io/docs/supported-platforms/
-        Supported versions: 
-        Usage: yuniql run -a -c <your-connection-string> --platform redshift
-        Samples: https://github.com/rdagumampan/yuniql/tree/master/samples/basic-redshift-sample
-";
-
-                Console.WriteLine(platforms);
+                Console.WriteLine(@"Supported database platforms and available samples. For specific versions, please refer to latest documentation pages.");
+                 
+                //iterate through supported db and get manifest data
+                var fields = typeof(SUPPORTED_DATABASES).GetFields();
+                foreach (var field in fields)
+                {
+                    if(field.Name.ToLower() != SUPPORTED_DATABASES.MARIADB) //extra check since mariadb is not yet fully supported[SHOULD CHANGE IN THE FUTURE]
+                    {
+                        var _dataService = _dataServiceFactory.Create(field.Name);
+                        var _manifestData =_dataService.GetManifestData();
+                        _manifestData.printData();
+                    }
+                }
 
                 return 0;
             }

@@ -13,6 +13,13 @@ namespace Yuniql.Redshift
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
+        private ManifestData _manifestData = new ManifestData{
+        Name = "Redshift| Preview:",
+        SupportedVersions = "https://yuniql.io/docs/supported-platforms/",
+        Usage = "yuniql run -a -c <your-connection-string> --platform redshift",
+        Samples = "https://github.com/rdagumampan/yuniql/tree/master/samples/basic-redshift-sample"
+        };
+
 
         ///<inheritdoc/>
         public RedshiftDataService(ITraceService traceService)
@@ -223,5 +230,14 @@ SELECT NULL;
             catch (Exception) { return false; }
             return false;
         }
+    
+    
+    ///<inheritdoc/>
+    
+    public ManifestData GetManifestData()
+    {
+        return _manifestData;
+    }
+
     }
 }
