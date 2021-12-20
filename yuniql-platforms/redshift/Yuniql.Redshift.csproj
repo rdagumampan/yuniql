@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\play\yuniql\yuniql-platforms\redshift\Yuniql.Redshift.xml</DocumentationFile>
+    <DocumentationFile>Yuniql.Redshift.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

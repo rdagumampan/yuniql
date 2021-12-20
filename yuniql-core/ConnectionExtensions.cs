@@ -135,25 +135,10 @@ namespace Yuniql.Core
             IDbTransaction transaction = null,
             ITraceService traceService = null)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
-            traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{commandText}");
-
-            var command = connection
-                .KeepOpen()
-                .CreateCommand(
-                commandText: commandText,
-                commandTimeout: commandTimeout,
-                transaction: transaction);
-
+            var output = connection.QuerySingle(commandText, commandTimeout: commandTimeout, transaction: transaction, traceService: traceService);
             var result = false;
-            using var reader = command.ExecuteReader();
-            if (reader.Read())
-                result = Convert.ToBoolean(reader.GetValue(0));
-
-            stopwatch.Stop();
-            traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
+            if (output != null)
+                result = Convert.ToBoolean(output);
 
             return result;
         }
@@ -174,6 +159,30 @@ namespace Yuniql.Core
             IDbTransaction transaction = null,
             ITraceService traceService = null)
         {
+            var output = connection.QuerySingle(commandText, commandTimeout: commandTimeout, transaction: transaction, traceService: traceService);
+            string result = null;
+            if (output != null)
+                result = output as string;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Executes SQL statement against the active connection and returns scalar value in object.
+        /// </summary>
+        /// <param name="connection">An active connection.</param>
+        /// <param name="commandText">The sql statement to execute with the active connection.</param>
+        /// <param name="commandTimeout">Command timeout in seconds.</param>
+        /// <param name="transaction">An active transaction.</param>
+        /// <param name="traceService">Trace service provider where trace messages will be written.</param>
+        /// <returns></returns>
+        public static object QuerySingle(
+            this IDbConnection connection,
+            string commandText,
+            int? commandTimeout = null,
+            IDbTransaction transaction = null,
+            ITraceService traceService = null)
+        {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
@@ -186,10 +195,10 @@ namespace Yuniql.Core
                 commandTimeout: commandTimeout,
                 transaction: transaction);
 
-            string result = null;
+            object result = null;
             using var reader = command.ExecuteReader();
             if (reader.Read())
-                result = reader.GetValue(0) as string;
+                result = reader.GetValue(0);
 
             stopwatch.Stop();
             traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
@@ -213,25 +222,10 @@ namespace Yuniql.Core
             IDbTransaction transaction = null,
             ITraceService traceService = null)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
-            traceService?.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{commandText}");
-
-            var command = connection
-                .KeepOpen()
-                .CreateCommand(
-                commandText: commandText,
-                commandTimeout: commandTimeout,
-                transaction: transaction);
-
+            var output = connection.QuerySingle(commandText, commandTimeout: commandTimeout, transaction: transaction, traceService: traceService);
             var result = false;
-            using var reader = command.ExecuteReader();
-            if (reader.Read())
+            if (output != null)
                 result = true;
-
-            stopwatch.Stop();
-            traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
 
             return result;
         }

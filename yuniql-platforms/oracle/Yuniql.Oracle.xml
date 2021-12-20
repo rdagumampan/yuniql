@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Yuniql.Oracle</name>
+    </assembly>
+    <members>
+        <member name="T:Yuniql.Oracle.OracleBulkImportService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleBulkImportService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleBulkImportService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <inheritdoc/>
+        </member>
+        <member name="T:Yuniql.Oracle.OracleDataService">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.#ctor(Yuniql.Extensibility.ITraceService)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.Initialize(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Oracle.OracleDataService.IsTransactionalDdlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Oracle.OracleDataService.IsSchemaSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Oracle.OracleDataService.IsBatchSqlSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Oracle.OracleDataService.IsUpsertSupported">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Oracle.OracleDataService.TableName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Oracle.OracleDataService.SchemaName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.CreateConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.CreateMasterConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.BreakStatements(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetConnectionInfo">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCheckIfDatabaseExists">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCreateDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCreateSchema">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCheckIfDatabaseConfigured">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCheckIfDatabaseConfiguredv10">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForConfigureDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForGetCurrentVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForGetAllVersions">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForInsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForUpdateVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForUpsertVersion">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForUpgradeMetaSchema(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.TryParseErrorFromException(System.Exception,System.String@)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

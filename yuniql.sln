@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "documents", "documents", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Redshift", "yuniql-platforms\redshift\Yuniql.Redshift.csproj", "{BC044B5B-6CF5-4776-9A87-DF6612C0F613}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuniql.Oracle", "yuniql-platforms\oracle\Yuniql.Oracle.csproj", "{F80A3FF5-37BC-414E-AD56-897B11B56073}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{BC044B5B-6CF5-4776-9A87-DF6612C0F613}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC044B5B-6CF5-4776-9A87-DF6612C0F613}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC044B5B-6CF5-4776-9A87-DF6612C0F613}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F80A3FF5-37BC-414E-AD56-897B11B56073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F80A3FF5-37BC-414E-AD56-897B11B56073}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F80A3FF5-37BC-414E-AD56-897B11B56073}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F80A3FF5-37BC-414E-AD56-897B11B56073}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +101,7 @@ Global
 		{8DA510CC-B99F-4A40-A2C3-BC6D6EFBC6F8} = {1E518201-3021-4406-AE54-3008CC1FF32B}
 		{29FAAA6B-4C99-4222-91FB-88F200CE25B3} = {1E518201-3021-4406-AE54-3008CC1FF32B}
 		{BC044B5B-6CF5-4776-9A87-DF6612C0F613} = {1E518201-3021-4406-AE54-3008CC1FF32B}
+		{F80A3FF5-37BC-414E-AD56-897B11B56073} = {1E518201-3021-4406-AE54-3008CC1FF32B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5C66EEC5-39B9-4275-98E1-7D9AFF8FC29C}

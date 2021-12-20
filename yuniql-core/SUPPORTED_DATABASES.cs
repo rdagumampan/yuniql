@@ -34,5 +34,10 @@
         /// Redshift DW
         /// </summary>
         public const string REDSHIFT = "redshift";
+
+        /// <summary>
+        /// Oracle
+        /// </summary>
+        public const string ORACLE = "oracle";
     }
 }
