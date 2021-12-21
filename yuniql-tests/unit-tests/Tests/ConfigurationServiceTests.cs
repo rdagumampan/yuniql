@@ -37,7 +37,7 @@ namespace Yuniql.UnitTests
             configuration.IsForced = true;
             configuration.IsVerifyOnly = true;
             configuration.AppliedByTool = "yuniql-cli";
-            configuration.AppliedByToolVersion = "v1.0.0.0";
+            configuration.AppliedByToolVersion = "1.0.0.0";
 
             return configuration;
     }
