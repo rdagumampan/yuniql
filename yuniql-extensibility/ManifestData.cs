@@ -1,45 +1,44 @@
 using System;
 
-namespace Yuniql.Extensibility{
-    
+namespace Yuniql.Extensibility
+{
     /// <summary>
-    /// container for supported platform and versions.
+    /// Representation of supported platform and versions.
     /// </summary>
     public class ManifestData
     {
         ///<summary>
-        ///The name of the supported Database.
+        ///The name of the database.
         ///</summary>
         public string Name;
-        
-        ///<summary>
-        ///Versions that are supported for each Database platform.
-        ///</summary>
-        public string SupportedVersions;
-        
-        ///<summary>
-        /// An example string showing how to use the CLI interface for each Database. 
-        ///</summary>
-        public string Usage; 
 
         ///<summary>
-        /// Useful link to samples of the Database and Yuniql in use. 
+        /// An example string showing how to use the CLI interface. 
         ///</summary>
-        public string Samples;
-        
+        public string Usage;
+
         ///<summary>
-        ///outputs a formatted version of the Manifest Data.
+        ///The versions of the database.
+        ///</summary>
+        public string DocumentationUrl;
+
+        ///<summary>
+        /// A useful link to samples of the database and yuniql in use. 
+        ///</summary>
+        public string SamplesUrl;
+
+        ///<summary>
+        ///Outputs a formatted version of the manifest data.
         ///</summary>
         public void printData()
         {
             var info = string.Format(@"
         Name: {0}
-        SupportedVersions: {1}
         Usage:{2}
+        SupportedVersions: {1}
         Samples: {3}
-        ",Name,SupportedVersions,Usage,Samples);
+        ", Name, DocumentationUrl, Usage, SamplesUrl);
             Console.WriteLine(info);
         }
     }
-    
 }

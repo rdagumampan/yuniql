@@ -49,6 +49,12 @@
         <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCreateDatabase">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForDropDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCheckIfSchemaExists">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCreateSchema">
             <inheritdoc/>
         </member>

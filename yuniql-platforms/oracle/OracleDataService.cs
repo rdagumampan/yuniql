@@ -4,8 +4,6 @@ using Yuniql.Extensibility;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.IO;
-using Yuniql.Extensibility.SqlBatchParser;
-using System.Linq;
 
 namespace Yuniql.Oracle
 {
@@ -73,16 +71,35 @@ namespace Yuniql.Oracle
             return new ConnectionInfo { DataSource = connectionStringBuilder.DataSource, Database = connectionStringBuilder.DataSource };
         }
 
+
+        //Only applies with oracle 12c
+        //https://docs.oracle.com/en/database/oracle/oracle-database/19/riwin/about-pluggable-databases-in-oracle-rac.html
+        //https://dba.stackexchange.com/questions/27725/how-to-see-list-of-databases-in-oracle
         ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseExists()
             => @"
-SELECT 1 FROM SYS.ALL_TABLES WHERE OWNER = '${YUNIQL_DB_NAME}';
+SELECT 1 FROM DBA_PDBS WHERE PDB_NAME = '${YUNIQL_DB_NAME}';
+            ";
+
+        //https://blog.devart.com/how-to-create-database-in-oracle.html
+        ///<inheritdoc/>
+        public string GetSqlForCreateDatabase()
+            => @"
+CREATE DATABASE ${YUNIQL_DB_NAME};
             ";
 
         ///<inheritdoc/>
-        public string GetSqlForCreateDatabase()
-            => throw new NotSupportedException("Create database is not supported in Oracle.");
+        public List<string> GetSqlForDropDatabase()
+            => new List<string> { @"
+DROP DATABASE [${YUNIQL_DB_NAME}];
+            " };
 
+        ///<inheritdoc/>
+        public string GetSqlForCheckIfSchemaExists()
+            => throw new NotSupportedException("Custom schema is not supported in Oracle.");
+
+        //https://www.techonthenet.com/oracle/schemas/create_schema_statement.php
+        //https://docs.oracle.com/cd/B19306_01/server.102/b14200/statements_6014.htm
         ///<inheritdoc/>
         public string GetSqlForCreateSchema()
             => throw new NotSupportedException("Custom schema is not supported in Oracle.");

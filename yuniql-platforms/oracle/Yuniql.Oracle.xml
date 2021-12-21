@@ -13,7 +13,7 @@
         <member name="M:Yuniql.Oracle.OracleBulkImportService.Initialize(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Oracle.OracleBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Oracle.OracleBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <inheritdoc/>
         </member>
         <member name="T:Yuniql.Oracle.OracleDataService">
@@ -59,6 +59,12 @@
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCreateDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForDropDatabase">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCheckIfSchemaExists">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCreateSchema">

@@ -14,7 +14,7 @@ namespace Yuniql.Extensibility
         /// </summary>
         /// <param name="connectionString">Connection string to the target database.</param>
         public void Initialize(string connectionString);
-        
+
         /// <summary>
         /// Creates new connection to target database.
         /// </summary>
@@ -165,10 +165,5 @@ namespace Yuniql.Extensibility
         /// True, if the parsing was sucessfull otherwise false
         /// </returns>
         bool TryParseErrorFromException(Exception exception, out string result);
-        
-        ///<summary>
-        /// Returns instance of ManifestData in IDataService implementations
-        ///</summary>
-         public ManifestData GetManifestData();
     }
 }

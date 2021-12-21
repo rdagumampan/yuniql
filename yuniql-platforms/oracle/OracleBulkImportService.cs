@@ -5,6 +5,7 @@ using Oracle.ManagedDataAccess.Client;
 using Yuniql.Extensibility.BulkCsvParser;
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.Oracle
@@ -34,7 +35,9 @@ namespace Yuniql.Oracle
             string fileFullPath,
             string bulkSeparator = null,
             int? bulkBatchSize = null,
-            int? commandTimeout = null)
+            int? commandTimeout = null,
+            List<KeyValuePair<string, string>> tokens = null
+            )
         {
             var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
 
@@ -44,7 +47,7 @@ namespace Yuniql.Oracle
             var schemaName = fileNameSegments.Item2;
             var tableName = fileNameSegments.Item3;
 
-            if(!string.Equals(connectionStringBuilder.DataSource, schemaName, System.StringComparison.InvariantCultureIgnoreCase))
+            if (!string.Equals(connectionStringBuilder.DataSource, schemaName, System.StringComparison.InvariantCultureIgnoreCase))
             {
                 throw new ApplicationException("Oracle does not support custom schema. Your bulk file name must resemble these patterns: 1.mytable.csv, 01.mytable.csv or mytable.csv");
             }

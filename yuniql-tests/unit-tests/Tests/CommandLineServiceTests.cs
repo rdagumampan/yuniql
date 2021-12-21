@@ -34,9 +34,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new InitOption();
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunInitOption(option);
 
             //assert
@@ -62,9 +66,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new InitOption { Workspace = @"c:\temp\yuniql" };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunInitOption(option);
 
             //assert
@@ -90,9 +98,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new NextVersionOption { IncrementMajorVersion = true };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunNextVersionOption(option);
 
             //assert
@@ -119,9 +131,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new NextVersionOption { IncrementMajorVersion = true };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunNextVersionOption(option);
 
             //assert
@@ -147,9 +163,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new NextVersionOption { IncrementMinorVersion = true };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunNextVersionOption(option);
 
             //assert
@@ -175,9 +195,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new NextVersionOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunNextVersionOption(option);
 
             //assert
@@ -201,9 +225,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new BaselineOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             var returnCode = sut.RunBaselineOption(option);
 
             //assert
@@ -227,9 +255,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new RebaseOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             var returnCode = sut.RunRebaseOption(option);
 
             returnCode.ShouldNotBe(0);
@@ -252,9 +284,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new ArchiveOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             var returnCode = sut.RunArchiveOption(option);
 
             //assert
@@ -288,9 +324,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new EraseOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunEraseOption(option);
 
             //assert
@@ -343,9 +383,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new ListOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunListOption(option);
 
             //assert
@@ -380,9 +424,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new VerifyOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunVerifyOption(option);
 
             //assert
@@ -417,9 +465,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new VerifyOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunVerifyOption(option);
 
             //assert
@@ -450,9 +502,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new RunOption { };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunRunOption(option);
 
             //assert
@@ -482,9 +538,13 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             //act
             var option = new RunOption { Tokens = new List<string> { "Token1=TokenValue1", "Token2=TokenValue2", "Token3=TokenValue3" } };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             sut.RunRunOption(option);
 
             //assert
@@ -516,11 +576,15 @@ namespace Yuniql.UnitTests
             var dataServiceFactory = new Mock<CLI.IDataServiceFactory>();
             dataServiceFactory.Setup(s => s.Create("sqlserver")).Returns(dataService.Object);
 
+            var manifest = new Mock<ManifestData>();
+            var manifestFactory = new Mock<IManifestFactory>();
+            manifestFactory.Setup(s => s.Create("sqlserver")).Returns(manifest.Object);
+
             var workspaceService = new Mock<IWorkspaceService>();
 
             //act
             var option = new RunOption { IsDebug = debugEnabled };
-            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
+            var sut = new CommandLineService(migrationServiceFactory.Object, dataServiceFactory.Object, manifestFactory.Object, workspaceService.Object, environmentService.Object, traceService.Object, configurationService.Object);
             var returnCode = sut.RunRunOption(option);
 
             //assert

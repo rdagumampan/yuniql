@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "run -a -p C:\\play\\yuniql\\samples\\basic-postgresql-sample -c \"Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=helloyuniql\" --transaction-mode version --platform postgresql --debug --meta-schema yuniql --meta-table accounting"
+      "commandLineArgs": "run -a -p \"C:\\play\\yuniql-tutorials\\yuniql-environment-aware\" -c \"Server=localhost,1400;Database=helloyuniql8;User Id=SA;Password=P@ssw0rd!\" -k \"ENVIRONMENT=PROD\" --environment production --debug"
     }
   }
 }

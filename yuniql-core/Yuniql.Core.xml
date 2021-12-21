@@ -231,6 +231,17 @@
             <param name="traceService">Trace service provider where trace messages will be written.</param>
             <returns></returns>
         </member>
+        <member name="M:Yuniql.Core.ConnectionExtensions.QuerySingle(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
+            <summary>
+            Executes SQL statement against the active connection and returns scalar value in object.
+            </summary>
+            <param name="connection">An active connection.</param>
+            <param name="commandText">The sql statement to execute with the active connection.</param>
+            <param name="commandTimeout">Command timeout in seconds.</param>
+            <param name="transaction">An active transaction.</param>
+            <param name="traceService">Trace service provider where trace messages will be written.</param>
+            <returns></returns>
+        </member>
         <member name="M:Yuniql.Core.ConnectionExtensions.QuerySingleRow(System.Data.IDbConnection,System.String,System.Nullable{System.Int32},System.Data.IDbTransaction,Yuniql.Extensibility.ITraceService)">
             <summary>
             Executes SQL statement against the active connection and returns scalar value in string.
@@ -783,7 +794,7 @@
         <member name="M:Yuniql.Core.MigrationService.RunNonVersionSqlScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.String,System.Nullable{System.Int32},System.Boolean)">
             <inheritdoc />
         </member>
-        <member name="M:Yuniql.Core.MigrationService.RunBulkImportScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">
+        <member name="M:Yuniql.Core.MigrationService.RunBulkImportScripts(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <inheritdoc />
         </member>
         <member name="M:Yuniql.Core.MigrationService.Initialize">
@@ -952,6 +963,11 @@
         <member name="F:Yuniql.Core.SUPPORTED_DATABASES.REDSHIFT">
             <summary>
             Redshift DW
+            </summary>
+        </member>
+        <member name="F:Yuniql.Core.SUPPORTED_DATABASES.ORACLE">
+            <summary>
+            Oracle
             </summary>
         </member>
         <member name="T:Yuniql.Core.TokenReplacementService">

@@ -11,6 +11,7 @@ namespace Yuniql.CLI
     {
         private IMigrationServiceFactory _migrationServiceFactory;
         private readonly IDataServiceFactory _dataServiceFactory;
+        private readonly IManifestFactory _manifestFactory;
         private readonly IWorkspaceService _workspaceService;
         private readonly IEnvironmentService _environmentService;
         private ITraceService _traceService;
@@ -19,6 +20,7 @@ namespace Yuniql.CLI
         public CommandLineService(
             IMigrationServiceFactory migrationServiceFactory,
             IDataServiceFactory dataServiceFactory,
+            IManifestFactory manifestFactory,
             IWorkspaceService workspaceService,
             IEnvironmentService environmentService,
             ITraceService traceService,
@@ -30,6 +32,7 @@ namespace Yuniql.CLI
             this._configurationService = configurationService;
             this._migrationServiceFactory = migrationServiceFactory;
             this._dataServiceFactory = dataServiceFactory;
+            this._manifestFactory = manifestFactory;
         }
 
         private Configuration SetupRunConfiguration(BaseRunPlatformOption opts, bool isVerifyOnly = false)
@@ -326,18 +329,19 @@ namespace Yuniql.CLI
                 var fields = typeof(SUPPORTED_DATABASES).GetFields();
                 foreach (var field in fields)
                 {
-                    if(field.Name.ToLower() != SUPPORTED_DATABASES.MARIADB) //extra check since mariadb is not yet fully supported[SHOULD CHANGE IN THE FUTURE]
-                    {
-                        var _dataService = _dataServiceFactory.Create(field.Name);
-                        var _manifestData =_dataService.GetManifestData();
-                        _manifestData.printData();
-                    }
+                    var platformManifest = _manifestFactory.Create(field.Name.ToLower());
+                    var message = string.Format(@"
+Name: {0}
+Usage:{1}
+Getting started: {2}
+Samples: {3}", platformManifest.Name, platformManifest.Usage, platformManifest.DocumentationUrl, platformManifest.SamplesUrl);
+                    Console.WriteLine(message);
                 }
-
                 return 0;
             }
             catch (Exception ex)
             {
+                Console.WriteLine();
                 return OnException(ex, "Failed to execute platforms function", opts.IsDebug);
             }
         }

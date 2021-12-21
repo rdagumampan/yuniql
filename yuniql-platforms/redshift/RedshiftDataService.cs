@@ -13,13 +13,6 @@ namespace Yuniql.Redshift
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
-        private ManifestData _manifestData = new ManifestData{
-        Name = "Redshift| Preview:",
-        SupportedVersions = "https://yuniql.io/docs/supported-platforms/",
-        Usage = "yuniql run -a -c <your-connection-string> --platform redshift",
-        Samples = "https://github.com/rdagumampan/yuniql/tree/master/samples/basic-redshift-sample"
-        };
-
 
         ///<inheritdoc/>
         public RedshiftDataService(ITraceService traceService)
@@ -98,11 +91,11 @@ CREATE DATABASE ""${YUNIQL_DB_NAME}"";
 @"
 --disallow new connections, set exclusive to current session
 ALTER DATABASE ""${YUNIQL_DB_NAME}"" CONNECTION LIMIT 1;
-", 
+",
 @"
 --terminate existing connections
 SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE datname = '${YUNIQL_DB_NAME}';
-", 
+",
 @"
 --drop database
 DROP DATABASE ""${YUNIQL_DB_NAME}"";
@@ -230,14 +223,5 @@ SELECT NULL;
             catch (Exception) { return false; }
             return false;
         }
-    
-    
-    ///<inheritdoc/>
-    
-    public ManifestData GetManifestData()
-    {
-        return _manifestData;
-    }
-
     }
 }

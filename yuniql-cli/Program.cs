@@ -22,10 +22,12 @@ namespace Yuniql.CLI
             var configurationService = new ConfigurationService(environmentService, workspaceService, traceService);
 
             var dataServiceFactory = new DataServiceFactory(traceService);
+            var manifestFactory = new ManifestFactory(traceService);
             var migrationServiceFactory = new MigrationServiceFactory(traceService);
             var commandLineService = new CommandLineService(
                 migrationServiceFactory,
                 dataServiceFactory,
+                manifestFactory,
                 workspaceService,
                 environmentService,
                 traceService,

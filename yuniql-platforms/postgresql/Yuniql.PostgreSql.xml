@@ -13,7 +13,7 @@
         <member name="M:Yuniql.PostgreSql.PostgreSqlBulkImportService.Initialize(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.PostgreSql.PostgreSqlBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:Yuniql.PostgreSql.PostgreSqlBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <inheritdoc/>
         </member>
         <member name="T:Yuniql.PostgreSql.PostgreSqlDataService">

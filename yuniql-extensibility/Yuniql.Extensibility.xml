@@ -319,7 +319,7 @@
             </summary>
             <param name="connectionString">Connection string to the target database.</param>
         </member>
-        <member name="M:Yuniql.Extensibility.IBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:Yuniql.Extensibility.IBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <summary>
             Runs the bulk import process using custom or native APIs in the target database platform.
             </summary>
@@ -562,6 +562,36 @@
             <param name="message">The message to write.</param>
             <param name="payload">JSON structured information to support the trace entry.</param>
         </member>
+        <member name="T:Yuniql.Extensibility.ManifestData">
+            <summary>
+            Representation of supported platform and versions.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.ManifestData.Name">
+            <summary>
+            The name of the database.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.ManifestData.Usage">
+            <summary>
+             An example string showing how to use the CLI interface. 
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.ManifestData.DocumentationUrl">
+            <summary>
+            The versions of the database.
+            </summary>
+        </member>
+        <member name="F:Yuniql.Extensibility.ManifestData.SamplesUrl">
+            <summary>
+             A useful link to samples of the database and yuniql in use. 
+            </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.ManifestData.printData">
+            <summary>
+            Outputs a formatted version of the manifest data.
+            </summary>
+        </member>
         <member name="T:Yuniql.Extensibility.StringExtensions">
             <summary>
             Extensions to String class
@@ -646,6 +676,14 @@
             Returns string without single or double quote enclosure
             </summary>
             <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.ReplaceTokens(System.String,Yuniql.Extensibility.ITraceService,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <summary>
+            Returns string with token replaced
+            </summary>
+            <param name="str">The string where tokens can be present</param>
+            <param name="tokens">List of token/value pairs</param>
             <returns></returns>
         </member>
     </members>
