@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "run -a -p \"C:\\play\\yuniql-tutorials\\yuniql-environment-aware\" -c \"Server=localhost,1400;Database=helloyuniql8;User Id=SA;Password=P@ssw0rd!\" -k \"ENVIRONMENT=PROD\" --environment production --debug"
+      "commandLineArgs": "run -p \"C:\\play\\yuniql\\samples\\basic-oracle-sample\" -c \"Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=49161))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=system;Password=oracle;\" --platform oracle --debug --trace-sensitive-data"
     }
   }
 }

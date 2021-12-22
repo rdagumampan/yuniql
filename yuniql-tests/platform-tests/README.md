@@ -1,24 +1,24 @@
 ﻿# How to run platform tests
 
-Platform tests verifies that yuniql works on the target RDMBS platform. The following guide describes how to run for SqlServer, PostgreSql and MySql.
+Platform tests verifies that yuniql works on the target RDMBS platform. The following guide describes how to run for each platform.
 The tests automatically deploy a Docker container and perform tests against it. The container is also destroyed when tests completed. 
 
->IMPORTANT: When running tests, you must always republish the CLI project to run the tests with latest build. If you missed this, you may be runnig integration tests but uses old version of the yuniql.exe.
-
 ## Pre-requisites
-
+When running tests, you must always republish the CLI project to run the tests with latest build. If you missed this, you may be runnig integration tests but uses old version of the yuniql.exe.
+* Windows 10+
 * .NET Core 3.0+ SDK
-* Docker Client
+* Docker Hub Account
+* Docker Desktop Client
 
 ## Environment variables
 
-|Variable Name|Description|
-|---|---|
-|YUNIQL_TEST_PLATFORM|The target platform for the test. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.|
-|YUNIQL_TEST_CONNECTION_STRING|The connection string to your test server. See defaults for each containerized server.|
-|YUNIQL_TEST_SAMPLEDB|The directory where sample yuniql db project is placed.|
-|YUNIQL_TEST_CLI|The directory where yuniql CLI is placed.|
-|YUNIQL_TEST_HOST|The location where tests is executed. Value can be `CONTAINER`, or anything else such as `SERVER`, `APPVEYOR`, etc. When value is `CONTAINER`, the database docker containers will be pulled and created for the test cases. The container will be destroyed when test completed.|
+| Variable Name                 | Description|
+| ------------------------------|---|
+| YUNIQL_TEST_PLATFORM          | The target platform for the test. Value can be `sqlserver`,`postgresql`, or `mysql`. Default is `sqlserver`.|
+| YUNIQL_TEST_CONNECTION_STRING | The connection string to your test server. See defaults for each containerized server.|
+| YUNIQL_TEST_SAMPLEDB          | The directory where sample yuniql db project is placed.|
+| YUNIQL_TEST_CLI               | The directory where yuniql CLI is placed.|
+| YUNIQL_TEST_HOST              | The location where tests is executed. Value can be `CONTAINER`, or anything else such as `SERVER`, `APPVEYOR`, etc. When value is `CONTAINER`, the database docker containers will be pulled and created for the test cases. The container will be destroyed when test completed.|
 
 ## Publish latest build of yuniql CLI
 
@@ -165,7 +165,6 @@ Run the platform tests
 cd C:\play\yuniql\yuniql-tests\platform-tests
 dotnet test -v n
 ```
-
 
 ## Run platform tests for Redshift
 

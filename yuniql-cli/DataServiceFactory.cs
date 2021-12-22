@@ -2,6 +2,7 @@
 using Yuniql.Core;
 using Yuniql.Extensibility;
 using Yuniql.MySql;
+using Yuniql.Oracle;
 using Yuniql.PostgreSql;
 using Yuniql.Redshift;
 using Yuniql.Snowflake;
@@ -46,6 +47,10 @@ namespace Yuniql.CLI
                 case SUPPORTED_DATABASES.REDSHIFT:
                     {
                         return new RedshiftDataService(_traceService);
+                    }
+                case SUPPORTED_DATABASES.ORACLE:
+                    {
+                        return new OracleDataService(_traceService);
                     }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +

@@ -57,17 +57,17 @@ namespace Yuniql.Core
         {
             try
             {
-                _traceService.Info($"Verifying sql/odbc connectivity to database master/catalog on {_connectionInfo.DataSource}...");
+                _traceService.Info($"Verifying sql/odbc connectivity to master/catalog on {_connectionInfo.DataSource}...");
                 using (var connection = _dataService.CreateMasterConnection())
                 {
                     connection.Open();
                 }
-                _traceService.Success($"Sql/odbc connectivity to database master/catalog on {_connectionInfo.DataSource} - Successful");
+                _traceService.Success($"Sql/odbc connectivity to master/catalog on {_connectionInfo.DataSource} - Successful");
                 return true;
             }
             catch (Exception ex)
             {
-                _traceService.Error($"Sql/odbc connectivity to database master/catalog on {_connectionInfo.DataSource} - Failed. Error message: { ex.Message}. " +
+                _traceService.Error($"Sql/odbc connectivity to master/catalog on {_connectionInfo.DataSource} - Failed. Error message: { ex.Message}. " +
                                     $"This maybe an expected behaviour for cloud managed databases such as Azure, AWS and GCP because access to master/catalog databases could be blocked. " +
                                     $"Suggested action: Check your connection string and verify that the user have sufficient permissions to access the database. " +
                                     $"For sample connection strings, please find your platform at https://www.connectionstrings.com. " +
@@ -86,11 +86,11 @@ namespace Yuniql.Core
             {
                 using (var ping = new Ping())
                 {
-                    _traceService.Info($"Verifying tcp/icmp connectivity to database server/cluster {_connectionInfo.DataSource}...");
+                    _traceService.Info($"Verifying tcp/icmp connectivity to server/cluster {_connectionInfo.DataSource}...");
                     var pingReply = ping.Send(_connectionInfo.DataSource);
                     if (pingReply.Status == IPStatus.Success)
                     {
-                        _traceService.Success($"Tcp/icmp connectivity to database server/cluster {_connectionInfo.DataSource} - Successful");
+                        _traceService.Success($"Tcp/icmp connectivity to server/cluster {_connectionInfo.DataSource} - Successful");
                         return true;
                     }
                     else

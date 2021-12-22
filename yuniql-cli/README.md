@@ -122,3 +122,14 @@ Run from CLI
 yuniql run -p C:\play\yuniql\samples\basic-redshift-sample -c "<your-redshift-connection-string>" --platform snowflake --debug
 yuniql list -c "<your-redshift-connection-string>" --platform snowflake --debug
 ```
+### Debugging with Oracle
+
+Record your Redshift account information
+Data Source=myOracle;User Id=myUsername;Password=myPassword;DBA Privilege=SYSDBA;
+
+Run from CLI
+
+```console
+yuniql run -p C:\play\yuniql\samples\basic-oracle-sample -c "<your-oracle-connection-string>" --platform oracle --debug
+yuniql list -c "<your-oracle-connection-string>" --platform oracle --debug
+```

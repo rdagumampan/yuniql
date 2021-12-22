@@ -154,15 +154,18 @@ namespace Yuniql.Core
             string metaTableName = null,
             int? commandTimeout = null)
         {
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForConfigureDatabase(), metaSchemaName, metaTableName);
-            using (var connection = _dataService.CreateConnection())
-            {
-                connection.ExecuteNonQuery(
-                    commandText: sqlStatement,
-                    commandTimeout: commandTimeout,
-                    transaction: null,
-                    traceService: _traceService);
-            }
+            var sqlStatements = _dataService.BreakStatements(_dataService.GetSqlForConfigureDatabase());
+            sqlStatements.ForEach(sqlStatementRaw => {
+                var sqlStatement = GetPreparedSqlStatement(sqlStatementRaw, metaSchemaName, metaTableName);
+                using (var connection = _dataService.CreateConnection())
+                {
+                    connection.ExecuteNonQuery(
+                        commandText: sqlStatement,
+                        commandTimeout: commandTimeout,
+                        transaction: null,
+                        traceService: _traceService);
+                }
+            });
         }
 
         ///<inheritdoc/>
@@ -174,24 +177,31 @@ namespace Yuniql.Core
             var version = typeof(IMigrationService).Assembly.GetName().Version.ToString();
             using (var connection = _dataService.CreateConnection())
             {
-                var sqlStatementRequireUpgrade = GetPreparedSqlStatement(_dataService.GetSqlForCheckRequireMetaSchemaUpgrade(version), metaSchemaName, metaTableName);
-                var requiredSchemaVersion = connection.QuerySingleString(
+                try
+                {
+                    var sqlStatementRequireUpgrade = GetPreparedSqlStatement(_dataService.GetSqlForCheckRequireMetaSchemaUpgrade(version), metaSchemaName, metaTableName);
+                    var requiredSchemaVersion = connection.QuerySingleString(
                     commandText: sqlStatementRequireUpgrade,
                     commandTimeout: commandTimeout,
                     transaction: null,
                     traceService: _traceService);
 
-                if (!string.IsNullOrEmpty(requiredSchemaVersion))
-                {
-                    _traceService.Warn("Schema version history table will be upgraded as required in this release of yuniql.");
-                    var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForUpgradeMetaSchema(requiredSchemaVersion), metaSchemaName, metaTableName);
-                    var result = connection.ExecuteNonQuery(
-                        commandText: sqlStatement,
-                        commandTimeout: commandTimeout,
-                        transaction: null,
-                        traceService: _traceService);
+                    if (!string.IsNullOrEmpty(requiredSchemaVersion))
+                    {
+                        _traceService.Warn("Schema version history table will be upgraded as required in this release of yuniql.");
+                        var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForUpgradeMetaSchema(requiredSchemaVersion), metaSchemaName, metaTableName);
+                        var result = connection.ExecuteNonQuery(
+                            commandText: sqlStatement,
+                            commandTimeout: commandTimeout,
+                            transaction: null,
+                            traceService: _traceService);
 
-                    return result > 0;
+                        return result > 0;
+                    }
+                }
+                catch (NotSupportedException)
+                {
+                    //swallow exception if target platform no longer supports schema migration
                 }
             }
             return false;
