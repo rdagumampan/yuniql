@@ -1,9 +1,11 @@
 /*Data for the table regions */  
-INSERT INTO regions(region_id,region_name) VALUES (1,'Europe');
-INSERT INTO regions(region_id,region_name) VALUES (2,'Americas');
-INSERT INTO regions(region_id,region_name) VALUES (3,'Asia');
-INSERT INTO regions(region_id,region_name) VALUES (4,'Middle East and Africa');
- 
+INSERT ALL
+ INTO regions(region_id,region_name) VALUES (1,'Europe')
+ INTO regions(region_id,region_name) VALUES (2,'Americas')
+ INTO regions(region_id,region_name) VALUES (3,'Asia')
+ INTO regions(region_id,region_name) VALUES (4,'Middle East and Africa')
+SELECT 1 FROM DUAL;
+
 /*Data for the table countries */
 INSERT ALL
  INTO countries(country_id,country_name,region_id) VALUES ('AR','Argentina',2)

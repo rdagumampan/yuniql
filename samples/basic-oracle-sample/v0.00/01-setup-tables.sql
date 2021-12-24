@@ -2,7 +2,7 @@ CREATE TABLE regions (
     region_id INT PRIMARY KEY,
     region_name VARCHAR (25) DEFAULT NULL
 );
- 
+
 CREATE TABLE countries (
     country_id CHAR (2) PRIMARY KEY,
     country_name VARCHAR (40) DEFAULT NULL,

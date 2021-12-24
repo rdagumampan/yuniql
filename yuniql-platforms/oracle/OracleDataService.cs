@@ -162,7 +162,6 @@ CREATE SEQUENCE ""${YUNIQL_TABLE_NAME}_SEQ""
   MINVALUE 1
   START WITH 1
   INCREMENT BY 1
-  CACHE 20;
             ";
 
         ///<inheritdoc/>
