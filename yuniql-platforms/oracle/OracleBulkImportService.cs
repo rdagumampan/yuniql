@@ -6,6 +6,8 @@ using Yuniql.Extensibility.BulkCsvParser;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Text;
+using System.Linq;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.Oracle
@@ -30,111 +32,88 @@ namespace Yuniql.Oracle
 
         ///<inheritdoc/>
         public void Run(
-            IDbConnection connection,
-            IDbTransaction transaction,
-            string fileFullPath,
-            string bulkSeparator = null,
-            int? bulkBatchSize = null,
-            int? commandTimeout = null,
-            List<KeyValuePair<string, string>> tokens = null
-            )
+                   IDbConnection connection,
+                   IDbTransaction transaction,
+                   string fileFullPath,
+                   string delimiter = null,
+                   int? batchSize = null,
+                   int? commandTimeout = null,
+                   List<KeyValuePair<string, string>> tokens = null
+               )
         {
-            var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
-
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
-            var fileName = Path.GetFileNameWithoutExtension(fileFullPath);
-            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: connectionStringBuilder.DataSource);
-            var schemaName = fileNameSegments.Item2;
-            var tableName = fileNameSegments.Item3;
-
-            if (!string.Equals(connectionStringBuilder.DataSource, schemaName, System.StringComparison.InvariantCultureIgnoreCase))
-            {
-                throw new ApplicationException("Oracle does not support custom schema. Your bulk file name must resemble these patterns: 1.mytable.csv, 01.mytable.csv or mytable.csv");
-            }
+            var fileName = Path.GetFileNameWithoutExtension(fileFullPath)
+                          .ReplaceTokens(_traceService, tokens);
+            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "PUBLIC");
+            var schemaName = fileNameSegments.Item2.HasUpper() ? fileNameSegments.Item2.DoubleQuote() : fileNameSegments.Item2;
+            var tableName = fileNameSegments.Item3.HasUpper() ? fileNameSegments.Item3.DoubleQuote() : fileNameSegments.Item3;
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            _traceService.Info($"OracleBulkImportService: Started copying data into destination table {schemaName}.{tableName}");
+            _traceService.Info($"OracleBulkImportService: Started copying data into destination table {tableName}");
 
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(connection, fileFullPath, tableName, bulkSeparator);
+            var sqlStatement = PrepareMultiRowInsertStatement(schemaName, tableName, fileFullPath, delimiter);
+            var statementCorrelationId = Guid.NewGuid().ToString().Fixed();
+            _traceService.Debug($"Executing statement {statementCorrelationId}: {Environment.NewLine}{sqlStatement}");
 
-            //save the csv data into staging sql table
-            BulkCopyWithDataTable(connection, transaction, bulkBatchSize, tableName, dataTable);
-
-            stopwatch.Stop();
-            _traceService.Info($"OracleBulkImportService: Finished copying data into destination table {schemaName}.{tableName} in {stopwatch.ElapsedMilliseconds} ms");
-        }
-
-        private DataTable ParseCsvFile(
-            IDbConnection connection,
-            string fileFullPath,
-            string tableName,
-            string bulkSeparator)
-        {
-            if (string.IsNullOrEmpty(bulkSeparator))
-                bulkSeparator = ",";
-
-            var csvDatatable = new DataTable();
-            string query = $"SELECT * FROM {tableName} LIMIT 0;";
-            using (var adapter = new OracleDataAdapter(query, connection as OracleConnection))
-            {
-                adapter.Fill(csvDatatable);
-            };
-
-            using (var csvReader = new CsvTextFieldParser(fileFullPath))
-            {
-                csvReader.Separators = (new string[] { bulkSeparator });
-                csvReader.HasFieldsEnclosedInQuotes = true;
-
-                //skipped the first row
-                csvReader.ReadFields();
-
-                //process data rows
-                while (!csvReader.EndOfData)
-                {
-                    string[] fieldData = csvReader.ReadFields();
-                    for (int i = 0; i < fieldData.Length; i++)
-                    {
-                        if (fieldData[i] == "" || fieldData[i] == "NULL")
-                        {
-                            fieldData[i] = null;
-                        }
-                    }
-                    csvDatatable.Rows.Add(fieldData);
-                }
-            }
-            return csvDatatable;
-        }
-
-        //https://dev.Oracle.com/doc/connector-net/en/connector-net-programming-bulk-loader.html
-        //https://stackoverflow.com/questions/48018614/insert-datatable-into-a-Oracle-table-using-c-sharp
-
-        //NOTE: This is not the most typesafe and performant way to do this and this is just to demonstrate
-        //possibility to bulk import data in custom means during migration execution
-        private void BulkCopyWithDataTable(
-            IDbConnection connection,
-            IDbTransaction transaction,
-            int? bulkBatchSize,
-            string tableName,
-            DataTable dataTable)
-        {
             using (var cmd = new OracleCommand())
             {
                 cmd.Connection = connection as OracleConnection;
                 cmd.Transaction = transaction as OracleTransaction;
-                cmd.CommandText = $"SELECT * FROM {tableName} WHERE 1 <> 1;";
-
-                using (var adapter = new OracleDataAdapter(cmd))
-                {
-                    adapter.UpdateBatchSize = bulkBatchSize.HasValue ? bulkBatchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE; ;
-                    using (var cb = new OracleCommandBuilder(adapter))
-                    {
-                        cb.SetAllValues = true;
-                        adapter.Update(dataTable);
-                    }
-                };
+                cmd.CommandText = sqlStatement;
+                cmd.ExecuteNonQuery();
             }
+
+            stopwatch.Stop();
+            _traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
+            _traceService.Info($"OracleBulkImportService: Finished copying data into destination table {tableName} in {stopwatch.ElapsedMilliseconds} ms");
+        }
+
+        //https://stackoverflow.com/questions/39576/best-way-to-do-multi-row-insert-in-oracle
+        //https://stackoverflow.com/questions/28523262/multiple-insert-sql-oracle
+        //NOTE: This is not the most typesafe and performant way to do this and this is just to demonstrate
+        //possibility to bulk import data in custom means during migration execution
+        private string PrepareMultiRowInsertStatement(
+            string schemaName,
+            string tableName,
+            string csvFileFullPath,
+            string delimiter = null)
+        {
+            var sqlStatement = new StringBuilder();
+            var nullValue = "NULL";
+            var nullValueDoubleQuoted = "NULL".DoubleQuote();
+            var nullValueQuoted = "NULL".Quote();
+
+            if (string.IsNullOrEmpty(delimiter))
+                delimiter = ",";
+
+            //prepare local constants for optimal conditional evaluation
+            using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
+            {
+                csvReader.Separators = (new string[] { delimiter });
+                csvReader.HasFieldsEnclosedInQuotes = true;
+
+                //enclose all column names into double quote for case-sensitivity
+                var csvColumns = csvReader.ReadFields().Select(f => f);
+
+                sqlStatement.Append($"INSERT ALL");
+                while (!csvReader.EndOfData)
+                {
+                    var fieldData = csvReader.ReadFields().Select(s =>
+                    {
+                        if (string.IsNullOrEmpty(s) || s == nullValue || s == nullValueDoubleQuoted || s == nullValueQuoted)
+                            return nullValue;
+                        return s.Quote();
+                    });
+
+                    sqlStatement.Append($"{Environment.NewLine}INTO {tableName} ({string.Join(",", csvColumns)}) VALUES ({string.Join(",", fieldData)})");
+                }
+            }
+
+            return sqlStatement
+                .Append($"{Environment.NewLine}SELECT 1 FROM DUAL")  //required for INSERT ALL to work
+                .ToString();
         }
     }
 }
