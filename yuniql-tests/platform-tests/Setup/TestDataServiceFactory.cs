@@ -11,6 +11,7 @@ using Yuniql.PostgreSql;
 using Yuniql.MySql;
 using Yuniql.Snowflake;
 using Yuniql.Redshift;
+using Yuniql.Oracle;
 
 namespace Yuniql.PlatformTests.Setup
 {
@@ -52,6 +53,10 @@ namespace Yuniql.PlatformTests.Setup
                 case SUPPORTED_DATABASES.REDSHIFT:
                     {
                         return new RedshiftTestDataService(new RedshiftDataService(traceService), tokenReplacementService);
+                    }
+                case SUPPORTED_DATABASES.ORACLE:
+                    {
+                        return new OracleTestDataService(new OracleDataService(traceService), tokenReplacementService);
                     }
                 default:
                     throw new NotSupportedException($"The target database platform {platform} is not supported or plugins location was not correctly configured. " +

@@ -335,7 +335,7 @@ namespace Yuniql.PlatformTests.CLI
             //act & assert
             var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
             result.Contains($"Failed to execute run").ShouldBeFalse();
-
+             
             //act & assert
             result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeTrue();

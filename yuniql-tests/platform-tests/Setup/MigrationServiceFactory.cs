@@ -2,6 +2,7 @@
 using Yuniql.Core;
 using Yuniql.Extensibility;
 using Yuniql.MySql;
+using Yuniql.Oracle;
 using Yuniql.PostgreSql;
 using Yuniql.Redshift;
 using Yuniql.Snowflake;
@@ -58,6 +59,12 @@ namespace Yuniql.PlatformTests.Setup
                     {
                         var dataService = new RedshiftDataService(_traceService);
                         var bulkImportService = new RedshiftBulkImportService(_traceService);
+                        return CreateInternal(dataService, bulkImportService);
+                    }
+                case SUPPORTED_DATABASES.ORACLE:
+                    {
+                        var dataService = new OracleDataService(_traceService);
+                        var bulkImportService = new OracleBulkImportService(_traceService);
                         return CreateInternal(dataService, bulkImportService);
                     }
                 default:

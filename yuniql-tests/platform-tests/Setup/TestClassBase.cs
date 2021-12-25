@@ -39,6 +39,7 @@ namespace Yuniql.PlatformTests.Setup
             return workingPath;
         }
 
+        //used in all tests except the cli tests where sql files are prepared for each test case
         public TestConfiguration ConfigureWithEmptyWorkspace()
         {
             //create test run configuration from empty workspace
@@ -65,6 +66,7 @@ namespace Yuniql.PlatformTests.Setup
             };
         }
 
+        //used in the cli tests so we have ready to run sample repo per platform
         public TestConfiguration ConfigureWorkspaceWithSampleDb()
         {
             //create test run configuration from sample workspace

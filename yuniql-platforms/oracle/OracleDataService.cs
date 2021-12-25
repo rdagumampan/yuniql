@@ -4,7 +4,6 @@ using Yuniql.Extensibility;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Linq;
 
 namespace Yuniql.Oracle
@@ -54,15 +53,15 @@ namespace Yuniql.Oracle
         ///<inheritdoc/>
         public IDbConnection CreateMasterConnection()
         {
-            var masterConnectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
-            masterConnectionStringBuilder.DataSource = "INFORMATION_SCHEMA";
-
-            return new OracleConnection(masterConnectionStringBuilder.ConnectionString);
+            //There's no concept of master database in Oracle <= v12
+            //All metadata are stored in SYS schema
+            return new OracleConnection(_connectionString);
         }
 
         ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
         {
+            //breaks statements into batches using semicolon batch separator
             var results = new List<string>();
             using (var sr = new StringReader(sqlStatementRaw))
             {
@@ -89,10 +88,24 @@ namespace Yuniql.Oracle
         ///<inheritdoc/>
         public ConnectionInfo GetConnectionInfo()
         {
-            var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
-            return new ConnectionInfo { DataSource = connectionStringBuilder.DataSource, Database = connectionStringBuilder.DataSource };
-        }
+            //Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=49161))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=myuser;Password=mypassword;
+            var stringParts = _connectionString.Split('(');
 
+            //HOST=localhost)
+            var hostPair = stringParts.First(s => s.Contains("HOST")).Split("=");
+            var host = hostPair[1].Substring(0, hostPair[1].IndexOf(")"));
+
+            //PORT=49161)
+            var portPair = stringParts.First(s => s.Contains("PORT")).Split("=");
+            var port = portPair[1].Substring(0, portPair[1].IndexOf(")"));
+
+            //SERVICE_NAME=xe)
+            var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME")).Split("=");
+            var serviceName = serviceNamePair[1].Substring(0, serviceNamePair[1].IndexOf(")"));
+
+            var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
+            return new ConnectionInfo { DataSource = $"{host}", Database = serviceName};
+        }
 
         //Only applies with oracle 12c
         //https://docs.oracle.com/en/database/oracle/oracle-database/19/riwin/about-pluggable-databases-in-oracle-rac.html
@@ -100,31 +113,27 @@ namespace Yuniql.Oracle
         ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseExists()
             => @"
-SELECT 1 FROM DBA_PDBS WHERE PDB_NAME = '${YUNIQL_DB_NAME}'
+SELECT 1 FROM DUAL'
             ";
 
         //https://blog.devart.com/how-to-create-database-in-oracle.html
         ///<inheritdoc/>
         public string GetSqlForCreateDatabase()
-            => @"
-CREATE DATABASE ${YUNIQL_DB_NAME};
-            ";
+            => throw new NotSupportedException("Not supported in the target platform.");
 
         ///<inheritdoc/>
         public List<string> GetSqlForDropDatabase()
-            => new List<string> { @"
-DROP DATABASE [${YUNIQL_DB_NAME}];
-            " };
+            => throw new NotSupportedException("Not supported in the target platform.");
 
         ///<inheritdoc/>
         public string GetSqlForCheckIfSchemaExists()
-            => throw new NotSupportedException("Custom schema is not supported in Oracle.");
+            => throw new NotSupportedException("Not supported in the target platform.");
 
         //https://www.techonthenet.com/oracle/schemas/create_schema_statement.php
         //https://docs.oracle.com/cd/B19306_01/server.102/b14200/statements_6014.htm
         ///<inheritdoc/>
         public string GetSqlForCreateSchema()
-            => throw new NotSupportedException("Custom schema is not supported in Oracle.");
+            => throw new NotSupportedException("Not supported in the target platform.");
 
         ///<inheritdoc/>
         public string GetSqlForCheckIfDatabaseConfigured()
@@ -162,6 +171,7 @@ CREATE SEQUENCE ""${YUNIQL_TABLE_NAME}_SEQ""
   MINVALUE 1
   START WITH 1
   INCREMENT BY 1
+  CACHE 20;
             ";
 
         ///<inheritdoc/>
@@ -204,12 +214,12 @@ WHERE
 
         ///<inheritdoc/>
         public string GetSqlForUpsertVersion()
-            => throw new NotSupportedException("Not supported for the target platform");
+            => throw new NotSupportedException("Not supported in the target platform.");
 
         ///<inheritdoc/>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
         //when table __yuniqldbversion exists, we need to upgrade from yuniql v1.0 to v1.1 version
-            => throw new NotSupportedException("Not supported for the target platform");
+            => throw new NotSupportedException("Not supported in the target platform.");
 
         ///<inheritdoc/>
         public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
