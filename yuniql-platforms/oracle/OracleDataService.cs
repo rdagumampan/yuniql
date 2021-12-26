@@ -61,95 +61,100 @@ namespace Yuniql.Oracle
         ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
         {
-            //breaks statements into batches using semicolon batch separator
+            //breaks statements into batches using semicolon (;) or forward slash (/) batch separator
+            //any existence of / in the line means it batch separated by /
+            var statementBatchTerminator = sqlStatementRaw.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                .Any(s=> s.Equals("/")) 
+                ? "/" : ";";
+
             var results = new List<string>();
+            var sqlStatement = string.Empty;
+            var sqlStatementLine2 = string.Empty; byte lineNo = 0;
             using (var sr = new StringReader(sqlStatementRaw))
-            {
-                var sqlStatement = string.Empty;
-                var sqlLine = string.Empty; byte lineNo = 0;
-                while ((sqlLine = sr.ReadLine()) != null)
                 {
-                    if (sqlLine.Length > 0 && !sqlLine.StartsWith("--"))
+                    while ((sqlStatementLine2 = sr.ReadLine()) != null)
                     {
-                        sqlStatement += (sqlStatement.Length > 0 ? Environment.NewLine : string.Empty) + sqlLine;
-                        if (sqlStatement.EndsWith(";"))
+                        if (sqlStatementLine2.Length > 0 && !sqlStatementLine2.StartsWith("--"))
                         {
-                            results.Add(sqlStatement.Substring(0, sqlStatement.Length - 1));
-                            sqlStatement = string.Empty;
+                            sqlStatement += (sqlStatement.Length > 0 ? Environment.NewLine : string.Empty) + sqlStatementLine2;
+                            if (sqlStatement.EndsWith(statementBatchTerminator))
+                            {
+                                results.Add(sqlStatement.Substring(0, sqlStatement.Length - 1));
+                                sqlStatement = string.Empty;
+                            }
                         }
+                        ++lineNo;
                     }
-                    ++lineNo;
                 }
+
+                return results;
             }
 
-            return results;
-        }
+            ///<inheritdoc/>
+            public ConnectionInfo GetConnectionInfo()
+            {
+                //Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=49161))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=myuser;Password=mypassword;
+                var stringParts = _connectionString.Split('(');
 
-        ///<inheritdoc/>
-        public ConnectionInfo GetConnectionInfo()
-        {
-            //Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=49161))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=myuser;Password=mypassword;
-            var stringParts = _connectionString.Split('(');
+                //HOST=localhost)
+                var hostPair = stringParts.First(s => s.Contains("HOST")).Split("=");
+                var host = hostPair[1].Substring(0, hostPair[1].IndexOf(")"));
 
-            //HOST=localhost)
-            var hostPair = stringParts.First(s => s.Contains("HOST")).Split("=");
-            var host = hostPair[1].Substring(0, hostPair[1].IndexOf(")"));
+                //PORT=49161)
+                var portPair = stringParts.First(s => s.Contains("PORT")).Split("=");
+                var port = portPair[1].Substring(0, portPair[1].IndexOf(")"));
 
-            //PORT=49161)
-            var portPair = stringParts.First(s => s.Contains("PORT")).Split("=");
-            var port = portPair[1].Substring(0, portPair[1].IndexOf(")"));
+                //SERVICE_NAME=xe)
+                var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME")).Split("=");
+                var serviceName = serviceNamePair[1].Substring(0, serviceNamePair[1].IndexOf(")"));
 
-            //SERVICE_NAME=xe)
-            var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME")).Split("=");
-            var serviceName = serviceNamePair[1].Substring(0, serviceNamePair[1].IndexOf(")"));
+                var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
+                return new ConnectionInfo { DataSource = $"{host}", Database = serviceName };
+            }
 
-            var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
-            return new ConnectionInfo { DataSource = $"{host}", Database = serviceName};
-        }
-
-        //Only applies with oracle 12c
-        //https://docs.oracle.com/en/database/oracle/oracle-database/19/riwin/about-pluggable-databases-in-oracle-rac.html
-        //https://dba.stackexchange.com/questions/27725/how-to-see-list-of-databases-in-oracle
-        ///<inheritdoc/>
-        public string GetSqlForCheckIfDatabaseExists()
-            => @"
+            //Only applies with oracle 12c
+            //https://docs.oracle.com/en/database/oracle/oracle-database/19/riwin/about-pluggable-databases-in-oracle-rac.html
+            //https://dba.stackexchange.com/questions/27725/how-to-see-list-of-databases-in-oracle
+            ///<inheritdoc/>
+            public string GetSqlForCheckIfDatabaseExists()
+                => @"
 SELECT 1 FROM DUAL'
             ";
 
-        //https://blog.devart.com/how-to-create-database-in-oracle.html
-        ///<inheritdoc/>
-        public string GetSqlForCreateDatabase()
-            => throw new NotSupportedException("Not supported in the target platform.");
+            //https://blog.devart.com/how-to-create-database-in-oracle.html
+            ///<inheritdoc/>
+            public string GetSqlForCreateDatabase()
+                => throw new NotSupportedException("Not supported in the target platform.");
 
-        ///<inheritdoc/>
-        public List<string> GetSqlForDropDatabase()
-            => throw new NotSupportedException("Not supported in the target platform.");
+            ///<inheritdoc/>
+            public List<string> GetSqlForDropDatabase()
+                => throw new NotSupportedException("Not supported in the target platform.");
 
-        ///<inheritdoc/>
-        public string GetSqlForCheckIfSchemaExists()
-            => throw new NotSupportedException("Not supported in the target platform.");
+            ///<inheritdoc/>
+            public string GetSqlForCheckIfSchemaExists()
+                => throw new NotSupportedException("Not supported in the target platform.");
 
-        //https://www.techonthenet.com/oracle/schemas/create_schema_statement.php
-        //https://docs.oracle.com/cd/B19306_01/server.102/b14200/statements_6014.htm
-        ///<inheritdoc/>
-        public string GetSqlForCreateSchema()
-            => throw new NotSupportedException("Not supported in the target platform.");
+            //https://www.techonthenet.com/oracle/schemas/create_schema_statement.php
+            //https://docs.oracle.com/cd/B19306_01/server.102/b14200/statements_6014.htm
+            ///<inheritdoc/>
+            public string GetSqlForCreateSchema()
+                => throw new NotSupportedException("Not supported in the target platform.");
 
-        ///<inheritdoc/>
-        public string GetSqlForCheckIfDatabaseConfigured()
-            => @"
+            ///<inheritdoc/>
+            public string GetSqlForCheckIfDatabaseConfigured()
+                => @"
 SELECT 1 FROM SYS.ALL_TABLES WHERE TABLE_NAME = '${YUNIQL_TABLE_NAME}' AND ROWNUM = 1
             ";
 
-        ///<inheritdoc/>
-        public string GetSqlForCheckIfDatabaseConfiguredv10()
-            => @"
+            ///<inheritdoc/>
+            public string GetSqlForCheckIfDatabaseConfiguredv10()
+                => @"
 SELECT 1 FROM SYS.ALL_TABLES WHERE TABLE_NAME = '__yuniqldbversion' AND ROWNUM = 1
             ";
 
-        ///<inheritdoc/>
-        public string GetSqlForConfigureDatabase()
-            => @"
+            ///<inheritdoc/>
+            public string GetSqlForConfigureDatabase()
+                => @"
 CREATE TABLE ""${YUNIQL_TABLE_NAME}"" (
     ""sequence_id"" NUMBER NOT NULL,
     ""version"" VARCHAR2(190) NOT NULL,
@@ -174,29 +179,29 @@ CREATE SEQUENCE ""${YUNIQL_TABLE_NAME}_SEQ""
   CACHE 20;
             ";
 
-        ///<inheritdoc/>
-        public string GetSqlForGetCurrentVersion()
-            => @"
+            ///<inheritdoc/>
+            public string GetSqlForGetCurrentVersion()
+                => @"
 SELECT ""version"" FROM ""${YUNIQL_TABLE_NAME}"" WHERE ""status"" = 'Successful' AND ROWNUM = 1 ORDER BY ""sequence_id"" DESC
             ";
 
-        ///<inheritdoc/>
-        public string GetSqlForGetAllVersions()
-            => @"
+            ///<inheritdoc/>
+            public string GetSqlForGetAllVersions()
+                => @"
 SELECT ""sequence_id"", ""version"", ""applied_on_utc"", ""applied_by_user"", ""applied_by_tool"", ""applied_by_tool_version"", ""status"", ""duration_ms"", ""checksum"", ""failed_script_path"", ""failed_script_error"", ""additional_artifacts""
 FROM ""${YUNIQL_TABLE_NAME}"" ORDER BY ""version"" ASC
             ";
 
-        ///<inheritdoc/>
-        public string GetSqlForInsertVersion()
-            => @"
+            ///<inheritdoc/>
+            public string GetSqlForInsertVersion()
+                => @"
 INSERT INTO ""${YUNIQL_TABLE_NAME}"" (""sequence_id"", ""version"", ""applied_on_utc"", ""applied_by_user"", ""applied_by_tool"", ""applied_by_tool_version"", ""status"", ""duration_ms"", ""checksum"", ""failed_script_path"", ""failed_script_error"", ""additional_artifacts"") 
 VALUES (""${YUNIQL_TABLE_NAME}_SEQ"".NEXTVAL, '${YUNIQL_VERSION}', SYS_EXTRACT_UTC(SYSTIMESTAMP), USER, '${YUNIQL_APPLIED_BY_TOOL}', '${YUNIQL_APPLIED_BY_TOOL_VERSION}','${YUNIQL_STATUS}', '${YUNIQL_DURATION_MS}', '${YUNIQL_CHECKSUM}', '${YUNIQL_FAILED_SCRIPT_PATH}', '${YUNIQL_FAILED_SCRIPT_ERROR}', '${YUNIQL_ADDITIONAL_ARTIFACTS}')
             ";
 
-        ///<inheritdoc/>
-        public string GetSqlForUpdateVersion()
-            => @"
+            ///<inheritdoc/>
+            public string GetSqlForUpdateVersion()
+                => @"
 UPDATE ""${YUNIQL_TABLE_NAME}""
 SET
     ""applied_on_utc""          =  SYS_EXTRACT_UTC(SYSTIMESTAMP),
@@ -212,34 +217,34 @@ WHERE
     ""version""                 = '${YUNIQL_VERSION}'
             ";
 
-        ///<inheritdoc/>
-        public string GetSqlForUpsertVersion()
-            => throw new NotSupportedException("Not supported in the target platform.");
+            ///<inheritdoc/>
+            public string GetSqlForUpsertVersion()
+                => throw new NotSupportedException("Not supported in the target platform.");
 
-        ///<inheritdoc/>
-        public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
-        //when table __yuniqldbversion exists, we need to upgrade from yuniql v1.0 to v1.1 version
-            => throw new NotSupportedException("Not supported in the target platform.");
+            ///<inheritdoc/>
+            public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
+                //when table __yuniqldbversion exists, we need to upgrade from yuniql v1.0 to v1.1 version
+                => throw new NotSupportedException("Not supported in the target platform.");
 
-        ///<inheritdoc/>
-        public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
-        {
-            var assembly = typeof(OracleDataService).Assembly;
-            var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion.Replace(".", "_")}.sql");
-            using var reader = new StreamReader(resource);
-            return reader.ReadToEnd();
-        }
-
-        ///<inheritdoc/>
-        public bool TryParseErrorFromException(Exception exception, out string result)
-        {
-            result = null;
-            if (exception is OracleException sqlException)
+            ///<inheritdoc/>
+            public string GetSqlForUpgradeMetaSchema(string requiredSchemaVersion)
             {
-                result = $"(0x{sqlException.ErrorCode:X}) Error {sqlException.Number}: {sqlException.Message}";
-                return true;
+                var assembly = typeof(OracleDataService).Assembly;
+                var resource = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.SchemaUpgrade_{requiredSchemaVersion.Replace(".", "_")}.sql");
+                using var reader = new StreamReader(resource);
+                return reader.ReadToEnd();
             }
-            return false;
+
+            ///<inheritdoc/>
+            public bool TryParseErrorFromException(Exception exception, out string result)
+            {
+                result = null;
+                if (exception is OracleException sqlException)
+                {
+                    result = $"(0x{sqlException.ErrorCode:X}) Error {sqlException.Number}: {sqlException.Message}";
+                    return true;
+                }
+                return false;
+            }
         }
     }
-}
