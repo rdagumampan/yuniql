@@ -45,6 +45,8 @@ namespace Yuniql.PlatformTests.Interfaces
 
         void CreateScriptFile(string sqlFilePath, string sqlStatement);
 
+        //TODO: Add IsMultiTenantSupported
+        //TODO: Rename into GetSqlForErase
         string GetSqlForCleanup();
 
         bool IsTransactionalDdlSupported { get; }

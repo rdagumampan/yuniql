@@ -65,7 +65,7 @@ namespace Yuniql.PlatformTests.CLI
         [DataRow("check", "-d --trace-sensitive-data")]
         [DataRow("check", "-d --trace-to-file")]
         [DataRow("check", "-d --trace-to-directory c:\\temp\\not-existing")]
-        public void Test_yuniql_check(string command, string arguments)
+        public void Test_yuniql_check(string command, string arguments) 
         {
             //arrange
             SetupWorkspaceWithSampleDb();

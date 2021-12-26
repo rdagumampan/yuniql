@@ -195,7 +195,7 @@ dotnet test -v n
 Deploy local database container
 
 ```console
-docker run --rm -dit -p 49161:1521 -e ORACLE_ALLOW_REMOTE=true wnameless/oracle-xe-11g-r2
+docker run -d -it --name oracle12cdev  -p 1521:1521  store/oracle/database-enterprise:12.2.0.1-slim
 ```
 
 Configure your test environment
@@ -205,7 +205,7 @@ cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
 SETX YUNIQL_TEST_PLATFORM "oracle"
-SETX YUNIQL_TEST_CONNECTION_STRING "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=49161))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=system;Password=oracle;"
+SETX YUNIQL_TEST_CONNECTION_STRING "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORCLCDB.localdomain)));User Id=sys;Password=Oradoc_db1;DBA Privilege=SYSDBA;"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-oracle-sample"
 SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"

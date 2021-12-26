@@ -118,7 +118,7 @@ namespace Yuniql.Oracle
             ///<inheritdoc/>
             public string GetSqlForCheckIfDatabaseExists()
                 => @"
-SELECT 1 FROM DUAL'
+SELECT 1 FROM DUAL
             ";
 
             //https://blog.devart.com/how-to-create-database-in-oracle.html
@@ -168,8 +168,8 @@ CREATE TABLE ""${YUNIQL_TABLE_NAME}"" (
     ""failed_script_path"" VARCHAR2(4000) NULL,
     ""failed_script_error"" VARCHAR2(4000) NULL,
     ""additional_artifacts"" VARCHAR2(4000) NULL,
-    CONSTRAINT pk___yuniql_schema_version PRIMARY KEY(""sequence_id""),
-    CONSTRAINT ix___yuniql_schema_version UNIQUE(""version"")
+    CONSTRAINT ""pk___${YUNIQL_TABLE_NAME}"" PRIMARY KEY(""sequence_id""),
+    CONSTRAINT ""ix___${YUNIQL_TABLE_NAME}"" UNIQUE(""version"")
 );
 
 CREATE SEQUENCE ""${YUNIQL_TABLE_NAME}_SEQ""
