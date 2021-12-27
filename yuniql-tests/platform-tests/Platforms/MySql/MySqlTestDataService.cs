@@ -159,9 +159,9 @@ CREATE TABLE {tableName}(
         public override string GetSqlForCleanup()
         {
             return @"
-DROP TABLE script1;
-DROP TABLE script2;
-DROP TABLE script3;
+DROP TABLE TEST_DB_OBJECT_1;
+DROP TABLE TEST_DB_OBJECT_2;
+DROP TABLE TEST_DB_OBJECT_3;
 ";
         }
 

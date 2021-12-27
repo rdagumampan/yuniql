@@ -95,6 +95,9 @@ namespace Yuniql.Snowflake
         public bool IsTransactionalDdlSupported => false;
 
         ///<inheritdoc/>
+        public bool IsMultiTenancySupported { get; } = true;
+
+        ///<inheritdoc/>
         public bool IsSchemaSupported { get; } = true;
 
         ///<inheritdoc/>

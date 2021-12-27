@@ -30,6 +30,9 @@ namespace Yuniql.Oracle
         public bool IsTransactionalDdlSupported => false;
 
         ///<inheritdoc/>
+        public bool IsMultiTenancySupported { get; } = false;
+
+        ///<inheritdoc/>
         public bool IsSchemaSupported { get; } = true;
 
         ///<inheritdoc/>

@@ -37,6 +37,9 @@
         <member name="P:Yuniql.SqlServer.SqlServerDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.IsMultiTenancySupported">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.SqlServer.SqlServerDataService.IsSchemaSupported">
             <inheritdoc/>
         </member>

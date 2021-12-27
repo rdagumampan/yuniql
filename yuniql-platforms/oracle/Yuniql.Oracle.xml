@@ -28,6 +28,9 @@
         <member name="P:Yuniql.Oracle.OracleDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
+        <member name="P:Yuniql.Oracle.OracleDataService.IsMultiTenancySupported">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.Oracle.OracleDataService.IsSchemaSupported">
             <inheritdoc/>
         </member>

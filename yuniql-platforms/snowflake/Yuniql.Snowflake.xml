@@ -25,6 +25,9 @@
         <member name="P:Yuniql.Snowflake.SnowflakeDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
+        <member name="P:Yuniql.Snowflake.SnowflakeDataService.IsMultiTenancySupported">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.Snowflake.SnowflakeDataService.IsSchemaSupported">
             <inheritdoc/>
         </member>

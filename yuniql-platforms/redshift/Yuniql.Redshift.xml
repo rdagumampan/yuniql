@@ -13,6 +13,9 @@
         <member name="P:Yuniql.Redshift.RedshiftDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
+        <member name="P:Yuniql.Redshift.RedshiftDataService.IsMultiTenancySupported">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.Redshift.RedshiftDataService.IsSchemaSupported">
             <inheritdoc/>
         </member>

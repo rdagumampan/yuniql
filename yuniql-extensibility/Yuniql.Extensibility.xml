@@ -366,6 +366,12 @@
             supports rollback of DDL operations should migration failed.
             </summary>
         </member>
+        <member name="P:Yuniql.Extensibility.IDataService.IsMultiTenancySupported">
+            <summary>
+            Returns true if the database platform or version supports multiple databases in the same server instance.
+            For example, all major RDMS platforms supports this except for Oracle versions older than 12c
+            </summary>
+        </member>
         <member name="P:Yuniql.Extensibility.IDataService.IsSchemaSupported">
             <summary>
             Returns true if the database platform or version supports Schema within the database.

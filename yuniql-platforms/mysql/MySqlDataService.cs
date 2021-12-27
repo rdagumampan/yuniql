@@ -29,6 +29,8 @@ namespace Yuniql.MySql
         public bool IsTransactionalDdlSupported => false;
 
         ///<inheritdoc/>
+        public bool IsMultiTenancySupported { get; } = true;
+
         public bool IsSchemaSupported { get; } = false;
 
         ///<inheritdoc/>

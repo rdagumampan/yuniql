@@ -24,6 +24,9 @@ namespace Yuniql.PostgreSql
         public bool IsTransactionalDdlSupported => true;
 
         ///<inheritdoc/>
+        public bool IsMultiTenancySupported { get; } = true;
+
+        ///<inheritdoc/>
         public bool IsSchemaSupported { get; } = true;
 
         ///<inheritdoc/>

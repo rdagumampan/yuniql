@@ -281,11 +281,11 @@ GO
         public override string GetSqlForCleanup()
         {
             return $@"
-DROP TABLE {"script1".DoubleQuote()};
+DROP TABLE {"TEST_DB_OBJECT_1".DoubleQuote()};
 GO
-DROP TABLE {"script2".DoubleQuote()};
+DROP TABLE {"TEST_DB_OBJECT_2".DoubleQuote()};
 GO
-DROP TABLE {"script3".DoubleQuote()};
+DROP TABLE {"TEST_DB_OBJECT_3".DoubleQuote()};
 GO
 ";
         }

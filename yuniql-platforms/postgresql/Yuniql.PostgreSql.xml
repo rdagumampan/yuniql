@@ -25,6 +25,9 @@
         <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsMultiTenancySupported">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsSchemaSupported">
             <inheritdoc/>
         </member>

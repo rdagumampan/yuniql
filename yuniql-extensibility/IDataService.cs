@@ -41,6 +41,12 @@ namespace Yuniql.Extensibility
         bool IsTransactionalDdlSupported { get; }
 
         /// <summary>
+        /// Returns true if the database platform or version supports multiple databases in the same server instance.
+        /// For example, all major RDMS platforms supports this except for Oracle versions older than 12c
+        /// </summary>
+        bool IsMultiTenancySupported { get; }
+
+        /// <summary>
         /// Returns true if the database platform or version supports Schema within the database.
         /// MySql version below 8.0 are known to not support Schema.
         /// </summary>
@@ -52,18 +58,19 @@ namespace Yuniql.Extensibility
         /// </summary>
         bool IsBatchSqlSupported { get; }
 
-
         /// <summary>
         /// Returns true if the database supports single MERGE or UPSERT sql statement
         /// </summary>
         bool IsUpsertSupported { get; }
 
+        //TODO: Rename into MetaSchemaName
         /// <summary>
         /// Default schema name for schema versions table. Leave it null if database doesn't support schema.
         /// For example its dbo in SqlServer and public in PostgreSql
         /// </summary>
         string SchemaName { get; }
 
+        //TODO: Rename into MetaTableName
         /// <summary>
         /// Table name for schema versions table.
         /// When implementing a new platform, its reccommended to use __yuniql_schema_version as default value
@@ -109,6 +116,7 @@ namespace Yuniql.Extensibility
         /// </summary>
         public string GetSqlForCheckIfDatabaseConfigured();
 
+        //TODO: Consider dropping this in next release
         /// <summary>
         /// Returns the SQL statement to use for checking target database has been configured for migration tracking in yuniql v1.0.
         /// </summary>
@@ -144,12 +152,14 @@ namespace Yuniql.Extensibility
         /// </summary>
         public string GetSqlForUpsertVersion();
 
+        //TODO: Consider dropping this in next release
         /// <summary>
         /// Returns true if the version tracking table requires upgrade for this release
         /// </summary>
         /// <returns></returns>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion);
 
+        //TODO: Consider dropping this in next release
         /// <summary>
         /// Returns sql for upgrade the existing version tracking table
         /// </summary>

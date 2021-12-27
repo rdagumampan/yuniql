@@ -51,6 +51,8 @@ namespace Yuniql.PlatformTests.Interfaces
 
         bool IsTransactionalDdlSupported { get; }
 
+        bool IsMultiTenancySupported { get; }
+
         bool IsSchemaSupported { get; }
 
         bool IsBatchSqlSupported { get; }

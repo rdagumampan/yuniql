@@ -28,7 +28,7 @@
         <member name="P:Yuniql.MySql.MySqlDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.MySql.MySqlDataService.IsSchemaSupported">
+        <member name="P:Yuniql.MySql.MySqlDataService.IsMultiTenancySupported">
             <inheritdoc/>
         </member>
         <member name="P:Yuniql.MySql.MySqlDataService.IsBatchSqlSupported">
