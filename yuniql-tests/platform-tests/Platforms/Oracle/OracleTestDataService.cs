@@ -46,7 +46,7 @@ namespace Yuniql.PlatformTests.Platforms.Redshift
         {
             var dbObject = GetObjectNameWithSchema(objectName);
 
-            var sqlStatement = $"SELECT 1 FROM SYS.ALL_TABLES WHERE TABLE_NAME = TABLE_NAME = '{dbObject.Item2}'";
+            var sqlStatement = $"SELECT 1 FROM SYS.ALL_TABLES WHERE TABLE_NAME = '{dbObject.Item2}'";
             var result = QuerySingleBool(connectionString, sqlStatement);
 
             return result;
@@ -88,7 +88,7 @@ CREATE TABLE {objectName} (
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
             return $@"
-CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
+CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
 	VisitorID INT NOT NULL,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
@@ -154,9 +154,9 @@ CREATE TABLE {objectName}(
         public override string GetSqlForCleanup()
         {
             return @"
-DROP TABLE script1;
-DROP TABLE script2;
-DROP TABLE script3;
+DROP TABLE TEST_DB_OBJECT_1;
+DROP TABLE TEST_DB_OBJECT_2;
+DROP TABLE TEST_DB_OBJECT_3;
 ";
         }
 
@@ -172,7 +172,7 @@ DROP TABLE script3;
                 newObjectName = objectName.Split('.')[1];
             }
 
-            return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
+            return new Tuple<string, string>(schemaName, newObjectName);
         }
 
         //TODO: Refactor this into Erase!

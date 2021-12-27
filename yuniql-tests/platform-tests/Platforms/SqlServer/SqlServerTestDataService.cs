@@ -215,9 +215,9 @@ GO
         public override string GetSqlForCleanup()
         {
             return @"
-DROP PROCEDURE script1;
-DROP PROCEDURE script2;
-DROP PROCEDURE script3;
+DROP PROCEDURE TEST_DB_OBJECT_1;
+DROP PROCEDURE TEST_DB_OBJECT_2;
+DROP PROCEDURE TEST_DB_OBJECT_3;
 ";
         }
 
