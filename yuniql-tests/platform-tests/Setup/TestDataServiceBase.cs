@@ -190,7 +190,7 @@ namespace Yuniql.PlatformTests.Setup
 
         public virtual string GetSqlForGetBulkTestData(string tableName)
         {
-            return $"SELECT * FROM {tableName};";
+            return $"SELECT * FROM {tableName}";
         }
 
         private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)

@@ -40,7 +40,9 @@ namespace Yuniql.PlatformTests.Platforms.Redshift
         public override bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
             var dbObject = GetObjectNameWithSchema(objectName);
-            var sqlStatement = $"SELECT 1 FROM SYS.ALL_TABLES WHERE TABLE_NAME = '{dbObject.Item2}'";
+            var dbObjectName = dbObject.Item2.IsDoubleQuoted() ?dbObject.Item2.UnQuote() : dbObject.Item2;
+
+            var sqlStatement = $"SELECT 1 FROM SYS.ALL_TABLES WHERE TABLE_NAME = '{dbObjectName}'";
             var result = QuerySingleBool(connectionString, sqlStatement);
 
             return result;
@@ -102,7 +104,7 @@ CREATE TABLE {dbObject.Item2} (
 CREATE TABLE {dbObject.Item2} (
 	FirstName VARCHAR(50) NOT NULL,
 	LastName VARCHAR(50) NOT NULL,
-	BirthDate TIMESTAMP NULL
+	BirthDate VARCHAR(50) NULL
 );
 ";
         }
@@ -239,6 +241,12 @@ DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
             var connectionStringBuilder = new OracleConnectionStringBuilder(connectionString);
             var sqlStatements = BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Oracle", "Erase.sql")));
             sqlStatements.ForEach(s => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, s));
+        }
+
+        public virtual string GetSqlForGetBulkTestData(string objectName)
+        {
+            var dbObject = GetObjectNameWithSchema(objectName);
+            return $"SELECT * FROM {dbObject.Item2}";
         }
 
         //TODO: Refactor this!
