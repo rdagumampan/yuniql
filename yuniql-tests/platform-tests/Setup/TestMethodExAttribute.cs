@@ -14,6 +14,22 @@ namespace Yuniql.PlatformTests.Setup
             var testDataServiceFactory = new TestDataServiceFactory();
             var testDataService = testDataServiceFactory.Create(platform);
 
+            //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlNotSupported")] attribute
+            //For test cases applicable only to platforms that do not support for transactional DDL (mysql, snowflake, ...)
+            if (Requires.Contains("IsMultiTenancySupported") && !testDataService.IsMultiTenancySupported)
+            {
+                var message = $"Target database platform or version does not support multitenancy. " +
+                    $"The platform only supports single database for the given server instance.";
+                return new[]
+                {
+                    new TestResult
+                    {
+                        Outcome = UnitTestOutcome.NotRunnable,
+                        LogOutput = message
+                    }
+                };
+            }
+
             //Ignores test methods with [TestMethodExAttribute (Requires = "IsTransactionalDdlSupported")] attribute
             //For test cases applicable only to platforms that has full support for transactional DDL (sqlserver, pgsql, ...)
             if (Requires.Contains(nameof(testDataService.IsTransactionalDdlSupported)) && !testDataService.IsTransactionalDdlSupported)

@@ -33,19 +33,13 @@ namespace Yuniql.PlatformTests.Platforms.Redshift
 
         public override bool CheckIfDbExist(string connectionString)
         {
-            //use the target user database to migrate, this is part of orig connection string
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
-            var sqlStatement = $"SELECT 1 from pg_database WHERE datname ='{connectionStringBuilder.Database}';";
-
-            //switch database into master/system database where db catalogs are maintained
-            connectionStringBuilder.Database = "dev";
-            return QuerySingleBool(connectionStringBuilder.ConnectionString, sqlStatement);
+            throw new NotSupportedException($"Multitenancy statements is not supported in this platform. " +
+                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
         }
 
         public override bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
             var dbObject = GetObjectNameWithSchema(objectName);
-
             var sqlStatement = $"SELECT 1 FROM SYS.ALL_TABLES WHERE TABLE_NAME = '{dbObject.Item2}'";
             var result = QuerySingleBool(connectionString, sqlStatement);
 
@@ -61,8 +55,9 @@ CREATE SCHEMA {schemaName};
 
         public override string GetSqlForCreateDbObject(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE {objectName} (
+CREATE TABLE {dbObject.Item2} (
 	VisitorID INT NOT NULL,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
@@ -74,8 +69,9 @@ CREATE TABLE {objectName} (
 
         public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE {objectName} (
+CREATE TABLE {dbObject.Item2} (
 	VisitorID INT NOT NULL,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
@@ -87,8 +83,9 @@ CREATE TABLE {objectName} (
 
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema($@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}");
             return $@"
-CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
+CREATE TABLE {dbObject.Item2} (
 	VisitorID INT NOT NULL,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
@@ -100,8 +97,9 @@ CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
 
         public override string GetSqlForCreateBulkTable(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE {objectName}(
+CREATE TABLE {dbObject.Item2} (
 	FirstName VARCHAR(50) NOT NULL,
 	LastName VARCHAR(50) NOT NULL,
 	BirthDate TIMESTAMP NULL
@@ -111,52 +109,108 @@ CREATE TABLE {objectName}(
 
         public override string GetSqlForSingleLine(string objectName)
         {
-            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
-                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
+            var dbObject = GetObjectNameWithSchema(objectName);
+            return $@"
+CREATE TABLE {dbObject.Item2} (
+	FirstName VARCHAR(50) NOT NULL
+);
+";
         }
 
         public override string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
-            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
-                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
+            var dbObject = GetObjectNameWithSchema(objectName);
+            return $@"
+CREATE TABLE {dbObject.Item2} (
+	FirstName VARCHAR(50) NOT NULL
+)
+";
         }
 
         public override string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
-            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
-                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
+            return $@"
+CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
+	FirstName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
+	FirstName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
+	FirstName VARCHAR(50) NOT NULL
+)
+";
         }
 
         public override string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3)
         {
-            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
-                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
+            return $@"
+--; inline comment
+CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
+	FirstName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
+	FirstName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
+	FirstName VARCHAR(50) NOT NULL
+)
+";
         }
 
         public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
-            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
-                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
+            return $@"
+--; inline comment
+CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
+    --; inline comment
+	FirstName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
+    --; inline comment
+	FirstName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
+    --; inline comment
+	FirstName VARCHAR(50) NOT NULL
+)
+";
         }
 
         public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
-            throw new NotSupportedException($"Batching statements is not supported in this platform. " +
-                $"See {nameof(PostgreSqlDataService)}.{nameof(PostgreSqlDataService.IsBatchSqlSupported)}");
+            return $@"
+--; inline comment
+CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
+    --; inline comment
+	FirstName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
+    --; inline comment
+	FirstName VARCHAR_ERROR(50) NOT NULL
+);
+";
         }
 
         public override void CreateScriptFile(string sqlFilePath, string sqlStatement)
         {
             using var sw = File.CreateText(sqlFilePath);
             sw.WriteLine(sqlStatement);
-        }
+        }   
 
         public override string GetSqlForCleanup()
         {
-            return @"
-DROP TABLE TEST_DB_OBJECT_1;
-DROP TABLE TEST_DB_OBJECT_2;
-DROP TABLE TEST_DB_OBJECT_3;
+            return $@"
+DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_1};
+DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_2};
+DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
 ";
         }
 
@@ -171,6 +225,9 @@ DROP TABLE TEST_DB_OBJECT_3;
                 schemaName = objectName.Split('.')[0];
                 newObjectName = objectName.Split('.')[1];
             }
+
+            schemaName = schemaName.HasLower() ? schemaName.DoubleQuote() : schemaName;
+            newObjectName = newObjectName.HasLower() ? newObjectName.DoubleQuote() : newObjectName;
 
             return new Tuple<string, string>(schemaName, newObjectName);
         }

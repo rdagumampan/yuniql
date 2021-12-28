@@ -102,6 +102,7 @@ namespace Yuniql.Extensibility
             return new Tuple<string, string>(schemaName, newObjectName);
         }
 
+        //TODO: Move this to Extensibility
         /// <summary>
         /// Returns segments of a file to represent sequence no, schema name and table name
         /// These are the valid file name patterns: 1.myschema.mytable, 01.myschema.mytable, myschema.mytable, 1.mytable, 01.mytable, mytable
@@ -158,6 +159,16 @@ namespace Yuniql.Extensibility
         public static bool HasUpper(this string str)
         {
             return str.Any(c => char.IsUpper(c));
+        }
+
+        /// <summary>
+        /// Returns true when all charactercs are capital letters
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static bool HasLower(this string str)
+        {
+            return str.Any(c => char.IsLower(c));
         }
 
         /// <summary>

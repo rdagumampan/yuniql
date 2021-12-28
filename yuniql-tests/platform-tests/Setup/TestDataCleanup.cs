@@ -47,7 +47,7 @@ namespace Yuniql.PlatformTests.Setup
             catch (Exception) { /*swallow exceptions*/ }
         }
 
-        [TestMethod]
+        [TestMethodEx(Requires = "IsMultiTenancySupported")]
         public void Test_Drop_All_Test_Databases()
         {
             var databases = new List<string> {

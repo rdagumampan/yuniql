@@ -94,7 +94,7 @@ namespace Yuniql.PlatformTests.Core
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
-            string sqlObjectName = "Test_Object_1";
+            string sqlObjectName = TEST_DBOBJECTS.DB_OBJECT_1;
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLine(sqlObjectName));
 
             //act
@@ -116,7 +116,7 @@ namespace Yuniql.PlatformTests.Core
             workspaceService.Init(_testConfiguration.WorkspacePath);
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
-            string sqlObjectName = "Test_Object_1";
+            string sqlObjectName = TEST_DBOBJECTS.DB_OBJECT_1;
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlObjectName}.sql"), _testDataService.GetSqlForSingleLineWithoutTerminator(sqlObjectName));
 
             //act
@@ -139,9 +139,9 @@ namespace Yuniql.PlatformTests.Core
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlFileName = "Test_Single_Run_Single_Standard";
-            string sqlObjectName1 = "Test_Object_1";
-            string sqlObjectName2 = "Test_Object_2";
-            string sqlObjectName3 = "Test_Object_3";
+            string sqlObjectName1 = TEST_DBOBJECTS.DB_OBJECT_1;
+            string sqlObjectName2 = TEST_DBOBJECTS.DB_OBJECT_2;
+            string sqlObjectName3 = TEST_DBOBJECTS.DB_OBJECT_3;
 
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithoutTerminatorInLastLine(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
@@ -167,9 +167,9 @@ namespace Yuniql.PlatformTests.Core
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlFileName = "Test_Single_Run_Single_Standard";
-            string sqlObjectName1 = "Test_Object_1";
-            string sqlObjectName2 = "Test_Object_2";
-            string sqlObjectName3 = "Test_Object_3";
+            string sqlObjectName1 = TEST_DBOBJECTS.DB_OBJECT_1;
+            string sqlObjectName2 = TEST_DBOBJECTS.DB_OBJECT_2;
+            string sqlObjectName3 = TEST_DBOBJECTS.DB_OBJECT_3;
 
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithTerminatorInCommentBlock(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
@@ -197,9 +197,9 @@ namespace Yuniql.PlatformTests.Core
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlFileName = "Test_Single_Run_Single_Standard";
-            string sqlObjectName1 = "Test_Object_1";
-            string sqlObjectName2 = "Test_Object_2";
-            string sqlObjectName3 = "Test_Object_3";
+            string sqlObjectName1 = TEST_DBOBJECTS.DB_OBJECT_1;
+            string sqlObjectName2 = TEST_DBOBJECTS.DB_OBJECT_2;
+            string sqlObjectName3 = TEST_DBOBJECTS.DB_OBJECT_3;
 
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v1.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithTerminatorInsideStatements(sqlObjectName1, sqlObjectName2, sqlObjectName3));
 
@@ -225,8 +225,8 @@ namespace Yuniql.PlatformTests.Core
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
 
             string sqlFileName = "Test_Single_Run_Failed_Script_Must_Rollback";
-            string sqlObjectName1 = "Test_Object_1";
-            string sqlObjectName2 = "Test_Object_2";
+            string sqlObjectName1 = TEST_DBOBJECTS.DB_OBJECT_1;
+            string sqlObjectName2 = TEST_DBOBJECTS.DB_OBJECT_2;
             _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, "v0.00"), $"{sqlFileName}.sql"), _testDataService.GetSqlForMultilineWithError(sqlObjectName1, sqlObjectName2));
 
             //act

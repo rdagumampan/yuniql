@@ -44,9 +44,9 @@ namespace Yuniql.Oracle
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
             var fileName = Path.GetFileNameWithoutExtension(fileFullPath)
                           .ReplaceTokens(_traceService, tokens);
-            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "PUBLIC");
-            var schemaName = fileNameSegments.Item2.HasUpper() ? fileNameSegments.Item2.DoubleQuote() : fileNameSegments.Item2;
-            var tableName = fileNameSegments.Item3.HasUpper() ? fileNameSegments.Item3.DoubleQuote() : fileNameSegments.Item3;
+            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "");
+            var schemaName = fileNameSegments.Item2.HasLower() ? fileNameSegments.Item2.DoubleQuote() : fileNameSegments.Item2;
+            var tableName = fileNameSegments.Item3.HasLower() ? fileNameSegments.Item3.DoubleQuote() : fileNameSegments.Item3;
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -94,17 +94,15 @@ namespace Yuniql.Oracle
                 csvReader.Separators = (new string[] { delimiter });
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
-                //enclose all column names into double quote for case-sensitivity
                 var csvColumns = csvReader.ReadFields().Select(f => f);
-
                 sqlStatement.Append($"INSERT ALL");
                 while (!csvReader.EndOfData)
                 {
-                    var fieldData = csvReader.ReadFields().Select(s =>
+                    var fieldData = csvReader.ReadFields().Select(fv =>
                     {
-                        if (string.IsNullOrEmpty(s) || s == nullValue || s == nullValueDoubleQuoted || s == nullValueQuoted)
+                        if (string.IsNullOrEmpty(fv) || fv == nullValue || fv == nullValueDoubleQuoted || fv == nullValueQuoted)
                             return nullValue;
-                        return s.Quote();
+                        return fv.Quote();
                     });
 
                     sqlStatement.Append($"{Environment.NewLine}INTO {tableName} ({string.Join(",", csvColumns)}) VALUES ({string.Join(",", fieldData)})");

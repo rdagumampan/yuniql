@@ -65,7 +65,7 @@ namespace Yuniql.PlatformTests.CLI
         [DataRow("check", "-d --trace-sensitive-data")]
         [DataRow("check", "-d --trace-to-file")]
         [DataRow("check", "-d --trace-to-directory c:\\temp\\not-existing")]
-        public void Test_yuniql_check(string command, string arguments) 
+        public void Test_yuniql_check(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -132,9 +132,7 @@ namespace Yuniql.PlatformTests.CLI
         [DataRow("run", "-a -d --bulk-batch-size 50")]
         [DataRow("run", "-a -d --command-timeout 10")]
         [DataRow("run", "-a -d --environment DEV")]
-        [DataRow("run", "-a -d --meta-schema \"my_schema\"")]
         [DataRow("run", "-a -d --meta-table \"my_versions\" ")]
-        [DataRow("run", "-a -d --meta-schema \"my_schema\" --meta-table \"my_versions\" ")]
         [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
         [DataRow("run", "-a -d -k \"VwColumnPrefix1=Vw1\" -k \"VwColumnPrefix2=Vw2\" -k \"VwColumnPrefix3=Vw3\" -k \"VwColumnPrefix4=Vw4\"")]
         [DataRow("run", "-a -d --transaction-mode session")]
@@ -151,15 +149,28 @@ namespace Yuniql.PlatformTests.CLI
         [DataRow("apply", "-a -d --bulk-batch-size 50")]
         [DataRow("apply", "-a -d --command-timeout 10")]
         [DataRow("apply", "-a -d --environment DEV")]
-        [DataRow("apply", "-a -d --meta-schema \"my_schema\"")]
         [DataRow("apply", "-a -d --meta-table \"my_versions\" ")]
-        [DataRow("apply", "-a -d --meta-schema \"my_schema\" --meta-table \"my_versions\" ")]
         [DataRow("apply", "-a -d -k \"VwColumnPrefix1=Vw1,VwColumnPrefix2=Vw2,VwColumnPrefix3=Vw3,VwColumnPrefix4=Vw4\"")]
         [DataRow("apply", "-a -d -k \"VwColumnPrefix1=Vw1\" -k \"VwColumnPrefix2=Vw2\" -k \"VwColumnPrefix3=Vw3\" -k \"VwColumnPrefix4=Vw4\"")]
         [DataRow("apply", "-a -d --transaction-mode session")]
         [DataRow("apply", "-a -d --transaction-mode version")]
         [DataRow("apply", "-a -d --transaction-mode statement")]
         public void Test_yuniql_run(string command, string arguments)
+        {
+            //arrange
+            SetupWorkspaceWithSampleDb();
+
+            //act & assert
+            var result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
+            result.Contains($"Failed to execute {command}").ShouldBeFalse();
+        }
+
+        [DataTestMethodEx(Requires = "IsSchemaSupported")]
+        [DataRow("run", "-a -d --meta-schema \"my_schema\"")]
+        [DataRow("run", "-a -d --meta-schema \"my_schema\" --meta-table \"my_versions\" ")]
+        [DataRow("apply", "-a -d --meta-schema \"my_schema\"")]
+        [DataRow("apply", "-a -d --meta-schema \"my_schema\" --meta-table \"my_versions\" ")]
+        public void Test_yuniql_run_With_Custom_Schema(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -198,7 +209,7 @@ namespace Yuniql.PlatformTests.CLI
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
-        [DataTestMethod]
+        [DataTestMethodEx(Requires = "IsSchemaSupported")]
         [DataRow("verify", "-d -t v1.00")]
         [DataRow("verify", "-d --target-version v1.00")]
         [DataRow("verify", "-d --bulk-separator ,")]
@@ -227,7 +238,7 @@ namespace Yuniql.PlatformTests.CLI
         [DataRow("list", "-d --trace-to-file")]
         [DataRow("list", "-d --trace-to-directory c:\\temp\\not-existing")]
         [DataRow("list", "-d --command-timeout 10")]
-        public void Test_yuniql_list (string command, string arguments)
+        public void Test_yuniql_list(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
@@ -241,7 +252,7 @@ namespace Yuniql.PlatformTests.CLI
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
-        [DataTestMethod]
+        [DataTestMethodEx(Requires = "IsSchemaSupported")]
         [DataRow("list", "")]
         [DataRow("list", "-d")]
         [DataRow("list", "-d --command-timeout 10")]
@@ -258,7 +269,6 @@ namespace Yuniql.PlatformTests.CLI
             result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "--meta-schema \"my_schema\" --meta-table \"my_versions\" " + arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
-
 
         [DataTestMethod]
         [DataRow("erase", "-d")]
@@ -282,9 +292,7 @@ namespace Yuniql.PlatformTests.CLI
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
 
-
-
-        [DataTestMethod]
+        [DataTestMethodEx(Requires = "IsMultiTenancySupported")]
         [DataRow("destroy", "-d")]
         [DataRow("destroy", "-d --force --trace-sensitive-data")]
         [DataRow("destroy", "-d --force --trace-to-file")]
@@ -303,8 +311,6 @@ namespace Yuniql.PlatformTests.CLI
             result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeFalse();
         }
-
-
 
         [DataTestMethod]
         [DataRow("platforms", "-d")]
@@ -335,7 +341,7 @@ namespace Yuniql.PlatformTests.CLI
             //act & assert
             var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
             result.Contains($"Failed to execute run").ShouldBeFalse();
-             
+
             //act & assert
             result = _executionService.Run(command, _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, arguments);
             result.Contains($"Failed to execute {command}").ShouldBeTrue();

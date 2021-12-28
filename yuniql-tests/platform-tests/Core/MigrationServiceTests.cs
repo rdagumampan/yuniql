@@ -92,7 +92,7 @@ namespace Yuniql.PlatformTests.Core
             }
         }
 
-        [TestMethod]
+        [TestMethodEx(Requires = "IsMultiTenancySupported")]
         public void Test_Run_With_AutocreateDB()
         {
             //arrange
@@ -499,8 +499,6 @@ namespace Yuniql.PlatformTests.Core
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.DRAFT)} / Found").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.POST)} / Missing").ShouldBeTrue();
             exception.Message.Contains($"{Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE)} / Found").ShouldBeTrue();
-
-            _testDataService.CheckIfDbExist(_testConfiguration.ConnectionString).ShouldBeFalse();
         }
 
         [TestMethod]
