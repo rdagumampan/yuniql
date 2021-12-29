@@ -10,6 +10,7 @@ namespace Yuniql.PlatformTests.Setup
     [TestClass]
     public class TestClassBase
     {
+        private const string YUNIQL_TEST_DB = "yuniqldb";
         public string CreateEmptyWorkspace()
         {
             var workingPath = Path.Combine(Environment.CurrentDirectory, @$"yuniql_testdb_{Guid.NewGuid().ToString().Substring(0, 8)}"); ;
@@ -44,22 +45,21 @@ namespace Yuniql.PlatformTests.Setup
         {
             //create test run configuration from empty workspace
             var workspacePath = CreateEmptyWorkspace();
-            var databaseName = new DirectoryInfo(workspacePath).Name;
+            //var databaseName = new DirectoryInfo(workspacePath).Name;
 
             //prepare a unique connection string for each test case
             var connectionString = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_CONNECTION_STRING);
-            var platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_PLATFORM);            
-            if (!connectionString.Contains("=yuniqldb") && !platform.Equals(SUPPORTED_DATABASES.ORACLE))
-            {
-                throw new Exception("Your default database in your test connection string must be \"yuniqldb\". This is replaced during test execution with test database per test case.");
-            }
-
-            connectionString = connectionString.Replace("yuniqldb", databaseName);
+            //var platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_PLATFORM);            
+            //if (!connectionString.Contains("=yuniqldb") && !platform.Equals(SUPPORTED_DATABASES.ORACLE))
+            //{
+            //    throw new Exception("Your default database in your test connection string must be \"yuniqldb\". This is replaced during test execution with test database per test case.");
+            //}
+            //connectionString = connectionString.Replace("yuniqldb", databaseName);
             return new TestConfiguration
             {
                 Platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_PLATFORM),
                 ConnectionString = connectionString,
-                DatabaseName = databaseName,
+                DatabaseName = YUNIQL_TEST_DB,
                 WorkspacePath = workspacePath,
                 CliProcessPath = GetCliProcessFile(),
                 PluginsPath = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_PLUGINS),
@@ -72,20 +72,20 @@ namespace Yuniql.PlatformTests.Setup
         {
             //create test run configuration from sample workspace
             var workspacePath = CreateEmptyWorkspace();
-            var databaseName = new DirectoryInfo(workspacePath).Name;
+            //var databaseName = new DirectoryInfo(workspacePath).Name;
 
             //copy sample db project
             CloneSampleWorkspace(workspacePath);
 
             //prepare a unique connection string for each test case
             var connectionString = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_CONNECTION_STRING);
-            connectionString = connectionString.Replace("yuniqldb", databaseName);
+            //connectionString = connectionString.Replace("yuniqldb", databaseName);
 
             return new TestConfiguration
             {
                 Platform = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_TEST_VARIABLE.YUNIQL_TEST_PLATFORM),
                 ConnectionString = connectionString,
-                DatabaseName = databaseName,
+                DatabaseName = YUNIQL_TEST_DB,
                 WorkspacePath = workspacePath,
                 CliProcessPath = GetCliProcessFile(),
                 PluginsPath = EnvironmentHelper.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_PLUGINS),

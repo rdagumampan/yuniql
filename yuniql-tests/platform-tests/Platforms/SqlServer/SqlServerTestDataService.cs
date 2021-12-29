@@ -83,14 +83,11 @@ AS
         public override string GetSqlForCreateBulkTable(string tableName)
         {
             return $@"
-IF (NOT EXISTS(SELECT 1 FROM [sys].[objects] WHERE type = 'U' AND name = '{tableName}'))
-BEGIN
-    CREATE TABLE {tableName}(
-	    [FirstName] [nvarchar](50) NOT NULL,
-	    [LastName] [nvarchar](50) NOT NULL,
-	    [BirthDate] [datetime] NULL
-    );
-END
+CREATE TABLE {tableName}(
+	[FirstName] [nvarchar](50) NOT NULL,
+	[LastName] [nvarchar](50) NOT NULL,
+	[BirthDate] [nvarchar](50) NULL
+);
 ";
         }
 
@@ -223,18 +220,24 @@ DROP PROCEDURE TEST_DB_OBJECT_3;
 
         public override void DropDatabase(string connectionString)
         {
+
             //capture the test database from connection string
+            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "SqlServer", "Erase.sql"));
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            var sqlStatement = @$"
-ALTER DATABASE [{connectionStringBuilder.InitialCatalog}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-DROP DATABASE [{connectionStringBuilder.InitialCatalog}];
-";
+            base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
 
-            //switch connection string to use master database
-            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            masterConnectionStringBuilder.InitialCatalog = "master";
+            //            //capture the test database from connection string
+            //            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            //            var sqlStatement = @$"
+            //ALTER DATABASE [{connectionStringBuilder.InitialCatalog}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+            //DROP DATABASE [{connectionStringBuilder.InitialCatalog}];
+            //";
 
-            base.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
+            //            //switch connection string to use master database
+            //            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            //            masterConnectionStringBuilder.InitialCatalog = "master";
+
+            //            base.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
     }
 }
