@@ -243,7 +243,7 @@ DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
             sqlStatements.ForEach(s => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, s));
         }
 
-        public virtual string GetSqlForGetBulkTestData(string objectName)
+        public override string GetSqlForGetBulkTestData(string objectName)
         {
             var dbObject = GetObjectNameWithSchema(objectName);
             return $"SELECT * FROM {dbObject.Item2}";

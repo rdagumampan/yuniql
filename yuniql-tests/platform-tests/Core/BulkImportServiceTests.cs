@@ -101,19 +101,19 @@ namespace Yuniql.PlatformTests.Core
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, TEST_DBOBJECTS.TestCsv);
             var testDataRows = new List<BulkTestDataRow>
             {
-                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = "1980-01-01" }
             };
 
             results.Count.ShouldBe(5);
             testDataRows.All(t => results.Exists(r =>
-                t.FirstName == r.FirstName
-                && t.LastName == r.LastName
-                && t.BirthDate == r.BirthDate
-            )).ShouldBeTrue();
+                   t.FirstName == r.FirstName
+                   && t.LastName == r.LastName
+                   && t.BirthDate == r.BirthDate
+               )).ShouldBeTrue();
         }
 
         [TestMethod]
@@ -154,11 +154,11 @@ namespace Yuniql.PlatformTests.Core
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, TEST_DBOBJECTS.TestCsvPipeSeparated);
             var testDataRows = new List<BulkTestDataRow>
             {
-                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = "1980-01-01" },
             };
 
             results.Count.ShouldBe(5);
@@ -206,11 +206,11 @@ namespace Yuniql.PlatformTests.Core
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, TEST_DBOBJECTS.TestCsvUtf8);
             var testDataRows = new List<BulkTestDataRow>
             {
-                new BulkTestDataRow { FirstName="Allan", LastName ="Søgaard", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Martin", LastName ="Bæk", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Gitte", LastName ="Jürgensen", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Maria", LastName ="Østergård", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Peter", LastName ="Langkjær", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Allan", LastName ="Søgaard", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Martin", LastName ="Bæk", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Gitte", LastName ="Jürgensen", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Maria", LastName ="Østergård", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Peter", LastName ="Langkjær", BirthDate = "1980-01-01" },
             };
 
             results.Count.ShouldBe(5);
@@ -268,7 +268,7 @@ namespace Yuniql.PlatformTests.Core
             testDataRows.All(t => results.Exists(r =>
                 t.FirstName == r.FirstName
                 && t.LastName == r.LastName
-                && !r.BirthDate.HasValue
+                && string.IsNullOrEmpty(r.BirthDate)
             )).ShouldBeTrue();
         }
 
@@ -308,11 +308,11 @@ namespace Yuniql.PlatformTests.Core
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, TEST_DBOBJECTS.TestCsvUnquoted);
             var testDataRows = new List<BulkTestDataRow>
             {
-                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = "1980-01-01" },
             };
 
             results.Count.ShouldBe(5);
@@ -398,7 +398,7 @@ namespace Yuniql.PlatformTests.Core
             testDataRows.All(t => results.Exists(r =>
                 t.FirstName == r.FirstName
                 && t.LastName == r.LastName
-                && !r.BirthDate.HasValue
+                && string.IsNullOrEmpty(r.BirthDate)
             )).ShouldBeTrue();
         }
 
@@ -474,11 +474,11 @@ namespace Yuniql.PlatformTests.Core
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, $"TestSchema.{TEST_DBOBJECTS.TestCsv}");
             var testDataRows = new List<BulkTestDataRow>
             {
-                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = "1980-01-01" },
             };
 
             results.Count.ShouldBe(5);
@@ -584,11 +584,11 @@ namespace Yuniql.PlatformTests.Core
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, TEST_DBOBJECTS.TestCsv);
             var testDataRows = new List<BulkTestDataRow>
             {
-                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = "1980-01-01" },
             };
 
             results.Count.ShouldBe(15);
@@ -641,11 +641,11 @@ namespace Yuniql.PlatformTests.Core
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, TEST_DBOBJECTS.TestCsv);
             var testDataRows = new List<BulkTestDataRow>
             {
-                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = "1980-01-01" },
             };
 
             results.Count.ShouldBe(15);
@@ -698,11 +698,11 @@ namespace Yuniql.PlatformTests.Core
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, TEST_DBOBJECTS.TestCsv);
             var testDataRows = new List<BulkTestDataRow>
             {
-                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = "1980-01-01" },
             };
 
             results.Count.ShouldBe(15);
@@ -759,11 +759,11 @@ namespace Yuniql.PlatformTests.Core
             var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, TEST_DBOBJECTS.TestCsv);
             var testDataRows = new List<BulkTestDataRow>
             {
-                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = new DateTime(1980,1,1) },
-                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = new DateTime(1980,1,1) },
+                new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Diana", LastName ="Churchill", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Rebecca", LastName ="Lyman", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Sam", LastName ="Macdonald", BirthDate = "1980-01-01" },
+                new BulkTestDataRow { FirstName="Matt", LastName ="Paige", BirthDate = "1980-01-01" },
             };
 
             results.Count.ShouldBe(20);

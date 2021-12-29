@@ -146,7 +146,7 @@ namespace Yuniql.PlatformTests.Setup
                         {
                             FirstName = !reader.IsDBNull(0) ? reader.GetString(0) : null,
                             LastName = !reader.IsDBNull(1) ? reader.GetString(1) : null,
-                            BirthDate = !reader.IsDBNull(2) ? reader.GetDateTime(2) : new DateTime?()
+                            BirthDate = !reader.IsDBNull(2) ? reader.GetString(2) : null,
                         });
                     }
                 }
