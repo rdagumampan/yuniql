@@ -60,11 +60,9 @@ CREATE SCHEMA {schemaName};
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
 CREATE TABLE {dbObject.Item2} (
-	VisitorID INT NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -74,11 +72,9 @@ CREATE TABLE {dbObject.Item2} (
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
 CREATE TABLE {dbObject.Item2} (
-	VisitorID INT NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email [VARCHAR](255) NULL
+	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -88,11 +84,9 @@ CREATE TABLE {dbObject.Item2} (
             var dbObject = GetObjectNameWithSchema($@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}");
             return $@"
 CREATE TABLE {dbObject.Item2} (
-	VisitorID INT NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -120,7 +114,9 @@ CREATE TABLE {dbObject.Item2} (
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
 CREATE TABLE {dbObject.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -130,7 +126,9 @@ CREATE TABLE {dbObject.Item2} (
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
 CREATE TABLE {dbObject.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 VARCHAR(50) NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 )
 ";
         }
@@ -139,15 +137,21 @@ CREATE TABLE {dbObject.Item2} (
         {
             return $@"
 CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
 CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
 CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 VARCHAR(50) NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 )
 ";
         }
@@ -157,15 +161,21 @@ CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
             return $@"
 --; inline comment
 CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
 CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
 CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 )
 ";
         }
@@ -175,17 +185,23 @@ CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
             return $@"
 CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
     --; inline comment
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
 CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
     --; inline comment
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
 CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
     --; inline comment
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 )
 ";
         }
@@ -194,11 +210,15 @@ CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
         {
             return $@"
 CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
 CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
-	FirstName VARCHAR(50) NOT NULL THIS_IS_AN_ERROR
+	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }

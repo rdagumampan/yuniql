@@ -188,10 +188,7 @@ namespace Yuniql.PlatformTests.Setup
 
         public abstract void DropDatabase(string connectionString);
 
-        public virtual string GetSqlForGetBulkTestData(string tableName)
-        {
-            return $"SELECT * FROM {tableName}";
-        }
+        public abstract string GetSqlForGetBulkTestData(string tableName);
 
         private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
         {

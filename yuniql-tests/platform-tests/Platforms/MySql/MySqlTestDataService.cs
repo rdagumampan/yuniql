@@ -63,15 +63,20 @@ namespace Yuniql.PlatformTests.Platforms.MySql
             return result;
         }
 
+        public override string GetSqlForCreateDbSchema(string schemaName)
+        {
+            return $@"
+CREATE SCHEMA {schemaName};
+";
+        }
+
         public override string GetSqlForCreateDbObject(string objectName)
         {
             return $@"
 CREATE TABLE {objectName} (
-	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 ) ENGINE=InnoDB;
 ";
         }
@@ -81,11 +86,9 @@ CREATE TABLE {objectName} (
         {
             return $@"
 CREATE TABLE {objectName} (
-	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY_KEY1 THIS_IS_AN_ERROR, 
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email [VARCHAR](255) NULL
+	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 ) ENGINE=InnoDB;
 ";
         }
@@ -94,11 +97,9 @@ CREATE TABLE {objectName} (
         {
             return $@"
 CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
-	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 ) ENGINE=InnoDB;
 ";
         }
@@ -112,6 +113,11 @@ CREATE TABLE {tableName}(
 	BirthDate VARCHAR(50) NULL
 ) ENGINE=InnoDB;
 ";
+        }
+
+        public override string GetSqlForGetBulkTestData(string tableName)
+        {
+            return $"SELECT * FROM {tableName};";
         }
 
         public override string GetSqlForSingleLine(string objectName)
@@ -162,13 +168,6 @@ CREATE TABLE {tableName}(
 DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_1};
 DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_2};
 DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
-";
-        }
-
-        public override string GetSqlForCreateDbSchema(string schemaName)
-        {
-            return $@"
-CREATE SCHEMA {schemaName};
 ";
         }
 

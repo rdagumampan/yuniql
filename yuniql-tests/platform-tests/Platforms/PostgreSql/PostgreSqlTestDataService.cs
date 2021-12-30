@@ -78,11 +78,9 @@ CREATE SCHEMA {schemaName};
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
-	VisitorID SERIAL NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -92,11 +90,9 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
-	VisitorID SERIAL NOT NULL THIS_IS_AN_ERROR,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email [VARCHAR](255) NULL
+	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -106,11 +102,9 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
             var dbObject = GetObjectNameWithSchema($@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}");
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
-	VisitorID SERIAL NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }

@@ -45,7 +45,7 @@ namespace Yuniql.Oracle
         public string TableName { get; set; } = "__yuniql_schema_version";
 
         ///<inheritdoc/>
-        public string SchemaName { get; set; }
+        public string SchemaName { get; set; } = string.Empty;
 
         ///<inheritdoc/>
         public IDbConnection CreateConnection()

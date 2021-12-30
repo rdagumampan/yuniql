@@ -74,16 +74,6 @@ namespace Yuniql.PlatformTests.Platforms.Snowflake
             return result;
         }
 
-        public override string GetSqlForCreateDbObject(string objectName)
-        {
-            var dbObject = GetObjectNameWithSchema(objectName);
-            return $@"
-CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
-    TEST_COLUMN_1 VARCHAR(50) NOT NULL
-);
-";
-        }
-          
         public override string GetSqlForCreateDbSchema(string schemaName)
         {
             return $@"
@@ -91,13 +81,27 @@ CREATE SCHEMA {schemaName.DoubleQuote()};
 ";
         }
 
+        public override string GetSqlForCreateDbObject(string objectName)
+        {
+            var dbObject = GetObjectNameWithSchema(objectName);
+            return $@"
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
+";
+        }
+          
         //https://stackoverflow.com/questions/42436932/transactions-not-working-for-my-mysql-db
         public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
-    TEST_COLUMN_1 VARCHAR(50) NOT NULL THIS_IS_AN_ERROR
+	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -107,7 +111,9 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
             var dbObject = GetObjectNameWithSchema($@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}");
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
-    TEST_COLUMN_1 VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -135,7 +141,9 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 ";
@@ -146,7 +154,9 @@ GO
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -159,17 +169,23 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 
             return $@"
 CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 
 CREATE TABLE {dbObject2.Item1}.{dbObject2.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 
 CREATE TABLE {dbObject3.Item1}.{dbObject3.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
@@ -183,17 +199,23 @@ CREATE TABLE {dbObject3.Item1}.{dbObject3.Item2} (
             return $@"
 --GO inline comment
 CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 
 CREATE TABLE {dbObject2.Item1}.{dbObject2.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 
 CREATE TABLE {dbObject3.Item1}.{dbObject3.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 ";
@@ -208,19 +230,25 @@ GO
             return $@"
 CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2} (
     --GO inline comment
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 
 CREATE TABLE {dbObject2.Item1}.{dbObject2.Item2} (
     --GO inline comment
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 
 CREATE TABLE {dbObject3.Item1}.{dbObject3.Item2} (
     --GO inline comment
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 ";
@@ -233,12 +261,16 @@ GO
 
             return $@"
 CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2} (
-	FirstName VARCHAR(50) NOT NULL
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 
 CREATE TABLE {dbObject2.Item1}.{dbObject2.Item2} (
-	FirstName VARCHAR(50) NOT NULL THIS_IS_AN_ERROR
+	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 GO
 ";
@@ -278,7 +310,7 @@ GO
                 newObjectName = objectName.Split('.')[1];
             }
 
-            //we do this because oracle always converts unquoted names into upper case
+            //we do this because snowflake always converts unquoted names into upper case
             schemaName = schemaName.HasLower() ? schemaName.DoubleQuote() : schemaName;
             newObjectName = newObjectName.HasLower() ? newObjectName.DoubleQuote() : newObjectName;
 

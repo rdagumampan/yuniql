@@ -56,10 +56,11 @@ CREATE SCHEMA {schemaName};
         {
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE PROC {dbObject.Item1}.{dbObject.Item2}
-AS
-    SELECT 1;
-GO
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 ";
         }
 
@@ -67,19 +68,22 @@ GO
         {
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE PROC [THIS_IS_AN_ERROR].{dbObject.Item1}.{dbObject.Item2}
-AS
-    SELECT 1/0;
-GO
-                ";
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
+";
         }
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
             var dbObject = GetObjectNameWithSchema($@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}");
             return $@"
-CREATE PROC {dbObject.Item1}.{dbObject.Item2}
-AS
-    SELECT '${{Token1}}.${{Token2}}.${{Token3}}' AS ReplacedStatement;
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 ";
         }
 
@@ -105,9 +109,11 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
         {
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE PROC {dbObject.Item1}.{dbObject.Item2}
-AS
-    SELECT 1;
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 GO
 ";
         }
@@ -116,9 +122,11 @@ GO
         {
             var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE PROC {dbObject.Item1}.{dbObject.Item2}
-AS
-    SELECT 1;
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 ";
         }
 
@@ -129,19 +137,25 @@ AS
             var dbObject3 = GetObjectNameWithSchema(objectName3);
 
             return $@"
-CREATE PROC {dbObject1.Item1}.{dbObject1.Item2}
-AS
-    SELECT 1;
+CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 GO
 
-CREATE PROC {dbObject2.Item1}.{dbObject2.Item2}
-AS
-    SELECT 1;
+CREATE TABLE {dbObject2.Item1}.{dbObject2.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 GO
 
-CREATE PROC {dbObject3.Item1}.{dbObject3.Item2}
-AS
-    SELECT 1;
+CREATE TABLE {dbObject3.Item1}.{dbObject3.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 ";
         }
 
@@ -153,27 +167,34 @@ AS
 
             return $@"
 --GO inline comment
-CREATE PROC {dbObject1.Item1}.{dbObject1.Item2}
-AS
-    SELECT 1;
+CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 GO
 
 /*
 GO in inline comment block
 */
 
-CREATE PROC {dbObject2.Item1}.{dbObject2.Item2}
-AS
-    SELECT 1;
+CREATE TABLE {dbObject2.Item1}.{dbObject2.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 GO
 
 /* multiline comment block
 GO
 */
 
-CREATE PROC {dbObject3.Item1}.{dbObject3.Item2}
-AS
-    SELECT 1;
+CREATE TABLE {dbObject3.Item1}.{dbObject3.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
+GO
 ";
         }
 
@@ -184,22 +205,28 @@ AS
             var dbObject3 = GetObjectNameWithSchema(objectName3);
 
             return $@"
-CREATE PROC {dbObject1.Item1}.{dbObject1.Item2}
-AS
+CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2}(
     --this is a comment with GO as part of the sentence (ALL CAPS)
-    SELECT 1;
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 GO
 
-CREATE PROC {dbObject2.Item1}.{dbObject2.Item2}
-AS
+CREATE TABLE {dbObject2.Item1}.{dbObject2.Item2}(
     --this is a comment with go as part of the sentence (small caps)
-    SELECT 1;
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 GO
-
-CREATE PROC {dbObject3.Item1}.{dbObject3.Item2}
-AS
+CREATE TABLE {dbObject3.Item1}.{dbObject3.Item2}(
     --this is a comment with Go as part of the sentence (Pascal)
-    SELECT 1;
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
+GO
 ";
         }
 
@@ -209,23 +236,26 @@ AS
             var dbObject2 = GetObjectNameWithSchema(objectName2);
 
             return $@"
-CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2}(        
-    [TestId][INT] IDENTITY(1, 1) NOT NULL,        
-    [TestColumn] [DECIMAL] NOT NULL
-)
+CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 GO
 
-CREATE PROC {dbObject2.Item1}.{dbObject2.Item2}
-AS
-    SELECT 1;
+CREATE TABLE {dbObject2.Item2}.{dbObject2.Item2}(
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
+);
 GO
 
 --throws divide by zero error
-INSERT INTO {dbObject1.Item1}.{dbObject1.Item2} (TestColumn) VALUES (3/0);
+INSERT INTO {dbObject1.Item1}.{dbObject1.Item2} (TEST_DB_COLUMN_1) VALUES (3/0);
 GO
 
-INSERT INTO {dbObject1.Item1}.{dbObject1.Item2} (TestColumn) VALUES (1);
-INSERT INTO {dbObject1.Item1}.{dbObject1.Item2} (TestColumn) VALUES (2);
+INSERT INTO {dbObject1.Item1}.{dbObject1.Item2} (TEST_DB_COLUMN_1) VALUES (1);
+INSERT INTO {dbObject1.Item1}.{dbObject1.Item2} (TEST_DB_COLUMN_1) VALUES (2);
 GO
 ";
         }
@@ -243,9 +273,9 @@ GO
             var dbObject3 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_3);
 
             return $@"
-DROP PROCEDURE IF EXISTS {dbObject1.Item1}.{dbObject1.Item2};
-DROP PROCEDURE IF EXISTS {dbObject2.Item1}.{dbObject2.Item2};
-DROP PROCEDURE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
+DROP TABLE IF EXISTS {dbObject1.Item1}.{dbObject1.Item2};
+DROP TABLE IF EXISTS {dbObject2.Item1}.{dbObject2.Item2};
+DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
 ";
         }
 

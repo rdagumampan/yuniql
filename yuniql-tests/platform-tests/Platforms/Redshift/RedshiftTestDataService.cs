@@ -121,6 +121,11 @@ CREATE TABLE {tableName}(
 ";
         }
 
+        public override string GetSqlForGetBulkTestData(string tableName)
+        {
+            return $"SELECT * FROM {tableName};";
+        }
+
         public override string GetSqlForSingleLine(string objectName)
         {
             throw new NotSupportedException($"Batching statements is not supported in this platform. " +
