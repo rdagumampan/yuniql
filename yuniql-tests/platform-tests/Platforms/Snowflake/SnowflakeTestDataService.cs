@@ -282,7 +282,7 @@ GO
             sw.WriteLine(sqlStatement);
         }
 
-        public override string GetSqlForCleanup()
+        public override string GetSqlForEraseDbObjects()
         {
             var dbObject1 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_1);
             var dbObject2 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_2);
@@ -317,10 +317,10 @@ GO
             return new Tuple<string, string>(schemaName, newObjectName);
         }
 
-        public override void DropDatabase(string connectionString)
+        public override void CleanupDbObjects(string connectionString)
         {
             var sqlBatchParser = new SqlBatchParser(new FileTraceService(new DirectoryService()), new GoSqlBatchLineAnalyzer(), new CommentAnalyzer());
-            var sqlStatements = sqlBatchParser.Parse(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Snowflake", "Erase.sql")))
+            var sqlStatements = sqlBatchParser.Parse(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Snowflake", "Cleanup.sql")))
                 .Select(s => s.BatchText).ToList();
 
             var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();

@@ -65,7 +65,7 @@ namespace Yuniql.PlatformTests.Setup
                 try
                 {
                     var targetConnectionString = connectionString.Replace("yuniqldb", database);
-                    _testDataService.DropDatabase(targetConnectionString);
+                    _testDataService.CleanupDbObjects(targetConnectionString);
                 }
                 catch (Exception ex)
                 {

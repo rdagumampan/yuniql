@@ -162,7 +162,7 @@ CREATE TABLE {tableName}(
             sw.WriteLine(sqlStatement);
         }
 
-        public override string GetSqlForCleanup()
+        public override string GetSqlForEraseDbObjects()
         {
             return $@"
 DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_1};
@@ -171,12 +171,12 @@ DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
 ";
         }
 
-        public override void DropDatabase(string connectionString)
+        public override void CleanupDbObjects(string connectionString)
         {
             //not needed need since test cases are executed against disposable database containers
             //we could simply docker rm the running test container after tests completed
 
-            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "MySql", "Erase.sql"));
+            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "MySql", "Cleanup.sql"));
             var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
             base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
         }

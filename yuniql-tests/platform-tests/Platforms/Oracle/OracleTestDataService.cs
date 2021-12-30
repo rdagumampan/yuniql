@@ -229,7 +229,7 @@ CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
             sw.WriteLine(sqlStatement);
         }   
 
-        public override string GetSqlForCleanup()
+        public override string GetSqlForEraseDbObjects()
         {
             var dbObject1 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_1);
             var dbObject2 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_2);
@@ -262,10 +262,10 @@ DROP TABLE {dbObject3.Item2};
         }
 
         //TODO: Refactor this into Erase!
-        public override void DropDatabase(string connectionString)
+        public override void CleanupDbObjects(string connectionString)
         {
             var connectionStringBuilder = new OracleConnectionStringBuilder(connectionString);
-            var sqlStatements = BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Oracle", "Erase.sql")));
+            var sqlStatements = BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Oracle", "Cleanup.sql")));
             sqlStatements.ForEach(s => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, s));
         }
 

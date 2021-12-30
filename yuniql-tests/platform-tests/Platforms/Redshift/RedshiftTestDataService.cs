@@ -168,7 +168,7 @@ CREATE TABLE {tableName}(
             sw.WriteLine(sqlStatement);
         }
 
-        public override string GetSqlForCleanup()
+        public override string GetSqlForEraseDbObjects()
         {
             return @"
 DROP TABLE TEST_DB_OBJECT_1;
@@ -194,36 +194,40 @@ DROP TABLE TEST_DB_OBJECT_3;
 
         //SELECT '"'+datname+'",' FROM pg_database where datname like '%yuniql_test%'
         //https://dba.stackexchange.com/questions/11893/force-drop-db-while-others-may-be-connected
-        public override void DropDatabase(string connectionString)
+        public override void CleanupDbObjects(string connectionString)
         {
-            //not needed need since test cases are executed against disposable database containers
-            //we could simply docker rm the running test container after tests completed
-
-            //use the target user database to migrate, this is part of orig connection string
+            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Redshift", "Cleanup.sql"));
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
-            var databaseName = connectionStringBuilder.Database;
+            base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
 
-            var sqlStatements = new List<string> {
-$@"
---disallow new connections
-ALTER DATABASE {databaseName.DoubleQuote()} CONNECTION LIMIT 1;
-",
-$@"
---terminate existing connections
-SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE datname = '{databaseName}';
-",
-$@"
---drop database
-DROP DATABASE {databaseName.DoubleQuote()};
-",
-            };
+            //            //not needed need since test cases are executed against disposable database containers
+            //            //we could simply docker rm the running test container after tests completed
 
-            //switch database into master/system database where db catalogs are maintained
-            connectionStringBuilder.Database = "dev";
-            sqlStatements.ForEach(sqlStatement =>
-            {
-                ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
-            });
+            //            //use the target user database to migrate, this is part of orig connection string
+            //            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+            //            var databaseName = connectionStringBuilder.Database;
+
+            //            var sqlStatements = new List<string> {
+            //$@"
+            //--disallow new connections
+            //ALTER DATABASE {databaseName.DoubleQuote()} CONNECTION LIMIT 1;
+            //",
+            //$@"
+            //--terminate existing connections
+            //SELECT pg_terminate_backend(procpid) FROM pg_stat_activity WHERE datname = '{databaseName}';
+            //",
+            //$@"
+            //--drop database
+            //DROP DATABASE {databaseName.DoubleQuote()};
+            //",
+            //            };
+
+            //            //switch database into master/system database where db catalogs are maintained
+            //            connectionStringBuilder.Database = "dev";
+            //            sqlStatements.ForEach(sqlStatement =>
+            //            {
+            //                ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
+            //            });
         }
     }
 }

@@ -162,7 +162,7 @@ namespace Yuniql.PlatformTests.Setup
 
         public abstract void CreateScriptFile(string sqlFilePath, string sqlStatement);
 
-        public abstract string GetSqlForCleanup();
+        public abstract string GetSqlForEraseDbObjects();
 
         public abstract string GetSqlForCreateBulkTable(string tableName);
 
@@ -186,7 +186,7 @@ namespace Yuniql.PlatformTests.Setup
 
         public abstract string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3);
 
-        public abstract void DropDatabase(string connectionString);
+        public abstract void CleanupDbObjects(string connectionString);
 
         public abstract string GetSqlForGetBulkTestData(string tableName);
 

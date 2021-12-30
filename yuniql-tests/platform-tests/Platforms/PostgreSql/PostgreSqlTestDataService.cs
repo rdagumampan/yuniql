@@ -169,7 +169,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
             sw.WriteLine(sqlStatement);
         }
 
-        public override string GetSqlForCleanup()
+        public override string GetSqlForEraseDbObjects()
         {
             var dbObject1 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_1);
             var dbObject2 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_2);
@@ -202,9 +202,9 @@ DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
         }
 
         //https://dba.stackexchange.com/questions/11893/force-drop-db-while-others-may-be-connected
-        public override void DropDatabase(string connectionString)
+        public override void CleanupDbObjects(string connectionString)
         {
-            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "PostgreSql", "Erase.sql"));
+            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "PostgreSql", "Cleanup.sql"));
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
             base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
 

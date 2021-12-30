@@ -53,7 +53,7 @@ namespace Yuniql.PlatformTests.Core
             //drop test database
             try
             {
-                _testDataService.DropDatabase(_testConfiguration.ConnectionString);
+                _testDataService.CleanupDbObjects(_testConfiguration.ConnectionString);
             }
             catch (Exception ex)
             {

@@ -58,7 +58,7 @@ namespace Yuniql.PlatformTests.Core
             //drop test database
             try
             {
-                _testDataService.DropDatabase(_testConfiguration.ConnectionString);
+                _testDataService.CleanupDbObjects(_testConfiguration.ConnectionString);
             }
             catch (Exception ex)
             {
@@ -445,7 +445,7 @@ namespace Yuniql.PlatformTests.Core
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_3).ShouldBeTrue();
 
             //arrange
-            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE), $"erase.sql"), _testDataService.GetSqlForCleanup());
+            _testDataService.CreateScriptFile(Path.Combine(Path.Combine(_testConfiguration.WorkspacePath, RESERVED_DIRECTORY_NAME.ERASE), $"erase.sql"), _testDataService.GetSqlForEraseDbObjects());
 
             //act
             migrationService.Erase();

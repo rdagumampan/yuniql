@@ -6,6 +6,18 @@ namespace Yuniql.PlatformTests.Interfaces
 {
     public interface ITestDataService
     {
+        bool IsMultiTenancySupported { get; }
+
+        bool IsSchemaSupported { get; }
+
+        bool IsTransactionalDdlSupported { get; }
+
+        bool IsBatchSqlSupported { get; }
+
+        string TableName { get; }
+
+        string SchemaName { get; }
+
         string GetConnectionString(string databaseName);
 
         string GetCurrentDbVersion(string connectionString);
@@ -18,52 +30,38 @@ namespace Yuniql.PlatformTests.Interfaces
 
         bool QuerySingleRow(string connectionString, string sqlStatement);
 
+        string GetSqlForCreateDbSchema(string schemaName);
+
         bool CheckIfDbExist(string connectionString);
 
         bool CheckIfDbObjectExist(string connectionString, string objectName);
 
-        string GetSqlForCreateDbSchema(string schemaName);
-
-        string GetSqlForCreateDbObject(string scriptName);
+        string GetSqlForCreateDbObject(string objectName);
 
         string GetSqlForCreateDbObjectWithError(string objectName);
 
         string GetSqlForCreateDbObjectWithTokens(string objectName);
 
-        string GetSqlForCreateBulkTable(string tableName);
+        string GetSqlForCreateBulkTable(string objectName);
 
         string GetSqlForSingleLine(string objectName);
+
+        string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3);
+
+        string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3);
 
         string GetSqlForSingleLineWithoutTerminator(string objectName);
 
         string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3);
 
-        string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3);
-
         string GetSqlForMultilineWithError(string objectName1, string objectName2);
-
-        string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3);
 
         void CreateScriptFile(string sqlFilePath, string sqlStatement);
 
-        //TODO: Add IsMultiTenantSupported
-        //TODO: Rename into GetSqlForErase
-        string GetSqlForCleanup();
+        string GetSqlForEraseDbObjects();
 
-        bool IsTransactionalDdlSupported { get; }
+        void CleanupDbObjects(string connectionString);
 
-        bool IsMultiTenancySupported { get; }
-
-        bool IsSchemaSupported { get; }
-
-        bool IsBatchSqlSupported { get; }
-
-        string TableName { get; }
-
-        string SchemaName { get; }
-
-        List<BulkTestDataRow> GetBulkTestData(string connectionString, string tableName);
-
-        void DropDatabase(string connectionString);
+        List<BulkTestDataRow> GetBulkTestData(string connectionString, string objectName);
     }
 }
