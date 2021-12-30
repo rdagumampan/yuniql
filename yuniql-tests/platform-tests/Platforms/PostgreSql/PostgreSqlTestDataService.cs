@@ -182,9 +182,9 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
             var dbObject3 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_3);
 
             return $@"
-DROP TABLE IF EXISTS {dbObject1.Item2};
-DROP TABLE IF EXISTS {dbObject2.Item2};
-DROP TABLE IF EXISTS {dbObject3.Item2};
+DROP TABLE IF EXISTS {dbObject1.Item1}.{dbObject1.Item2};
+DROP TABLE IF EXISTS {dbObject2.Item1}.{dbObject2.Item2};
+DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
 ";
         }
 

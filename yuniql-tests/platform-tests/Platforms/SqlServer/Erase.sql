@@ -59,5 +59,5 @@ DROP TABLE IF EXISTS dbo.TestCsvPipeSeparated;
 DROP TABLE IF EXISTS dbo.TestCsvUnquoted;
 DROP TABLE IF EXISTS dbo.TestCsvUtf8;
 
-DROP TABLE IF EXISTS "TestSchema"."TestCsv";
-DROP SCHEMA IF EXISTS "TestSchema";
+DROP TABLE IF EXISTS TestSchema.TestCsv;
+DROP SCHEMA IF EXISTS TestSchema;

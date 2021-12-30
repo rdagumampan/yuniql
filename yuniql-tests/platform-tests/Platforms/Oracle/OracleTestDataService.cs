@@ -109,6 +109,12 @@ CREATE TABLE {dbObject.Item2} (
 ";
         }
 
+        public override string GetSqlForGetBulkTestData(string objectName)
+        {
+            var dbObject = GetObjectNameWithSchema(objectName);
+            return $"SELECT * FROM {dbObject.Item2}";
+        }
+
         public override string GetSqlForSingleLine(string objectName)
         {
             var dbObject = GetObjectNameWithSchema(objectName);
@@ -209,10 +215,14 @@ CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
 
         public override string GetSqlForCleanup()
         {
+            var dbObject1 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_1);
+            var dbObject2 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_2);
+            var dbObject3 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_3);
+
             return $@"
-DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_1};
-DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_2};
-DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
+DROP TABLE {dbObject1.Item2};
+DROP TABLE {dbObject2.Item2};
+DROP TABLE {dbObject3.Item2};
 ";
         }
 
@@ -241,12 +251,6 @@ DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
             var connectionStringBuilder = new OracleConnectionStringBuilder(connectionString);
             var sqlStatements = BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Oracle", "Erase.sql")));
             sqlStatements.ForEach(s => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, s));
-        }
-
-        public override string GetSqlForGetBulkTestData(string objectName)
-        {
-            var dbObject = GetObjectNameWithSchema(objectName);
-            return $"SELECT * FROM {dbObject.Item2}";
         }
 
         //TODO: Refactor this!

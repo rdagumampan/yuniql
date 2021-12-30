@@ -52,20 +52,22 @@ CREATE SCHEMA {schemaName};
 ";
         }
 
-        public override string GetSqlForCreateDbObject(string scriptName)
+        public override string GetSqlForCreateDbObject(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE PROC {scriptName}
+CREATE PROC {dbObject.Item1}.{dbObject.Item2}
 AS
     SELECT 1;
 GO
 ";
         }
 
-        public override string GetSqlForCreateDbObjectWithError(string scriptName)
+        public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE PROC [THIS_IS_AN_ERROR].[dbo].[{scriptName}]
+CREATE PROC [THIS_IS_AN_ERROR].{dbObject.Item1}.{dbObject.Item2}
 AS
     SELECT 1/0;
 GO
@@ -73,17 +75,19 @@ GO
         }
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema($@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}");
             return $@"
-CREATE PROC {objectName}_${{Token1}}_${{Token2}}_${{Token3}}
+CREATE PROC {dbObject.Item1}.{dbObject.Item2}
 AS
     SELECT '${{Token1}}.${{Token2}}.${{Token3}}' AS ReplacedStatement;
 ";
         }
 
-        public override string GetSqlForCreateBulkTable(string tableName)
+        public override string GetSqlForCreateBulkTable(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE {tableName}(
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	[FirstName] [nvarchar](50) NOT NULL,
 	[LastName] [nvarchar](50) NOT NULL,
 	[BirthDate] [nvarchar](50) NULL
@@ -91,10 +95,17 @@ CREATE TABLE {tableName}(
 ";
         }
 
+        public override string GetSqlForGetBulkTestData(string objectName)
+        {
+            var dbObject = GetObjectNameWithSchema(objectName);
+            return $"SELECT * FROM {dbObject.Item1}.{dbObject.Item2}";
+        }
+
         public override string GetSqlForSingleLine(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE PROC {objectName}
+CREATE PROC {dbObject.Item1}.{dbObject.Item2}
 AS
     SELECT 1;
 GO
@@ -103,8 +114,9 @@ GO
 
         public override string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE PROC {objectName}
+CREATE PROC {dbObject.Item1}.{dbObject.Item2}
 AS
     SELECT 1;
 ";
@@ -112,18 +124,22 @@ AS
 
         public override string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
+            var dbObject1 = GetObjectNameWithSchema(objectName1);
+            var dbObject2 = GetObjectNameWithSchema(objectName2);
+            var dbObject3 = GetObjectNameWithSchema(objectName3);
+
             return $@"
-CREATE PROC {objectName1}
+CREATE PROC {dbObject1.Item1}.{dbObject1.Item2}
 AS
     SELECT 1;
 GO
 
-CREATE PROC {objectName2}
+CREATE PROC {dbObject2.Item1}.{dbObject2.Item2}
 AS
     SELECT 1;
 GO
 
-CREATE PROC {objectName3}
+CREATE PROC {dbObject3.Item1}.{dbObject3.Item2}
 AS
     SELECT 1;
 ";
@@ -131,9 +147,13 @@ AS
 
         public override string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3)
         {
+            var dbObject1 = GetObjectNameWithSchema(objectName1);
+            var dbObject2 = GetObjectNameWithSchema(objectName2);
+            var dbObject3 = GetObjectNameWithSchema(objectName3);
+
             return $@"
 --GO inline comment
-CREATE PROC {objectName1}
+CREATE PROC {dbObject1.Item1}.{dbObject1.Item2}
 AS
     SELECT 1;
 GO
@@ -142,7 +162,7 @@ GO
 GO in inline comment block
 */
 
-CREATE PROC {objectName2}
+CREATE PROC {dbObject2.Item1}.{dbObject2.Item2}
 AS
     SELECT 1;
 GO
@@ -151,7 +171,7 @@ GO
 GO
 */
 
-CREATE PROC {objectName3}
+CREATE PROC {dbObject3.Item1}.{dbObject3.Item2}
 AS
     SELECT 1;
 ";
@@ -159,20 +179,24 @@ AS
 
         public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
+            var dbObject1 = GetObjectNameWithSchema(objectName1);
+            var dbObject2 = GetObjectNameWithSchema(objectName2);
+            var dbObject3 = GetObjectNameWithSchema(objectName3);
+
             return $@"
-CREATE PROC {objectName1}
+CREATE PROC {dbObject1.Item1}.{dbObject1.Item2}
 AS
     --this is a comment with GO as part of the sentence (ALL CAPS)
     SELECT 1;
 GO
 
-CREATE PROC {objectName2}
+CREATE PROC {dbObject2.Item1}.{dbObject2.Item2}
 AS
     --this is a comment with go as part of the sentence (small caps)
     SELECT 1;
 GO
 
-CREATE PROC {objectName3}
+CREATE PROC {dbObject3.Item1}.{dbObject3.Item2}
 AS
     --this is a comment with Go as part of the sentence (Pascal)
     SELECT 1;
@@ -181,24 +205,27 @@ AS
 
         public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
+            var dbObject1 = GetObjectNameWithSchema(objectName1);
+            var dbObject2 = GetObjectNameWithSchema(objectName2);
+
             return $@"
-CREATE TABLE {objectName1}(        
+CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2}(        
     [TestId][INT] IDENTITY(1, 1) NOT NULL,        
     [TestColumn] [DECIMAL] NOT NULL
 )
 GO
 
-CREATE PROC {objectName2}
+CREATE PROC {dbObject2.Item1}.{dbObject2.Item2}
 AS
     SELECT 1;
 GO
 
 --throws divide by zero error
-INSERT INTO {objectName1} (TestColumn) VALUES (3/0);
+INSERT INTO {dbObject1.Item1}.{dbObject1.Item2} (TestColumn) VALUES (3/0);
 GO
 
-INSERT INTO {objectName1} (TestColumn) VALUES (1);
-INSERT INTO {objectName1} (TestColumn) VALUES (2);
+INSERT INTO {dbObject1.Item1}.{dbObject1.Item2} (TestColumn) VALUES (1);
+INSERT INTO {dbObject1.Item1}.{dbObject1.Item2} (TestColumn) VALUES (2);
 GO
 ";
         }
@@ -211,11 +238,31 @@ GO
 
         public override string GetSqlForCleanup()
         {
-            return @"
-DROP PROCEDURE TEST_DB_OBJECT_1;
-DROP PROCEDURE TEST_DB_OBJECT_2;
-DROP PROCEDURE TEST_DB_OBJECT_3;
+            var dbObject1 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_1);
+            var dbObject2 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_2);
+            var dbObject3 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_3);
+
+            return $@"
+DROP PROCEDURE IF EXISTS {dbObject1.Item1}.{dbObject1.Item2};
+DROP PROCEDURE IF EXISTS {dbObject2.Item1}.{dbObject2.Item2};
+DROP PROCEDURE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
 ";
+        }
+
+        private Tuple<string, string> GetObjectNameWithSchema(string objectName)
+        {
+            //check if a non-default dbo schema is used
+            var schemaName = "dbo";
+            var newObjectName = objectName;
+
+            if (objectName.IndexOf('.') > 0)
+            {
+                schemaName = objectName.Split('.')[0];
+                newObjectName = objectName.Split('.')[1];
+            }
+
+            //we keep the original value as sql server is not case sensitive
+            return new Tuple<string, string>(schemaName, newObjectName);
         }
 
         //TODO: Refactor this into Erase!

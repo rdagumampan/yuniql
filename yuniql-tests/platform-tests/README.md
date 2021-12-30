@@ -34,7 +34,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 Deploy local database container
 
 ```console
-docker run --rm -dit -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
+docker run --rm -dit --name sqlserver -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 ```
 
 Configure your test environment
@@ -195,7 +195,7 @@ dotnet test -v n
 Deploy local database container
 
 ```console
-docker run -d -it --name oracle12cdev  -p 1521:1521  store/oracle/database-enterprise:12.2.0.1-slim
+docker run --rm -dit --name oracle  -p 1521:1521  store/oracle/database-enterprise:12.2.0.1-slim
 ```
 
 Configure your test environment

@@ -17,6 +17,7 @@ namespace Yuniql.PlatformTests.Interfaces
         string QuerySingleString(string connectionString, string sqlStatement);
 
         bool QuerySingleRow(string connectionString, string sqlStatement);
+
         bool CheckIfDbExist(string connectionString);
 
         bool CheckIfDbObjectExist(string connectionString, string objectName);
