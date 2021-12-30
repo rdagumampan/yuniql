@@ -81,7 +81,7 @@ CREATE TABLE {objectName} (
         {
             return $@"
 CREATE TABLE {objectName} (
-	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY_KEY1, #this is a faulty line
+	VisitorID INT AUTO_INCREMENT NOT NULL PRIMARY_KEY1 THIS_IS_AN_ERROR, 
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
@@ -109,7 +109,7 @@ CREATE TABLE {objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
 CREATE TABLE {tableName}(
 	FirstName VARCHAR(50) NOT NULL,
 	LastName VARCHAR(50) NOT NULL,
-	BirthDate DATETIME NULL
+	BirthDate VARCHAR(50) NULL
 ) ENGINE=InnoDB;
 ";
         }
@@ -158,10 +158,10 @@ CREATE TABLE {tableName}(
 
         public override string GetSqlForCleanup()
         {
-            return @"
-DROP TABLE TEST_DB_OBJECT_1;
-DROP TABLE TEST_DB_OBJECT_2;
-DROP TABLE TEST_DB_OBJECT_3;
+            return $@"
+DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_1};
+DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_2};
+DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
 ";
         }
 
@@ -176,6 +176,10 @@ CREATE SCHEMA {schemaName};
         {
             //not needed need since test cases are executed against disposable database containers
             //we could simply docker rm the running test container after tests completed
+
+            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "MySql", "Erase.sql"));
+            var connectionStringBuilder = new MySqlConnectionStringBuilder(connectionString);
+            base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
         }
     }
 }
