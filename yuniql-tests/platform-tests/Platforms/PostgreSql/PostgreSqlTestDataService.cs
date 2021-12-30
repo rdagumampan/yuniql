@@ -42,21 +42,23 @@ namespace Yuniql.PlatformTests.Platforms.PostgreSql
         public override bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
             var dbObject = GetObjectNameWithSchema(objectName);
+            var dbSchemaName = dbObject.Item1.IsDoubleQuoted() ? dbObject.Item1.UnQuote() : dbObject.Item1;
+            var dbObjectName = dbObject.Item2.IsDoubleQuoted() ? dbObject.Item2.UnQuote() : dbObject.Item2;
 
             //check from procedures, im just lazy to figure out join in pgsql :)
-            var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName.ToLower()}'";
+            var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{dbObjectName}'";
             bool result = QuerySingleBool(connectionString, sqlStatement);
 
             //check from tables, im just lazy to figure out join in pgsql :)
             if (!result)
             {
-                sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName.ToLower()}'";
+                sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{dbObjectName}'";
                 result = QuerySingleBool(connectionString, sqlStatement);
             }
 
             if (!result)
             {
-                sqlStatement = $"SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA = '{dbObject.Item1}'  AND TABLE_NAME = '{dbObject.Item2}'";
+                sqlStatement = $"SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA = '{dbSchemaName}'  AND TABLE_NAME = '{dbObjectName}'";
                 result = QuerySingleBool(connectionString, sqlStatement);
             }
 
@@ -65,6 +67,7 @@ namespace Yuniql.PlatformTests.Platforms.PostgreSql
 
         public override string GetSqlForCreateDbSchema(string schemaName)
         {
+            schemaName = schemaName.HasUpper() ? schemaName.DoubleQuote() : schemaName;
             return $@"
 CREATE SCHEMA {schemaName};
 ";
@@ -72,8 +75,9 @@ CREATE SCHEMA {schemaName};
 
         public override string GetSqlForCreateDbObject(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE public.{objectName} (
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 	VisitorID SERIAL NOT NULL,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
@@ -85,9 +89,10 @@ CREATE TABLE public.{objectName} (
 
         public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE public.{objectName} (
-	VisitorID SERIAL NOT NULL,
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
+	VisitorID SERIAL NOT NULL THIS_IS_AN_ERROR,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
 	Address VARCHAR(255) NULL,
@@ -98,8 +103,9 @@ CREATE TABLE public.{objectName} (
 
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema($@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}");
             return $@"
-CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 	VisitorID SERIAL NOT NULL,
 	FirstName VARCHAR(255) NULL,
 	LastName VARCHAR(255) NULL,
@@ -109,15 +115,22 @@ CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
 ";
         }
 
-        public override string GetSqlForCreateBulkTable(string tableName)
+        public override string GetSqlForCreateBulkTable(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE {tableName}(
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	FirstName VARCHAR(50) NOT NULL,
 	LastName VARCHAR(50) NOT NULL,
-	BirthDate TIMESTAMP NULL
+	BirthDate VARCHAR(50) NULL
 );
 ";
+        }
+
+        public override string GetSqlForGetBulkTestData(string objectName)
+        {
+            var dbObject = GetObjectNameWithSchema(objectName);
+            return $"SELECT * FROM {dbObject.Item1}.{dbObject.Item2}";
         }
 
         public override string GetSqlForSingleLine(string objectName)
@@ -164,10 +177,14 @@ CREATE TABLE {tableName}(
 
         public override string GetSqlForCleanup()
         {
-            return @"
-DROP TABLE TEST_DB_OBJECT_1;
-DROP TABLE TEST_DB_OBJECT_2;
-DROP TABLE TEST_DB_OBJECT_3;
+            var dbObject1 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_1);
+            var dbObject2 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_2);
+            var dbObject3 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_3);
+
+            return $@"
+DROP TABLE IF EXISTS {dbObject1.Item2};
+DROP TABLE IF EXISTS {dbObject2.Item2};
+DROP TABLE IF EXISTS {dbObject3.Item2};
 ";
         }
 
@@ -183,37 +200,47 @@ DROP TABLE TEST_DB_OBJECT_3;
                 newObjectName = objectName.Split('.')[1];
             }
 
-            return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
+            //we do this because postgres always converts unquoted names into small case
+            schemaName = schemaName.HasUpper() ? schemaName.DoubleQuote() : schemaName;
+            newObjectName = newObjectName.HasUpper() ? newObjectName.DoubleQuote() : newObjectName;
+
+            return new Tuple<string, string>(schemaName, newObjectName);
         }
 
         //https://dba.stackexchange.com/questions/11893/force-drop-db-while-others-may-be-connected
         public override void DropDatabase(string connectionString)
         {
-            //not needed need since test cases are executed against disposable database containers
-            //we could simply docker rm the running test container after tests completed
-
-            //use the target user database to migrate, this is part of orig connection string
+            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "PostgreSql", "Erase.sql"));
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
-            var databaseName = connectionStringBuilder.Database;
+            base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
 
-            var sqlStatement = $@"
---making sure the database exists
-SELECT * from pg_database where datname = '{databaseName}';
+            //            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
 
---disallow new connections
-UPDATE pg_database SET datallowconn = 'false' WHERE datname = '{databaseName}';
-ALTER DATABASE {databaseName} CONNECTION LIMIT 1;
+            //            //not needed need since test cases are executed against disposable database containers
+            //            //we could simply docker rm the running test container after tests completed
 
---terminate existing connections
-SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{databaseName}';
+            //            //use the target user database to migrate, this is part of orig connection string
+            //            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+            //            var databaseName = connectionStringBuilder.Database;
 
---drop database
-DROP DATABASE {databaseName};
-";
+            //            var sqlStatement = $@"
+            //--making sure the database exists
+            //SELECT * from pg_database where datname = '{databaseName}';
 
-            //switch database into master/system database where db catalogs are maintained
-            connectionStringBuilder.Database = "postgres";
-            ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
+            //--disallow new connections
+            //UPDATE pg_database SET datallowconn = 'false' WHERE datname = '{databaseName}';
+            //ALTER DATABASE {databaseName} CONNECTION LIMIT 1;
+
+            //--terminate existing connections
+            //SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{databaseName}';
+
+            //--drop database
+            //DROP DATABASE {databaseName};
+            //";
+
+            //            //switch database into master/system database where db catalogs are maintained
+            //            connectionStringBuilder.Database = "postgres";
+            //            ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement);
         }
     }
 }

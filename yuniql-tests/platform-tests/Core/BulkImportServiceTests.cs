@@ -446,8 +446,8 @@ namespace Yuniql.PlatformTests.Core
 
             workspaceService.IncrementMajorVersion(_testConfiguration.WorkspacePath, null);
             string v100Directory = Path.Combine(_testConfiguration.WorkspacePath, "v1.00");
-            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"__CreateSchema.sql"), _testDataService.GetSqlForCreateDbSchema("TestSchema"));
-            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvWithSchema.sql"), _testDataService.GetSqlForCreateBulkTable($"TestSchema.{TEST_DBOBJECTS.TestCsv}"));
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"__CreateSchema.sql"), _testDataService.GetSqlForCreateDbSchema(TEST_DBOBJECTS.TestSchema));
+            _testDataService.CreateScriptFile(Path.Combine(v100Directory, $"TestCsvWithSchema.sql"), _testDataService.GetSqlForCreateBulkTable($"{TEST_DBOBJECTS.TestSchema}.{TEST_DBOBJECTS.TestCsv}"));
 
             //act
             var configuration = _testConfiguration.GetFreshConfiguration();
@@ -469,9 +469,9 @@ namespace Yuniql.PlatformTests.Core
             migrationService.Run();
 
             //assert
-            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"TestSchema.{TEST_DBOBJECTS.TestCsv}").ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, $"{TEST_DBOBJECTS.TestSchema}.{TEST_DBOBJECTS.TestCsv}").ShouldBeTrue();
 
-            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, $"TestSchema.{TEST_DBOBJECTS.TestCsv}");
+            var results = _testDataService.GetBulkTestData(_testConfiguration.ConnectionString, $"{TEST_DBOBJECTS.TestSchema}.{TEST_DBOBJECTS.TestCsv}");
             var testDataRows = new List<BulkTestDataRow>
             {
                 new BulkTestDataRow { FirstName="Jack", LastName ="Poole", BirthDate = "1980-01-01" },

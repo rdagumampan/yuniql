@@ -228,6 +228,7 @@ DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
                 newObjectName = objectName.Split('.')[1];
             }
 
+            //we do this because oracle always converts unquoted names into upper case
             schemaName = schemaName.HasLower() ? schemaName.DoubleQuote() : schemaName;
             newObjectName = newObjectName.HasLower() ? newObjectName.DoubleQuote() : newObjectName;
 
@@ -237,7 +238,6 @@ DROP TABLE {TEST_DBOBJECTS.DB_OBJECT_3};
         //TODO: Refactor this into Erase!
         public override void DropDatabase(string connectionString)
         {
-            //capture the test database from connection string
             var connectionStringBuilder = new OracleConnectionStringBuilder(connectionString);
             var sqlStatements = BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Oracle", "Erase.sql")));
             sqlStatements.ForEach(s => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, s));

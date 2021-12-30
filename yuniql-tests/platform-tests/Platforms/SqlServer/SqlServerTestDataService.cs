@@ -65,7 +65,7 @@ GO
         public override string GetSqlForCreateDbObjectWithError(string scriptName)
         {
             return $@"
-CREATE PROC [NONEXISTINGDB].[dbo].[{scriptName}]
+CREATE PROC [THIS_IS_AN_ERROR].[dbo].[{scriptName}]
 AS
     SELECT 1/0;
 GO
@@ -218,26 +218,25 @@ DROP PROCEDURE TEST_DB_OBJECT_3;
 ";
         }
 
+        //TODO: Refactor this into Erase!
         public override void DropDatabase(string connectionString)
         {
-
-            //capture the test database from connection string
             var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "SqlServer", "Erase.sql"));
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
             base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
 
-            //            //capture the test database from connection string
-            //            var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            //            var sqlStatement = @$"
+            ////capture the test database from connection string
+            //var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            //var sqlStatement = @$"
             //ALTER DATABASE [{connectionStringBuilder.InitialCatalog}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
             //DROP DATABASE [{connectionStringBuilder.InitialCatalog}];
             //";
 
-            //            //switch connection string to use master database
-            //            var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            //            masterConnectionStringBuilder.InitialCatalog = "master";
+            ////switch connection string to use master database
+            //var masterConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
+            //masterConnectionStringBuilder.InitialCatalog = "master";
 
-            //            base.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
+            //base.ExecuteNonQuery(masterConnectionStringBuilder.ConnectionString, sqlStatement);
         }
     }
 }

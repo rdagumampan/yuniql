@@ -22,6 +22,9 @@ namespace Yuniql.PlatformTests.Setup
         public const string DB_OBJECT_14 = "TEST_DB_OBJECT_14";
         public const string DB_OBJECT_15 = "TEST_DB_OBJECT_15";
 
+        public const string TestSchema = "TestSchema";
+        public const string TestSchemaVersion = "my_versions";
+
         public const string TestCsv = "TestCsv";
         public const string TestCsvMismatchColumn = "TestCsvMismatchColumn";
         public const string TestCsvMismatchColumnNotNullable = "TestCsvMismatchColumnNotNullable";

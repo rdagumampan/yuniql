@@ -111,7 +111,10 @@ namespace Yuniql.PostgreSql
         {
             //get destination table schema and filter out columns not in csv file
             var destinationSchema = GetDestinationSchema(schemaName, tableName);
-            var destinationColumns = destinationSchema.ToList().Where(f => dataTable.Columns.Contains(f.Key)).Select(k => k.Value.ColumnName.HasUpper() ? k.Value.ColumnName.DoubleQuote() : k.Value.ColumnName).ToArray();
+            var destinationColumns = destinationSchema.ToList()
+                .Where(f => dataTable.Columns.Contains(f.Key))
+                .Select(k => k.Value.ColumnName.HasUpper() ? k.Value.ColumnName.DoubleQuote() : k.Value.ColumnName)
+                .ToArray();
 
             //prepare statement for binary import
             var sqlStatement = $"COPY {schemaName}.{tableName} ({string.Join(',', destinationColumns)}) FROM STDIN (FORMAT BINARY)";
@@ -132,13 +135,14 @@ namespace Yuniql.PostgreSql
                             continue;
                         }
 
-                        if (!destinationSchema.ContainsKey(dataColumn.ColumnName))
+                        var sourceColumnName = dataColumn.ColumnName.IsDoubleQuoted() ? dataColumn.ColumnName : dataColumn.ColumnName.ToLower();
+                        if (!destinationSchema.ContainsKey(sourceColumnName))
                         {
                             _traceService.Info($"PostgreSqlBulkImportService: CSV column {dataColumn.ColumnName} not found in destination table {schemaName}.{tableName}.");
                             continue;
                         }
 
-                        var dataType = destinationSchema[dataColumn.ColumnName].DataType;
+                        var dataType = destinationSchema[sourceColumnName].DataType;
 
                         if (dataType == "boolean" || dataType == "bit" || dataType == "bit varying")
                         {

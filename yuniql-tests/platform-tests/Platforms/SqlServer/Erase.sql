@@ -1,9 +1,4 @@
-﻿IF EXISTS(SELECT 1 FROM sys.objects WHERE OBJECT_ID = OBJECT_ID(N'__yuniql_schema_version') AND type = (N'U')) 
-BEGIN
-	ALTER TABLE __yuniql_schema_version DROP CONSTRAINT IF EXISTS pk___yuniql_schema_version;
-	ALTER TABLE __yuniql_schema_version DROP CONSTRAINT IF EXISTS ix___yuniql_schema_version;
-	DROP TABLE IF EXISTS __yuniql_schema_version;
-END
+﻿DROP TABLE IF EXISTS __yuniql_schema_version;
 
 DROP TABLE IF EXISTS dependents;
 DROP TABLE IF EXISTS employees;
@@ -13,13 +8,7 @@ DROP TABLE IF EXISTS locations;
 DROP TABLE IF EXISTS countries;
 DROP TABLE IF EXISTS regions;
 
-IF EXISTS(SELECT 1 FROM sys.objects WHERE OBJECT_ID = OBJECT_ID(N'my_versions') AND type = (N'U')) 
-BEGIN
-	ALTER TABLE my_versions DROP CONSTRAINT IF EXISTS pk___my_versions;
-	ALTER TABLE my_versions DROP CONSTRAINT IF EXISTS ix___my_versions;
-	DROP TABLE IF EXISTS my_versions;
-END
-
+DROP TABLE IF EXISTS my_versions;
 DROP TABLE IF EXISTS my_schema.__yuniql_schema_version;
 DROP TABLE IF EXISTS my_schema.my_versions;
 DROP SCHEMA IF EXISTS my_schema;
