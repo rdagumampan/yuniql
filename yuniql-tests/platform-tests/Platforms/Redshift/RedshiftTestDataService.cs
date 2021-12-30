@@ -175,7 +175,7 @@ DROP TABLE TEST_DB_OBJECT_3;
         private Tuple<string, string> GetObjectNameWithSchema(string objectName)
         {
             //check if a non-default dbo schema is used
-            var schemaName = "public";
+            var schemaName = base.SchemaName;
             var newObjectName = objectName;
 
             if (objectName.IndexOf('.') > 0)

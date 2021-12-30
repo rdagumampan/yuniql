@@ -173,7 +173,6 @@ CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
         public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
---; inline comment
 CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
     --; inline comment
 	FirstName VARCHAR(50) NOT NULL
@@ -194,15 +193,12 @@ CREATE TABLE {GetObjectNameWithSchema(objectName3).Item2} (
         public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
             return $@"
---; inline comment
 CREATE TABLE {GetObjectNameWithSchema(objectName1).Item2} (
-    --; inline comment
 	FirstName VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE {GetObjectNameWithSchema(objectName2).Item2} (
-    --; inline comment
-	FirstName VARCHAR_ERROR(50) NOT NULL
+	FirstName VARCHAR(50) NOT NULL THIS_IS_AN_ERROR
 );
 ";
         }
@@ -229,7 +225,7 @@ DROP TABLE {dbObject3.Item2};
         private Tuple<string, string> GetObjectNameWithSchema(string objectName)
         {
             //check if a non-default dbo schema is used
-            var schemaName = "";
+            var schemaName = string.Empty;
             var newObjectName = objectName;
 
             if (objectName.IndexOf('.') > 0)

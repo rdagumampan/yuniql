@@ -191,7 +191,7 @@ DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
         private Tuple<string, string> GetObjectNameWithSchema(string objectName)
         {
             //check if a non-default dbo schema is used
-            var schemaName = "public";
+            var schemaName = base.SchemaName;
             var newObjectName = objectName;
 
             if (objectName.IndexOf('.') > 0)
