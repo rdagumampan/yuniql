@@ -242,6 +242,7 @@ DROP TABLE {dbObject3.Item2};
 ";
         }
 
+        //TODO: Move this into Extensibility namespace
         private Tuple<string, string> GetObjectNameWithSchema(string objectName)
         {
             //check if a non-default dbo schema is used
@@ -261,7 +262,6 @@ DROP TABLE {dbObject3.Item2};
             return new Tuple<string, string>(schemaName, newObjectName);
         }
 
-        //TODO: Refactor this into Erase!
         public override void CleanupDbObjects(string connectionString)
         {
             var connectionStringBuilder = new OracleConnectionStringBuilder(connectionString);
@@ -269,7 +269,7 @@ DROP TABLE {dbObject3.Item2};
             sqlStatements.ForEach(s => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, s));
         }
 
-        //TODO: Refactor this!
+        //TODO: Refactor this!, use the dataservice method from base
         public List<string> BreakStatements(string sqlStatementRaw)
         {
             //breaks statements into batches using semicolon (;) or forward slash (/) batch separator

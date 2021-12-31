@@ -13,15 +13,6 @@
         <member name="M:Yuniql.Snowflake.SnowflakeDataService.Initialize(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.Snowflake.SnowflakeDataService.CreateConnection">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Snowflake.SnowflakeDataService.CreateMasterConnection">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetConnectionInfo">
-            <inheritdoc/>
-        </member>
         <member name="P:Yuniql.Snowflake.SnowflakeDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
@@ -41,6 +32,15 @@
             <inheritdoc/>
         </member>
         <member name="P:Yuniql.Snowflake.SnowflakeDataService.SchemaName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.CreateConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.CreateMasterConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetConnectionInfo">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Snowflake.SnowflakeDataService.BreakStatements(System.String)">

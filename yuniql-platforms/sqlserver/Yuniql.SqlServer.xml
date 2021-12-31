@@ -25,15 +25,6 @@
         <member name="M:Yuniql.SqlServer.SqlServerDataService.Initialize(System.String)">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.SqlServer.SqlServerDataService.CreateConnection">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.SqlServer.SqlServerDataService.CreateMasterConnection">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetConnectionInfo">
-            <inheritdoc/>
-        </member>
         <member name="P:Yuniql.SqlServer.SqlServerDataService.IsTransactionalDdlSupported">
             <inheritdoc/>
         </member>
@@ -53,6 +44,15 @@
             <inheritdoc/>
         </member>
         <member name="P:Yuniql.SqlServer.SqlServerDataService.SchemaName">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.CreateConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.CreateMasterConnection">
+            <inheritdoc/>
+        </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetConnectionInfo">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.BreakStatements(System.String)">

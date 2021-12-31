@@ -341,24 +341,6 @@
             </summary>
             <param name="connectionString">Connection string to the target database.</param>
         </member>
-        <member name="M:Yuniql.Extensibility.IDataService.CreateConnection">
-            <summary>
-            Creates new connection to target database.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Yuniql.Extensibility.IDataService.CreateMasterConnection">
-            <summary>
-            Creates new connection to master or metadata database. This is used to check if the database exists when --auto-createdb is set to true.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Yuniql.Extensibility.IDataService.GetConnectionInfo">
-            <summary>
-            Get basic connection information to target database.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="P:Yuniql.Extensibility.IDataService.IsTransactionalDdlSupported">
             <summary>
             Returns true if the database platform or version supports Atomic or Transactional DDL operations.
@@ -400,6 +382,24 @@
             Table name for schema versions table.
             When implementing a new platform, its reccommended to use __yuniql_schema_version as default value
             </summary>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.CreateConnection">
+            <summary>
+            Creates new connection to target database.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.CreateMasterConnection">
+            <summary>
+            Creates new connection to master or metadata database. This is used to check if the database exists when --auto-createdb is set to true.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Extensibility.IDataService.GetConnectionInfo">
+            <summary>
+            Get basic connection information to target database.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Yuniql.Extensibility.IDataService.BreakStatements(System.String)">
             <summary>

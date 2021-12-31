@@ -298,6 +298,7 @@ GO
 ";
         }
 
+        //TODO: Move this into Extensibility namespace
         private Tuple<string, string> GetObjectNameWithSchema(string objectName)
         {
             //check if a non-default dbo schema is used

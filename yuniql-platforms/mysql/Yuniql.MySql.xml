@@ -31,6 +31,9 @@
         <member name="P:Yuniql.MySql.MySqlDataService.IsMultiTenancySupported">
             <inheritdoc/>
         </member>
+        <member name="P:Yuniql.MySql.MySqlDataService.IsSchemaSupported">
+            <inheritdoc/>
+        </member>
         <member name="P:Yuniql.MySql.MySqlDataService.IsBatchSqlSupported">
             <inheritdoc/>
         </member>
@@ -49,10 +52,10 @@
         <member name="M:Yuniql.MySql.MySqlDataService.CreateMasterConnection">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.MySql.MySqlDataService.BreakStatements(System.String)">
+        <member name="M:Yuniql.MySql.MySqlDataService.GetConnectionInfo">
             <inheritdoc/>
         </member>
-        <member name="M:Yuniql.MySql.MySqlDataService.GetConnectionInfo">
+        <member name="M:Yuniql.MySql.MySqlDataService.BreakStatements(System.String)">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCheckIfDatabaseExists">
