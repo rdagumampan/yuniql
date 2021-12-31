@@ -154,6 +154,11 @@ namespace Yuniql.PlatformTests.Setup
             return results;
         }
 
+        public virtual List<string> BreakStatements(string sqlStatement)
+        {
+            return _dataService.BreakStatements(sqlStatement);
+        }
+
         private string GetPreparedSqlStatement(string sqlStatement, string schemaName, string tableName)
         {
             var tokens = new List<KeyValuePair<string, string>> {

@@ -20,6 +20,8 @@ namespace Yuniql.PlatformTests.Interfaces
 
         string GetConnectionString(string databaseName);
 
+        List<string> BreakStatements(string sqlStatement);
+
         string GetCurrentDbVersion(string connectionString);
 
         List<DbVersion> GetAllDbVersions(string connectionString);

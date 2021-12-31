@@ -265,40 +265,8 @@ DROP TABLE {dbObject3.Item2};
         public override void CleanupDbObjects(string connectionString)
         {
             var connectionStringBuilder = new OracleConnectionStringBuilder(connectionString);
-            var sqlStatements = BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Oracle", "Cleanup.sql")));
-            sqlStatements.ForEach(s => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, s));
-        }
-
-        //TODO: Refactor this!, use the dataservice method from base
-        public List<string> BreakStatements(string sqlStatementRaw)
-        {
-            //breaks statements into batches using semicolon (;) or forward slash (/) batch separator
-            //any existence of / in the line means it batch separated by /
-            var statementBatchTerminator = sqlStatementRaw.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                .Any(s => s.Equals("/"))
-                ? "/" : ";";
-
-            var results = new List<string>();
-            var sqlStatement = string.Empty;
-            var sqlStatementLine2 = string.Empty; byte lineNo = 0;
-            using (var sr = new StringReader(sqlStatementRaw))
-            {
-                while ((sqlStatementLine2 = sr.ReadLine()) != null)
-                {
-                    if (sqlStatementLine2.Length > 0 && !sqlStatementLine2.StartsWith("--"))
-                    {
-                        sqlStatement += (sqlStatement.Length > 0 ? Environment.NewLine : string.Empty) + sqlStatementLine2;
-                        if (sqlStatement.EndsWith(statementBatchTerminator))
-                        {
-                            results.Add(sqlStatement.Substring(0, sqlStatement.Length - 1));
-                            sqlStatement = string.Empty;
-                        }
-                    }
-                    ++lineNo;
-                }
-            }
-
-            return results;
+            var sqlStatements = base.BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Oracle", "Cleanup.sql")));
+            sqlStatements.ForEach(sqlStatement => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement));
         }
     }
 }

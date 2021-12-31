@@ -192,9 +192,9 @@ DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
         //https://dba.stackexchange.com/questions/11893/force-drop-db-while-others-may-be-connected
         public override void CleanupDbObjects(string connectionString)
         {
-            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "PostgreSql", "Cleanup.sql"));
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
-            base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
+            var sqlStatements = base.BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "PostgreSql", "Cleanup.sql")));
+            sqlStatements.ForEach(sqlStatement => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement));
 
             //            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
 

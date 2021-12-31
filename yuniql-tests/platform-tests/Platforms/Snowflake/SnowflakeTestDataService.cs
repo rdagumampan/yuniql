@@ -320,13 +320,10 @@ GO
 
         public override void CleanupDbObjects(string connectionString)
         {
-            var sqlBatchParser = new SqlBatchParser(new FileTraceService(new DirectoryService()), new GoSqlBatchLineAnalyzer(), new CommentAnalyzer());
-            var sqlStatements = sqlBatchParser.Parse(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Snowflake", "Cleanup.sql")))
-                .Select(s => s.BatchText).ToList();
-
             var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();
             connectionStringBuilder.ConnectionString = connectionString;
-            sqlStatements.ForEach(s => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, s));
+            var sqlStatements = base.BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Snowflake", "Cleanup.sql")));
+            sqlStatements.ForEach(sqlStatement => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement));
 
             ////extract the test database name from connection string
             //var connectionStringBuilder = new SnowflakeDbConnectionStringBuilder();

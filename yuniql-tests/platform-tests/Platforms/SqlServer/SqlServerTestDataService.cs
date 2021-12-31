@@ -299,9 +299,9 @@ DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
         //TODO: Refactor this into Erase!
         public override void CleanupDbObjects(string connectionString)
         {
-            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "SqlServer", "Cleanup.sql"));
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-            base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
+            var sqlStatements = base.BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "SqlServer", "Cleanup.sql")));
+            sqlStatements.ForEach(sqlStatement => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement));
 
             ////capture the test database from connection string
             //var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);

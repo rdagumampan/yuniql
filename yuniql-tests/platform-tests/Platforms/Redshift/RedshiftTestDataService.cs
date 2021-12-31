@@ -194,9 +194,9 @@ DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
         //https://dba.stackexchange.com/questions/11893/force-drop-db-while-others-may-be-connected
         public override void CleanupDbObjects(string connectionString)
         {
-            var sqlStatements = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Redshift", "Cleanup.sql"));
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(connectionString);
-            base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatements);
+            var sqlStatements = base.BreakStatements(File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Platforms", "Redshift", "Cleanup.sql")));
+            sqlStatements.ForEach(sqlStatement => base.ExecuteNonQuery(connectionStringBuilder.ConnectionString, sqlStatement));
 
             //            //not needed need since test cases are executed against disposable database containers
             //            //we could simply docker rm the running test container after tests completed
