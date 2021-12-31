@@ -46,20 +46,6 @@ namespace Yuniql.PlatformTests.Platforms.MySql
             var sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{connectionStringBuilder.Database}' AND TABLE_NAME = '{objectName}' LIMIT 1;";
             bool result = QuerySingleBool(connectionString, sqlStatement);
 
-            //check from views, im just lazy to figure out join :)
-            if (!result)
-            {
-                sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = '{connectionStringBuilder.Database}' AND TABLE_NAME = '{objectName}' LIMIT 1;";
-                result = QuerySingleBool(connectionString, sqlStatement);
-            }
-
-            //check from functions, im just lazy to figure out join :)
-            if (!result)
-            {
-                sqlStatement = $"SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = '{connectionStringBuilder.Database}' AND ROUTINE_NAME = '{objectName}' LIMIT 1;";
-                result = QuerySingleBool(connectionString, sqlStatement);
-            }
-
             return result;
         }
 

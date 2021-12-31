@@ -40,7 +40,7 @@ namespace Yuniql.Snowflake
             //get file name segments from potentially sequenceno.schemaname.tablename filename pattern
             var fileName = Path.GetFileNameWithoutExtension(fileFullPath)
                           .ReplaceTokens(_traceService, tokens);
-            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "PUBLIC");
+            var fileNameSegments = fileName.SplitBulkFileName(defaultSchema: "public");
             var schemaName = fileNameSegments.Item2.HasUpper() ? fileNameSegments.Item2.DoubleQuote() : fileNameSegments.Item2;
             var tableName = fileNameSegments.Item3.HasUpper() ? fileNameSegments.Item3.DoubleQuote() : fileNameSegments.Item3;
 
@@ -90,9 +90,9 @@ namespace Yuniql.Snowflake
                 csvReader.HasFieldsEnclosedInQuotes = true;
 
                 //enclose all column names into double quote for case-sensitivity
-                var csvColumns = csvReader.ReadFields().Select(f => f.DoubleQuote());
+                var csvColumns = csvReader.ReadFields().Select(f => f.HasUpper() ? f.DoubleQuote() : f);
 
-                sqlStatement.Append($"INSERT INTO {schemaName.DoubleQuote()}.{tableName.DoubleQuote()} ({string.Join(",", csvColumns)}) {Environment.NewLine}");
+                sqlStatement.Append($"INSERT INTO {schemaName}.{tableName} ({string.Join(",", csvColumns)}) {Environment.NewLine}");
                 sqlStatement.Append("VALUES ");
 
                 while (!csvReader.EndOfData)

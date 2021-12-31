@@ -46,21 +46,8 @@ namespace Yuniql.PlatformTests.Platforms.PostgreSql
             var dbObjectName = dbObject.Item2.IsDoubleQuoted() ? dbObject.Item2.UnQuote() : dbObject.Item2;
 
             //check from procedures, im just lazy to figure out join in pgsql :)
-            var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{dbObjectName}'";
-            bool result = QuerySingleBool(connectionString, sqlStatement);
-
-            //check from tables, im just lazy to figure out join in pgsql :)
-            if (!result)
-            {
-                sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{dbObjectName}'";
-                result = QuerySingleBool(connectionString, sqlStatement);
-            }
-
-            if (!result)
-            {
-                sqlStatement = $"SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA = '{dbSchemaName}'  AND TABLE_NAME = '{dbObjectName}'";
-                result = QuerySingleBool(connectionString, sqlStatement);
-            }
+            var sqlStatement = $"SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA = '{dbSchemaName}'  AND TABLE_NAME = '{dbObjectName}'";
+            var result = QuerySingleBool(connectionString, sqlStatement);
 
             return result;
         }

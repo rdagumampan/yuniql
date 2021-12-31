@@ -44,22 +44,22 @@
     <None Update="Data\TestCsv.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Platforms\MySql\Erase.sql">
+    <None Update="Platforms\MySql\Cleanup.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Platforms\Oracle\Erase.sql">
+    <None Update="Platforms\Oracle\Cleanup.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Platforms\PostgreSql\Erase.sql">
+    <None Update="Platforms\PostgreSql\Cleanup.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Platforms\Redshift\Erase.sql">
+    <None Update="Platforms\Redshift\Cleanup.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Platforms\Snowflake\Erase.sql">
+    <None Update="Platforms\Snowflake\Cleanup.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Platforms\SqlServer\Erase.sql">
+    <None Update="Platforms\SqlServer\Cleanup.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

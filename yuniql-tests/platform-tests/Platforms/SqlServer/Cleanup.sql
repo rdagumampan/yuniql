@@ -9,9 +9,13 @@ DROP TABLE IF EXISTS dbo.countries;
 DROP TABLE IF EXISTS dbo.regions;
 
 DROP TABLE IF EXISTS dbo.my_versions;
-DROP TABLE IF EXISTS my_schema.__yuniql_schema_version;
-DROP TABLE IF EXISTS my_schema.my_versions;
-DROP SCHEMA IF EXISTS my_schema;
+
+IF EXISTS(SELECT 1 FROM [sys].[schemas] WHERE name = 'my_schema')
+BEGIN
+	DROP TABLE IF EXISTS my_schema.__yuniql_schema_version;
+	DROP TABLE IF EXISTS my_schema.my_versions;
+	DROP SCHEMA IF EXISTS my_schema;
+END
 
 DROP TABLE IF EXISTS dbo.TEST_DB_OBJECT_1;
 DROP TABLE IF EXISTS dbo.TEST_DB_OBJECT_2;
@@ -40,5 +44,8 @@ DROP TABLE IF EXISTS dbo.TestCsvPipeSeparated;
 DROP TABLE IF EXISTS dbo.TestCsvUnquoted;
 DROP TABLE IF EXISTS dbo.TestCsvUtf8;
 
-DROP TABLE IF EXISTS TestSchema.TestCsv;
-DROP SCHEMA IF EXISTS TestSchema;
+IF EXISTS(SELECT 1 FROM [sys].[schemas] WHERE name = 'TestSchema')
+BEGIN
+	DROP TABLE IF EXISTS TestSchema.TestCsv;
+	DROP SCHEMA IF EXISTS TestSchema;
+END

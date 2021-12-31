@@ -9,9 +9,7 @@ DROP TABLE IF EXISTS public.countries;
 DROP TABLE IF EXISTS public.regions;
 
 DROP TABLE IF EXISTS public.my_versions;
-DROP TABLE IF EXISTS my_schema.__yuniql_schema_version;
-DROP TABLE IF EXISTS my_schema.my_versions;
-DROP SCHEMA IF EXISTS my_schema;
+DROP SCHEMA IF EXISTS my_schema CASCADE;
 
 DROP TABLE IF EXISTS public."TEST_DB_OBJECT_1";
 DROP TABLE IF EXISTS public."TEST_DB_OBJECT_2";
@@ -29,9 +27,7 @@ DROP TABLE IF EXISTS public."TEST_DB_OBJECT_13";
 DROP TABLE IF EXISTS public."TEST_DB_OBJECT_14";
 DROP TABLE IF EXISTS public."TEST_DB_OBJECT_15";
 DROP TABLE IF EXISTS public."TEST_DB_OBJECT_16";
-
 DROP TABLE IF EXISTS public."TEST_DB_OBJECT_1_Token1Value_Token2Value_Token3Value";
-DROP PROCEDURE IF EXISTS public."TEST_DB_OBJECT_1_Token1Value_Token2Value_Token3Value";
 
 DROP TABLE IF EXISTS public."TestCsv";
 DROP TABLE IF EXISTS public."TestCsvMismatchColumn";
@@ -42,6 +38,5 @@ DROP TABLE IF EXISTS public."TestCsvPipeSeparated";
 DROP TABLE IF EXISTS public."TestCsvUnquoted";
 DROP TABLE IF EXISTS public."TestCsvUtf8";
 
-DROP TABLE IF EXISTS "TestSchema"."TestCsv";
-DROP SCHEMA IF EXISTS "TestSchema";
+DROP SCHEMA IF EXISTS "TestSchema" CASCADE;
 

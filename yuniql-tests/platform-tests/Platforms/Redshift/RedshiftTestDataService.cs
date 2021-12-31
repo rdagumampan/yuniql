@@ -43,23 +43,12 @@ namespace Yuniql.PlatformTests.Platforms.Redshift
         public override bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
             var dbObject = GetObjectNameWithSchema(objectName);
+            var dbSchemaName = dbObject.Item1.IsDoubleQuoted() ? dbObject.Item1.UnQuote() : dbObject.Item1;
+            var dbObjectName = dbObject.Item2.IsDoubleQuoted() ? dbObject.Item2.UnQuote() : dbObject.Item2;
 
             //check from procedures, im just lazy to figure out join in pgsql :)
-            var sqlStatement = $"SELECT 1 FROM pg_proc WHERE  proname = '{objectName.ToLower()}'";
-            bool result = QuerySingleBool(connectionString, sqlStatement);
-
-            //check from tables, im just lazy to figure out join in pgsql :)
-            if (!result)
-            {
-                sqlStatement = $"SELECT 1 FROM pg_class WHERE  relname = '{objectName.ToLower()}'";
-                result = QuerySingleBool(connectionString, sqlStatement);
-            }
-
-            if (!result)
-            {
-                sqlStatement = $"SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA = '{dbObject.Item1}'  AND TABLE_NAME = '{dbObject.Item2}'";
-                result = QuerySingleBool(connectionString, sqlStatement);
-            }
+            var sqlStatement = $"SELECT 1 FROM information_schema.tables WHERE TABLE_SCHEMA = '{dbSchemaName}'  AND TABLE_NAME = '{dbObjectName}'";
+            var result = QuerySingleBool(connectionString, sqlStatement);
 
             return result;
         }
@@ -73,57 +62,56 @@ CREATE SCHEMA {schemaName};
 
         public override string GetSqlForCreateDbObject(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE public.{objectName} (
-	VisitorID INT IDENTITY(1,1) NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
 
         public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE public.{objectName} (
-	VisitorID INT IDENTITY(1,1) NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email [VARCHAR](255) NULL
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
+	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
 
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE public.{objectName}_${{Token1}}_${{Token2}}_${{Token3}} (
-	VisitorID INT IDENTITY(1,1) NOT NULL,
-	FirstName VARCHAR(255) NULL,
-	LastName VARCHAR(255) NULL,
-	Address VARCHAR(255) NULL,
-	Email VARCHAR(255) NULL
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}_${{Token1}}_${{Token2}}_${{Token3}} (
+	TEST_DB_COLUMN_1 INT NOT NULL,
+	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
+	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 ";
         }
 
-        public override string GetSqlForCreateBulkTable(string tableName)
+        public override string GetSqlForCreateBulkTable(string objectName)
         {
+            var dbObject = GetObjectNameWithSchema(objectName);
             return $@"
-CREATE TABLE {tableName}(
+CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	FirstName VARCHAR(50) NOT NULL,
 	LastName VARCHAR(50) NOT NULL,
-	BirthDate TIMESTAMP NULL
+	BirthDate VARCHAR(50) NULL
 );
 ";
         }
 
-        public override string GetSqlForGetBulkTestData(string tableName)
+        public override string GetSqlForGetBulkTestData(string objectName)
         {
-            return $"SELECT * FROM {tableName};";
+            var dbObject = GetObjectNameWithSchema(objectName);
+            return $"SELECT * FROM {dbObject.Item1}.{dbObject.Item2}";
         }
 
         public override string GetSqlForSingleLine(string objectName)
@@ -170,10 +158,14 @@ CREATE TABLE {tableName}(
 
         public override string GetSqlForEraseDbObjects()
         {
-            return @"
-DROP TABLE TEST_DB_OBJECT_1;
-DROP TABLE TEST_DB_OBJECT_2;
-DROP TABLE TEST_DB_OBJECT_3;
+            var dbObject1 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_1);
+            var dbObject2 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_2);
+            var dbObject3 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_3);
+
+            return $@"
+DROP TABLE IF EXISTS {dbObject1.Item1}.{dbObject1.Item2};
+DROP TABLE IF EXISTS {dbObject2.Item1}.{dbObject2.Item2};
+DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
 ";
         }
 
@@ -189,7 +181,12 @@ DROP TABLE TEST_DB_OBJECT_3;
                 newObjectName = objectName.Split('.')[1];
             }
 
-            return new Tuple<string, string>(schemaName.ToLower(), newObjectName.ToLower());
+            //we do this because postgres always converts all names into small case
+            //this is regardless if the names is double qouted names, it still ends up as lower case
+            schemaName = schemaName.HasUpper() ? schemaName.ToLower() : schemaName;
+            newObjectName = newObjectName.HasUpper() ? newObjectName.ToLower() : newObjectName;
+
+            return new Tuple<string, string>(schemaName, newObjectName);
         }
 
         //SELECT '"'+datname+'",' FROM pg_database where datname like '%yuniql_test%'
