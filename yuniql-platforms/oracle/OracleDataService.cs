@@ -62,6 +62,28 @@ namespace Yuniql.Oracle
         }
 
         ///<inheritdoc/>
+        public ConnectionInfo GetConnectionInfo()
+        {
+            //Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=49161))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=myuser;Password=mypassword;
+            var stringParts = _connectionString.Split('(');
+
+            //HOST=localhost)
+            var hostPair = stringParts.First(s => s.Contains("HOST")).Split("=");
+            var host = hostPair[1].Substring(0, hostPair[1].IndexOf(")"));
+
+            //PORT=49161)
+            var portPair = stringParts.First(s => s.Contains("PORT")).Split("=");
+            var port = portPair[1].Substring(0, portPair[1].IndexOf(")"));
+
+            //SERVICE_NAME=xe)
+            var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME")).Split("=");
+            var serviceName = serviceNamePair[1].Substring(0, serviceNamePair[1].IndexOf(")"));
+
+            var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
+            return new ConnectionInfo { DataSource = $"{host}", Database = serviceName };
+        }
+
+        ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
         {
             //breaks statements into batches using semicolon (;) or forward slash (/) batch separator
@@ -91,34 +113,13 @@ namespace Yuniql.Oracle
                 }
 
                 //pickup the last formed sql statement
-                if (!string.IsNullOrEmpty(sqlStatement.Trim())) {
+                if (!string.IsNullOrEmpty(sqlStatement.Trim()))
+                {
                     results.Add(sqlStatement);
                 }
             }
 
             return results;
-        }
-
-        ///<inheritdoc/>
-        public ConnectionInfo GetConnectionInfo()
-        {
-            //Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=49161))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=myuser;Password=mypassword;
-            var stringParts = _connectionString.Split('(');
-
-            //HOST=localhost)
-            var hostPair = stringParts.First(s => s.Contains("HOST")).Split("=");
-            var host = hostPair[1].Substring(0, hostPair[1].IndexOf(")"));
-
-            //PORT=49161)
-            var portPair = stringParts.First(s => s.Contains("PORT")).Split("=");
-            var port = portPair[1].Substring(0, portPair[1].IndexOf(")"));
-
-            //SERVICE_NAME=xe)
-            var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME")).Split("=");
-            var serviceName = serviceNamePair[1].Substring(0, serviceNamePair[1].IndexOf(")"));
-
-            var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
-            return new ConnectionInfo { DataSource = $"{host}", Database = serviceName };
         }
 
         //Only applies with oracle 12c

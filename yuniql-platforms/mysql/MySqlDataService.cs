@@ -31,6 +31,7 @@ namespace Yuniql.MySql
         ///<inheritdoc/>
         public bool IsMultiTenancySupported { get; } = true;
 
+        ///<inheritdoc/>
         public bool IsSchemaSupported { get; } = false;
 
         ///<inheritdoc/>
@@ -61,16 +62,16 @@ namespace Yuniql.MySql
         }
 
         ///<inheritdoc/>
-        public List<string> BreakStatements(string sqlStatementRaw)
-        {
-            return new List<string> { sqlStatementRaw };
-        }
-
-        ///<inheritdoc/>
         public ConnectionInfo GetConnectionInfo()
         {
             var connectionStringBuilder = new MySqlConnectionStringBuilder(_connectionString);
             return new ConnectionInfo { DataSource = connectionStringBuilder.Server, Database = connectionStringBuilder.Database };
+        }
+
+        ///<inheritdoc/>
+        public List<string> BreakStatements(string sqlStatementRaw)
+        {
+            return new List<string> { sqlStatementRaw };
         }
 
         ///<inheritdoc/>

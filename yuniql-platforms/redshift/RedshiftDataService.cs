@@ -63,16 +63,16 @@ namespace Yuniql.Redshift
         }
 
         ///<inheritdoc/>
-        public List<string> BreakStatements(string sqlStatementRaw)
-        {
-            return new List<string> { sqlStatementRaw };
-        }
-
-        ///<inheritdoc/>
         public ConnectionInfo GetConnectionInfo()
         {
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(_connectionString);
             return new ConnectionInfo { DataSource = connectionStringBuilder.Host, Database = connectionStringBuilder.Database };
+        }
+
+        ///<inheritdoc/>
+        public List<string> BreakStatements(string sqlStatementRaw)
+        {
+            return new List<string> { sqlStatementRaw };
         }
 
         ///<inheritdoc/>

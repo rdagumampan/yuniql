@@ -33,6 +33,27 @@ namespace Yuniql.Snowflake
         }
 
         ///<inheritdoc/>
+        public bool IsTransactionalDdlSupported => false;
+
+        ///<inheritdoc/>
+        public bool IsMultiTenancySupported { get; } = true;
+
+        ///<inheritdoc/>
+        public bool IsSchemaSupported { get; } = true;
+
+        ///<inheritdoc/>
+        public bool IsBatchSqlSupported => true;
+
+        ///<inheritdoc/>
+        public bool IsUpsertSupported => false;
+
+        ///<inheritdoc/>
+        public string TableName { get; set; } = "__YUNIQL_SCHEMA_VERSION";
+
+        ///<inheritdoc/>
+        public string SchemaName { get; set; } = "PUBLIC";
+
+        ///<inheritdoc/>
         public IDbConnection CreateConnection()
         {
             var connection = new SnowflakeDbConnection();
@@ -90,27 +111,6 @@ namespace Yuniql.Snowflake
 
             return new ConnectionInfo { DataSource = dataSource?.ToString(), Database = database?.ToString() };
         }
-
-        ///<inheritdoc/>
-        public bool IsTransactionalDdlSupported => false;
-
-        ///<inheritdoc/>
-        public bool IsMultiTenancySupported { get; } = true;
-
-        ///<inheritdoc/>
-        public bool IsSchemaSupported { get; } = true;
-
-        ///<inheritdoc/>
-        public bool IsBatchSqlSupported => true;
-
-        ///<inheritdoc/>
-        public bool IsUpsertSupported => false;
-
-        ///<inheritdoc/>
-        public string TableName { get; set; } = "__YUNIQL_SCHEMA_VERSION";
-
-        ///<inheritdoc/>
-        public string SchemaName { get; set; } = "PUBLIC";
 
         ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)

@@ -16,24 +16,6 @@ namespace Yuniql.Extensibility
         public void Initialize(string connectionString);
 
         /// <summary>
-        /// Creates new connection to target database.
-        /// </summary>
-        /// <returns></returns>
-        public IDbConnection CreateConnection();
-
-        /// <summary>
-        /// Creates new connection to master or metadata database. This is used to check if the database exists when --auto-createdb is set to true.
-        /// </summary>
-        /// <returns></returns>
-        public IDbConnection CreateMasterConnection();
-
-        /// <summary>
-        /// Get basic connection information to target database.
-        /// </summary>
-        /// <returns></returns>
-        ConnectionInfo GetConnectionInfo();
-
-        /// <summary>
         /// Returns true if the database platform or version supports Atomic or Transactional DDL operations.
         /// MySql version below 8.0 are known to not support atomic DDL. Other providers like SqlServer, Oracle and PostgreSql 
         /// supports rollback of DDL operations should migration failed.
@@ -76,6 +58,24 @@ namespace Yuniql.Extensibility
         /// When implementing a new platform, its reccommended to use __yuniql_schema_version as default value
         /// </summary>
         string TableName { get; }
+
+        /// <summary>
+        /// Creates new connection to target database.
+        /// </summary>
+        /// <returns></returns>
+        public IDbConnection CreateConnection();
+
+        /// <summary>
+        /// Creates new connection to master or metadata database. This is used to check if the database exists when --auto-createdb is set to true.
+        /// </summary>
+        /// <returns></returns>
+        public IDbConnection CreateMasterConnection();
+
+        /// <summary>
+        /// Get basic connection information to target database.
+        /// </summary>
+        /// <returns></returns>
+        ConnectionInfo GetConnectionInfo();
 
         /// <summary>
         /// Breaks down statement using terminator word supported by target database.

@@ -28,6 +28,27 @@ namespace Yuniql.SqlServer
         }
 
         ///<inheritdoc/>
+        public bool IsTransactionalDdlSupported => true;
+
+        ///<inheritdoc/>
+        public bool IsMultiTenancySupported { get; } = true;
+
+        ///<inheritdoc/>
+        public bool IsSchemaSupported { get; } = true;
+
+        ///<inheritdoc/>
+        public bool IsBatchSqlSupported { get; } = true;
+
+        ///<inheritdoc/>
+        public bool IsUpsertSupported { get; } = false;
+
+        ///<inheritdoc/>
+        public string TableName { get; set; } = "__yuniql_schema_version";
+
+        ///<inheritdoc/>
+        public string SchemaName { get; set; } = "dbo";
+
+        ///<inheritdoc/>
         public IDbConnection CreateConnection()
         {
             return new SqlConnection(_connectionString);
@@ -48,27 +69,6 @@ namespace Yuniql.SqlServer
             var connectionStringBuilder = new SqlConnectionStringBuilder(_connectionString);
             return new ConnectionInfo { DataSource = connectionStringBuilder.DataSource, Database = connectionStringBuilder.InitialCatalog };
         }
-
-        ///<inheritdoc/>
-        public bool IsTransactionalDdlSupported => true;
-
-        ///<inheritdoc/>
-        public bool IsMultiTenancySupported { get; } = true;
-
-        ///<inheritdoc/>
-        public bool IsSchemaSupported { get; } = true;
-
-        ///<inheritdoc/>
-        public bool IsBatchSqlSupported { get; } = true;
-
-        ///<inheritdoc/>
-        public bool IsUpsertSupported { get; } = false;
-
-        ///<inheritdoc/>
-        public string TableName { get; set; } = "__yuniql_schema_version";
-
-        ///<inheritdoc/>
-        public string SchemaName { get; set; } = "dbo";
 
         ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
