@@ -54,7 +54,7 @@ CREATE SCHEMA {schemaName};
 
         public override string GetSqlForCreateDbObject(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 
         public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
@@ -77,7 +77,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
         }
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema($@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}");
+            var dbObject = $@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}".SplitSchema(base.SchemaName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 
         public override string GetSqlForCreateBulkTable(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	[FirstName] [nvarchar](50) NOT NULL,
@@ -101,13 +101,13 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 
         public override string GetSqlForGetBulkTestData(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName);
             return $"SELECT * FROM {dbObject.Item1}.{dbObject.Item2}";
         }
 
         public override string GetSqlForSingleLine(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -120,7 +120,7 @@ GO
 
         public override string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -132,9 +132,9 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 
         public override string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
-            var dbObject1 = GetObjectNameWithSchema(objectName1);
-            var dbObject2 = GetObjectNameWithSchema(objectName2);
-            var dbObject3 = GetObjectNameWithSchema(objectName3);
+            var dbObject1 = objectName1.SplitSchema(base.SchemaName);
+            var dbObject2 = objectName2.SplitSchema(base.SchemaName);
+            var dbObject3 = objectName3.SplitSchema(base.SchemaName);
 
             return $@"
 CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2}(
@@ -161,9 +161,9 @@ CREATE TABLE {dbObject3.Item1}.{dbObject3.Item2}(
 
         public override string GetSqlForMultilineWithTerminatorInCommentBlock(string objectName1, string objectName2, string objectName3)
         {
-            var dbObject1 = GetObjectNameWithSchema(objectName1);
-            var dbObject2 = GetObjectNameWithSchema(objectName2);
-            var dbObject3 = GetObjectNameWithSchema(objectName3);
+            var dbObject1 = objectName1.SplitSchema(base.SchemaName);
+            var dbObject2 = objectName2.SplitSchema(base.SchemaName);
+            var dbObject3 = objectName3.SplitSchema(base.SchemaName);
 
             return $@"
 --GO inline comment
@@ -200,9 +200,9 @@ GO
 
         public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
-            var dbObject1 = GetObjectNameWithSchema(objectName1);
-            var dbObject2 = GetObjectNameWithSchema(objectName2);
-            var dbObject3 = GetObjectNameWithSchema(objectName3);
+            var dbObject1 = objectName1.SplitSchema(base.SchemaName);
+            var dbObject2 = objectName2.SplitSchema(base.SchemaName);
+            var dbObject3 = objectName3.SplitSchema(base.SchemaName);
 
             return $@"
 CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2}(
@@ -232,8 +232,8 @@ GO
 
         public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
-            var dbObject1 = GetObjectNameWithSchema(objectName1);
-            var dbObject2 = GetObjectNameWithSchema(objectName2);
+            var dbObject1 = objectName1.SplitSchema(base.SchemaName);
+            var dbObject2 = objectName2.SplitSchema(base.SchemaName);
 
             return $@"
 CREATE TABLE {dbObject1.Item1}.{dbObject1.Item2}(
@@ -268,32 +268,15 @@ GO
 
         public override string GetSqlForEraseDbObjects()
         {
-            var dbObject1 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_1);
-            var dbObject2 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_2);
-            var dbObject3 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_3);
+            var dbObject1 = TEST_DBOBJECTS.DB_OBJECT_1.SplitSchema(base.SchemaName);
+            var dbObject2 = TEST_DBOBJECTS.DB_OBJECT_2.SplitSchema(base.SchemaName);
+            var dbObject3 = TEST_DBOBJECTS.DB_OBJECT_3.SplitSchema(base.SchemaName);
 
             return $@"
 DROP TABLE IF EXISTS {dbObject1.Item1}.{dbObject1.Item2};
 DROP TABLE IF EXISTS {dbObject2.Item1}.{dbObject2.Item2};
 DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
 ";
-        }
-
-        //TODO: Move this into Extensibility namespace
-        private Tuple<string, string> GetObjectNameWithSchema(string objectName)
-        {
-            //check if a non-default dbo schema is used
-            var schemaName = base.SchemaName;
-            var newObjectName = objectName;
-
-            if (objectName.IndexOf('.') > 0)
-            {
-                schemaName = objectName.Split('.')[0];
-                newObjectName = objectName.Split('.')[1];
-            }
-
-            //we keep the original value as sql server is not case sensitive
-            return new Tuple<string, string>(schemaName, newObjectName);
         }
 
         //TODO: Refactor this into Erase!

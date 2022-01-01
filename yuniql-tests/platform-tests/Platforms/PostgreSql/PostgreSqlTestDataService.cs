@@ -41,7 +41,7 @@ namespace Yuniql.PlatformTests.Platforms.PostgreSql
 
         public override bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyUpperCase);
             var dbSchemaName = dbObject.Item1.IsDoubleQuoted() ? dbObject.Item1.UnQuote() : dbObject.Item1;
             var dbObjectName = dbObject.Item2.IsDoubleQuoted() ? dbObject.Item2.UnQuote() : dbObject.Item2;
 
@@ -62,7 +62,7 @@ CREATE SCHEMA {schemaName};
 
         public override string GetSqlForCreateDbObject(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyUpperCase);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 
         public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyUpperCase);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
@@ -86,7 +86,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema($@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}");
+            var dbObject = $@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}".SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyUpperCase);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 
         public override string GetSqlForCreateBulkTable(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyUpperCase);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	FirstName VARCHAR(50) NOT NULL,
@@ -110,7 +110,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 
         public override string GetSqlForGetBulkTestData(string objectName)
         {
-            var dbObject = GetObjectNameWithSchema(objectName);
+            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyUpperCase);
             return $"SELECT * FROM {dbObject.Item1}.{dbObject.Item2}";
         }
 
@@ -158,35 +158,15 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 
         public override string GetSqlForEraseDbObjects()
         {
-            var dbObject1 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_1);
-            var dbObject2 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_2);
-            var dbObject3 = GetObjectNameWithSchema(TEST_DBOBJECTS.DB_OBJECT_3);
+            var dbObject1 = TEST_DBOBJECTS.DB_OBJECT_1.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyUpperCase);
+            var dbObject2 = TEST_DBOBJECTS.DB_OBJECT_2.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyUpperCase);
+            var dbObject3 = TEST_DBOBJECTS.DB_OBJECT_3.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyUpperCase);
 
             return $@"
 DROP TABLE IF EXISTS {dbObject1.Item1}.{dbObject1.Item2};
 DROP TABLE IF EXISTS {dbObject2.Item1}.{dbObject2.Item2};
 DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
 ";
-        }
-
-        //TODO: Move this into Extensibility namespace
-        private Tuple<string, string> GetObjectNameWithSchema(string objectName)
-        {
-            //check if a non-default dbo schema is used
-            var schemaName = base.SchemaName;
-            var newObjectName = objectName;
-
-            if (objectName.IndexOf('.') > 0)
-            {
-                schemaName = objectName.Split('.')[0];
-                newObjectName = objectName.Split('.')[1];
-            }
-
-            //we do this because postgres always converts unquoted names into small case
-            schemaName = schemaName.HasUpper() ? schemaName.DoubleQuote() : schemaName;
-            newObjectName = newObjectName.HasUpper() ? newObjectName.DoubleQuote() : newObjectName;
-
-            return new Tuple<string, string>(schemaName, newObjectName);
         }
 
         //https://dba.stackexchange.com/questions/11893/force-drop-db-while-others-may-be-connected

@@ -90,6 +90,19 @@ namespace Yuniql.Extensibility
         /// <returns></returns>
         public static Tuple<string, string> SplitSchema(this string objectName, string defaultSchema)
         {
+            return objectName.SplitSchema(defaultSchema, CaseSenstiveOption.None);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="objectName"></param>
+        /// <param name="defaultSchema"></param>
+        /// <param name="caseSensitive"></param>
+        /// <param name="caseSenstiveOption"></param>
+        /// <returns></returns>
+        public static Tuple<string, string> SplitSchema(this string objectName, string defaultSchema, CaseSenstiveOption caseSenstiveOption)
+        {
             //check if a non-default dbo schema is used
             var schemaName = defaultSchema;
             var newObjectName = objectName;
@@ -97,6 +110,31 @@ namespace Yuniql.Extensibility
             {
                 schemaName = objectName.Split('.')[0];
                 newObjectName = objectName.Split('.')[1];
+            }
+
+            if (caseSenstiveOption == CaseSenstiveOption.None)
+            {
+                return new Tuple<string, string>(schemaName, newObjectName);
+            }
+            else if (caseSenstiveOption == CaseSenstiveOption.QuouteWhenAnyLowerCase)
+            {
+                //we do this because snowflake, oracle always converts unquoted names into upper case
+                schemaName = schemaName.HasLower() ? schemaName.DoubleQuote() : schemaName;
+                newObjectName = newObjectName.HasLower() ? newObjectName.DoubleQuote() : newObjectName;
+            }
+            else if (caseSenstiveOption == CaseSenstiveOption.QuouteWhenAnyUpperCase)
+            {
+                //we do this because postgres always converts unquoted names into small case
+                schemaName = schemaName.HasUpper() ? schemaName.DoubleQuote() : schemaName;
+                newObjectName = newObjectName.HasUpper() ? newObjectName.DoubleQuote() : newObjectName;
+            }
+
+            else if (caseSenstiveOption == CaseSenstiveOption.LowerCaseWhenAnyUpperCase)
+            {
+                //we do this because reshift, mysql, mariadb always converts all names into small case
+                //this is regardless if the names is double qouted names, it still ends up as lower case
+                schemaName = schemaName.HasUpper() ? schemaName.ToLower() : schemaName;
+                newObjectName = newObjectName.HasUpper() ? newObjectName.ToLower() : newObjectName;
             }
 
             return new Tuple<string, string>(schemaName, newObjectName);
@@ -231,5 +269,16 @@ namespace Yuniql.Extensibility
 
             return processedSqlStatement.ToString();
         }
+    }
+
+    /// <summary>
+    /// Defines the qouting and case behaviour when splitting object and schema
+    /// </summary>
+    public enum CaseSenstiveOption
+    {
+        None,                       //applies to sqlserver
+        QuouteWhenAnyLowerCase,     //applies to snowflake, oracle
+        QuouteWhenAnyUpperCase,     //applies to postgres
+        LowerCaseWhenAnyUpperCase,  //applies to redshift, mysql, mariadb
     }
 }

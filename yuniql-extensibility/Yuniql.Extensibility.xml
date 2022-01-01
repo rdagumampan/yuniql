@@ -660,6 +660,16 @@
             <param name="defaultSchema"></param>
             <returns></returns>
         </member>
+        <member name="M:Yuniql.Extensibility.StringExtensions.SplitSchema(System.String,System.String,Yuniql.Extensibility.CaseSenstiveOption)">
+            <summary>
+            
+            </summary>
+            <param name="objectName"></param>
+            <param name="defaultSchema"></param>
+            <param name="caseSensitive"></param>
+            <param name="caseSenstiveOption"></param>
+            <returns></returns>
+        </member>
         <member name="M:Yuniql.Extensibility.StringExtensions.SplitBulkFileName(System.String,System.String)">
             <summary>
             Returns segments of a file to represent sequence no, schema name and table name
@@ -698,6 +708,11 @@
             <param name="str">The string where tokens can be present</param>
             <param name="tokens">List of token/value pairs</param>
             <returns></returns>
+        </member>
+        <member name="T:Yuniql.Extensibility.CaseSenstiveOption">
+            <summary>
+            Defines the qouting and case behaviour when splitting object and schema
+            </summary>
         </member>
     </members>
 </doc>
