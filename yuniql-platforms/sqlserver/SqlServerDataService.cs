@@ -43,10 +43,10 @@ namespace Yuniql.SqlServer
         public bool IsUpsertSupported { get; } = false;
 
         ///<inheritdoc/>
-        public string TableName { get; set; } = "__yuniql_schema_version";
+        public string MetaTableName { get; set; } = "__yuniql_schema_version";
 
         ///<inheritdoc/>
-        public string SchemaName { get; set; } = "dbo";
+        public string MetaSchemaName { get; set; } = "dbo";
 
         ///<inheritdoc/>
         public IDbConnection CreateConnection()

@@ -37,10 +37,10 @@
         <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.IsUpsertSupported">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.TableName">
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.MetaTableName">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.SchemaName">
+        <member name="P:Yuniql.PostgreSql.PostgreSqlDataService.MetaSchemaName">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.Initialize(System.String)">

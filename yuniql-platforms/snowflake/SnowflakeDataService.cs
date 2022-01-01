@@ -48,10 +48,10 @@ namespace Yuniql.Snowflake
         public bool IsUpsertSupported => false;
 
         ///<inheritdoc/>
-        public string TableName { get; set; } = "__YUNIQL_SCHEMA_VERSION";
+        public string MetaTableName { get; set; } = "__YUNIQL_SCHEMA_VERSION";
 
         ///<inheritdoc/>
-        public string SchemaName { get; set; } = "PUBLIC";
+        public string MetaSchemaName { get; set; } = "PUBLIC";
 
         ///<inheritdoc/>
         public IDbConnection CreateConnection()

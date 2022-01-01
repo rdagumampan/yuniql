@@ -42,7 +42,7 @@ namespace Yuniql.PlatformTests.Platforms.Redshift
 
         public override bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
             var dbSchemaName = dbObject.Item1.IsDoubleQuoted() ? dbObject.Item1.UnQuote() : dbObject.Item1;
             var dbObjectName = dbObject.Item2.IsDoubleQuoted() ? dbObject.Item2.UnQuote() : dbObject.Item2;
 
@@ -62,7 +62,7 @@ CREATE SCHEMA {schemaName};
 
         public override string GetSqlForCreateDbObject(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 
         public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
@@ -87,7 +87,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2} (
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
             //we have to keep the token untouchs so token replacement will discover these keys
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}_${{Token1}}_${{Token2}}_${{Token3}} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}_${{Token1}}_${{Token2}}_${{Token3
 
         public override string GetSqlForCreateBulkTable(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
             return $@"
 CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 	FirstName VARCHAR(50) NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 
         public override string GetSqlForGetBulkTestData(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
             return $"SELECT * FROM {dbObject.Item1}.{dbObject.Item2}";
         }
 
@@ -159,9 +159,9 @@ CREATE TABLE {dbObject.Item1}.{dbObject.Item2}(
 
         public override string GetSqlForEraseDbObjects()
         {
-            var dbObject1 = TEST_DBOBJECTS.DB_OBJECT_1.SplitSchema(base.SchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
-            var dbObject2 = TEST_DBOBJECTS.DB_OBJECT_2.SplitSchema(base.SchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
-            var dbObject3 = TEST_DBOBJECTS.DB_OBJECT_3.SplitSchema(base.SchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
+            var dbObject1 = TEST_DBOBJECTS.DB_OBJECT_1.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
+            var dbObject2 = TEST_DBOBJECTS.DB_OBJECT_2.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
+            var dbObject3 = TEST_DBOBJECTS.DB_OBJECT_3.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.LowerCaseWhenAnyUpperCase);
 
             return $@"
 DROP TABLE IF EXISTS {dbObject1.Item1}.{dbObject1.Item2};

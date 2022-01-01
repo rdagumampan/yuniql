@@ -42,10 +42,10 @@ namespace Yuniql.Oracle
         public bool IsUpsertSupported => false;
 
         ///<inheritdoc/>
-        public string TableName { get; set; } = "__yuniql_schema_version";
+        public string MetaTableName { get; set; } = "__yuniql_schema_version";
 
         ///<inheritdoc/>
-        public string SchemaName { get; set; } = string.Empty;
+        public string MetaSchemaName { get; set; } = string.Empty;
 
         ///<inheritdoc/>
         public IDbConnection CreateConnection()

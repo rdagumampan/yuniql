@@ -40,10 +40,10 @@
         <member name="P:Yuniql.MySql.MySqlDataService.IsUpsertSupported">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.MySql.MySqlDataService.TableName">
+        <member name="P:Yuniql.MySql.MySqlDataService.MetaTableName">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.MySql.MySqlDataService.SchemaName">
+        <member name="P:Yuniql.MySql.MySqlDataService.MetaSchemaName">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.MySql.MySqlDataService.CreateConnection">

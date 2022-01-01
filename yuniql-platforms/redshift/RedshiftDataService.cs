@@ -36,10 +36,10 @@ namespace Yuniql.Redshift
         public bool IsUpsertSupported => false;
 
         ///<inheritdoc/>
-        public string TableName { get; set; } = "__yuniql_schema_version";
+        public string MetaTableName { get; set; } = "__yuniql_schema_version";
 
         ///<inheritdoc/>
-        public string SchemaName { get; set; } = "public";
+        public string MetaSchemaName { get; set; } = "public";
 
         ///<inheritdoc/>
         public void Initialize(string connectionString)

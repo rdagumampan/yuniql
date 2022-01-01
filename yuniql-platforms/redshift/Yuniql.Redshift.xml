@@ -25,10 +25,10 @@
         <member name="P:Yuniql.Redshift.RedshiftDataService.IsUpsertSupported">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.Redshift.RedshiftDataService.TableName">
+        <member name="P:Yuniql.Redshift.RedshiftDataService.MetaTableName">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.Redshift.RedshiftDataService.SchemaName">
+        <member name="P:Yuniql.Redshift.RedshiftDataService.MetaSchemaName">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Redshift.RedshiftDataService.Initialize(System.String)">

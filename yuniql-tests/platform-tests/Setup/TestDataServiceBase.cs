@@ -29,9 +29,9 @@ namespace Yuniql.PlatformTests.Setup
 
         public virtual bool IsBatchSqlSupported => _dataService.IsBatchSqlSupported;
 
-        public virtual string TableName => _dataService.TableName;
+        public virtual string MetaTableName => _dataService.MetaTableName;
 
-        public virtual string SchemaName => _dataService.SchemaName;
+        public virtual string MetaSchemaName => _dataService.MetaSchemaName;
 
         public virtual void ExecuteNonQuery(string connectionString, string sqlStatement)
         {
@@ -72,7 +72,7 @@ namespace Yuniql.PlatformTests.Setup
         public virtual string GetCurrentDbVersion(string connectionString)
         {
             _dataService.Initialize(connectionString);
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetCurrentVersion(), _dataService.SchemaName, _dataService.TableName);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetCurrentVersion(), _dataService.MetaSchemaName, _dataService.MetaTableName);
             using (var connection = _dataService.CreateConnection().KeepOpen())
             {
                 return connection.QuerySingleString(commandText: sqlStatement);
@@ -82,7 +82,7 @@ namespace Yuniql.PlatformTests.Setup
         public virtual List<DbVersion> GetAllDbVersions(string connectionString)
         {
             _dataService.Initialize(connectionString);
-            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetAllVersions(), _dataService.SchemaName, _dataService.TableName);
+            var sqlStatement = GetPreparedSqlStatement(_dataService.GetSqlForGetAllVersions(), _dataService.MetaSchemaName, _dataService.MetaTableName);
 
             var result = new List<DbVersion>();
             using (var connection = _dataService.CreateConnection().KeepOpen())
@@ -163,8 +163,8 @@ namespace Yuniql.PlatformTests.Setup
         {
             var tokens = new List<KeyValuePair<string, string>> {
              new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName ?? _dataService.SchemaName),
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, tableName?? _dataService.TableName)
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, schemaName ?? _dataService.MetaSchemaName),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, tableName?? _dataService.MetaTableName)
             };
 
             return _tokenReplacementService.Replace(tokens, sqlStatement);

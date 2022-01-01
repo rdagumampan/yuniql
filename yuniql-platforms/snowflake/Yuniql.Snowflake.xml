@@ -28,10 +28,10 @@
         <member name="P:Yuniql.Snowflake.SnowflakeDataService.IsUpsertSupported">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.Snowflake.SnowflakeDataService.TableName">
+        <member name="P:Yuniql.Snowflake.SnowflakeDataService.MetaTableName">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.Snowflake.SnowflakeDataService.SchemaName">
+        <member name="P:Yuniql.Snowflake.SnowflakeDataService.MetaSchemaName">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Snowflake.SnowflakeDataService.CreateConnection">

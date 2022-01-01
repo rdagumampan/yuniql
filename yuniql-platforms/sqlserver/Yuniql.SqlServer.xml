@@ -40,10 +40,10 @@
         <member name="P:Yuniql.SqlServer.SqlServerDataService.IsUpsertSupported">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.SqlServer.SqlServerDataService.TableName">
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.MetaTableName">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.SqlServer.SqlServerDataService.SchemaName">
+        <member name="P:Yuniql.SqlServer.SqlServerDataService.MetaSchemaName">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.CreateConnection">

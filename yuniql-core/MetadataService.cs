@@ -33,8 +33,8 @@ namespace Yuniql.Core
         {
             var tokens = new List<KeyValuePair<string, string>> {
              new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName ?? _dataService.SchemaName),
-             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, metaTableName?? _dataService.TableName)
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName ?? _dataService.MetaSchemaName),
+             new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, metaTableName?? _dataService.MetaTableName)
             };
 
             return _tokenReplacementService.Replace(tokens, sqlStatement);
@@ -141,8 +141,8 @@ namespace Yuniql.Core
                 }
 
                 if(result)
-                    _traceService.Warn($"Schema version history table {metaSchemaName ?? _dataService.SchemaName}.__yuniqldbversion is deprecated in this release. " +
-                        $"New table {metaSchemaName ?? _dataService.SchemaName}.{metaTableName ?? _dataService.TableName} will be created and existing data will be migrated automaticaly.");
+                    _traceService.Warn($"Schema version history table {metaSchemaName ?? _dataService.MetaSchemaName}.__yuniqldbversion is deprecated in this release. " +
+                        $"New table {metaSchemaName ?? _dataService.MetaSchemaName}.{metaTableName ?? _dataService.MetaTableName} will be created and existing data will be migrated automaticaly.");
             }
 
             return result;
@@ -323,8 +323,8 @@ namespace Yuniql.Core
 
             var tokens = new List<KeyValuePair<string, string>> {
                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_DB_NAME, _dataService.GetConnectionInfo().Database),
-                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName ?? _dataService.SchemaName),
-                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, metaTableName?? _dataService.TableName),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, metaSchemaName ?? _dataService.MetaSchemaName),
+                new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, metaTableName?? _dataService.MetaTableName),
 
                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_VERSION, version),
                 new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL, toolName),

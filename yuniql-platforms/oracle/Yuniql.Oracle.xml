@@ -40,10 +40,10 @@
         <member name="P:Yuniql.Oracle.OracleDataService.IsUpsertSupported">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.Oracle.OracleDataService.TableName">
+        <member name="P:Yuniql.Oracle.OracleDataService.MetaTableName">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.Oracle.OracleDataService.SchemaName">
+        <member name="P:Yuniql.Oracle.OracleDataService.MetaSchemaName">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Oracle.OracleDataService.CreateConnection">

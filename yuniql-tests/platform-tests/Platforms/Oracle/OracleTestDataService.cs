@@ -39,7 +39,7 @@ namespace Yuniql.PlatformTests.Platforms.Redshift
 
         public override bool CheckIfDbObjectExist(string connectionString, string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
             var dbObjectName = dbObject.Item2.IsDoubleQuoted() ?dbObject.Item2.UnQuote() : dbObject.Item2;
 
             var sqlStatement = $"SELECT 1 FROM SYS.ALL_TABLES WHERE TABLE_NAME = '{dbObjectName}'";
@@ -57,7 +57,7 @@ CREATE SCHEMA {schemaName};
 
         public override string GetSqlForCreateDbObject(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
             return $@"
 CREATE TABLE {dbObject.Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE {dbObject.Item2} (
 
         public override string GetSqlForCreateDbObjectWithError(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
             return $@"
 CREATE TABLE {dbObject.Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
@@ -81,7 +81,7 @@ CREATE TABLE {dbObject.Item2} (
 
         public override string GetSqlForCreateDbObjectWithTokens(string objectName)
         {
-            var dbObject = $@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}".SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject = $@"{objectName}_${{Token1}}_${{Token2}}_${{Token3}}".SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
             return $@"
 CREATE TABLE {dbObject.Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE {dbObject.Item2} (
 
         public override string GetSqlForCreateBulkTable(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
             return $@"
 CREATE TABLE {dbObject.Item2} (
 	FirstName VARCHAR(50) NOT NULL,
@@ -105,13 +105,13 @@ CREATE TABLE {dbObject.Item2} (
 
         public override string GetSqlForGetBulkTestData(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
             return $"SELECT * FROM {dbObject.Item2}";
         }
 
         public override string GetSqlForSingleLine(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
             return $@"
 CREATE TABLE {dbObject.Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
@@ -123,7 +123,7 @@ CREATE TABLE {dbObject.Item2} (
 
         public override string GetSqlForSingleLineWithoutTerminator(string objectName)
         {
-            var dbObject = objectName.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject = objectName.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
             return $@"
 CREATE TABLE {dbObject.Item2} (
 	TEST_DB_COLUMN_1 VARCHAR(50) NOT NULL,
@@ -136,19 +136,19 @@ CREATE TABLE {dbObject.Item2} (
         public override string GetSqlForMultilineWithoutTerminatorInLastLine(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-CREATE TABLE {objectName1.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName1.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
-CREATE TABLE {objectName2.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName2.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
-CREATE TABLE {objectName3.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName3.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
 	TEST_DB_COLUMN_1 VARCHAR(50) NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
@@ -160,19 +160,19 @@ CREATE TABLE {objectName3.SplitSchema(base.SchemaName, CaseSenstiveOption.Quoute
         {
             return $@"
 --; inline comment
-CREATE TABLE {objectName1.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName1.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
-CREATE TABLE {objectName2.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName2.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
-CREATE TABLE {objectName3.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName3.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
@@ -183,21 +183,21 @@ CREATE TABLE {objectName3.SplitSchema(base.SchemaName, CaseSenstiveOption.Quoute
         public override string GetSqlForMultilineWithTerminatorInsideStatements(string objectName1, string objectName2, string objectName3)
         {
             return $@"
-CREATE TABLE {objectName1.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName1.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
     --; inline comment
 	TEST_DB_COLUMN_1 INT NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
-CREATE TABLE {objectName2.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName2.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
     --; inline comment
 	TEST_DB_COLUMN_1 INT NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
-CREATE TABLE {objectName3.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName3.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
     --; inline comment
 	TEST_DB_COLUMN_1 INT NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
@@ -209,13 +209,13 @@ CREATE TABLE {objectName3.SplitSchema(base.SchemaName, CaseSenstiveOption.Quoute
         public override string GetSqlForMultilineWithError(string objectName1, string objectName2)
         {
             return $@"
-CREATE TABLE {objectName1.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName1.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
 );
 
-CREATE TABLE {objectName2.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
+CREATE TABLE {objectName2.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase).Item2} (
 	TEST_DB_COLUMN_1 INT NOT NULL THIS_IS_AN_ERROR,
 	TEST_DB_COLUMN_2 VARCHAR(255) NULL,
 	TEST_DB_COLUMN_3 VARCHAR(255) NULL
@@ -231,9 +231,9 @@ CREATE TABLE {objectName2.SplitSchema(base.SchemaName, CaseSenstiveOption.Quoute
 
         public override string GetSqlForEraseDbObjects()
         {
-            var dbObject1 = TEST_DBOBJECTS.DB_OBJECT_1.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
-            var dbObject2 = TEST_DBOBJECTS.DB_OBJECT_2.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
-            var dbObject3 = TEST_DBOBJECTS.DB_OBJECT_3.SplitSchema(base.SchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject1 = TEST_DBOBJECTS.DB_OBJECT_1.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject2 = TEST_DBOBJECTS.DB_OBJECT_2.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
+            var dbObject3 = TEST_DBOBJECTS.DB_OBJECT_3.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
 
             return $@"
 DROP TABLE {dbObject1.Item2};

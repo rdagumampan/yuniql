@@ -50,14 +50,14 @@ namespace Yuniql.Extensibility
         /// Default schema name for schema versions table. Leave it null if database doesn't support schema.
         /// For example its dbo in SqlServer and public in PostgreSql
         /// </summary>
-        string SchemaName { get; }
+        string MetaSchemaName { get; }
 
         //TODO: Rename into MetaTableName
         /// <summary>
         /// Table name for schema versions table.
         /// When implementing a new platform, its reccommended to use __yuniql_schema_version as default value
         /// </summary>
-        string TableName { get; }
+        string MetaTableName { get; }
 
         /// <summary>
         /// Creates new connection to target database.

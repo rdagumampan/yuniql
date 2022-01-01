@@ -14,9 +14,9 @@ namespace Yuniql.PlatformTests.Interfaces
 
         bool IsBatchSqlSupported { get; }
 
-        string TableName { get; }
+        string MetaTableName { get; }
 
-        string SchemaName { get; }
+        string MetaSchemaName { get; }
 
         string GetConnectionString(string databaseName);
 
