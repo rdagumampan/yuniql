@@ -140,7 +140,6 @@ namespace Yuniql.Extensibility
             return new Tuple<string, string>(schemaName, newObjectName);
         }
 
-        //TODO: Move this to Extensibility
         /// <summary>
         /// Returns segments of a file to represent sequence no, schema name and table name
         /// These are the valid file name patterns: 1.myschema.mytable, 01.myschema.mytable, myschema.mytable, 1.mytable, 01.mytable, mytable

@@ -279,7 +279,6 @@ DROP TABLE IF EXISTS {dbObject3.Item1}.{dbObject3.Item2};
 ";
         }
 
-        //TODO: Refactor this into Erase!
         public override void CleanupDbObjects(string connectionString)
         {
             var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);

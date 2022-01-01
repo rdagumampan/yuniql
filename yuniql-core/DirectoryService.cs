@@ -47,7 +47,6 @@ namespace Yuniql.Core
                 .FirstOrDefault(f => new FileInfo(f).Name.ToLower() == fileName.ToLower());
         }
 
-        //TODO: improve this code!!!!
         ///<inheritdoc/>
         public string[] FilterFiles(string workingPath, string environmentCode, List<string> files)
         {

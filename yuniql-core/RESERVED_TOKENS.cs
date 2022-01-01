@@ -1,6 +1,5 @@
 ﻿namespace Yuniql.Core
 {
-    //TODO: Move to Yuniql.Extensibility
     /// <summary>
     /// Global constants used for token replacement in sql statements
     /// </summary>
