@@ -58,7 +58,7 @@ Amazon Aurora, Azure Synapse and Alibaba Aspara are being evaluated/developed/te
 |oracle|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-r1lu4?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-r1lu4/build/tests)|Oracle 11g, 12c, latest|Oracle Cloud|[Get started](https://yuniql.io/docs/get-started-oracle/)|
 |sap hana|analysis phase|Expected Q1 2022|Azure||
 |synapse|analysis phase|Expected Q2 2022|Azure||
-|aurora postgresql|pipeline|No release date yet|AWS||
+|aurora postgres|pipeline phase|No release date yet|AWS||
 |aurora mysql|pipeline phase|No release date yet|AWS||
 |asparadb|pipeline phase|No release date yet|Alibaba||
 
