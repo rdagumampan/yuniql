@@ -56,7 +56,8 @@ Amazon Aurora, Azure Synapse and Alibaba Aspara are being evaluated/developed/te
 |snowflake|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-16r99?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-16r99/build/tests)|Last verified  12.2021 |GCP|[Get started](https://yuniql.io/docs/get-started-snowflake/)|
 |redshift|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-0shgd?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-0shgd/build/tests)|Last verified  12.2021|AWS|[Get started](https://yuniql.io/docs/get-started-resdshift/)|
 |oracle|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-r1lu4?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-r1lu4/build/tests)|Oracle 11g, 12c, latest|Oracle Cloud|[Get started](https://yuniql.io/docs/get-started-oracle/)|
-|synapse|development|Preview build ETA mar 27 2021|Azure||
+|sap hana|analysis phase|Expected Q1 2022|Azure||
+|synapse|analysis phase|Expected Q2 2022|Azure||
 
 > NOTE: Supported cloud platforms are based on limited testing and community feedbacks where users indicated the platform they were attempting to run against. yuniql primarily uses Amazon RDS as cloud provider for non-vendor specific platforms.
 
