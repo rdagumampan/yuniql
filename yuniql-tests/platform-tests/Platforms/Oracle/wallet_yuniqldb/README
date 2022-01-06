@@ -1,0 +1,57 @@
+Wallet Expiry Date
+-----------------------
+This wallet was downloaded on 2022-01-04 21:55:19.616 UTC.
+The SSL certificates provided in this wallet will expire on 2027-01-03 21:49:59.369 UTC.
+In order to avoid any service interruptions due to an expired SSL certificate, you must re-download the wallet before this date.
+
+Autonomous Database Tools and Resources
+---------------------------------------
+
+Database Actions
+----------------
+Load, explore, transform, model, and catalog your data. Use an SQL worksheet, build REST interfaces and low-code apps, manage users and connections, build and apply machine learning models. 
+Access Link:
+
+https://G60785457CF4B51-YUNIQLDB.adb.eu-frankfurt-1.oraclecloudapps.com/ords/sql-developer
+
+Graph Studio
+------------
+Oracle Graph Studio lets you create scalable property graph databases. Graph Studio automates the creation of graph models and in-memory graphs from database tables. It includes notebooks and developer APIs that allow you to execute graph queries using PGQL (an SQL-like graph query language) and over 50 built-in graph algorithms. Graph Studio also offers dozens of visualization, including native graph visualization. 
+Access Link:
+
+https://G60785457CF4B51-YUNIQLDB.adb.eu-frankfurt-1.oraclecloudapps.com/graphstudio/
+
+Oracle Application Express
+--------------------------
+Oracle Application Express (APEX) is a low-code development platform that enables you to build scalable, secure enterprise apps that can be deployed anywhere. 
+Access Link:
+
+https://G60785457CF4B51-YUNIQLDB.adb.eu-frankfurt-1.oraclecloudapps.com/ords/apex
+
+Oracle Machine Learning User Management
+---------------------------------------
+Create new Oracle Machine Learning user accounts and manage the credentials for existing Oracle Machine Learning users. 
+Access Link:
+
+https://G60785457CF4B51-YUNIQLDB.adb.eu-frankfurt-1.oraclecloudapps.com/omlusers/
+
+Oracle Machine Learning User Notebooks
+--------------------------------------
+Oracle Machine Learning notebooks provide easy access to Oracle's parallelized, scalable in-database implementations of a library of Oracle Advanced Analytics' machine learning algorithms (classification, regression, anomaly detection, clustering, associations, attribute importance, feature extraction, times series, etc.), SQL, PL/SQL and Oracle's statistical and analytical SQL functions. 
+Access Link:
+
+https://G60785457CF4B51-YUNIQLDB.adb.eu-frankfurt-1.oraclecloudapps.com/oml/
+
+Service Console
+---------------
+Monitor real-time and historical information about the utilization of the service, perform administrative operations or access to developer tools. 
+Access Link:
+
+https://adb.eu-frankfurt-1.oraclecloud.com/console/index.html?tenant_name=OCID1.TENANCY.OC1..AAAAAAAAWR4DO3V4JBJD2QJJ6GQ2IPZ5VS2KR3YX2SM3SG4PJMYCW33EBSZA&database_name=YUNIQLDB&service_type=ATP
+
+SODA Drivers
+------------
+Simple Oracle Document Access (SODA) is a set of APIs that let you work with JSON documents managed by the Oracle Database without needing to use SQL. SODA drivers are available for REST, Java, Node.js, Python, PL/SQL, and C. 
+Access Link:
+
+https://www.oracle.com/database/technologies/appdev/json.html#sodadrivers

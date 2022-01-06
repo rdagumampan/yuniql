@@ -1,0 +1,2 @@
+WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY="C:\temp\Wallet_yuniqldb")))
+SSL_SERVER_DN_MATCH=yes

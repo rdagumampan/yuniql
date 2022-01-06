@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using Yuniql.Extensibility;
 
 namespace Yuniql.Core
@@ -112,6 +113,24 @@ namespace Yuniql.Core
                 _traceService.Error($"Tcp/icmp connectivity to database server/cluster {_connectionInfo.DataSource} - Failed. {errorMessage} " +
                                     $"This maybe an expected behaviour when the server/cluster is configured to deny remote ping requests. " +
                                     $"If you think this is a bug, please create an issue ticket here https://github.com/rdagumampan/yuniql/issues.");
+            }
+        }
+
+        private static bool IsPortOpen(string host, int port, TimeSpan timeout)
+        {
+            try
+            {
+                using (var client = new TcpClient())
+                {
+                    var result = client.BeginConnect(host, port, null, null);
+                    var success = result.AsyncWaitHandle.WaitOne(timeout);
+                    client.EndConnect(result);
+                    return success;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 

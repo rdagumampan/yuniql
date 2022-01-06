@@ -68,15 +68,15 @@ namespace Yuniql.Oracle
             var stringParts = _connectionString.Split('(');
 
             //HOST=localhost)
-            var hostPair = stringParts.First(s => s.Contains("HOST")).Split("=");
+            var hostPair = stringParts.First(s => s.Contains("HOST",StringComparison.InvariantCultureIgnoreCase)).Split("=");
             var host = hostPair[1].Substring(0, hostPair[1].IndexOf(")"));
 
             //PORT=49161)
-            var portPair = stringParts.First(s => s.Contains("PORT")).Split("=");
+            var portPair = stringParts.First(s => s.Contains("PORT", StringComparison.InvariantCultureIgnoreCase)).Split("=");
             var port = portPair[1].Substring(0, portPair[1].IndexOf(")"));
 
             //SERVICE_NAME=xe)
-            var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME")).Split("=");
+            var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME", StringComparison.InvariantCultureIgnoreCase)).Split("=");
             var serviceName = serviceNamePair[1].Substring(0, serviceNamePair[1].IndexOf(")"));
 
             var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
