@@ -25,7 +25,7 @@ namespace Yuniql.Core
         }
 
         /// <summary>
-        /// Check for sql/odbc connectivity to database on target server/cluster
+        /// Checks if we can establish sql/odbc connectivity to database on target server/cluster
         /// </summary>
         /// <returns></returns>
         public bool CheckDatabaseConnectivity()
@@ -51,7 +51,7 @@ namespace Yuniql.Core
         }
 
         /// <summary>
-        /// Check for sql/odbc connectivity to database master/catalog on target server/cluster
+        /// Checks if we can establish sql/odbc connectivity to database master/catalog on target server/cluster
         /// </summary>
         /// <returns></returns>
         public bool CheckMasterConnectivity()
@@ -78,7 +78,7 @@ namespace Yuniql.Core
         }
 
         /// <summary>
-        /// Check for tcp/icmp connectivity to target server/cluster
+        /// Checks if the service can be pinged
         /// </summary>
         /// <returns></returns>
         public bool CheckServerConnectivity()
@@ -87,11 +87,11 @@ namespace Yuniql.Core
             {
                 using (var ping = new Ping())
                 {
-                    _traceService.Info($"Verifying tcp/icmp connectivity to server/cluster {_connectionInfo.DataSource}...");
+                    _traceService.Info($"Verifying ping connectivity to server/cluster {_connectionInfo.DataSource}...");
                     var pingReply = ping.Send(_connectionInfo.DataSource);
                     if (pingReply.Status == IPStatus.Success)
                     {
-                        _traceService.Success($"Tcp/icmp connectivity to server/cluster {_connectionInfo.DataSource} - Successful");
+                        _traceService.Success($"Ping connectivity to server/cluster {_connectionInfo.DataSource} - Successful");
                         return true;
                     }
                     else
@@ -110,26 +110,37 @@ namespace Yuniql.Core
             void WriteTraceError(Exception ex = null)
             {
                 var errorMessage = null != ex ? "Error message: " + ex.Message : string.Empty;
-                _traceService.Error($"Tcp/icmp connectivity to database server/cluster {_connectionInfo.DataSource} - Failed. {errorMessage} " +
+                _traceService.Error($"Ping connectivty to server/cluster {_connectionInfo.DataSource} - Failed. {errorMessage} " +
                                     $"This maybe an expected behaviour when the server/cluster is configured to deny remote ping requests. " +
                                     $"If you think this is a bug, please create an issue ticket here https://github.com/rdagumampan/yuniql/issues.");
             }
         }
 
-        private static bool IsPortOpen(string host, int port, TimeSpan timeout)
+        /// <summary>
+        /// Checks if the target port is open
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckServerPortConnectivity()
         {
             try
             {
+                _traceService.Info($"Verifying port opening to server/cluster on {_connectionInfo.DataSource}...");
+                var timeout = TimeSpan.FromSeconds(5);
                 using (var client = new TcpClient())
                 {
-                    var result = client.BeginConnect(host, port, null, null);
+                    var result = client.BeginConnect(_connectionInfo.DataSource, _connectionInfo.Port, null, null);
                     var success = result.AsyncWaitHandle.WaitOne(timeout);
                     client.EndConnect(result);
+                    _traceService.Success($"Port opening verification to server/cluster {_connectionInfo.DataSource} - Successful");
+
                     return success;
                 }
             }
             catch (Exception ex)
             {
+                _traceService.Error($"Port opeining  verification to server/cluster {_connectionInfo.DataSource} - Failed. {ex.Message} " +
+                                    $"This maybe an expected behaviour when the server/cluster is configured to deny remote ping requests. " +
+                                    $"If you think this is a bug, please create an issue ticket here https://github.com/rdagumampan/yuniql/issues.");
                 return false;
             }
         }
@@ -140,6 +151,10 @@ namespace Yuniql.Core
         public void CheckConnectivity()
         {
             CheckServerConnectivity();
+
+            if (_connectionInfo.Port > 0)
+                CheckServerPortConnectivity();
+
             CheckMasterConnectivity();
             CheckDatabaseConnectivity();
         }

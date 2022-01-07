@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "erase -p \"C:\\play\\yuniql\\samples\\basic-oracle-sample\" -c \"Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORCLCDB.localdomain)));User Id=sys;Password=Oradoc_db1;DBA Privilege=SYSDBA;\" --platform oracle --debug --trace-sensitive-data --force"
+      "commandLineArgs": "run -d --trace-sensitive-data -c \"Data Source=(description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.eu-frankfurt-1.oraclecloud.com))(connect_data=(service_name=g60785457cf4b51_yuniqldb_high.adb.oraclecloud.com))(security=(ssl_server_cert_dn=CN=adwc.eucom-central-1.oraclecloud.com, OU=Oracle BMCS FRANKFURT, O=Oracle Corporation, L=Redwood City, ST=California, C=US)(MY_WALLET_DIRECTORY=C:\\temp\\Wallet_yuniqldb)));User Id=ADMIN;Password=Lyreco21OEcom!;\""
     }
   }
 }

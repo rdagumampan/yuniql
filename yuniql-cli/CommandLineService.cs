@@ -41,10 +41,13 @@ namespace Yuniql.CLI
 
             var platform = _configurationService.GetValueOrDefault(opts.Platform, ENVIRONMENT_VARIABLE.YUNIQL_PLATFORM, defaultValue: SUPPORTED_DATABASES.SQLSERVER);
             var tokens = opts.Tokens.Select(t => new KeyValuePair<string, string>(t.Split("=")[0], t.Split("=")[1])).ToList();
+
             if (!string.IsNullOrEmpty(opts.MetaSchemaName))
                 tokens.Add(new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_SCHEMA_NAME, opts.MetaSchemaName));
+
             if (!string.IsNullOrEmpty(opts.MetaTableName))
                 tokens.Add(new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_TABLE_NAME, opts.MetaTableName));
+
             tokens.AddRange(new List<KeyValuePair<string, string>> {
                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL, "yuniql-cli"),
                     new KeyValuePair<string, string>(RESERVED_TOKENS.YUNIQL_APPLIED_BY_TOOL_VERSION, this.GetType().Assembly.GetName().Version.ToString())

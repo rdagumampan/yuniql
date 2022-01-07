@@ -17,6 +17,7 @@ namespace Yuniql.PlatformTests.CLI
 
         public void SetupWithWorkspace()
         {
+            //ensures connection string values with double quote are preserved in when passed along the CLI
             _testConfiguration = ConfigureWithEmptyWorkspace();
             _executionService = new CommandLineExecutionService(_testConfiguration.CliProcessPath);
 
@@ -27,6 +28,7 @@ namespace Yuniql.PlatformTests.CLI
 
         public void SetupWorkspaceWithSampleDb()
         {
+            //ensures connection string values with double quote are preserved in when passed along the CLI
             _testConfiguration = ConfigureWorkspaceWithSampleDb();
             _executionService = new CommandLineExecutionService(_testConfiguration.CliProcessPath);
 
@@ -332,14 +334,14 @@ namespace Yuniql.PlatformTests.CLI
         }
 
         [DataTestMethod]
-        [DataRow("baseline", "-d")]
+        [DataRow("baseline", "-d --trace-sensitive-data")]
         public void Test_yuniql_baseline(string command, string arguments)
         {
             //arrange
             SetupWorkspaceWithSampleDb();
 
             //act & assert
-            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d");
+            var result = _executionService.Run("run", _testConfiguration.WorkspacePath, _testConfiguration.ConnectionString, _testConfiguration.Platform, "-a -d --trace-sensitive-data");
             result.Contains($"Failed to execute run").ShouldBeFalse();
 
             //act & assert

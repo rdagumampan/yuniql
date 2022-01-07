@@ -73,14 +73,14 @@ namespace Yuniql.Oracle
 
             //PORT=49161)
             var portPair = stringParts.First(s => s.Contains("PORT", StringComparison.InvariantCultureIgnoreCase)).Split("=");
-            var port = portPair[1].Substring(0, portPair[1].IndexOf(")"));
+            var port = Convert.ToInt32(portPair[1].Substring(0, portPair[1].IndexOf(")")).Trim());
 
             //SERVICE_NAME=xe)
             var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME", StringComparison.InvariantCultureIgnoreCase)).Split("=");
             var serviceName = serviceNamePair[1].Substring(0, serviceNamePair[1].IndexOf(")"));
 
             var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
-            return new ConnectionInfo { DataSource = $"{host}", Database = serviceName };
+            return new ConnectionInfo { DataSource = $"{host}", Port = port, Database = serviceName };
         }
 
         ///<inheritdoc/>
