@@ -193,6 +193,11 @@
             The host server or database instance in a cluster.
             </summary>
         </member>
+        <member name="P:Yuniql.Extensibility.ConnectionInfo.Port">
+            <summary>
+            The port number assigned the database access.
+            </summary>
+        </member>
         <member name="T:Yuniql.Extensibility.DbVersion">
             <summary>
             Metadata information about migration version.

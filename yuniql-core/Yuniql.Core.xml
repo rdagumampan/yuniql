@@ -265,19 +265,25 @@
         </member>
         <member name="M:Yuniql.Core.ConnectivityService.CheckDatabaseConnectivity">
             <summary>
-            Check for sql/odbc connectivity to database on target server/cluster
+            Checks if we can establish sql/odbc connectivity to database on target server/cluster
             </summary>
             <returns></returns>
         </member>
         <member name="M:Yuniql.Core.ConnectivityService.CheckMasterConnectivity">
             <summary>
-            Check for sql/odbc connectivity to database master/catalog on target server/cluster
+            Checks if we can establish sql/odbc connectivity to database master/catalog on target server/cluster
             </summary>
             <returns></returns>
         </member>
         <member name="M:Yuniql.Core.ConnectivityService.CheckServerConnectivity">
             <summary>
-            Check for tcp/icmp connectivity to target server/cluster
+            Checks if the service can be pinged
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.ConnectivityService.CheckServerPortConnectivity">
+            <summary>
+            Checks if the target port is open
             </summary>
             <returns></returns>
         </member>

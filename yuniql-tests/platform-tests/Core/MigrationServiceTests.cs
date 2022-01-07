@@ -523,7 +523,7 @@ namespace Yuniql.PlatformTests.Core
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_1).ShouldBeTrue();
         }
 
-        [TestMethod]
+        [TestMethodEx(Requires = "IsMultiTenancySupported")]
         public void Test_Run_Dash_Character_In_Database_Name()
         {
             //arrange
