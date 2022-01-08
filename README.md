@@ -49,17 +49,17 @@ Amazon Aurora, Azure Synapse and Alibaba Aspara are being evaluated/developed/te
 
 |Platforms|Build Status|Description|Cloud Infrastructure|Documentation|
 |---|---|---|---|---|
-|sqlserver|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017, 2019, latest|Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-sqlserver/)|
-|postgresql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6, v12.1, latest|Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-postgresql/)|
-|mysql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7, v8.0, latest|Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-mysql/)|
-|mariadb|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-9v8am?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-9v8am/build/tests)|MariaDb v10.2, latest|Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-mysql/)|
+|sqlserver|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-14iom?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-14iom/build/tests)|Sql Server 2017 and later |Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-sqlserver/)|
+|postgresql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-w1l3j?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-w1l3j/build/tests)|PostgreSql v9.6 and later |Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-postgresql/)|
+|mysql|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-xk6jt?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-xk6jt/build/tests)|MySql v5.7 and later |Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-mysql/)|
+|mariadb|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-9v8am?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-9v8am/build/tests)|MariaDb v10.2 and later |Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-mysql/)|
 |snowflake|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-16r99?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-16r99/build/tests)|Last verified  12.2021 |GCP|[Get started](https://yuniql.io/docs/get-started-snowflake/)|
 |redshift|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-0shgd?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-0shgd/build/tests)|Last verified  12.2021|AWS|[Get started](https://yuniql.io/docs/get-started-resdshift/)|
-|oracle|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-r1lu4?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-r1lu4/build/tests)|Oracle 11g, 12c, latest|Oracle Cloud|[Get started](https://yuniql.io/docs/get-started-oracle/)|
-|sap hana|analysis phase|Expected Q1 2022|Azure||
-|synapse|analysis phase|Expected Q2 2022|Azure||
-|aurora|pipeline phase|No release date yet|AWS||
-|asparadb|pipeline phase|No release date yet|Alibaba||
+|oracle|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-r1lu4?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-r1lu4/build/tests)|Oracle 11g and later|Oracle Cloud|[Get started](https://yuniql.io/docs/get-started-oracle/)|
+|sap hana|Analysis phase|Expected Q1 2022|Azure||
+|synapse|Analysis phase|Expected Q2 2022|Azure||
+|aurora|Ideation phase|No release date yet|AWS||
+|asparadb|Ideation phase|No release date yet|Alibaba||
 
 > NOTE: Supported cloud platforms are based on limited testing and community feedbacks where users indicated the platform they were attempting to run against. yuniql primarily uses Amazon RDS as cloud provider for non-vendor specific platforms.
 
