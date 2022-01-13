@@ -1,6 +1,6 @@
 # yuniql ![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql?style=flat-square&logo=appveyor) [![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/rdagumampan/yuniql?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql/build/tests) [![Gitter](https://img.shields.io/gitter/room/yuniql/yuniql?style=flat-square&logo=gitter&color=orange)](https://gitter.im/yuniql/yuniql) [![Download latest build](https://img.shields.io/badge/Download-win--x64-green?style=flat-square&logo=windows)](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest.zip) [![Download latest build](https://img.shields.io/badge/Download-docker--images-green?style=flat-square&logo=docker)](https://hub.docker.com/r/yuniql/yuniql)
 
-**yuniql** (yuu-nee-kel). Free and open source schema versioning and database migration engine made natively with .NET Core. Use plain SQL scripts, bulk import CSV, integrate CI/CD pipelines, zero runtime dependencies and works with windows and linux. Supports SqlServer, PostgreSql, MySql, MariaDB, Snowflake, Redshift and Oracle.
+**yuniql** (yuu-nee-kel). Free and open source schema versioning and database migration engine made natively with .NET Core. Use plain SQL scripts, bulk import CSV, integrate CI/CD pipelines, zero runtime dependencies and works with windows and linux. Supports SqlServer, PostgreSql, MySql, MariaDB, Snowflake, Redshift and Oracle*.
 
 <!--
 <img align="center" src="https://yuniql.io/images/evodb-01.png" width="700">
@@ -55,7 +55,7 @@ Amazon Aurora, Azure Synapse and Alibaba Aspara are being evaluated/developed/te
 |mariadb|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-9v8am?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-9v8am/build/tests)|MariaDb v10.2 and later |Azure, GCP, AWS|[Get started](https://yuniql.io/docs/get-started-mysql/)|
 |snowflake|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-16r99?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-16r99/build/tests)|Last verified  12.2021 |GCP|[Get started](https://yuniql.io/docs/get-started-snowflake/)|
 |redshift|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-0shgd?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-0shgd/build/tests)|Last verified  12.2021|AWS|[Get started](https://yuniql.io/docs/get-started-resdshift/)|
-|oracle|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-r1lu4?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-r1lu4/build/tests)|Oracle 11g and later|Oracle Cloud|[Get started](https://yuniql.io/docs/get-started-oracle/)|
+|oracle|[![yuniql-build-status](https://img.shields.io/appveyor/tests/rdagumampan/yuniql-r1lu4?style=flat-square&logo=appveyor)](https://ci.appveyor.com/project/rdagumampan/yuniql-r1lu4/build/tests)|Preview build. Oracle 11g and later|Oracle Cloud|[Get started](https://yuniql.io/docs/get-started-oracle/)|
 |sap hana|Analysis phase|Expected Q1 2022|Azure||
 |synapse|Analysis phase|Expected Q2 2022|Azure||
 |aurora|Ideation phase|No release date yet|AWS||
