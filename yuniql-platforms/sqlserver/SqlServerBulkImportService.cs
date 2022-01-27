@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System;
+using System.Collections;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.SqlServer
@@ -51,8 +53,10 @@ namespace Yuniql.SqlServer
             stopwatch.Start();
             _traceService.Info($"SqlServerBulkImportService: Started copying data into destination table {schemaName}.{tableName}");
 
+            var columnTypes = LookupColumnDataTypes(tableName, schemaName, connection as SqlConnection, transaction as SqlTransaction);
+
             //read csv file and load into data table
-            var dataTable = ParseCsvFile(fileFullPath, bulkSeparator);
+            var dataTable = ParseCsvFile(fileFullPath, columnTypes, bulkSeparator);
 
             //save the csv data into staging sql table
             BulkCopyWithDataTable(
@@ -69,8 +73,108 @@ namespace Yuniql.SqlServer
 
         }
 
+        internal class DbTypeMap
+        {
+            public string ColumnName { get; set; }
+            public string SqlTypeName { get; set; }
+            public Type DotnetType { get; set; }
+        }
+
+        private Dictionary<string, DbTypeMap> LookupColumnDataTypes(string tableName, string schemaName, SqlConnection connection, SqlTransaction transaction)
+        {
+            var types = new Dictionary<string, DbTypeMap>();
+            string sql = $"SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.columns c where c.TABLE_NAME = '{tableName}'";
+
+            using (SqlCommand command = new SqlCommand(sql, connection, transaction))
+            {
+                using SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var dbTypeMap = new DbTypeMap
+                    {
+                        ColumnName = reader.GetString(0),
+                        SqlTypeName = reader.GetString(1)
+                    };
+
+                    var dotnetType = MapSqlTypeToNative(dbTypeMap.SqlTypeName);
+
+                    if (dotnetType == null)
+                    {
+                        //not supported types: xml, rowversion, sql_variant, image, varbinary(max), binary, varbinary, timestamp
+                        throw new NotSupportedException($"SqlServerBulkImportService: Data type '{dbTypeMap.SqlTypeName}' on destination table {schemaName}.{tableName} is not support for bulk import operations.");
+                    }
+                    else
+                    {
+                        dbTypeMap.DotnetType = dotnetType;
+                        types.Add(dbTypeMap.ColumnName, dbTypeMap);
+                    }
+                }
+            }
+
+            return types;
+        }
+
+        private Type MapSqlTypeToNative(string dataType)
+        {
+            if (dataType == "char" || dataType == "nchar" || dataType == "text" || dataType == "ntext" || dataType == "varchar" || dataType == "nvarchar")
+            {
+                return typeof(string);
+            }
+            else if (dataType == "bit")
+            {
+                return typeof(bool);
+            }
+            else if (dataType == "int")
+            {
+                return typeof(Int32);
+            }
+            else if (dataType == "bigint")
+            {
+                return typeof(Int64);
+            }
+            else if (dataType == "smallint")
+            {
+                return typeof(Int16);
+            }
+            else if (dataType == "uniqueidentifier")
+            {
+                return typeof(Guid);
+            }
+            else if (dataType == "varbinary")
+            {
+                return typeof(Int16);
+            }
+            else if (dataType == "date" || dataType == "datetime" || dataType == "datetime2" || dataType == "smalldatetime")
+            {
+                return typeof(DateTime);
+            }
+            else if (dataType == "datetimeoffset")
+            {
+                return typeof(DateTimeOffset);
+            }
+            else if (dataType == "decimal" || dataType == "money" || dataType == "smallmoney" || dataType == "numeric")
+            {
+                return typeof(Decimal);
+            }
+            else if (dataType == "time")
+            {
+                return typeof(TimeSpan);
+            }
+            else if (dataType == "real")
+            {
+                return typeof(Single);
+            }
+            else if (dataType == "float")
+            {
+                return typeof(Double);
+            }
+            return null;
+        }
+
         private DataTable ParseCsvFile(
             string csvFileFullPath,
+            Dictionary<string, DbTypeMap> columnTypes,
             string bulkSeparator = null)
         {
             if (string.IsNullOrEmpty(bulkSeparator))
@@ -87,6 +191,12 @@ namespace Yuniql.SqlServer
                 {
                     var dataColumn = new DataColumn(csvColumn);
                     dataColumn.AllowDBNull = true;
+
+                    if (columnTypes.TryGetValue(csvColumn, out var type))
+                    {
+                        dataColumn.DataType = type.DotnetType;
+                    }
+
                     csvDatatable.Columns.Add(dataColumn);
                 }
 
