@@ -53,7 +53,7 @@ namespace Yuniql.SqlServer
             stopwatch.Start();
             _traceService.Info($"SqlServerBulkImportService: Started copying data into destination table {schemaName}.{tableName}");
 
-            var columnTypes = LookupColumnDataTypes(tableName, schemaName, connection as SqlConnection, transaction as SqlTransaction);
+            var columnTypes = GetDestinationSchema(tableName, schemaName, connection as SqlConnection, transaction as SqlTransaction);
 
             //read csv file and load into data table
             var dataTable = ParseCsvFile(fileFullPath, columnTypes, bulkSeparator);
@@ -80,7 +80,7 @@ namespace Yuniql.SqlServer
             public Type DotnetType { get; set; }
         }
 
-        private Dictionary<string, DbTypeMap> LookupColumnDataTypes(string tableName, string schemaName, SqlConnection connection, SqlTransaction transaction)
+        private Dictionary<string, DbTypeMap> GetDestinationSchema(string tableName, string schemaName, SqlConnection connection, SqlTransaction transaction)
         {
             var types = new Dictionary<string, DbTypeMap>();
             string sql = $"SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.columns c where c.TABLE_NAME = '{tableName}'";
