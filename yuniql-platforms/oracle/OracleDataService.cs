@@ -5,6 +5,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Yuniql.Oracle
 {
@@ -13,6 +14,9 @@ namespace Yuniql.Oracle
     {
         private string _connectionString;
         private readonly ITraceService _traceService;
+
+        private const string CustomStatementStartRegEx = "create( )*(or( )*replace )?( )*(procedure|package|trigger)";
+        private const string CustomStatementEndRegEx = ";(\n|\r| )*/( )*$";
 
         ///<inheritdoc/>
         public OracleDataService(ITraceService traceService)
@@ -67,45 +71,64 @@ namespace Yuniql.Oracle
             //Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=49161))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=myuser;Password=mypassword;
             var stringParts = _connectionString.Split('(');
 
-            //HOST=localhost)
-            var hostPair = stringParts.First(s => s.Contains("HOST",StringComparison.InvariantCultureIgnoreCase)).Split("=");
-            var host = hostPair[1].Substring(0, hostPair[1].IndexOf(")"));
+            if (_connectionString.Contains("DATA SOURCE", StringComparison.OrdinalIgnoreCase))
+            {
+                var match = Regex.Match(_connectionString, "DATA SOURCE=(\\w|:|/)*", RegexOptions.IgnoreCase);
+                string source = match.Value.Split('=')[1];
+                var connectionData = source.Split(':', '/');
+                string host = connectionData[0];
+                int port = source.Contains(":") ? int.Parse(connectionData[1]) : 1521;
+                string serviceName = source.Contains("/") ? connectionData.Last() : string.Empty;
 
-            //PORT=49161)
-            var portPair = stringParts.First(s => s.Contains("PORT", StringComparison.InvariantCultureIgnoreCase)).Split("=");
-            var port = Convert.ToInt32(portPair[1].Substring(0, portPair[1].IndexOf(")")).Trim());
+                return new ConnectionInfo { DataSource = $"{host}", Port = port, Database = serviceName };
 
-            //SERVICE_NAME=xe)
-            var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME", StringComparison.InvariantCultureIgnoreCase)).Split("=");
-            var serviceName = serviceNamePair[1].Substring(0, serviceNamePair[1].IndexOf(")"));
 
-            var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
-            return new ConnectionInfo { DataSource = $"{host}", Port = port, Database = serviceName };
+            }
+            else
+            {
+
+                //HOST=localhost)
+                var hostPair = stringParts.First(s => s.Contains("HOST", StringComparison.InvariantCultureIgnoreCase)).Split("=");
+                var host = hostPair[1].Substring(0, hostPair[1].IndexOf(")"));
+
+                //PORT=49161)
+                var portPair = stringParts.First(s => s.Contains("PORT", StringComparison.InvariantCultureIgnoreCase)).Split("=");
+                var port = Convert.ToInt32(portPair[1].Substring(0, portPair[1].IndexOf(")")).Trim());
+
+                //SERVICE_NAME=xe)
+                var serviceNamePair = stringParts.First(s => s.Contains("SERVICE_NAME", StringComparison.InvariantCultureIgnoreCase)).Split("=");
+                var serviceName = serviceNamePair[1].Substring(0, serviceNamePair[1].IndexOf(")"));
+
+                var connectionStringBuilder = new OracleConnectionStringBuilder(_connectionString);
+                return new ConnectionInfo { DataSource = $"{host}", Port = port, Database = serviceName };
+            }
         }
 
         ///<inheritdoc/>
         public List<string> BreakStatements(string sqlStatementRaw)
         {
-            //breaks statements into batches using semicolon (;) or forward slash (/) batch separator
-            //any existence of / in the line means it batch separated by /
-            var statementBatchTerminator = sqlStatementRaw.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                .Any(s => s.Equals("/"))
-                ? "/" : ";";
-
             var results = new List<string>();
             var sqlStatement = string.Empty;
             var sqlStatementLine2 = string.Empty; byte lineNo = 0;
+            bool isCustomStatement = false;
+
             using (var sr = new StringReader(sqlStatementRaw))
             {
                 while ((sqlStatementLine2 = sr.ReadLine()) != null)
                 {
                     if (sqlStatementLine2.Length > 0 && !sqlStatementLine2.StartsWith("--"))
                     {
-                        sqlStatement += (sqlStatement.Length > 0 ? Environment.NewLine : string.Empty) + sqlStatementLine2;
-                        if (sqlStatement.EndsWith(statementBatchTerminator))
+                        if (!isCustomStatement && Regex.IsMatch(sqlStatementLine2, CustomStatementStartRegEx, RegexOptions.IgnoreCase))
                         {
-                            //pickup the formed sql statement
-                            results.Add(sqlStatement.Substring(0, sqlStatement.Length - 1));
+                            isCustomStatement = true;
+                        }
+
+                        sqlStatement += (sqlStatement.Length > 0 ? Environment.NewLine : string.Empty) + sqlStatementLine2;
+
+                        if (IsCommandEnded(sqlStatement, isCustomStatement))
+                        {
+                            results.Add(RemoveEndCommand(sqlStatement, isCustomStatement));
+                            isCustomStatement = false;
                             sqlStatement = string.Empty;
                         }
                     }
@@ -120,6 +143,30 @@ namespace Yuniql.Oracle
             }
 
             return results;
+        }
+
+        private string RemoveEndCommand(string sqlStatement, bool isCustomStatement)
+        {
+            if (isCustomStatement)
+            {
+                return sqlStatement.TrimEnd('\n', '\r', ' ', '/');
+            }
+            else
+            {
+                return sqlStatement.TrimEnd('\n', '\r', ' ', ';');
+            }
+        }
+
+        private bool IsCommandEnded(string sqlStatement, bool isCustomStatement)
+        {
+            if (isCustomStatement)
+            {
+                return Regex.IsMatch(sqlStatement, CustomStatementEndRegEx);
+            }
+            else
+            {
+                return sqlStatement.TrimEnd('\n', '\r', ' ').EndsWith(";");
+            }
         }
 
         //Only applies with oracle 12c
