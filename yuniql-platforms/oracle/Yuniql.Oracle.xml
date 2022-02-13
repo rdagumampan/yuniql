@@ -16,6 +16,23 @@
         <member name="M:Yuniql.Oracle.OracleBulkImportService.Run(System.Data.IDbConnection,System.Data.IDbTransaction,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <inheritdoc/>
         </member>
+        <member name="T:Yuniql.Oracle.OracleConnectionStringParser">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleConnectionStringParser.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleConnectionStringParser.Parse(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="_connectionString"></param>
+            <returns></returns>
+        </member>
         <member name="T:Yuniql.Oracle.OracleDataService">
             <inheritdoc/>
         </member>
@@ -105,6 +122,26 @@
         </member>
         <member name="M:Yuniql.Oracle.OracleDataService.TryParseErrorFromException(System.Exception,System.String@)">
             <inheritdoc/>
+        </member>
+        <member name="T:Yuniql.Oracle.OracleSqlBatchParser">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleSqlBatchParser.Parse(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="sqlStatementRaw"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Oracle.OracleSqlBatchParser.Parse(System.String,Yuniql.Extensibility.SqlBatchParser.SqlBatchParserOption)">
+            <summary>
+            
+            </summary>
+            <param name="sqlStatementRaw"></param>
+            <param name="parseOption"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>
