@@ -43,7 +43,7 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <PackageReference Include="MySql.Data" Version="8.0.18" />
+    <PackageReference Include="MySql.Data" Version="8.0.28" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
     <None Include="favicon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
