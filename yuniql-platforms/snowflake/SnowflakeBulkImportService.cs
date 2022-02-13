@@ -92,7 +92,6 @@ namespace Yuniql.Snowflake
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
                 csvReader.Separators = (new string[] { delimiter });
-                csvReader.HasFieldsEnclosedInQuotes = true;
 
                 //enclose all column names into double quote for case-sensitivity
                 var csvColumns = csvReader.ReadFields().Select(f => f.DoubleQuote());

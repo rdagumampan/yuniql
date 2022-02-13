@@ -5,10 +5,7 @@ using Yuniql.Extensibility;
 using Yuniql.Extensibility.BulkCsvParser;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System;
-using System.Collections;
 
 //https://github.com/22222/CsvTextFieldParser
 namespace Yuniql.SqlServer
@@ -53,9 +50,8 @@ namespace Yuniql.SqlServer
             stopwatch.Start();
             _traceService.Info($"SqlServerBulkImportService: Started copying data into destination table {schemaName}.{tableName}");
 
-            var columnTypes = GetDestinationSchema(tableName, schemaName, connection as SqlConnection, transaction as SqlTransaction);
-
             //read csv file and load into data table
+            var columnTypes = GetDestinationSchema(tableName, schemaName, connection as SqlConnection, transaction as SqlTransaction);
             var dataTable = ParseCsvFile(fileFullPath, columnTypes, bulkSeparator);
 
             //save the csv data into staging sql table
@@ -73,22 +69,89 @@ namespace Yuniql.SqlServer
 
         }
 
-        internal class DbTypeMap
+        private DataTable ParseCsvFile(
+            string csvFileFullPath,
+            Dictionary<string, DbTypeMap> columnTypes,
+            string bulkSeparator = null)
         {
-            public string ColumnName { get; set; }
-            public string SqlTypeName { get; set; }
-            public Type DotnetType { get; set; }
+            if (string.IsNullOrEmpty(bulkSeparator))
+                bulkSeparator = ",";
+
+            var csvDatatable = new DataTable();
+            using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
+            {
+                //csv reader configuration
+                csvReader.Separators = (new string[] { bulkSeparator });
+
+                //configure destination data table
+                var csvColumns = csvReader.ReadFields();
+                foreach (var csvColumn in csvColumns)
+                {
+                    var dataColumn = new DataColumn(csvColumn);
+                    dataColumn.AllowDBNull = true;
+                    if (columnTypes.TryGetValue(csvColumn, out var type))
+                    {
+                        dataColumn.DataType = type.DotnetType;
+                    }
+
+                    csvDatatable.Columns.Add(dataColumn);
+                }
+
+                //load up data into data table
+                while (!csvReader.EndOfData)
+                {
+                    string[] fieldData = csvReader.ReadFields();
+                    for (int i = 0; i < fieldData.Length; i++)
+                    {
+                        if (fieldData[i] == "" || fieldData[i] == "NULL")
+                        {
+                            fieldData[i] = null;
+                        }
+                    }
+                    csvDatatable.Rows.Add(fieldData);
+                }
+            }
+
+            return csvDatatable;
+        }
+
+        private void BulkCopyWithDataTable(
+            IDbConnection connection,
+            IDbTransaction transaction,
+            string schemaName,
+            string tableName,
+            DataTable dataTable,
+            int? bulkBatchSize = null,
+            int? commandTimeout = null)
+        {
+            using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
+            {
+                sqlBulkCopy.DestinationTableName = $"[{schemaName}].[{tableName}]";
+                sqlBulkCopy.BulkCopyTimeout = commandTimeout.HasValue ? commandTimeout.Value : DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS;
+                sqlBulkCopy.BatchSize = bulkBatchSize.HasValue ? bulkBatchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE;
+                sqlBulkCopy.EnableStreaming = true;
+                sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
+                foreach (var column in dataTable.Columns)
+                {
+                    sqlBulkCopy.ColumnMappings.Add(column.ToString(), column.ToString());
+                }
+                sqlBulkCopy.WriteToServer(dataTable);
+            }
+        }
+
+        private void SqlBulkCopy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e)
+        {
+            _traceService.Info($"SqlServerBulkImportService copied {e.RowsCopied} rows");
         }
 
         private Dictionary<string, DbTypeMap> GetDestinationSchema(string tableName, string schemaName, SqlConnection connection, SqlTransaction transaction)
         {
             var types = new Dictionary<string, DbTypeMap>();
-            string sql = $"SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.columns c where c.TABLE_NAME = '{tableName}'";
+            var sql = $"SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.columns c where c.TABLE_NAME = '{tableName}'";
 
             using (SqlCommand command = new SqlCommand(sql, connection, transaction))
             {
                 using SqlDataReader reader = command.ExecuteReader();
-
                 while (reader.Read())
                 {
                     var dbTypeMap = new DbTypeMap
@@ -98,7 +161,6 @@ namespace Yuniql.SqlServer
                     };
 
                     var dotnetType = MapSqlTypeToNative(dbTypeMap.SqlTypeName);
-
                     if (dotnetType == null)
                     {
                         //not supported types: xml, rowversion, sql_variant, image, varbinary(max), binary, varbinary, timestamp
@@ -170,79 +232,6 @@ namespace Yuniql.SqlServer
                 return typeof(Double);
             }
             return null;
-        }
-
-        private DataTable ParseCsvFile(
-            string csvFileFullPath,
-            Dictionary<string, DbTypeMap> columnTypes,
-            string bulkSeparator = null)
-        {
-            if (string.IsNullOrEmpty(bulkSeparator))
-                bulkSeparator = ",";
-
-            var csvDatatable = new DataTable();
-            using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
-            {
-                csvReader.Separators = (new string[] { bulkSeparator });
-                csvReader.HasFieldsEnclosedInQuotes = true;
-
-                string[] csvColumns = csvReader.ReadFields();
-                foreach (string csvColumn in csvColumns)
-                {
-                    var dataColumn = new DataColumn(csvColumn);
-                    dataColumn.AllowDBNull = true;
-
-                    if (columnTypes.TryGetValue(csvColumn, out var type))
-                    {
-                        dataColumn.DataType = type.DotnetType;
-                    }
-
-                    csvDatatable.Columns.Add(dataColumn);
-                }
-
-                while (!csvReader.EndOfData)
-                {
-                    string[] fieldData = csvReader.ReadFields();
-                    for (int i = 0; i < fieldData.Length; i++)
-                    {
-                        if (fieldData[i] == "" || fieldData[i] == "NULL")
-                        {
-                            fieldData[i] = null;
-                        }
-                    }
-                    csvDatatable.Rows.Add(fieldData);
-                }
-            }
-            return csvDatatable;
-        }
-
-        private void BulkCopyWithDataTable(
-            IDbConnection connection,
-            IDbTransaction transaction,
-            string schemaName,
-            string tableName,
-            DataTable dataTable,
-            int? bulkBatchSize = null,
-            int? commandTimeout = null)
-        {
-            using (var sqlBulkCopy = new SqlBulkCopy(connection as SqlConnection, SqlBulkCopyOptions.Default, transaction as SqlTransaction))
-            {
-                sqlBulkCopy.DestinationTableName = $"[{schemaName}].[{tableName}]";
-                sqlBulkCopy.BulkCopyTimeout = commandTimeout.HasValue ? commandTimeout.Value : DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS;
-                sqlBulkCopy.BatchSize = bulkBatchSize.HasValue ? bulkBatchSize.Value : DEFAULT_CONSTANTS.BULK_BATCH_SIZE;
-                sqlBulkCopy.EnableStreaming = true;
-                sqlBulkCopy.SqlRowsCopied += SqlBulkCopy_SqlRowsCopied;
-                foreach (var column in dataTable.Columns)
-                {
-                    sqlBulkCopy.ColumnMappings.Add(column.ToString(), column.ToString());
-                }
-                sqlBulkCopy.WriteToServer(dataTable);
-            }
-        }
-
-        private void SqlBulkCopy_SqlRowsCopied(object sender, SqlRowsCopiedEventArgs e)
-        {
-            _traceService.Info($"SqlServerBulkImportService copied {e.RowsCopied} rows");
         }
     }
 }

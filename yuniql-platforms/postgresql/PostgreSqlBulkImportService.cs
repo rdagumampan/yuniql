@@ -73,7 +73,6 @@ namespace Yuniql.PostgreSql
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
                 csvReader.Separators = (new string[] { bulkSeparator });
-                csvReader.HasFieldsEnclosedInQuotes = true;
 
                 string[] csvColumns = csvReader.ReadFields();
                 foreach (string csvColumn in csvColumns)

@@ -92,7 +92,6 @@ namespace Yuniql.Oracle
             using (var csvReader = new CsvTextFieldParser(csvFileFullPath))
             {
                 csvReader.Separators = (new string[] { delimiter });
-                csvReader.HasFieldsEnclosedInQuotes = true;
 
                 var csvColumns = csvReader.ReadFields().Select(f => f);
                 sqlStatement.Append($"INSERT ALL");

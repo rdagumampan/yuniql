@@ -67,6 +67,7 @@ namespace Yuniql.MySql
             _traceService.Info($"MySqlBulkImportService: Finished copying data into destination table {schemaName}.{tableName} in {stopwatch.ElapsedMilliseconds} ms");
         }
 
+        //TODO: Move into FileInfo.ParseCsvFile(fileFullPath, bulkSeparator)
         private DataTable ParseCsvFile(
             IDbConnection connection,
             string fileFullPath,
@@ -86,7 +87,6 @@ namespace Yuniql.MySql
             using (var csvReader = new CsvTextFieldParser(fileFullPath))
             {
                 csvReader.Separators = (new string[] { bulkSeparator });
-                csvReader.HasFieldsEnclosedInQuotes = true;
 
                 //skipped the first row
                 csvReader.ReadFields();
