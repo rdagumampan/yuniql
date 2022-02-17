@@ -1,6 +1,4 @@
-﻿using System;
-using Yuniql.Extensibility;
-using Yuniql.SqlServer;
+﻿using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
@@ -16,14 +14,6 @@ namespace Yuniql.Core
             ITraceService traceService)
         {
             this._traceService = traceService;
-        }
-
-        ///<inheritdoc/>
-        public IMigrationService Create()
-        {
-            var dataService = new SqlServerDataService(_traceService);
-            var bulkImportService = new SqlServerBulkImportService(_traceService);
-            return CreateInternal(dataService, bulkImportService);
         }
 
         ///<inheritdoc/>

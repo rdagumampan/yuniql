@@ -625,12 +625,6 @@
             Factory class of creating instance of <see cref="T:Yuniql.Core.IMigrationService"/>.
             </summary>
         </member>
-        <member name="M:Yuniql.Core.IMigrationServiceFactory.Create">
-            <summary>
-            Create instance of <see cref="T:Yuniql.Core.IMigrationService"/> with default platform provider
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:Yuniql.Core.IMigrationServiceFactory.Create(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService)">
             <summary>
             Create instance of <see cref="T:Yuniql.Core.IMigrationService"/> and uses external data services.
@@ -821,9 +815,6 @@
             </summary>
         </member>
         <member name="M:Yuniql.Core.MigrationServiceFactory.#ctor(Yuniql.Extensibility.ITraceService)">
-            <inheritdoc/>
-        </member>
-        <member name="M:Yuniql.Core.MigrationServiceFactory.Create">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.MigrationServiceFactory.Create(Yuniql.Extensibility.IDataService,Yuniql.Extensibility.IBulkImportService)">

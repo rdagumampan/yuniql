@@ -1,5 +1,4 @@
-﻿using Yuniql.Core;
-using Yuniql.Extensibility;
+﻿using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
@@ -8,12 +7,6 @@ namespace Yuniql.Core
     /// </summary>
     public interface IMigrationServiceFactory
     {
-        /// <summary>
-        /// Create instance of <see cref="IMigrationService"/> with default platform provider
-        /// </summary>
-        /// <returns></returns>
-        IMigrationService Create();
-
         /// <summary>
         /// Create instance of <see cref="IMigrationService"/> and uses external data services.
         /// When targeting PostgreSql or MySql, this is where you can pass the implementation of <see cref="IDataService"/> and <see cref="IBulkImportService"/>.
