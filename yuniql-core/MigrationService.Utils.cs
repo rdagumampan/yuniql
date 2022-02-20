@@ -52,15 +52,12 @@ namespace Yuniql.Core
         /// <inheritdoc />
         public bool IsTargetDatabaseLatest(string targetVersion, string metaSchemaName = null, string metaTableName = null)
         {
-            //get the current version stored in database
-            var remoteCurrentVersion = _metadataService.GetCurrentVersion(metaSchemaName, metaTableName);
-            if (string.IsNullOrEmpty(remoteCurrentVersion)) return false;
+            var appliedVersions = _metadataService.GetAllAppliedVersions(metaSchemaName, metaTableName);
+            if (!appliedVersions.Any())
+                return false;
 
-            //compare version applied in db vs versions available locally
-            var localCurrentVersion = new LocalVersion(remoteCurrentVersion);
-            var localTargetVersion = new LocalVersion(targetVersion);
-            return string.Compare(localCurrentVersion.SemVersion, localTargetVersion.SemVersion) == 1 || //db has more updated than local version
-                string.Compare(localCurrentVersion.SemVersion, localTargetVersion.SemVersion) == 0;      //db has the same version as local version
+            var targetDatabaseIsLatest = appliedVersions.Exists(v => v.Version == targetVersion);
+            return targetDatabaseIsLatest;
         }
     }
 }

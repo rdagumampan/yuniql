@@ -333,26 +333,36 @@ namespace Yuniql.Core
         )
         {
             //excludes all versions already executed
-            var versionDirectories = _directoryService.GetDirectories(workspace, "v*.*")
+            var localVersionDirectories = _directoryService.GetDirectories(workspace, "v*.*")
                 .Where(v => !appliedVersions.Contains(new DirectoryInfo(v).Name))
-                .ToList();
+                .Select(v => new LocalVersion(new DirectoryInfo(v).Name, v));
+
+            var sortedLocalVersions = localVersionDirectories
+                    .OrderBy(s => s.Major)
+                    .ThenBy(s => s.Minor)
+                    .ThenBy(s => s.Revision)
+                    .ThenBy(s => s.Label)
+                    .Select((v, idx) => new { Version = v, Index = idx })
+                    .ToList();
 
             //exclude all versions greater than the target version
             if (!string.IsNullOrEmpty(targetVersion))
             {
-                versionDirectories.RemoveAll(v =>
+                var targetVersionPath = Path.Combine(workspace, targetVersion);
+                var targetVersionInList = sortedLocalVersions.FirstOrDefault(v => string.Equals(v.Version.Path, targetVersionPath, StringComparison.InvariantCultureIgnoreCase));
+                if (null == targetVersionInList)
                 {
-                    var cv = new LocalVersion(new DirectoryInfo(v).Name);
-                    var tv = new LocalVersion(targetVersion);
-                    return string.Compare(cv.SemVersion, tv.SemVersion) == 1;
-                });
+                    throw new Exception("Target version does not exist in the workspace directory. Check if you entered the correct version name. Directories can be case sensitive depend on the Operation System yuniql runs.");
+                }
+
+                //remove later versions form list to be processed
+                sortedLocalVersions.RemoveAll(v => v.Index > targetVersionInList.Index);
             }
 
             //execute all sql scripts in the version folders
-            if (versionDirectories.Any())
+            if (sortedLocalVersions.Any())
             {
-                versionDirectories.Sort();
-                versionDirectories.ForEach(versionDirectory =>
+                sortedLocalVersions.ForEach(version =>
                 {
                     //initialize stop watch to measure duration of execution per version
                     var stopwatch = new Stopwatch();
@@ -371,8 +381,8 @@ namespace Yuniql.Core
                                         _traceService.Info("Transaction created for current version. This version migration run will be executed in this dedicated connection and transaction context.");
 
                                     //run scripts in all sub-directories in the version
-                                    var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList(); ;
-                                    RunVersionDirectoriesInternal(internalConnection, internalTransaction, scriptSubDirectories, versionDirectory, versionDirectory, stopwatch);
+                                    var scriptSubDirectories = _directoryService.GetAllDirectories(version.Version.Path, "*").ToList(); ;
+                                    RunVersionDirectoriesInternal(internalConnection, internalTransaction, scriptSubDirectories, version.Version.Path, version.Version.Path, stopwatch);
 
                                     internalTransaction.Commit();
                                 }
@@ -387,30 +397,30 @@ namespace Yuniql.Core
                     else
                     {
                         //collect all child directions in current version vxx.xx
-                        var scriptSubDirectories = _directoryService.GetAllDirectories(versionDirectory, "*").ToList(); ;
+                        var scriptSubDirectories = _directoryService.GetAllDirectories(version.Version.Path, "*").ToList(); ;
 
                         //check for special _transaction directory in the version vxx.xx directory
-                        var transactionDirectory = Path.Combine(versionDirectory, RESERVED_DIRECTORY_NAME.TRANSACTION);
+                        var transactionDirectory = Path.Combine(version.Version.Path, RESERVED_DIRECTORY_NAME.TRANSACTION);
                         var transactionExplicit = _directoryService.Exists(transactionDirectory);
                         if (transactionExplicit)
                         {
                             //check version directory with _transaction directory only applies to platforms NOT supporting transactional ddl
                             if (_dataService.IsTransactionalDdlSupported)
                             {
-                                throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" can't contain ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory for selected target platform, because the whole migration is already running in single transaction.");
+                                throw new YuniqlMigrationException(@$"The version directory ""{version.Version.Path}"" can't contain ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory for selected target platform, because the whole migration is already running in single transaction.");
                             }
 
                             //check version directory must only contain _transaction directory and nothing else
-                            if (_directoryService.GetDirectories(versionDirectory, "*").Count() > 1)
+                            if (_directoryService.GetDirectories(version.Version.Path, "*").Count() > 1)
                             {
-                                throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory can't contain other subdirectories.");
+                                throw new YuniqlMigrationException(@$"The version directory ""{version.Version.Path}"" containing ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory can't contain other subdirectories.");
                             }
 
                             //check version directory must only contain _transaction directory, files are also not allowed
                             //check users need to place the script files and subdirectories inside _transaction directory
-                            if (_directoryService.GetFiles(versionDirectory, "*.*").Count() > 0)
+                            if (_directoryService.GetFiles(version.Version.Path, "*.*").Count() > 0)
                             {
-                                throw new YuniqlMigrationException(@$"The version directory ""{versionDirectory}"" containing ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory can't contain files.");
+                                throw new YuniqlMigrationException(@$"The version directory ""{version.Version.Path}"" containing ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" subdirectory can't contain files.");
                             }
 
                             //override the list of subdirectories to process by the directory list container in _transaction directory
@@ -421,7 +431,7 @@ namespace Yuniql.Core
                         if (transactionExplicit)
                         {
                             //run scripts within a single transaction for all scripts inside _transaction directory and scripts in the child directories
-                            string versionName = new DirectoryInfo(versionDirectory).Name;
+                            string versionName = new DirectoryInfo(version.Version.Path).Name;
                             _traceService.Warn(@$"The ""{RESERVED_DIRECTORY_NAME.TRANSACTION}"" directory has been detected and therefore ""{versionName}"" version scripts will run in single transaction. The rollback will not be reliable in case the version scripts contain commands causing implicit commit (e.g. DDL)!");
 
                             using (var transaction = connection.BeginTransaction())
@@ -431,7 +441,7 @@ namespace Yuniql.Core
                                     //scriptSubDirectories is the child directories under _transaction directory c:\temp\vxx.xx\_transaction\list_of_directories
                                     //transactionDirectory the path of _transaction directory c:\temp\vxx.xx\_transaction
                                     //versionDirectory path of version c:\temp\vxx.xx
-                                    RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, transactionDirectory, versionDirectory, stopwatch);
+                                    RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, transactionDirectory, version.Version.Path, stopwatch);
                                     transaction.Commit();
 
                                     _traceService.Info(@$"Target database has been commited after running ""{versionName}"" version scripts.");
@@ -452,7 +462,7 @@ namespace Yuniql.Core
                             //run scripts without transaction
                             //scriptSubDirectories is the child directories under _transaction directory c:\temp\vxx.xx\list_of_directories
                             //versionDirectory path of version c:\temp\vxx.xx
-                            RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, versionDirectory, versionDirectory, stopwatch);
+                            RunVersionDirectoriesInternal(connection, transaction, scriptSubDirectories, version.Version.Path, version.Version.Path, stopwatch);
                         }
 
                     }

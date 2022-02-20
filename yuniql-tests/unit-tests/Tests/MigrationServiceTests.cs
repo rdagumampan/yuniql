@@ -34,7 +34,6 @@ namespace Yuniql.UnitTests
             metadataService.Setup(s => s.ConfigureDatabase(null, null, null));
             metadataService.Setup(s => s.GetAllAppliedVersions(null, null, null)).Returns(new List<DbVersion> { });
             metadataService.Setup(s => s.GetAllVersions(null, null, null)).Returns(new List<DbVersion> { });
-            metadataService.Setup(s => s.GetCurrentVersion(null, null, null)).Returns(string.Empty);
             metadataService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", new TransactionContext(null, false), null, null, null, null, null, null, null, null, 0));
 
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 1", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
@@ -134,11 +133,9 @@ namespace Yuniql.UnitTests
 
             metadataService.Verify(s => s.IsDatabaseExists(null));
             metadataService.Verify(s => s.CreateDatabase(null));
-            //metadataService.Verify(s => s.IsSchemaExists(, null));
             metadataService.Verify(s => s.IsDatabaseConfigured(null, null, null)); ;
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
-            metadataService.Verify(s => s.GetCurrentVersion(null, null, null)); ;
             metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "1.0.0.0", null, null, null, It.IsAny<int>()));
 
             dataService.Verify(s => s.GetConnectionInfo());
@@ -228,7 +225,6 @@ namespace Yuniql.UnitTests
             metadataService.Setup(s => s.ConfigureDatabase(null, null, null));
             metadataService.Setup(s => s.GetAllAppliedVersions(null, null, null)).Returns(new List<DbVersion> { });
             metadataService.Setup(s => s.GetAllVersions(null, null, null)).Returns(new List<DbVersion> { });
-            metadataService.Setup(s => s.GetCurrentVersion(null, null, null)).Returns(string.Empty);
             metadataService.Setup(s => s.InsertVersion(connection.Object, transaction.Object, "v0.00", new TransactionContext(null, false), null, null, null, null, null, null, null, null, 0));
 
             metadataService.Setup(s => s.ExecuteSql(It.IsAny<IDbConnection>(), "SELECT 1", null, It.IsAny<IDbTransaction>(), It.IsAny<ITraceService>()));
@@ -329,7 +325,6 @@ namespace Yuniql.UnitTests
             metadataService.Verify(s => s.IsDatabaseConfigured(null, null, null)); ;
             metadataService.Verify(s => s.ConfigureDatabase(null, null, null));
             metadataService.Verify(s => s.GetAllVersions(null, null, null));
-            metadataService.Verify(s => s.GetCurrentVersion(null, null, null)); ;
             metadataService.Verify(s => s.InsertVersion(It.IsAny<IDbConnection>(), It.IsAny<IDbTransaction>(), "v0.00", It.IsAny<TransactionContext>(), null, null, DEFAULT_CONSTANTS.COMMAND_TIMEOUT_SECS, "yuniql-cli", "1.0.0.0", null, null, null, It.IsAny<int>()));
 
             dataService.Verify(s => s.GetConnectionInfo());

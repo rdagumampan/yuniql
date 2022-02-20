@@ -125,10 +125,13 @@ yuniql-log-*.txt
                 .Select(x => new DirectoryInfo(x).Name)
                 .Select(x =>
                 {
-                    var r = new LocalVersion(x);
+                    var r = new LocalVersion(x, Path.Combine(workspace, x));
                     return r;
                 })
-                .OrderBy(x => x.SemVersion)
+                .OrderBy(x => x.Major)
+                .ThenBy(x => x.Minor)
+                .ThenBy(x => x.Revision)
+                .ThenBy(x => x.Label)
                 .Reverse()
                 .ToList();
 
@@ -188,7 +191,7 @@ yuniql-log-*.txt
         ///<inheritdoc/>
         public void Validate(string workspace)
         {
-            var baselineVersionDirectory = _directoryService.GetDirectories(workspace, "v0.00*").FirstOrDefault();            
+            var baselineVersionDirectory = _directoryService.GetDirectories(workspace, "v0.00*").FirstOrDefault();
             var validationResults = new List<KeyValuePair<string, bool>> {
                 new KeyValuePair<string, bool>(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT), _directoryService.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.INIT))),
                 new KeyValuePair<string, bool>(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE), _directoryService.Exists(Path.Combine(workspace, RESERVED_DIRECTORY_NAME.PRE))),
