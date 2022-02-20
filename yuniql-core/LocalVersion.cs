@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Yuniql.Core
@@ -10,6 +11,9 @@ namespace Yuniql.Core
     {
         private const int Maxlength = 190;
 
+        /// <summary>
+        /// Creates new instance of LocalVersion
+        /// </summary>
         public LocalVersion()
         {
         }
@@ -17,25 +21,46 @@ namespace Yuniql.Core
         /// <summary>
         /// Creates new instance of LocalVersion
         /// </summary>
-        /// <param name="targetVersion">The target version in format v{Major}.{Minor}. Example v1.01 or v2.00.</param>
-        public LocalVersion(string targetVersion)
+        /// <param name="version">The version in format v{Major}.{Minor}. Example v1.01 or v2.00.</param>
+        /// <param name="path">The full path of version directory</param>
+        public LocalVersion(string version, string path) : this()
         {
-            if (targetVersion.Length > Maxlength)
-            {
-                throw new YuniqlMigrationException(@$"Invalid format of version directory ""{targetVersion}"". Exceeded maxlength {Maxlength}");
-            }
+            if (version.Length > Maxlength)
+                throw new Exception(@$"Invalid format of version directory ""{version}"". Exceeded maxlength {Maxlength}");
 
-            string versionPattern = @"^v(?<major>\d+)\.(?<minor>\d\d)(?<label>.*)$";
-            Match versionMatch = Regex.Match(targetVersion, versionPattern);
-
+            var versionPattern = @"^v(?:(\d+)\.(\d+)\.(\d+)|(\d+)\.(\d+)|(\d+))?(?:\.\*)?";
+            var versionMatch = Regex.Match(version, versionPattern);
             if (!versionMatch.Success)
+                throw new Exception(@$"Invalid format of version directory ""{version}"". Expected format is ""v<xx|major>.<xx|minor>*"" or ""v<xx|major>.<xx|minor><any-label>"". Some working examples can be like ""v0.00"", ""v1.01"", ""v2.01-big-index-rebuild"".");
+
+            var versionSegments = new List<string>();
+            for (int i = 1; i < versionMatch.Groups.Count; i++)
             {
-                throw new YuniqlMigrationException(@$"Invalid format of version directory ""{targetVersion}"". Expected format is ""vx.xx*""");
+                if (!string.IsNullOrEmpty(versionMatch.Groups[i].Value))
+                    versionSegments.Add(versionMatch.Groups[i].Value);
             }
 
-            Major = Convert.ToInt32(versionMatch.Groups["major"].Value);
-            Minor = Convert.ToInt32(versionMatch.Groups["minor"].Value);
-            Label = versionMatch.Groups["label"].Value;
+            if (versionSegments.Count == 1)
+            {
+                Major = Convert.ToInt32(versionSegments[0]);
+                Label = version.Replace($"v{versionSegments[0]}", string.Empty);
+            }
+            else if (versionSegments.Count == 2)
+            {
+                Major = Convert.ToInt32(versionSegments[0]);
+                Minor = Convert.ToInt32(versionSegments[1]);
+                Label = version.Replace($"v{versionSegments[0]}.{versionSegments[1]}", string.Empty);
+            }
+            else if (versionSegments.Count == 3)
+            {
+                Major = Convert.ToInt32(versionSegments[0]);
+                Minor = Convert.ToInt32(versionSegments[1]);
+                Revision = Convert.ToInt32(versionSegments[2]);
+                Label = version.Replace($"v{versionSegments[0]}.{versionSegments[1]}.{versionSegments[2]}", string.Empty);
+            }
+
+            //Label = versionMatch.Groups["label"].Value;
+            Path = path;
         }
 
         /// <summary>
@@ -47,6 +72,11 @@ namespace Yuniql.Core
         /// Returns the minor part of version.
         /// </summary>
         public int Minor { get; set; }
+
+        /// <summary>
+        /// Returns the revision part of version.
+        /// </summary>
+        public int Revision { get; set; }
 
         /// <summary>
         /// Returns the label part of version.
@@ -64,5 +94,10 @@ namespace Yuniql.Core
                 return $"v{Major}.{Minor.ToString("00")}{Label}";
             }
         }
+
+        /// <summary>
+        /// Returns the full path of local directory
+        /// </summary>
+        public string Path { get; set; }
     }
 }

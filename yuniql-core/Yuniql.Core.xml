@@ -693,11 +693,17 @@
             Representions individual migration version entry.
             </summary>
         </member>
-        <member name="M:Yuniql.Core.LocalVersion.#ctor(System.String)">
+        <member name="M:Yuniql.Core.LocalVersion.#ctor">
             <summary>
             Creates new instance of LocalVersion
             </summary>
-            <param name="targetVersion">The target version in format v{Major}.{Minor}. Example v1.01 or v2.00.</param>
+        </member>
+        <member name="M:Yuniql.Core.LocalVersion.#ctor(System.String,System.String)">
+            <summary>
+            Creates new instance of LocalVersion
+            </summary>
+            <param name="version">The version in format v{Major}.{Minor}. Example v1.01 or v2.00.</param>
+            <param name="path">The full path of version directory</param>
         </member>
         <member name="P:Yuniql.Core.LocalVersion.Major">
             <summary>
@@ -709,6 +715,11 @@
             Returns the minor part of version.
             </summary>
         </member>
+        <member name="P:Yuniql.Core.LocalVersion.Revision">
+            <summary>
+            Returns the revision part of version.
+            </summary>
+        </member>
         <member name="P:Yuniql.Core.LocalVersion.Label">
             <summary>
             Returns the label part of version.
@@ -718,6 +729,11 @@
             <summary>
             Retuns verion in v{Major}.{Minor} format.
             Example v0.00 for baseline version.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.LocalVersion.Path">
+            <summary>
+            Returns the full path of local directory
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "T:Yuniql.Core.MetadataService" -->
