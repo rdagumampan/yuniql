@@ -10,7 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Yuniql.AspNetCore" Version="1.1.55" />
+    <PackageReference Include="Yuniql.AspNetCore" Version="1.2.25" />
+    <PackageReference Include="Yuniql.SqlServer" Version="1.2.25" />
   </ItemGroup>
 
 </Project>

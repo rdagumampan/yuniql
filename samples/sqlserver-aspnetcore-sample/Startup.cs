@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Yuniql.AspNetCore;
+using Yuniql.SqlServer;
 
 namespace aspnetcore_sample
 {
@@ -27,7 +28,9 @@ namespace aspnetcore_sample
             var traceService = new ConsoleTraceService { IsDebugEnabled = true };
 
             //3. run migrations
-            app.UseYuniql(traceService, new Yuniql.AspNetCore.Configuration
+            var dataService = new SqlServerDataService(traceService);
+            var bulkService = new SqlServerBulkImportService(traceService);
+            app.UseYuniql(dataService, bulkService, traceService, new Configuration
             {
                 Platform = "sqlserver",
                 Workspace = Path.Combine(Environment.CurrentDirectory, "_db"),

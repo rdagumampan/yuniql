@@ -13,6 +13,12 @@ namespace aspnetcore_sample
 
         public bool IsDebugEnabled { get; set; } = false;
 
+        public bool IsTraceSensitiveData { get; set; } = true;
+
+        public string TraceToDirectory { get; set; } = string.Empty;
+
+        public bool IsTraceToFile { get; set; } = false;
+
         public void Debug(string message, object payload = null)
         {
             if (IsDebugEnabled)
