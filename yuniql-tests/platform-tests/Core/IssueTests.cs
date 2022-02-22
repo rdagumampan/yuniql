@@ -13,7 +13,7 @@ using System.Diagnostics;
 namespace Yuniql.PlatformTests.Core
 {
     [TestClass]
-    public class VersionDirectoryTests : TestClassBase
+    public class IssueTests : TestClassBase
     {
         private ITestDataService _testDataService;
         private IMigrationServiceFactory _migrationServiceFactory;
@@ -62,8 +62,11 @@ namespace Yuniql.PlatformTests.Core
         }
 
         //https://github.com/rdagumampan/yuniql/issues/249
-        [TestMethod]
-        public void Test_Issue_249_A()
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow("v10.0.0")]
+        public void Test_Issue_249_A(string targetVersion)
         {
             //arrange
             var directoryService = new DirectoryService();
@@ -86,7 +89,7 @@ namespace Yuniql.PlatformTests.Core
 
             //act
             var configuration = _testConfiguration.GetFreshConfiguration();
-            configuration.TargetVersion = "v10.0.0";
+            configuration.TargetVersion = targetVersion;
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
             migrationService.Run();
@@ -100,8 +103,11 @@ namespace Yuniql.PlatformTests.Core
         }
 
         //https://github.com/rdagumampan/yuniql/issues/249
-        [TestMethod]
-        public void Test_Issue_249_B()
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow("v11.00")]
+        public void Test_Issue_249_B(string targetVersion)
         {
             //arrange
             var directoryService = new DirectoryService();
@@ -126,7 +132,7 @@ namespace Yuniql.PlatformTests.Core
 
             //act
             var configuration = _testConfiguration.GetFreshConfiguration();
-            configuration.TargetVersion = "v11.00";
+            configuration.TargetVersion = targetVersion;
 
             var migrationService = _migrationServiceFactory.Create(configuration.Platform);
             migrationService.Run();
@@ -138,6 +144,82 @@ namespace Yuniql.PlatformTests.Core
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_4).ShouldBeTrue();
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_5).ShouldBeTrue();
             _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_6).ShouldBeTrue();
+        }
+
+        //https://github.com/rdagumampan/yuniql/issues/249
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow("v0.03.1")]
+        public void Test_Issue_252_A(string targetVersion)
+        {
+            //arrange
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+
+            //creare environment-aware directories
+            var v0_00_1 = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.00.1")).FullName;
+            var v0_01_1 = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.01.1")).FullName;
+            var v0_02_1 = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.02.1")).FullName;
+            var v0_03_1 = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.03.1")).FullName;
+
+            _testDataService.CreateScriptFile(Path.Combine(v0_00_1, $"script.sql"), _testDataService.GetSqlForCreateDbObject(TEST_DBOBJECTS.DB_OBJECT_1));
+            _testDataService.CreateScriptFile(Path.Combine(v0_01_1, $"script.sql"), _testDataService.GetSqlForCreateDbObject(TEST_DBOBJECTS.DB_OBJECT_2));
+            _testDataService.CreateScriptFile(Path.Combine(v0_02_1, $"script.sql"), _testDataService.GetSqlForCreateDbObject(TEST_DBOBJECTS.DB_OBJECT_3));
+            _testDataService.CreateScriptFile(Path.Combine(v0_03_1, $"script.sql"), _testDataService.GetSqlForCreateDbObject(TEST_DBOBJECTS.DB_OBJECT_4));
+
+            //act
+            var configuration = _testConfiguration.GetFreshConfiguration();
+            configuration.TargetVersion = targetVersion;
+
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Run();
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_1).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_2).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_3).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_4).ShouldBeTrue();
+        }
+
+        //https://github.com/rdagumampan/yuniql/issues/249
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow("v0.03.1.transactions")]
+        public void Test_Issue_252_B(string targetVersion)
+        {
+            //arrange
+            var directoryService = new DirectoryService();
+            var fileService = new FileService();
+            var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
+            workspaceService.Init(_testConfiguration.WorkspacePath);
+
+            //creare environment-aware directories
+            var v0_00_1 = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.00.1.tables")).FullName;
+            var v0_01_1 = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.01.1.procedures")).FullName;
+            var v0_02_1 = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.02.1.initial-data")).FullName;
+            var v0_03_1 = Directory.CreateDirectory(Path.Combine(_testConfiguration.WorkspacePath, "v0.03.1.transactions")).FullName;
+
+            _testDataService.CreateScriptFile(Path.Combine(v0_00_1, $"script.sql"), _testDataService.GetSqlForCreateDbObject(TEST_DBOBJECTS.DB_OBJECT_1));
+            _testDataService.CreateScriptFile(Path.Combine(v0_01_1, $"script.sql"), _testDataService.GetSqlForCreateDbObject(TEST_DBOBJECTS.DB_OBJECT_2));
+            _testDataService.CreateScriptFile(Path.Combine(v0_02_1, $"script.sql"), _testDataService.GetSqlForCreateDbObject(TEST_DBOBJECTS.DB_OBJECT_3));
+            _testDataService.CreateScriptFile(Path.Combine(v0_03_1, $"script.sql"), _testDataService.GetSqlForCreateDbObject(TEST_DBOBJECTS.DB_OBJECT_4));
+
+            //act
+            var configuration = _testConfiguration.GetFreshConfiguration();
+            configuration.TargetVersion = targetVersion;
+
+            var migrationService = _migrationServiceFactory.Create(configuration.Platform);
+            migrationService.Run();
+
+            //assert
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_1).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_2).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_3).ShouldBeTrue();
+            _testDataService.CheckIfDbObjectExist(_testConfiguration.ConnectionString, TEST_DBOBJECTS.DB_OBJECT_4).ShouldBeTrue();
         }
 
     }
