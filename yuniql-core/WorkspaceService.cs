@@ -141,7 +141,7 @@ yuniql-log-*.txt
         ///<inheritdoc/>
         public string GetLatestVersion(string workspace)
         {
-            return GetLocalVersions(workspace).First().SemVersion;
+            return GetLocalVersions(workspace).First().Name;
         }
 
         ///<inheritdoc/>

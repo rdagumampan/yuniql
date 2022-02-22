@@ -28,31 +28,33 @@ namespace Yuniql.UnitTests
         //v01.01.01
 
         [DataTestMethod]
-        [DataRow("v1", 1, 0, 0)]
-        [DataRow("v1.2", 1, 2, 0)]
-        [DataRow("v1.2.3", 1, 2, 3)]
-        [DataRow("v01", 1, 0, 0)]
-        [DataRow("v01.02", 1, 2, 0)]
-        [DataRow("v01.02.03", 1, 2, 3)]
-        [DataRow("v25102022", 25102022, 0, 0)]
-        public void Test_Standard_Version_Format(string versionText, int major, int minor, int revision)
+        [DataRow("v1", 1, 0, 0, "v1.00")]
+        [DataRow("v1.2", 1, 2, 0, "v1.02")]
+        [DataRow("v1.2.3", 1, 2, 3, "v1.02")]
+        [DataRow("v01", 1, 0, 0, "v1.00")]
+        [DataRow("v01.02", 1, 2, 0, "v1.02")]
+        [DataRow("v01.02.03", 1, 2, 3, "v1.02")]
+        [DataRow("v25102022", 25102022, 0, 0, "v25102022.00")]
+        public void Test_Standard_Version_Format(string versionText, int major, int minor, int revision, string semVersion)
         {
             //arrange, act & assert
             var localVersion = new LocalVersion(versionText, string.Empty);
             localVersion.Major.ShouldBe(major);
             localVersion.Minor.ShouldBe(minor);
             localVersion.Revision.ShouldBe(revision);
+            localVersion.SemVersion.ShouldBe(semVersion);
+            localVersion.Name.ShouldBe(versionText);
         }
 
         [DataTestMethod]
-        [DataRow("v1-label", 1, 0, 0, "-label")]
-        [DataRow("v1.2-label", 1, 2, 0, "-label")]
-        [DataRow("v1.2.3-label", 1, 2, 3, "-label")]
-        [DataRow("v01-label", 1, 0, 0, "-label")]
-        [DataRow("v01.02-label", 1, 2, 0, "-label")]
-        [DataRow("v01.02.03-label", 1, 2, 3, "-label")]
-        [DataRow("v25102022-label", 25102022, 0, 0, "-label")]
-        public void Test_Version_Format_With_Labels(string versionText, int major, int minor, int revision, string label)
+        [DataRow("v1-label", 1, 0, 0, "-label", "v1.00")]
+        [DataRow("v1.2-label", 1, 2, 0, "-label", "v1.02")]
+        [DataRow("v1.2.3-label", 1, 2, 3, "-label", "v1.02")]
+        [DataRow("v01-label", 1, 0, 0, "-label", "v1.00")]
+        [DataRow("v01.02-label", 1, 2, 0, "-label", "v1.02")]
+        [DataRow("v01.02.03-label", 1, 2, 3, "-label", "v1.02")]
+        [DataRow("v25102022-label", 25102022, 0, 0, "-label", "v25102022.00")]
+        public void Test_Version_Format_With_Labels_Split_By_Dash(string versionText, int major, int minor, int revision, string label, string semVersion)
         {
             //arrange, act & assert
             var localVersion = new LocalVersion(versionText, string.Empty);
@@ -60,6 +62,28 @@ namespace Yuniql.UnitTests
             localVersion.Minor.ShouldBe(minor);
             localVersion.Revision.ShouldBe(revision);
             localVersion.Label.ShouldBe(label);
+            localVersion.SemVersion.ShouldBe($"{semVersion}{label}");
+            localVersion.Name.ShouldBe(versionText);
+        }
+
+        [DataTestMethod]
+        [DataRow("v1.label", 1, 0, 0, ".label", "v1.00")]
+        [DataRow("v1.2.label", 1, 2, 0, ".label", "v1.02")]
+        [DataRow("v1.2.3.label", 1, 2, 3, ".label", "v1.02")]
+        [DataRow("v01.label", 1, 0, 0, ".label", "v1.00")]
+        [DataRow("v01.02.label", 1, 2, 0, ".label", "v1.02")]
+        [DataRow("v01.02.03.label", 1, 2, 3, ".label", "v1.02")]
+        [DataRow("v25102022.label", 25102022, 0, 0, ".label", "v25102022.00")]
+        public void Test_Version_Format_With_Labels_Split_By_Period(string versionText, int major, int minor, int revision, string label, string semVersion)
+        {
+            //arrange, act & assert
+            var localVersion = new LocalVersion(versionText, string.Empty);
+            localVersion.Major.ShouldBe(major);
+            localVersion.Minor.ShouldBe(minor);
+            localVersion.Revision.ShouldBe(revision);
+            localVersion.Label.ShouldBe(label);
+            localVersion.SemVersion.ShouldBe($"{semVersion}{label}");
+            localVersion.Name.ShouldBe(versionText);
         }
 
     }

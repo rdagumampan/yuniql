@@ -2,7 +2,7 @@
   "profiles": {
     "Yuniql.CLI": {
       "commandName": "Project",
-      "commandLineArgs": ""
+      "commandLineArgs": "run -a --debug"
     }
   }
 }

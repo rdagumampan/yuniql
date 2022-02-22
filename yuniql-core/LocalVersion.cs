@@ -59,7 +59,7 @@ namespace Yuniql.Core
                 Label = version.Replace($"v{versionSegments[0]}.{versionSegments[1]}.{versionSegments[2]}", string.Empty);
             }
 
-            //Label = versionMatch.Groups["label"].Value;
+            Name = version;
             Path = path;
         }
 
@@ -94,6 +94,11 @@ namespace Yuniql.Core
                 return $"v{Major}.{Minor.ToString("00")}{Label}";
             }
         }
+
+        /// <summary>
+        /// Returns the original version name
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// Returns the full path of local directory
