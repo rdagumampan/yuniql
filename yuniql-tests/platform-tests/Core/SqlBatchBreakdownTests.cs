@@ -31,8 +31,8 @@ namespace Yuniql.PlatformTests.Core
             _testDataService = testDataServiceFactory.Create(_testConfiguration.Platform);
 
             //create data service factory for migration proper
-            _directoryService = new DirectoryService();
-            _traceService = new FileTraceService(_directoryService) { IsDebugEnabled = true };
+            _directoryService = new DirectoryService(_traceService);
+            _traceService = new FileTraceService() { IsDebugEnabled = true };
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
         }
 
@@ -65,7 +65,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Create_SingleLine_Empty_Script()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -88,7 +88,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Create_SingleLine_Script_With_Terminator()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -110,7 +110,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Create_SingleLine_Script_Without_Terminator()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -132,7 +132,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Create_Multiline_Script_Without_Terminator_In_LastLine()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -160,7 +160,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Create_Multiline_Script_With_Terminator_In_Comment_Block()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -190,7 +190,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Create_Multiline_Script_With_Terminator_Inside_Statements()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -218,7 +218,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Create_Multiline_Script_With_Error_Must_Rollback()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);

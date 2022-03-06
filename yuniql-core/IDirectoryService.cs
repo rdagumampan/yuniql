@@ -38,9 +38,32 @@ namespace Yuniql.Core
         /// </summary>
         string GetFileCaseInsensitive(string path, string fileName);
 
+        /// <summary>
+        /// Returns list of files in the target environment specific directory
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="environmentCode"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         string[] FilterFiles(string path, string environmentCode, List<string> files);
 
+        /// <summary>
+        /// Not implemented
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="environmentCode"></param>
+        /// <param name="directories"></param>
+        /// <returns></returns>
         string[] FilterDirectories(string path, string environmentCode, List<string> directories);
+
+        /// <summary>
+        /// Return sorted files based on default sort order or using in-placed sorting manifest _manifest.ini
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="environmentCode"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        string[] SortFiles(string path, string environmentCode, List<string> files);
 
         /// <summary>
         /// Wraps <see cref="Directory.CreateDirectory"/>

@@ -35,8 +35,8 @@ namespace Yuniql.PlatformTests.Core
             _testDataService = testDataServiceFactory.Create(_testConfiguration.Platform);
 
             //create data service factory for migration proper
-            _directoryService = new DirectoryService();
-            _traceService = new FileTraceService(_directoryService) { IsDebugEnabled = true };
+            _directoryService = new DirectoryService(_traceService);
+            _traceService = new FileTraceService() { IsDebugEnabled = true };
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
         }
 
@@ -69,7 +69,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Run_Fail_Migration_When_Version_Directory_With_Explicit_Transaction_Has_Other_Directories()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -96,7 +96,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Run_Fail_Migration_When_Version_With_Explicit_Transaction_Directory_Has_Files()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -123,7 +123,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Run_Fail_Migration_When_DDL_Failed_And_Transactional_DDL_Not_Supported()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -161,7 +161,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Run_Fail_Migration_When_No_Force_Continue_After_Failue_Option_Enabled()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -213,7 +213,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Run_Ok_Migration_With_Force_Continue_After_Failue_Option_Enabled()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -266,7 +266,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Run_Ok_Without_Explicit_Transaction()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -296,7 +296,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Run_Ok_With_Explicit_Transaction()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -328,7 +328,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Run_Ok_Without_Explicit_Transaction_With_SubDirectories()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -379,7 +379,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Run_Ok_With_Explicit_Transaction_With_SubDirectories()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);

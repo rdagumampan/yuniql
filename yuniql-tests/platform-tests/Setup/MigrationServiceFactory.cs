@@ -75,7 +75,7 @@ namespace Yuniql.PlatformTests.Setup
 
         private IMigrationService CreateInternal(IDataService dataService, IBulkImportService bulkImportService)
         {
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             var tokenReplacementService = new TokenReplacementService(_traceService);

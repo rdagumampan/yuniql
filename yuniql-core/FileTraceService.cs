@@ -10,13 +10,11 @@ namespace Yuniql.Core
     public class FileTraceService : ITraceService
     {
         private string _traceSessionId;
-        private IDirectoryService _directoryService;
 
         ///<inheritdoc/>
-        public FileTraceService(IDirectoryService directoryService)
+        public FileTraceService()
         {
             _traceSessionId = DateTime.Now.ToString("MMddyyyy-HHmmss");
-            _directoryService = directoryService;
         }
 
         ///<inheritdoc/>
@@ -39,11 +37,11 @@ namespace Yuniql.Core
             set
             {
                 //when user specified location but it does not exist
-                if (value != null && !_directoryService.Exists(value))
+                if (value != null && !Directory.Exists(value))
                 {
                     Warn($"The provided trace directory does not exist. " +
                         $"Generated logs will be saved in the current directory {Environment.CurrentDirectory}.");
-                } else if (_directoryService.Exists(value))
+                } else if (Directory.Exists(value))
                 {
                     //an existing trace directory will be used
                     _traceDirectory = value;

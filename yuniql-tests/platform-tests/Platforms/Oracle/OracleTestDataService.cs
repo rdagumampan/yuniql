@@ -236,9 +236,33 @@ CREATE TABLE {objectName2.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.Qu
             var dbObject3 = TEST_DBOBJECTS.DB_OBJECT_3.SplitSchema(base.MetaSchemaName, CaseSenstiveOption.QuouteWhenAnyLowerCase);
 
             return $@"
-DROP TABLE {dbObject1.Item2};
-DROP TABLE {dbObject2.Item2};
-DROP TABLE {dbObject3.Item2};
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE ""{TEST_DBOBJECTS.DB_OBJECT_1}""';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+            END IF;
+            END;
+/
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE ""{TEST_DBOBJECTS.DB_OBJECT_2}""';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+            END IF;
+            END;
+/
+BEGIN
+   EXECUTE IMMEDIATE 'DROP TABLE ""{TEST_DBOBJECTS.DB_OBJECT_3}""';
+EXCEPTION
+   WHEN OTHERS THEN
+      IF SQLCODE != -942 THEN
+         RAISE;
+            END IF;
+            END;
+/
 ";
         }
 
