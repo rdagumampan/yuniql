@@ -32,14 +32,18 @@ namespace Yuniql.Core
             string currentScriptFile = null;
             try
             {
-                //filter out scripts when environment code is used
+                //extract all sql files in the given directory
                 var sqlScriptFiles = _directoryService.GetFiles(scriptDirectory, "*.sql").ToList();
+
+                //filter out scripts when environment code is used
                 sqlScriptFiles = _directoryService.FilterFiles(workspace, environment, sqlScriptFiles).ToList();
                 _traceService.Info($"Found {sqlScriptFiles.Count} script files on {scriptDirectory}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine : string.Empty) +
                        $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
 
-                //execute all script files in the version folder, we also make sure its sorted by file name
-                sqlScriptFiles.Sort();
+                //we also make sure its sorted by file name or using an in-place sort order manifest in the directory
+                sqlScriptFiles = _directoryService.SortFiles(scriptDirectory, environment, sqlScriptFiles).ToList();
+
+                //execute all script files in the version folder
                 sqlScriptFiles.ForEach(scriptFile =>
                 {
                     currentScriptFile = scriptFile;
@@ -121,7 +125,7 @@ namespace Yuniql.Core
             bool isRequiredClearedDraft = false
             )
         {
-            //extract and filter out scripts when environment code is used
+            //extract all sql files in the given directory
             var sqlScriptFiles = _directoryService.GetAllFiles(workspace, "*.sql").ToList();
 
             // Throw exception when --require-cleared-draft is set to TRUE 
@@ -131,12 +135,15 @@ namespace Yuniql.Core
                     $"Move the script files to a version directory and re-execute the migration. Or remove --require-cleared-draft in parameter.");
             }
 
+            //filter out scripts when environment code is used
             sqlScriptFiles = _directoryService.FilterFiles(workspace, environment, sqlScriptFiles).ToList();
             _traceService.Info($"Found {sqlScriptFiles.Count} script files on {workspace}" + (sqlScriptFiles.Count > 0 ? Environment.NewLine : string.Empty) +
                    $"{string.Join(Environment.NewLine, sqlScriptFiles.Select(s => "  + " + new FileInfo(s).Name))}");
 
-            //execute all script files in the target folder
-            sqlScriptFiles.Sort();
+            //we also make sure its sorted by file name or using an in-place sort order manifest in the directory
+            sqlScriptFiles = _directoryService.SortFiles(workspace, environment, sqlScriptFiles).ToList();
+
+            //execute all script files in the version folder
             sqlScriptFiles.ForEach(scriptFile =>
             {
                 var sqlStatementRaw = _fileService.ReadAllText(scriptFile);
@@ -185,12 +192,18 @@ namespace Yuniql.Core
             List<KeyValuePair<string, string>> tokens = null
         )
         {
-            //extract and filter out scripts when environment code is used
+            //extract all sql files in the given directory
             var bulkFiles = _directoryService.GetFiles(scriptDirectory, "*.csv").ToList();
+
+            //filter out scripts when environment code is used
             bulkFiles = _directoryService.FilterFiles(workspace, environment, bulkFiles).ToList();
             _traceService.Info($"Found {bulkFiles.Count} bulk files on {scriptDirectory}" + (bulkFiles.Count > 0 ? Environment.NewLine : string.Empty) +
                    $"{string.Join(Environment.NewLine, bulkFiles.Select(s => "  + " + new FileInfo(s).Name))}");
-            bulkFiles.Sort();
+
+            //we also make sure its sorted by file name or using an in-place sort order manifest in the directory
+            bulkFiles = _directoryService.SortFiles(workspace, environment, bulkFiles).ToList();
+
+            //upload all bulk files in the version folder
             bulkFiles.ForEach(csvFile =>
             {
                 _bulkImportService.Run(connection, transaction, csvFile, bulkSeparator, bulkBatchSize: bulkBatchSize, commandTimeout: commandTimeout, tokens: tokens);

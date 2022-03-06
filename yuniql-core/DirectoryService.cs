@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -72,9 +73,9 @@ namespace Yuniql.Core
                     .Where(x => !x.Equals(RESERVED_DIRECTORY_NAME.TRANSACTION, System.StringComparison.InvariantCultureIgnoreCase))
                     .ToList();
                 filePathParts.Reverse();
-                
-                return filePathParts.Skip(directoryPathParts.Count).Any(a => 
-                    a.StartsWith(RESERVED_DIRECTORY_NAME.PREFIX) 
+
+                return filePathParts.Skip(directoryPathParts.Count).Any(a =>
+                    a.StartsWith(RESERVED_DIRECTORY_NAME.PREFIX)
                     && !reservedDirectories.Exists(x => x.Equals(a, System.StringComparison.InvariantCultureIgnoreCase))
                 );
             });
@@ -100,6 +101,36 @@ namespace Yuniql.Core
             });
 
             return sqlScriptFiles.ToArray();
+        }
+
+        ///<inheritdoc/>
+        public string[] SortFiles(string scriptDirectoryPath, string environmentCode, List<string> files)
+        {
+            var sortManifestFilePath = Path.Combine(scriptDirectoryPath, "_manifest.ini");
+            var sortManifestExists = File.Exists(sortManifestFilePath);
+            if (sortManifestExists)
+            {
+                var sortedFiles = new List<string>();
+                var sortManifestList = File.ReadAllLines(sortManifestFilePath)
+                    .Where(f =>
+                        !string.IsNullOrEmpty(f) &&
+                        !string.IsNullOrWhiteSpace(f) &&
+                        !f.Equals(Environment.NewLine))
+                    .ToList();
+                sortManifestList.ForEach(ff =>
+                {
+                    var file = files.FirstOrDefault(f => f.EndsWith(ff));
+                    if (null != file)
+                        sortedFiles.Add(file);
+                });
+
+                return sortedFiles.ToArray();
+            }
+            else
+            {
+                files.Sort();
+                return files.ToArray();
+            }
         }
 
         ///<inheritdoc/>
