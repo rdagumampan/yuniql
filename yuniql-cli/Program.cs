@@ -13,8 +13,9 @@ namespace Yuniql.CLI
 
         public static int Main(string[] args)
         {
-            var directoryService = new DirectoryService();
-            var traceService = new FileTraceService(directoryService);
+            var traceService = new FileTraceService();
+
+            var directoryService = new DirectoryService(traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(traceService, directoryService, fileService);
 

@@ -5,6 +5,8 @@ using Yuniql.Core;
 using System;
 using System.IO;
 using System.Linq;
+using Moq;
+using Yuniql.Extensibility;
 
 namespace Yuniql.UnitTests
 {
@@ -15,6 +17,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Environment_Aware_Directory_Present()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "tables", "setup.sql");
@@ -29,7 +32,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new DirectoryService();
+            var sut = new DirectoryService(traceService);
             var result = sut.FilterFiles(basePath, "test", files).ToList();
 
             //asset
@@ -44,6 +47,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Environment_Code_Passed()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "tables", "setup.sql");
@@ -58,7 +62,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new DirectoryService();
+            var sut = new DirectoryService(traceService);
             var result = sut.FilterFiles(basePath, null, files).ToList();
 
             //asset
@@ -73,6 +77,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_Mixed_Files_And_Environment_Aware_Scripts()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "_dev", "setup.sql");
@@ -87,7 +92,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new DirectoryService();
+            var sut = new DirectoryService(traceService);
             var result = sut.FilterFiles(basePath, "test", files).ToList();
 
             //asset
@@ -100,6 +105,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_Mixed_Files_And_Environment_Aware_Scripts_In_SubDirectory()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "tables", "_dev", "setup.sql");
@@ -114,7 +120,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new DirectoryService();
+            var sut = new DirectoryService(traceService);
             var result = sut.FilterFiles(basePath, "test", files).ToList();
 
             //asset
@@ -127,6 +133,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Environment_Code_Passed_But_Environment_Aware_Scripts_Is_Present()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "_dev", "setup.sql");
@@ -143,7 +150,7 @@ namespace Yuniql.UnitTests
             //act & asset
             Assert.ThrowsException<YuniqlMigrationException>(() =>
             {
-                var sut = new DirectoryService();
+                var sut = new DirectoryService(traceService);
                 var result = sut.FilterFiles(basePath, null, files).ToList();
             }).Message.Contains("Found environment aware directories but no environment code passed.");
         }
@@ -152,6 +159,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_Sub_Directories_Within_Environment_Aware_Directory()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "_dev", "tables", "setup.sql");
@@ -170,7 +178,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new DirectoryService();
+            var sut = new DirectoryService(traceService);
             var result = sut.FilterFiles(basePath, "prod", files).ToList();
 
             //asset
@@ -185,6 +193,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_with_Script_FileNames_Have_Environment_Aware_Token_Underscore()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "setup.sql");
             string script2 = Path.Combine(basePath, "tables", "_dev", "_setup.sql");
@@ -201,7 +210,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new DirectoryService();
+            var sut = new DirectoryService(traceService);
             var result = sut.FilterFiles(basePath, "test", files).ToList();
 
             //asset
@@ -215,6 +224,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Dir_With_Script_FileNames_Have_Environment_Aware_Token()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "tables", "_setup_tables.sql");
             string script2 = Path.Combine(basePath, "tables", "_setup_stored_procedures.sql");
@@ -231,7 +241,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new DirectoryService();
+            var sut = new DirectoryService(traceService);
             var result = sut.FilterFiles(basePath, "test", files).ToList();
 
             //asset
@@ -245,6 +255,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_No_Dir_With_Script_FileNames_Have_Environment_Aware_Token_No_Environment_Code_Passed()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "tables", "_setup_tables.sql");
             string script2 = Path.Combine(basePath, "tables", "_setup_stored_procedures.sql");
@@ -255,7 +266,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new DirectoryService();
+            var sut = new DirectoryService(traceService);
             var result = sut.FilterFiles(basePath, null, files).ToList();
 
             //asset
@@ -268,6 +279,7 @@ namespace Yuniql.UnitTests
         public void Test_Filter_Files_Directories_With_Environment_Code_Passed()
         {
             //arrange
+            var traceService = new Mock<ITraceService>().Object;
             var basePath = Path.Combine(Environment.CurrentDirectory, "_db", RESERVED_DIRECTORY_NAME.INIT);
             string script1 = Path.Combine(basePath, "setup_tables", "setup.sql");
             string script2 = Path.Combine(basePath, "setup_stored_procedures", "setup.sql");
@@ -280,7 +292,7 @@ namespace Yuniql.UnitTests
             };
 
             //act
-            var sut = new DirectoryService();
+            var sut = new DirectoryService(traceService);
             var result = sut.FilterFiles(basePath, null, files).ToList();
 
             //asset

@@ -31,8 +31,8 @@ namespace Yuniql.PlatformTests.Core
             _testDataService = testDataServiceFactory.Create(_testConfiguration.Platform);
 
             //create data service factory for migration proper
-            _directoryService = new DirectoryService();
-            _traceService = new FileTraceService(_directoryService) { IsDebugEnabled = true };
+            _directoryService = new DirectoryService(_traceService);
+            _traceService = new FileTraceService() { IsDebugEnabled = true };
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
         }
 
@@ -69,7 +69,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Format_vx(string targetVersion)
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -114,7 +114,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Format_vx_x(string targetVersion)
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -159,7 +159,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Format_vx_x_x(string targetVersion)
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -203,7 +203,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Format_vxx(string targetVersion)
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -247,7 +247,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Format_vxx_xx(string targetVersion)
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -291,7 +291,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Format_vxx_xx_xx(string targetVersion)
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -336,7 +336,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Format_vddmmyyy(string targetVersion)
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -381,7 +381,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Format_vx_xx_label (string targetVersion)
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);

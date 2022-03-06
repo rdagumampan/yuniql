@@ -33,8 +33,8 @@ namespace Yuniql.PlatformTests.Core
             _testDataService = testDataServiceFactory.Create(_testConfiguration.Platform);
 
             //create data service factory for migration proper
-            _directoryService = new DirectoryService();
-            _traceService = new FileTraceService(_directoryService) { IsDebugEnabled = true };
+            _directoryService = new DirectoryService(_traceService);
+            _traceService = new FileTraceService() { IsDebugEnabled = true };
             _migrationServiceFactory = new MigrationServiceFactory(_traceService);
         }
 
@@ -67,7 +67,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_Default_Separator()
         {
             //arrange - prepare bulk destination table
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -120,7 +120,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_Pipe_Separator()
         {
             //arrange - pre-create destination bulk tables
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -173,7 +173,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_Utf8_Encoded_File()
         {
             //arrange - pre-create destination bulk tables
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -225,7 +225,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_Null_Columns()
         {
             //arrange - pre-create destination bulk tables
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -276,7 +276,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_Unquoted()
         {
             //arrange - pre-create destination bulk tables
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -327,7 +327,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_Destination_Table_Does_Not_Exist_Throws_Error()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -356,7 +356,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_Mismatch_Columns_But_Nullable()
         {
             //arrange - pre-create destination bulk tables
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -406,7 +406,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_Mismatch_Columns_But_Not_Nullable()
         {
             //arrange
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -439,7 +439,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_NonDefault_Schema_Destination_Table()
         {
             //arrange - pre-create destination bulk tables
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -493,7 +493,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_Null_Word_Value()
         {
             //arrange - prepare bulk destination table
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -546,7 +546,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_Sequence_And_Schema_Table()
         {
             //arrange - prepare bulk destination table
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -603,7 +603,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_Sequence_X_Table()
         {
             //arrange - prepare bulk destination table
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -660,7 +660,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_With_Sequence_0X_Table()
         {
             //arrange - prepare bulk destination table
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);
@@ -717,7 +717,7 @@ namespace Yuniql.PlatformTests.Core
         public void Test_Bulk_Import_Csv_Files_In_NonVersion_Directories()
         {
             //arrange - prepare bulk destination table
-            var directoryService = new DirectoryService();
+            var directoryService = new DirectoryService(_traceService);
             var fileService = new FileService();
             var workspaceService = new WorkspaceService(_traceService, directoryService, fileService);
             workspaceService.Init(_testConfiguration.WorkspacePath);

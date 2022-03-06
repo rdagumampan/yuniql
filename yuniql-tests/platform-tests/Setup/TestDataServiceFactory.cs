@@ -24,8 +24,8 @@ namespace Yuniql.PlatformTests.Setup
 
         public ITestDataService Create(string platform)
         {
-            var directoryService = new DirectoryService();
-            var traceService = new FileTraceService(directoryService) { IsDebugEnabled = true };
+            var traceService = new FileTraceService() { IsDebugEnabled = true };
+            var directoryService = new DirectoryService(traceService);
             var tokenReplacementService = new TokenReplacementService(traceService);
 
             switch (platform.ToLower())

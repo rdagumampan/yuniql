@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
@@ -10,6 +11,13 @@ namespace Yuniql.Core
     /// </summary>
     public class DirectoryService : IDirectoryService
     {
+        private ITraceService _traceService;
+
+        public DirectoryService(ITraceService traceService)
+        {
+            _traceService = traceService;
+        }
+
         ///<inheritdoc/>
         public string[] GetDirectories(string path, string searchPattern)
         {
@@ -106,7 +114,8 @@ namespace Yuniql.Core
         ///<inheritdoc/>
         public string[] SortFiles(string scriptDirectoryPath, string environmentCode, List<string> files)
         {
-            var sortManifestFilePath = Path.Combine(scriptDirectoryPath, "_manifest.ini");
+            //we override the default os-based file names based sort-order
+            var sortManifestFilePath = Path.Combine(scriptDirectoryPath, "_sequence.ini");
             var sortManifestExists = File.Exists(sortManifestFilePath);
             if (sortManifestExists)
             {
@@ -117,8 +126,15 @@ namespace Yuniql.Core
                         !string.IsNullOrWhiteSpace(f) &&
                         !f.Equals(Environment.NewLine))
                     .ToList();
+
+                _traceService.Info("A custom execution sequence manifest is detected. Scripts will run as listed in the content of _sequence.ini file. " +
+                    $"Any scripts not listed in the manifest will be skipped and will not be committed in the version where it is placed. " +
+                    $"Skipped scripts can only be executed by moving them to the next version. Expected sequence: { Environment.NewLine}" +
+                    $"{string.Join(Environment.NewLine, sortManifestList.Select(s => "  + " + s))}");
+
                 sortManifestList.ForEach(ff =>
                 {
+                    //we use the file name or relative path to check file exists in the directory being processed
                     var file = files.FirstOrDefault(f => f.EndsWith(ff));
                     if (null != file)
                         sortedFiles.Add(file);
