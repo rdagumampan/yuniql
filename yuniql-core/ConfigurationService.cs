@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using Yuniql.Extensibility;
 
@@ -154,10 +155,16 @@ namespace Yuniql.Core
         public string PrintAsJson()
         {
             var configuration = GetConfiguration();
+            var configurationString = JsonSerializer.Serialize(configuration, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                IgnoreReadOnlyProperties = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
 
-            var configurationString = JsonSerializer.Serialize(configuration, new JsonSerializerOptions { WriteIndented = true, IgnoreReadOnlyProperties = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-
-            if (!_traceService.IsTraceSensitiveData) //If TraceSensitiveData is true, do not redact the sensitive data
+            //if TraceSensitiveData is true, do not redact the sensitive data
+            if (!_traceService.IsTraceSensitiveData)
                 configurationString = configurationString.Replace(configuration.ConnectionString, "<sensitive-data-redacted>");
 
             return configurationString;
