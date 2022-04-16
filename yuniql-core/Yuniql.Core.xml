@@ -318,6 +318,9 @@
         <member name="M:Yuniql.Core.DirectoryService.FilterFiles(System.String,System.String,System.Collections.Generic.List{System.String})">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.Core.DirectoryService.SortFiles(System.String,System.String,System.Collections.Generic.List{System.String})">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.Core.DirectoryService.FilterDirectories(System.String,System.String,System.Collections.Generic.List{System.String})">
             <inheritdoc/>
         </member>
@@ -357,7 +360,7 @@
             Writes trace information into a text file in the current workspace directory. 
             </summary>
         </member>
-        <member name="M:Yuniql.Core.FileTraceService.#ctor(Yuniql.Core.IDirectoryService)">
+        <member name="M:Yuniql.Core.FileTraceService.#ctor">
             <inheritdoc/>
         </member>
         <member name="P:Yuniql.Core.FileTraceService.IsDebugEnabled">
@@ -369,7 +372,10 @@
         <member name="P:Yuniql.Core.FileTraceService.IsTraceToFile">
             <inheritdoc/>
         </member>
-        <member name="P:Yuniql.Core.FileTraceService.TraceToDirectory">
+        <member name="P:Yuniql.Core.FileTraceService.IsTraceToDirectory">
+            <inheritdoc/>
+        </member>
+        <member name="P:Yuniql.Core.FileTraceService.TraceDirectory">
             <inheritdoc/>
         </member>
         <member name="M:Yuniql.Core.FileTraceService.Debug(System.String,System.Object)">
@@ -417,6 +423,33 @@
             <summary>
             Wraps <see cref="M:System.IO.Directory.GetFiles(System.String)"/>
             </summary>
+        </member>
+        <member name="M:Yuniql.Core.IDirectoryService.FilterFiles(System.String,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Returns list of files in the target environment specific directory
+            </summary>
+            <param name="path"></param>
+            <param name="environmentCode"></param>
+            <param name="files"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.IDirectoryService.FilterDirectories(System.String,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Not implemented
+            </summary>
+            <param name="path"></param>
+            <param name="environmentCode"></param>
+            <param name="directories"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Yuniql.Core.IDirectoryService.SortFiles(System.String,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Return sorted files based on default sort order or using in-placed sorting manifest _manifest.ini
+            </summary>
+            <param name="path"></param>
+            <param name="environmentCode"></param>
+            <param name="files"></param>
+            <returns></returns>
         </member>
         <member name="M:Yuniql.Core.IDirectoryService.CreateDirectory(System.String)">
             <summary>
@@ -729,6 +762,11 @@
             <summary>
             Retuns verion in v{Major}.{Minor} format.
             Example v0.00 for baseline version.
+            </summary>
+        </member>
+        <member name="P:Yuniql.Core.LocalVersion.Name">
+            <summary>
+            Returns the original version name
             </summary>
         </member>
         <member name="P:Yuniql.Core.LocalVersion.Path">

@@ -85,7 +85,15 @@ namespace Yuniql.CLI
             traceService.IsDebugEnabled = opts.IsDebug;
             traceService.IsTraceSensitiveData = opts.IsTraceSensitiveData;
             traceService.IsTraceToFile = opts.IsTraceToFile;
-            traceService.TraceToDirectory = opts.TraceToDirectory;
+            traceService.IsTraceToDirectory = opts.IsTraceToDirectory;
+            traceService.TraceDirectory = opts.TraceDirectory;
+
+            if (!traceService.IsTraceToFile)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine($"WRN   {DateTime.UtcNow.ToString("u")}   Trace logs settings is set to silent (default) and no log files will be produced. To enable log file creation, pass parameter --trace-to-file or see our CLI command reference.");
+                Console.ResetColor();
+            }
 
             return command.Invoke(opts);
         }
