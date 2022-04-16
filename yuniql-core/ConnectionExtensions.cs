@@ -76,6 +76,7 @@ namespace Yuniql.Core
                 transaction: transaction);
 
             var result = command.ExecuteNonQuery();
+            traceService?.Debug($"Affected row(s) {result} for statement {statementCorrelationId}");
 
             stopwatch.Stop();
             traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
@@ -112,6 +113,7 @@ namespace Yuniql.Core
                 transaction: transaction);
             var resultTmp = command.ExecuteScalar();
             var result = DBNull.Value != resultTmp ? Convert.ToInt32(resultTmp) : 0;
+            traceService?.Debug($"Affected row(s) {result} for statement {statementCorrelationId}");
 
             stopwatch.Stop();
             traceService?.Debug($"Statement {statementCorrelationId} executed in {stopwatch.ElapsedMilliseconds} ms");
