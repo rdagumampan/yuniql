@@ -46,7 +46,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 SETX YUNIQL_TEST_PLATFORM "sqlserver"
 SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-sqlserver-sample"
-SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"
 ```
 
@@ -75,7 +75,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 SETX YUNIQL_TEST_PLATFORM "postgresql"
 SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-postgresql-sample"
-SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"
 ```
 
@@ -103,7 +103,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 SETX YUNIQL_TEST_PLATFORM "mysql"
 SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-mysql-sample"
-SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"
 ```
 
@@ -131,7 +131,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 SETX YUNIQL_TEST_PLATFORM "mariadb"
 SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost;Port=3306;Database=yuniqldb;Uid=root;Pwd=P@ssw0rd!;"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-mysql-sample"
-SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"
 ```
 
@@ -155,7 +155,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 SETX YUNIQL_TEST_PLATFORM "snowflake"
 SETX YUNIQL_TEST_CONNECTION_STRING "host=<your-snowflake-host>;account=<your-snowflake-account>;user=<your-snowflake-user>;password=<your-snowflake-password>;db=yuniqldb;schema=PUBLIC"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-snowflake-sample"
-SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"
 ```
 
@@ -179,7 +179,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 SETX YUNIQL_TEST_PLATFORM "redshift"
 SETX YUNIQL_TEST_CONNECTION_STRING "<your-redshift-connection-string>"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-redshift-sample"
-SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"
 ```
 
@@ -207,7 +207,7 @@ dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed
 SETX YUNIQL_TEST_PLATFORM "oracle"
 SETX YUNIQL_TEST_CONNECTION_STRING "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORCLCDB.localdomain)));User Id=sys;Password=Oradoc_db1;DBA Privilege=SYSDBA;"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-oracle-sample"
-SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"
 ```
 

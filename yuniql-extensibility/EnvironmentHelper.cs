@@ -12,7 +12,7 @@ namespace Yuniql.Extensibility
         /// For Windows, the order of ENV variable search is Machine -> User -> Process.
         /// For Linux, it will always use Process.
         /// </summary>
-        /// <param name="name">Environment varible name.</param>
+        /// <param name="name">Environment variable name.</param>
         /// <returns>Value of the environment variable.</returns>
         public static string GetEnvironmentVariable(string name)
         {
