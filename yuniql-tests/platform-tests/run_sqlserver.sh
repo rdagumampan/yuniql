@@ -24,7 +24,7 @@ sleep 15
 echo "-------- Building latest yuniql CLI"
 cd ../../yuniql-cli || exit
 dotnet build
-dotnet publish -c release -r linux-x64 /p:publishsinglefile=true /p:publishtrimmed=true
+dotnet publish -c release -arc x64 -os linux -p:publishsinglefile=true -p:publishtrimmed=true -p:PublishReadyToRun=true
 
 echo "-------- Running unit tests and platform tests"
 cd ../yuniql-tests/platform-tests || exit
