@@ -73,6 +73,9 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var workspaceService = new Mock<IWorkspaceService>();
 
+            //disable IsTraceSensitiveData to log plain text connection strings
+            traceService.Setup(property => property.IsTraceSensitiveData).Returns(false);
+
             var parameters = GetFreshConfiguration();
             var environmentService = new Mock<IEnvironmentService>();
             environmentService.Setup(s => s.GetEnvironmentVariable(ENVIRONMENT_VARIABLE.YUNIQL_WORKSPACE)).Returns(parameters.Workspace);
@@ -85,8 +88,7 @@ namespace Yuniql.UnitTests
             var configurationJson = sut.PrintAsJson();
 
             //assert
-            var configuration = JsonSerializer.Deserialize<Configuration>(configurationJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            configuration.ConnectionString.ShouldBe("<sensitive-data-redacted>");
+            configurationJson.Contains("\"connectionString\": \"<sensitive-data-redacted>\"").ShouldBeTrue();
         }
 
         [TestMethod]
@@ -96,7 +98,8 @@ namespace Yuniql.UnitTests
             var traceService = new Mock<ITraceService>();
             var workspaceService = new Mock<IWorkspaceService>();
 
-            traceService.Setup(property => property.IsTraceSensitiveData).Returns(true); //Enable TraceSensitiveData for the current test
+            //enable IsTraceSensitiveData to log plain text connection strings
+            traceService.Setup(property => property.IsTraceSensitiveData).Returns(true); 
 
             var parameters = GetFreshConfiguration();
 
@@ -111,8 +114,7 @@ namespace Yuniql.UnitTests
             var configurationJson = sut.PrintAsJson();
 
             //assert
-            var configuration = JsonSerializer.Deserialize<Configuration>(configurationJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            configuration.ConnectionString.ShouldBe(parameters.ConnectionString);
+            configurationJson.Contains("\"connectionString\": \"<sensitive-data-redacted>\"").ShouldBeFalse ();
         }
 
         [TestMethod]
