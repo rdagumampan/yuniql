@@ -20,7 +20,7 @@ docker run -dit --name yuniql-sqlserver  -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWOR
 Run from CLI
 
 ```console
-cd C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish
+cd C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish
 
 SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!"
 SETX YUNIQL_WORKSPACE "C:\play\yuniql\samples\basic-sqlserver-sample"
@@ -32,7 +32,7 @@ yuniql destroy --force --debug
 ```
 
 ```console
-cd C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish
+cd C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish
 
 yuniql run -a -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
 yuniql list -p C:\play\yuniql\samples\basic-sqlserver-sample -c "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!" --platform sqlserver --debug
