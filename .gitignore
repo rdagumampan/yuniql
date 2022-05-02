@@ -41,7 +41,7 @@ baseliner/Properties/PublishProfiles/FolderProfile.pubxml.user
 baseliner/Properties/launchSettings.json
 baseliner/Properties/PublishProfiles/FolderProfile.pubxml
 /yuniql-tests/obj
-/yuniql-tests/bin/Debug/netcoreapp3.0
+/yuniql-tests/bin/Debug/net6.0
 /yuniql-tests/.vs
 /yuniql-sqlserver/obj
 /yuniql-sqlserver/bin
@@ -64,10 +64,10 @@ yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/db.lock
 yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide
 yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-shm
 yuniql-plugins/postgresql/.vs/Yuniql.PostgreSQLx/v16/Server/sqlite3/storage.ide-wal
-/yuniql-unittests/bin/Debug/netcoreapp3.0
+/yuniql-unittests/bin/Debug/net6.0
 /yuniql-unittests/obj
 /yuniql-platformtests/.vs
-/yuniql-platformtests/bin/Debug/netcoreapp3.0
+/yuniql-platformtests/bin/Debug/net6.0
 /yuniql-platformtests/obj
 /yuniql-core/nupkgs
 /yuniql-extensibility/nupkgs

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Authors>Rodel E. Dagumampan</Authors>
     <Description>The package to use for running yuniql-based database migrations inside ASP.NET Core application or service. See WIKI for how-to instructions.</Description>
     <Copyright>Copyright 2019 Rodel E. Dagumampan</Copyright>

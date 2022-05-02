@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <StartupObject></StartupObject>
     <PackageId>Yuniql.Extensibility</PackageId>
     <Authors>Rodel E. Dagumampan</Authors>

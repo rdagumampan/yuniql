@@ -4,7 +4,7 @@ echo "-------- Preparing environment variables"
 SETX YUNIQL_TEST_PLATFORM "postgresql"
 SETX YUNIQL_TEST_CONNECTION_STRING "Host=localhost;Port=5432;Username=sa;Password=P@ssw0rd!;Database=yuniqldb"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-postgresql-sample"
-SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\netcoreapp3.0\win-x64\publish"
+SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCAL"
 
 echo "-------- Provisioning test database on docker container"

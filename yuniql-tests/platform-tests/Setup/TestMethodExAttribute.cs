@@ -24,7 +24,7 @@ namespace Yuniql.PlatformTests.Setup
                 {
                     new TestResult
                     {
-                        Outcome = UnitTestOutcome.NotRunnable,
+                        Outcome = UnitTestOutcome.Inconclusive,
                         LogOutput = message
                     }
                 };
@@ -40,7 +40,7 @@ namespace Yuniql.PlatformTests.Setup
                 {
                     new TestResult
                     {
-                        Outcome = UnitTestOutcome.NotRunnable,
+                        Outcome = UnitTestOutcome.Inconclusive,
                         LogOutput = message
                     }
                 };
@@ -56,7 +56,7 @@ namespace Yuniql.PlatformTests.Setup
                 {
                     new TestResult
                     {
-                        Outcome = UnitTestOutcome.NotRunnable,
+                        Outcome = UnitTestOutcome.Inconclusive,
                         LogOutput = message
                     }
                 };
@@ -71,7 +71,7 @@ namespace Yuniql.PlatformTests.Setup
                 {
                     new TestResult
                     {
-                        Outcome = UnitTestOutcome.NotRunnable,
+                        Outcome = UnitTestOutcome.Inconclusive,
                         LogOutput = message
                     }
                 };
@@ -85,7 +85,7 @@ namespace Yuniql.PlatformTests.Setup
                 {
                     new TestResult
                     {
-                        Outcome = UnitTestOutcome.NotRunnable,
+                        Outcome = UnitTestOutcome.Inconclusive,
                         LogOutput = message
                     }
                 };
@@ -100,7 +100,7 @@ namespace Yuniql.PlatformTests.Setup
                 {
                     new TestResult
                     {
-                        Outcome = UnitTestOutcome.NotRunnable,
+                        Outcome = UnitTestOutcome.Inconclusive,
                         LogOutput = message
                     }
                 };
