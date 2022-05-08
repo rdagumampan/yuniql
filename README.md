@@ -23,7 +23,7 @@ choco install yuniql
 
 ```console
 docker run -d -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=P@ssw0rd!" -p 1400:1433 -d mcr.microsoft.com/mssql/server:2017-latest
-SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
+SETX YUNIQL_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!;TrustServerCertificate=True"
 SETX YUNIQL_WORKSPACE "c:\temp\yuniql-cli\samples\basic-sqlserver-sample"
 ```
 
@@ -125,7 +125,7 @@ app.UseYuniql(traceService, new Yuniql.AspNetCore.Configuration
 {
 	Platform = SUPPORTED_DATABASES.SQLSERVER,
 	Workspace = Path.Combine(Environment.CurrentDirectory, "_db"),
-	ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!",
+	ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!;TrustServerCertificate=True",
 	IsAutoCreateDatabase = true, IsDebug = true
 });
 ```
@@ -154,7 +154,7 @@ static void Main(string[] args)
 	var configuration = Configuration.Instance;
 	configuration.Platform = SUPPORTED_DATABASES.SQLSERVER;
 	configuration.Workspace = Path.Combine(Environment.CurrentDirectory, "_db");
-	configuration.ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!";
+	configuration.ConnectionString = "Server=localhost,1400;Database=helloyuniql;User Id=SA;Password=P@ssw0rd!;TrustServerCertificate=True";
 	configuration.IsAutoCreateDatabase = true;
 
 	//4. run migrations

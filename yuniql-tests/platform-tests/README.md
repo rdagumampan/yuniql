@@ -44,7 +44,7 @@ cd C:\play\yuniql\yuniql-cli
 dotnet publish -c release -r win-x64 /p:publishsinglefile=true /p:publishtrimmed=true
 
 SETX YUNIQL_TEST_PLATFORM "sqlserver"
-SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!"
+SETX YUNIQL_TEST_CONNECTION_STRING "Server=localhost,1400;Database=yuniqldb;User Id=SA;Password=P@ssw0rd!;TrustServerCertificate=True"
 SETX YUNIQL_TEST_SAMPLEDB "C:\play\yuniql\samples\basic-sqlserver-sample"
 SETX YUNIQL_TEST_CLI "C:\play\yuniql\yuniql-cli\bin\release\net6.0\win-x64\publish"
 SETX YUNIQL_TEST_HOST "LOCALSERVER"
