@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 
 WORKDIR /code
 
@@ -9,7 +9,7 @@ WORKDIR /code/yuniql-cli
 RUN dotnet publish -c release -r linux-x64 /p:publishtrimmed=true -o ./app
 
 #https://github.com/dotnet/dotnet-docker/issues/1332
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime-env
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime-env
 
 WORKDIR app
 COPY --from=build-env /code/yuniql-cli/app .
