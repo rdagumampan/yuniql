@@ -1,0 +1,20 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+WORKDIR /code
+
+# copy all files and directories from root src folder
+COPY . .
+
+WORKDIR /code/yuniql-cli
+RUN dotnet publish -c release -r win-x64 /p:publishtrimmed=true -o ./app
+
+#https://github.com/dotnet/dotnet-docker/issues/1332
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime-env
+
+WORKDIR app
+COPY --from=build-env /code/yuniql-cli/app .
+
+ENV YUNIQL_WORKSPACE /data
+
+ENTRYPOINT ["dotnet", "yuniql.dll"]
+CMD ["additional-arguments-captured-from-docker-run"]
