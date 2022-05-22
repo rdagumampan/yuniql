@@ -1,0 +1,14 @@
+name: nightly-netlify-build
+
+on:
+  schedule:
+    - cron: "29 11 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: trigger netlify build
+        run: |
+          curl -X POST -d '{}' https://ci.appveyor.com/api/github/webhook?id=v8rycdu2dkcgs1wm
