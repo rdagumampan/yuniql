@@ -1,4 +1,4 @@
-name: nightly-test-run-yuniql-linux-x64-latest
+name: run-all-platform-tests-in-appveyor
 
 on:
   schedule:
