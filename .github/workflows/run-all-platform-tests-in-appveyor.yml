@@ -1,0 +1,35 @@
+name: nightly-test-run-yuniql-linux-x64-latest
+
+on:
+  schedule:
+    - cron: "10 20 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: run platform tests - sqlserver
+        run: |
+          curl -X POST -d '{}' https://ci.appveyor.com/api/github/webhook?id=jvgkj9w9w1nglv45
+      - name: run platform tests - postgresql
+        run: |
+          curl -X POST -d '{}' https://ci.appveyor.com/api/github/webhook?id=hbusy25lqy2e21vs
+      - name: run platform tests - mysql
+        run: |
+          curl -X POST -d '{}' https://ci.appveyor.com/api/github/webhook?id=jprglc2my7c6i4qv
+      - name: run platform tests - mariadb
+        run: |
+          curl -X POST -d '{}' https://ci.appveyor.com/api/github/webhook?id=judmr61pjefs80ng
+      - name: run platform tests - oracle
+        run: |
+          curl -X POST -d '{}' https://ci.appveyor.com/api/github/webhook?id=y9x5vryasg7dotip
+      - name: run platform tests - linux base image
+        run: |
+          curl -X POST -d '{}' https://ci.appveyor.com/api/github/webhook?id=v8rycdu2dkcgs1wm
+      - name: run platform tests - windows base image
+        run: |
+          curl -X POST -d '{}' https://ci.appveyor.com/api/github/webhook?id=v8rycdu2dkcgs1wm
+
+
+
