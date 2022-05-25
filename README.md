@@ -13,10 +13,20 @@
 
 ## Working with CLI
 
-Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. Install yuniql CLI with Chocolatey or use alternative ways listed here https://yuniql.io/docs/install-yuniql
+Manage local db versions and run database migrations from your CLI tool. Perform local migration run or verify with uncommitted runs to test your scripts. [Download latest release here](https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest.zip). Install yuniql CLI with Chocolatey or use alternative ways listed here https://yuniql.io/docs/install-yuniql
 
 ```console
+dotnet tool install -g yuniql.cli
 choco install yuniql
+docker run --rm yuniql/cli:linux-x64-latest run --platform sqlserver --help
+```
+
+```powershell
+# powershell
+Invoke-WebRequest -Uri https://github.com/rdagumampan/yuniql/releases/download/latest/yuniql-cli-win-x64-latest.zip -OutFile  "c:\temp\yuniql-win-x64-latest.zip"
+Expand-Archive "c:\temp\yuniql-win-x64-latest.zip" -DestinationPath "c:\temp\yuniql-cli-latest"
+cd c:\temp\yuniql-cli-latest
+.\yuniql.exe run --platform sqlserver --help
 ```
 
 ### Run migrations for SQL Server
