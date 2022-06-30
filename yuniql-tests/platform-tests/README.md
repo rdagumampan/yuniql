@@ -10,7 +10,7 @@ When running tests, you must always republish the CLI project to run the tests w
 * Docker Hub Account
 * Docker Desktop Client
 
-## Environment variables
+## Environment variables__
 
 | Variable Name                 | Description|
 | ------------------------------|---|
