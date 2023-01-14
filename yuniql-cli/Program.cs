@@ -63,7 +63,7 @@ namespace Yuniql.CLI
                     (BaselineOption opts) => Dispatch(commandLineService.RunBaselineOption, opts, traceService),
                     (RebaseOption opts) => Dispatch(commandLineService.RunRebaseOption, opts, traceService),
                     //(ArchiveOption opts) => Dispatch(commandLineService.RunArchiveOption, opts, traceService)
-                    errs => 1);
+                    errs => errs.IsVersion() || errs.IsHelp() ? 0 : 1);
 
             return resultCode;
         }
