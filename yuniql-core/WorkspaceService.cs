@@ -1,9 +1,9 @@
-﻿using Yuniql.Extensibility;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Yuniql.Extensibility;
 
 namespace Yuniql.Core
 {
@@ -149,7 +149,7 @@ yuniql-log-*.txt
         {
             var localVersions = GetLocalVersions(workspace);
 
-            var nextMajorVersion = new LocalVersion { Major = localVersions.First().Major + 1, Minor = 0 };
+            var nextMajorVersion = new LocalVersion { Major = (localVersions.FirstOrDefault()?.Major ?? -1) + 1, Minor = 0 };
             localVersions.Add(nextMajorVersion);
 
             string nextVersionPath = Path.Combine(workspace, nextMajorVersion.SemVersion);
@@ -171,7 +171,7 @@ yuniql-log-*.txt
         {
             var localVersions = GetLocalVersions(workspace);
 
-            var nextMinorVersion = new LocalVersion { Major = localVersions.First().Major, Minor = localVersions.First().Minor + 1 };
+            var nextMinorVersion = new LocalVersion { Major = localVersions.FirstOrDefault()?.Major ?? 0, Minor = (localVersions.FirstOrDefault()?.Minor ?? -1) + 1 };
             localVersions.Add(nextMinorVersion);
 
             string nextVersionPath = Path.Combine(workspace, nextMinorVersion.SemVersion);

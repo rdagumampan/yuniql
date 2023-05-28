@@ -1,9 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Shouldly;
 using Yuniql.Core;
 using Yuniql.Extensibility;
-using Shouldly;
-using System.IO;
 
 namespace Yuniql.UnitTests
 {
@@ -134,7 +135,25 @@ namespace Yuniql.UnitTests
             directoryService.Verify(s => s.GetDirectories(workspace, "v*.*"));
             directoryService.Verify(s => s.CreateDirectory(@$"{workspace}\v1.00"));
         }
+        [TestMethod()]
+        public void Test_Increment_Major_Version_Without_Previous_Version()
+        {
+            //arrange
+            var workspace = @"c:\temp\yuniql";
+            var traceService = new Mock<ITraceService>();
+            var fileService = new Mock<IFileService>();
 
+            var directoryService = new Mock<IDirectoryService>();
+            directoryService.Setup(s => s.GetDirectories(workspace, "v*.*")).Returns(Array.Empty<string>());
+            //act
+            var sut = new WorkspaceService(traceService.Object, directoryService.Object, fileService.Object);
+            var result = sut.IncrementMajorVersion(workspace, sqlFileName: null);
+
+            //assert
+            result.ShouldBe("v0.00");
+            directoryService.Verify(s => s.GetDirectories(workspace, "v*.*"));
+            directoryService.Verify(s => s.CreateDirectory(@$"{workspace}\v0.00"));
+        }
 
         [TestMethod()]
         public void Test_Increment_Major_Version_With_Sql_File()
@@ -185,6 +204,27 @@ namespace Yuniql.UnitTests
             result.ShouldBe("v0.03");
             directoryService.Verify(s => s.GetDirectories(workspace, "v*.*"));
             directoryService.Verify(s => s.CreateDirectory(@$"{workspace}\v0.03"));
+        }
+
+        [TestMethod]
+        public void Test_Increment_Minor_Version_Without_Previous_Version()
+        {
+            //arrange
+            var workspace = @"c:\temp\yuniql";
+            var traceService = new Mock<ITraceService>();
+            var fileService = new Mock<IFileService>();
+
+            var directoryService = new Mock<IDirectoryService>();
+            directoryService.Setup(s => s.GetDirectories(workspace, "v*.*")).Returns(Array.Empty<string>());
+
+            //act
+            var sut = new WorkspaceService(traceService.Object, directoryService.Object, fileService.Object);
+            var result = sut.IncrementMinorVersion(workspace, sqlFileName: null);
+
+            //assert
+            result.ShouldBe("v0.00");
+            directoryService.Verify(s => s.GetDirectories(workspace, "v*.*"));
+            directoryService.Verify(s => s.CreateDirectory(@$"{workspace}\v0.00"));
         }
 
         [TestMethod]
