@@ -114,6 +114,9 @@
         <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForGetDatabaseVersion">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.Oracle.OracleDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
             <inheritdoc/>
         </member>

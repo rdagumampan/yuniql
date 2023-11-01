@@ -97,6 +97,9 @@
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForGetDatabaseVersion">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.PostgreSql.PostgreSqlDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
             <inheritdoc/>
         </member>

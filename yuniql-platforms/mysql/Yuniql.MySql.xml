@@ -97,6 +97,9 @@
         <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForGetDatabaseVersion">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.MySql.MySqlDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
             <inheritdoc/>
         </member>

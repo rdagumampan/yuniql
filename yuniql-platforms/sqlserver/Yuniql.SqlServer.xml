@@ -97,6 +97,9 @@
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForGetDatabaseVersion">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.SqlServer.SqlServerDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
             <inheritdoc/>
         </member>

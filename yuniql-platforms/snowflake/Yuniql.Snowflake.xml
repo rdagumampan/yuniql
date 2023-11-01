@@ -85,6 +85,9 @@
         <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForUpsertVersion">
             <inheritdoc/>
         </member>
+        <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForGetDatabaseVersion">
+            <inheritdoc/>
+        </member>
         <member name="M:Yuniql.Snowflake.SnowflakeDataService.GetSqlForCheckRequireMetaSchemaUpgrade(System.String)">
             <inheritdoc/>
         </member>
