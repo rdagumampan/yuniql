@@ -25,6 +25,34 @@ namespace Yuniql.Core
         }
 
         /// <summary>
+        /// Checks the database server informations
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckDatabaseVersion()
+        {
+            try
+            {
+                using (var connection = _dataService.CreateConnection())
+                {
+                    connection.Open();
+                    var versionCommand = connection.CreateCommand();
+                    versionCommand.CommandText = _dataService.GetSqlForGetDatabaseVersion();
+                    var version = (string)versionCommand.ExecuteScalar();
+                    _traceService.Info($"Database version: {version}");
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _traceService.Error($"Sql/odbc connectivity to database {_connectionInfo.Database} on {_connectionInfo.DataSource} - Failed. Error message: {ex.Message}. " +
+                                    $"Suggested action: Check your connection string and verify that the user have sufficient permissions to access the database. " +
+                                    $"For sample connection strings, please find your platform at https://www.connectionstrings.com. " +
+                                    $"If you think this is a bug, please create an issue ticket here https://github.com/rdagumampan/yuniql/issues.");
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Checks if we can establish sql/odbc connectivity to database on target server/cluster
         /// </summary>
         /// <returns></returns>
@@ -157,6 +185,7 @@ namespace Yuniql.Core
 
             CheckMasterConnectivity();
             CheckDatabaseConnectivity();
+            CheckDatabaseVersion();
         }
     }
 }

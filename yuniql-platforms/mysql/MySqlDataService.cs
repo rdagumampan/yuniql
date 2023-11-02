@@ -187,6 +187,12 @@ ON DUPLICATE KEY UPDATE
             ";
 
         ///<inheritdoc/>
+        public string GetSqlForGetDatabaseVersion()
+            => @"
+SELECT VERSION();
+            ";
+
+        ///<inheritdoc/>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
         //when table __yuniqldbversion exists, we need to upgrade from yuniql v1.0 to v1.1 version
         => @"

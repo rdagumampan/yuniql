@@ -193,6 +193,12 @@ WHERE
             => throw new NotSupportedException("Not supported for the target platform");
 
         ///<inheritdoc/>
+        public string GetSqlForGetDatabaseVersion()
+            => @"
+SELECT VERSION();
+            ";
+
+        ///<inheritdoc/>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
             => @"
 SELECT NULL;

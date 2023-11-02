@@ -150,6 +150,11 @@ namespace Yuniql.Extensibility
         /// </summary>
         public string GetSqlForUpsertVersion();
 
+        /// <summary>
+        /// Returns the SQL statement to use for getting the database verison.
+        /// </summary>
+        public string GetSqlForGetDatabaseVersion();
+
         //TODO: Consider dropping this in next release
         /// <summary>
         /// Returns true if the version tracking table requires upgrade for this release

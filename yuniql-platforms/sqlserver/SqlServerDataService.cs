@@ -188,6 +188,12 @@ WHERE
             => throw new NotSupportedException("Not supported for the target platform");
 
         ///<inheritdoc/>
+        public string GetSqlForGetDatabaseVersion()
+            => @"
+SELECT @@VERSION;
+            ";
+
+        ///<inheritdoc/>
         public string GetSqlForCheckRequireMetaSchemaUpgrade(string currentSchemaVersion)
         //when table __yuniqldbversion exists, we need to upgrade from yuniql v1.0 to v1.1 version
              => @"
