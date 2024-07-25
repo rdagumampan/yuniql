@@ -78,7 +78,7 @@ Amazon Aurora, Azure Synapse and Alibaba Aspara are being evaluated/developed/te
 |Distributions|Build Status|Description|
 |---|---|---|
 |Docker image linux-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-ee37o?style=flat-square&logo=appveyor)|`docker pull yuniql/yuniql:linux-x64-latest`|
-|Docker imiage win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull yuniql/yuniql:win-x64-latest`|
+|Docker image win-x64|![yuniql-build-status](https://img.shields.io/appveyor/ci/rdagumampan/yuniql-uakd6?style=flat-square&logo=appveyor)|`docker pull yuniql/yuniql:win-x64-latest`|
 
 ### Run migrations for PostgreSql, MySql and others
 
